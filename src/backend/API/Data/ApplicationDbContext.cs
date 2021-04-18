@@ -7,7 +7,8 @@ namespace API.Data {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser> {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; } = default!;
+        public DbSet<Classroom> Classrooms { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);

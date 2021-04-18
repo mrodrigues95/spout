@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210418002955_Initial")]
+    [Migration("20210418195519_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,6 +37,7 @@ namespace API.Migrations
                         .HasColumnName("concurrency_stamp");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)")
                         .HasColumnName("email");
@@ -104,6 +105,62 @@ namespace API.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.Classroom", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<bool>("ActiveInd")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active_ind");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("text")
+                        .HasColumnName("created_by_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_classrooms");
+
+                    b.HasIndex("CreatedById")
+                        .HasDatabaseName("ix_classrooms_created_by_id");
+
+                    b.ToTable("classrooms");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.ClassroomApplicationUser", b =>
+                {
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("text")
+                        .HasColumnName("application_user_id");
+
+                    b.Property<Guid>("ClassroomId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("classroom_id");
+
+                    b.Property<bool>("IsCreator")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_creator");
+
+                    b.HasKey("ApplicationUserId", "ClassroomId")
+                        .HasName("pk_classroom_application_user");
+
+                    b.HasIndex("ClassroomId")
+                        .HasDatabaseName("ix_classroom_application_user_classroom_id");
+
+                    b.ToTable("classroom_application_user");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -200,11 +257,13 @@ namespace API.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("text")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
                         .HasColumnName("login_provider");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("text")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
                         .HasColumnName("provider_key");
 
                     b.Property<string>("ProviderDisplayName")
@@ -251,11 +310,13 @@ namespace API.Migrations
                         .HasColumnName("user_id");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("text")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
                         .HasColumnName("login_provider");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
                         .HasColumnName("name");
 
                     b.Property<string>("Value")
@@ -266,6 +327,37 @@ namespace API.Migrations
                         .HasName("pk_asp_net_user_tokens");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.Classroom", b =>
+                {
+                    b.HasOne("API.Data.Entities.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .HasConstraintName("fk_classrooms_application_user_created_by_id");
+
+                    b.Navigation("CreatedBy");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.ClassroomApplicationUser", b =>
+                {
+                    b.HasOne("API.Data.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany("ClassroomApplicationUsers")
+                        .HasForeignKey("ApplicationUserId")
+                        .HasConstraintName("fk_classroom_application_user_application_user_application_use")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Data.Entities.Classroom", "Classroom")
+                        .WithMany("ClassroomApplicationUsers")
+                        .HasForeignKey("ClassroomId")
+                        .HasConstraintName("fk_classroom_application_user_classrooms_classroom_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Classroom");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -323,6 +415,16 @@ namespace API.Migrations
                         .HasConstraintName("fk_asp_net_user_tokens_asp_net_users_user_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("API.Data.Entities.ApplicationUser", b =>
+                {
+                    b.Navigation("ClassroomApplicationUsers");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.Classroom", b =>
+                {
+                    b.Navigation("ClassroomApplicationUsers");
                 });
 #pragma warning restore 612, 618
         }

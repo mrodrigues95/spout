@@ -28,9 +28,9 @@ namespace API.Migrations
                 {
                     id = table.Column<string>(type: "text", nullable: false),
                     name = table.Column<string>(type: "text", nullable: false),
+                    email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalized_user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalized_email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     email_confirmed = table.Column<bool>(type: "boolean", nullable: false),
                     password_hash = table.Column<string>(type: "text", nullable: true),
@@ -94,8 +94,8 @@ namespace API.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    login_provider = table.Column<string>(type: "text", nullable: false),
-                    provider_key = table.Column<string>(type: "text", nullable: false),
+                    login_provider = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    provider_key = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     provider_display_name = table.Column<string>(type: "text", nullable: true),
                     user_id = table.Column<string>(type: "text", nullable: false)
                 },
@@ -139,8 +139,8 @@ namespace API.Migrations
                 columns: table => new
                 {
                     user_id = table.Column<string>(type: "text", nullable: false),
-                    login_provider = table.Column<string>(type: "text", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
+                    login_provider = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     value = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -150,6 +150,52 @@ namespace API.Migrations
                         name: "fk_asp_net_user_tokens_asp_net_users_user_id",
                         column: x => x.user_id,
                         principalTable: "AspNetUsers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "classrooms",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    active_ind = table.Column<bool>(type: "boolean", nullable: false),
+                    created_by_id = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_classrooms", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_classrooms_application_user_created_by_id",
+                        column: x => x.created_by_id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "classroom_application_user",
+                columns: table => new
+                {
+                    classroom_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    application_user_id = table.Column<string>(type: "text", nullable: false),
+                    is_creator = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_classroom_application_user", x => new { x.application_user_id, x.classroom_id });
+                    table.ForeignKey(
+                        name: "fk_classroom_application_user_application_user_application_use",
+                        column: x => x.application_user_id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_classroom_application_user_classrooms_classroom_id",
+                        column: x => x.classroom_id,
+                        principalTable: "classrooms",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -190,6 +236,16 @@ namespace API.Migrations
                 table: "AspNetUsers",
                 column: "normalized_user_name",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_classroom_application_user_classroom_id",
+                table: "classroom_application_user",
+                column: "classroom_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_classrooms_created_by_id",
+                table: "classrooms",
+                column: "created_by_id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -210,7 +266,13 @@ namespace API.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "classroom_application_user");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "classrooms");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

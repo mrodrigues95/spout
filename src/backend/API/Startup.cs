@@ -1,11 +1,10 @@
 using API.Data;
+using API.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace API {
     public class Startup {
@@ -17,24 +16,23 @@ namespace API {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddDbContext<ApplicationDbContext>(opt => {
+            services.AddPooledDbContextFactory<ApplicationDbContext>(opt => {
                 opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
                 opt.UseSnakeCaseNamingConvention();
             });
+            services.AddScoped(p =>
+                p.GetRequiredService<IDbContextFactory<ApplicationDbContext>>()
+                    .CreateDbContext());
+            services.AddGraphQLServices();
+            services.AddIdentityServices(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-            if (env.IsDevelopment()) {
-                app.UseDeveloperExceptionPage();
-            }
-
             app.UseRouting();
 
             app.UseEndpoints(endpoints => {
-                endpoints.MapGet("/", async context => {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                endpoints.MapGraphQL();
             });
         }
     }
