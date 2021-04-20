@@ -1,16 +1,16 @@
-﻿using API.GraphQL.ApplicationUsers;
-using API.GraphQL.Classrooms;
+﻿using API.Schema.ApplicationUsers;
+using API.Schema.Classrooms;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace API.Extensions {
-    public static class GraphQLServiceExtensions {
-        public static IServiceCollection AddGraphQLServices(this IServiceCollection services) {
+    public static class HotChocolateServiceExtensions {
+        public static IServiceCollection AddHotChocolateServices(this IServiceCollection services) {
             services
                 .AddGraphQLServer()
-                .AddQueryType(x => x.Name("Query"))
+                .AddQueryType()
                     .AddTypeExtension<ApplicationUserQueries>()
                     .AddTypeExtension<ClassroomQueries>()
-                .AddMutationType(x => x.Name("Mutation"))
+                .AddMutationType()
                     .AddTypeExtension<ApplicationUserMutations>()
                     .AddTypeExtension<ClassroomMutations>()
                 .AddType<ApplicationUserType>()

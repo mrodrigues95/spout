@@ -1,7 +1,7 @@
 ﻿using API.Data;
 using API.Data.Entities;
 using API.Extensions;
-using API.GraphQL.ApplicationUsers;
+using API.Schema.ApplicationUsers;
 using HotChocolate;
 using HotChocolate.Resolvers;
 using HotChocolate.Types;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace API.GraphQL.Classrooms {
+namespace API.Schema.Classrooms {
     public class ClassroomType : ObjectType<Classroom> {
         protected override void Configure(IObjectTypeDescriptor<Classroom> descriptor) {
             descriptor
@@ -20,7 +20,7 @@ namespace API.GraphQL.Classrooms {
                 .ResolveNode((ctx, id) => ctx.DataLoader<ClassroomByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
             descriptor
-                .Field(x => x.ClassroomApplicationUsers)
+                .Field(x => x.ApplicationUserClassrooms)
                 .ResolveWith<ClassroomResolvers>(x => x.GetApplicationUsersAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .Name("applicationUsers");
@@ -32,10 +32,10 @@ namespace API.GraphQL.Classrooms {
                 [ScopedService] ApplicationDbContext dbContext,
                 ApplicationUserByIdDataLoader applicationUserById,
                 CancellationToken cancellationToken) {
-                string[] userIds = await dbContext.Classrooms
+                int[] userIds = await dbContext.Classrooms
                     .Where(c => c.Id == classroom.Id)
-                    .Include(c => c.ClassroomApplicationUsers)
-                    .SelectMany(c => c.ClassroomApplicationUsers.Select(cau => cau.ApplicationUserId!))
+                    .Include(c => c.ApplicationUserClassrooms)
+                    .SelectMany(c => c.ApplicationUserClassrooms.Select(cau => cau.ApplicationUserId!))
                     .ToArrayAsync();
 
                 return await applicationUserById.LoadAsync(userIds, cancellationToken);

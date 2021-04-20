@@ -23,17 +23,15 @@ namespace API {
             services.AddScoped(p =>
                 p.GetRequiredService<IDbContextFactory<ApplicationDbContext>>()
                     .CreateDbContext());
-            services.AddGraphQLServices();
+            services.AddHotChocolateServices();
             services.AddIdentityServices(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-            app.UseRouting();
-
-            app.UseEndpoints(endpoints => {
-                endpoints.MapGraphQL();
-            });
+            app
+                .UseRouting()
+                .UseEndpoints(endpoints => endpoints.MapGraphQL());
         }
     }
 }

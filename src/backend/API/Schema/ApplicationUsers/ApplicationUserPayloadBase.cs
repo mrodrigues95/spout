@@ -2,7 +2,7 @@
 using API.Data.Entities;
 using System.Collections.Generic;
 
-namespace API.GraphQL.ApplicationUsers {
+namespace API.Schema.ApplicationUsers {
     public class ApplicationUserPayloadBase : Payload {
         public ApplicationUser? ApplicationUser { get; }
 

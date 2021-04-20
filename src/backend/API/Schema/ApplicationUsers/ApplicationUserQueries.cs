@@ -9,15 +9,15 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace API.GraphQL.ApplicationUsers {
-    [ExtendObjectType("Query")]
+namespace API.Schema.ApplicationUsers {
+    [ExtendObjectType(OperationTypeNames.Query)]
     public class ApplicationUserQueries {
         [UseApplicationDbContext]
         public Task<List<ApplicationUser>> GetApplicationUsers([ScopedService] ApplicationDbContext context) =>
             context.ApplicationUsers.ToListAsync();
 
         public Task<ApplicationUser> GetApplicationUserByIdAsync(
-            [ID(nameof(ApplicationUser))] string id,
+            [ID(nameof(ApplicationUser))] int id,
             ApplicationUserByIdDataLoader dataLoader,
             CancellationToken cancellationToken) =>
             dataLoader.LoadAsync(id, cancellationToken);

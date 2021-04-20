@@ -4,11 +4,12 @@ using API.Extensions;
 using HotChocolate;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Identity;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace API.GraphQL.ApplicationUsers {
-    [ExtendObjectType("Mutation")]
+namespace API.Schema.ApplicationUsers {
+    [ExtendObjectType(OperationTypeNames.Mutation)]
     public class ApplicationUserMutations {
         [UseApplicationDbContext]
         public async Task<AddApplicationUserPayload> AddApplicationUserAsync(
@@ -17,14 +18,15 @@ namespace API.GraphQL.ApplicationUsers {
             [Service] UserManager<ApplicationUser> userManager,
             CancellationToken cancellationToken) {
             var user = new ApplicationUser {
-                Name = input.Name,
+                GUID = Guid.NewGuid(),
+                FirstName = input.FirstName,
+                LastName = input.LastName,
                 UserName = input.Email,
                 Email = input.Email,
             };
 
             await userManager.CreateAsync(user, input.Password);
 
-            context.ApplicationUsers.Add(user);
             await context.SaveChangesAsync(cancellationToken);
 
             return new AddApplicationUserPayload(user);

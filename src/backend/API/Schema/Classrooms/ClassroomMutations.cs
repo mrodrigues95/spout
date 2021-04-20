@@ -3,11 +3,12 @@ using API.Data.Entities;
 using API.Extensions;
 using HotChocolate;
 using HotChocolate.Types;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace API.GraphQL.Classrooms {
-    [ExtendObjectType("Mutation")]
+namespace API.Schema.Classrooms {
+    [ExtendObjectType(OperationTypeNames.Mutation)]
     public class ClassroomMutations {
         [UseApplicationDbContext]
         public async Task<AddClassroomPayload> AddClassroomAsync(
@@ -15,6 +16,7 @@ namespace API.GraphQL.Classrooms {
             [ScopedService] ApplicationDbContext context,
             CancellationToken cancellationToken) {
             var classroom = new Classroom {
+                GUID = Guid.NewGuid(),
                 Name = input.Name,
             };
 

@@ -2,7 +2,7 @@
 using API.Data.Entities;
 using System.Collections.Generic;
 
-namespace API.GraphQL.Classrooms {
+namespace API.Schema.Classrooms {
     public class ClassroomPayloadBase : Payload {
         public Classroom? Classroom { get; set; }
 

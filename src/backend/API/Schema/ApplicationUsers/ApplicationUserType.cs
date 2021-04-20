@@ -1,18 +1,17 @@
 ﻿using API.Data;
 using API.Data.Entities;
 using API.Extensions;
-using API.GraphQL.Classrooms;
+using API.Schema.Classrooms;
 using HotChocolate;
 using HotChocolate.Resolvers;
 using HotChocolate.Types;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace API.GraphQL.ApplicationUsers {
+namespace API.Schema.ApplicationUsers {
     public class ApplicationUserType : ObjectType<ApplicationUser> {
         protected override void Configure(IObjectTypeDescriptor<ApplicationUser> descriptor) {
             descriptor
@@ -21,7 +20,7 @@ namespace API.GraphQL.ApplicationUsers {
                 .ResolveNode((ctx, id) => ctx.DataLoader<ApplicationUserByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
             descriptor
-                .Field(x => x.ClassroomApplicationUsers)
+                .Field(x => x.ApplicationUserClassrooms)
                 .ResolveWith<ApplicationUserResolvers>(x => x.GetClassroomsAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .Name("classrooms");
@@ -33,10 +32,10 @@ namespace API.GraphQL.ApplicationUsers {
                 [ScopedService] ApplicationDbContext dbContext,
                 ClassroomByIdDataLoader classroomById,
                 CancellationToken cancellationToken) {
-                Guid[] classroomIds = await dbContext.ApplicationUsers
+                int[] classroomIds = await dbContext.ApplicationUsers
                     .Where(au => au.Id == applicationUser.Id)
-                    .Include(au => au.ClassroomApplicationUsers)
-                    .SelectMany(au => au.ClassroomApplicationUsers.Select(cau => cau.ClassroomId))
+                    .Include(au => au.ApplicationUserClassrooms)
+                    .SelectMany(au => au.ApplicationUserClassrooms.Select(cau => cau.ClassroomId))
                     .ToArrayAsync();
 
                 return await classroomById.LoadAsync(classroomIds, cancellationToken);

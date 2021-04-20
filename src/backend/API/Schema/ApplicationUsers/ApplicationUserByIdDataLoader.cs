@@ -9,11 +9,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace API.GraphQL.Classrooms {
-    public class ClassroomByIdDataLoader : BatchDataLoader<Guid, Classroom> {
+namespace API.Schema.ApplicationUsers {
+    public class ApplicationUserByIdDataLoader : BatchDataLoader<int, ApplicationUser> {
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
-        public ClassroomByIdDataLoader(
+        public ApplicationUserByIdDataLoader(
             IBatchScheduler batchScheduler,
             IDbContextFactory<ApplicationDbContext> dbContextFactory)
             : base(batchScheduler) {
@@ -21,14 +21,14 @@ namespace API.GraphQL.Classrooms {
                 throw new ArgumentNullException(nameof(dbContextFactory));
         }
 
-        protected override async Task<IReadOnlyDictionary<Guid, Classroom>> LoadBatchAsync(
-            IReadOnlyList<Guid> keys,
+        protected override async Task<IReadOnlyDictionary<int, ApplicationUser>> LoadBatchAsync(
+            IReadOnlyList<int> keys,
             CancellationToken cancellationToken) {
             await using ApplicationDbContext dbContext =
                 _dbContextFactory.CreateDbContext();
 
-            return await dbContext.Classrooms
-                .Where(s => keys.Contains(s.Id))
+            return await dbContext.ApplicationUsers
+                .Where(au => keys.Contains(au.Id))
                 .ToDictionaryAsync(t => t.Id, cancellationToken);
         }
     }

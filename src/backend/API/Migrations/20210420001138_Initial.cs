@@ -12,7 +12,8 @@ namespace API.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    id = table.Column<string>(type: "text", nullable: false),
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalized_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     concurrency_stamp = table.Column<string>(type: "text", nullable: true)
@@ -26,8 +27,11 @@ namespace API.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    id = table.Column<string>(type: "text", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    guid = table.Column<Guid>(type: "uuid", nullable: false),
+                    first_name = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: false),
+                    last_name = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: false),
                     email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalized_user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -54,7 +58,7 @@ namespace API.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    role_id = table.Column<string>(type: "text", nullable: false),
+                    role_id = table.Column<int>(type: "integer", nullable: false),
                     claim_type = table.Column<string>(type: "text", nullable: true),
                     claim_value = table.Column<string>(type: "text", nullable: true)
                 },
@@ -75,7 +79,7 @@ namespace API.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    user_id = table.Column<string>(type: "text", nullable: false),
+                    user_id = table.Column<int>(type: "integer", nullable: false),
                     claim_type = table.Column<string>(type: "text", nullable: true),
                     claim_value = table.Column<string>(type: "text", nullable: true)
                 },
@@ -97,7 +101,7 @@ namespace API.Migrations
                     login_provider = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     provider_key = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     provider_display_name = table.Column<string>(type: "text", nullable: true),
-                    user_id = table.Column<string>(type: "text", nullable: false)
+                    user_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -114,8 +118,8 @@ namespace API.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    user_id = table.Column<string>(type: "text", nullable: false),
-                    role_id = table.Column<string>(type: "text", nullable: false)
+                    user_id = table.Column<int>(type: "integer", nullable: false),
+                    role_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -138,7 +142,7 @@ namespace API.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    user_id = table.Column<string>(type: "text", nullable: false),
+                    user_id = table.Column<int>(type: "integer", nullable: false),
                     login_provider = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     value = table.Column<string>(type: "text", nullable: true)
@@ -158,11 +162,13 @@ namespace API.Migrations
                 name: "classrooms",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    guid = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: false),
+                    created_by_id = table.Column<int>(type: "integer", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    active_ind = table.Column<bool>(type: "boolean", nullable: false),
-                    created_by_id = table.Column<string>(type: "text", nullable: true)
+                    is_active = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -176,29 +182,33 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "classroom_application_user",
+                name: "application_user_classroom",
                 columns: table => new
                 {
-                    classroom_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    application_user_id = table.Column<string>(type: "text", nullable: false),
-                    is_creator = table.Column<bool>(type: "boolean", nullable: false)
+                    classroom_id = table.Column<int>(type: "integer", nullable: false),
+                    application_user_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_classroom_application_user", x => new { x.application_user_id, x.classroom_id });
+                    table.PrimaryKey("pk_application_user_classroom", x => new { x.application_user_id, x.classroom_id });
                     table.ForeignKey(
-                        name: "fk_classroom_application_user_application_user_application_use",
+                        name: "fk_application_user_classroom_application_user_application_use",
                         column: x => x.application_user_id,
                         principalTable: "AspNetUsers",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_classroom_application_user_classrooms_classroom_id",
+                        name: "fk_application_user_classroom_classrooms_classroom_id",
                         column: x => x.classroom_id,
                         principalTable: "classrooms",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_application_user_classroom_classroom_id",
+                table: "application_user_classroom",
+                column: "classroom_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_asp_net_role_claims_role_id",
@@ -238,11 +248,6 @@ namespace API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_classroom_application_user_classroom_id",
-                table: "classroom_application_user",
-                column: "classroom_id");
-
-            migrationBuilder.CreateIndex(
                 name: "ix_classrooms_created_by_id",
                 table: "classrooms",
                 column: "created_by_id");
@@ -250,6 +255,9 @@ namespace API.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "application_user_classroom");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -266,13 +274,10 @@ namespace API.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "classroom_application_user");
+                name: "classrooms");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "classrooms");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
