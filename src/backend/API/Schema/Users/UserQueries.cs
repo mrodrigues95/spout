@@ -9,16 +9,17 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace API.Schema.ApplicationUsers {
+namespace API.Schema.Users {
     [ExtendObjectType(OperationTypeNames.Query)]
-    public class ApplicationUserQueries {
+    public class UserQueries {
         [UseApplicationDbContext]
-        public Task<List<ApplicationUser>> GetApplicationUsers([ScopedService] ApplicationDbContext context) =>
-            context.ApplicationUsers.ToListAsync();
+        public Task<List<User>> GetUsers([ScopedService] ApplicationDbContext context) =>
+            context.Users.ToListAsync();
 
-        public Task<ApplicationUser> GetApplicationUserByIdAsync(
-            [ID(nameof(ApplicationUser))] int id,
-            ApplicationUserByIdDataLoader dataLoader,
+        [UseApplicationDbContext]
+        public Task<User> GetUserByIdAsync(
+            [ID(nameof(User))] int id,
+            UserByIdDataLoader dataLoader,
             CancellationToken cancellationToken) =>
             dataLoader.LoadAsync(id, cancellationToken);
     }

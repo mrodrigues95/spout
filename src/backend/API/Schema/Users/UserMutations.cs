@@ -4,21 +4,19 @@ using API.Extensions;
 using HotChocolate;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Identity;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace API.Schema.ApplicationUsers {
+namespace API.Schema.Users {
     [ExtendObjectType(OperationTypeNames.Mutation)]
-    public class ApplicationUserMutations {
+    public class UserMutations {
         [UseApplicationDbContext]
-        public async Task<AddApplicationUserPayload> AddApplicationUserAsync(
-            AddApplicationUserInput input,
+        public async Task<CreateUserPayload> CreateUserAsync(
+            CreateUserInput input,
             [ScopedService] ApplicationDbContext context,
-            [Service] UserManager<ApplicationUser> userManager,
+            [Service] UserManager<User> userManager,
             CancellationToken cancellationToken) {
-            var user = new ApplicationUser {
-                GUID = Guid.NewGuid(),
+            var user = new User {
                 FirstName = input.FirstName,
                 LastName = input.LastName,
                 UserName = input.Email,
@@ -29,7 +27,7 @@ namespace API.Schema.ApplicationUsers {
 
             await context.SaveChangesAsync(cancellationToken);
 
-            return new AddApplicationUserPayload(user);
+            return new CreateUserPayload(user);
         }
     }
 }

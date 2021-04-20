@@ -18,12 +18,14 @@ namespace API.Schema.Classrooms {
             CancellationToken cancellationToken) =>
             await context.Classrooms.ToListAsync(cancellationToken);
 
+        [UseApplicationDbContext]
         public Task<Classroom> GetClassroomByIdAsync(
             [ID(nameof(Classroom))] int id,
             ClassroomByIdDataLoader classroomById,
             CancellationToken cancellationToken) =>
             classroomById.LoadAsync(id, cancellationToken);
 
+        [UseApplicationDbContext]
         public async Task<IEnumerable<Classroom>> GetClassroomsByIdAsync(
             [ID(nameof(Classroom))] int[] ids,
             ClassroomByIdDataLoader classroomById,

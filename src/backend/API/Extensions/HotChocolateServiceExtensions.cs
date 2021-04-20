@@ -1,5 +1,5 @@
-﻿using API.Schema.ApplicationUsers;
-using API.Schema.Classrooms;
+﻿using API.Schema.Classrooms;
+using API.Schema.Users;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace API.Extensions {
@@ -8,15 +8,15 @@ namespace API.Extensions {
             services
                 .AddGraphQLServer()
                 .AddQueryType()
-                    .AddTypeExtension<ApplicationUserQueries>()
+                    .AddTypeExtension<UserQueries>()
                     .AddTypeExtension<ClassroomQueries>()
                 .AddMutationType()
-                    .AddTypeExtension<ApplicationUserMutations>()
+                    .AddTypeExtension<UserMutations>()
                     .AddTypeExtension<ClassroomMutations>()
-                .AddType<ApplicationUserType>()
+                .AddType<UserType>()
                 .AddType<ClassroomType>()
                 .EnableRelaySupport()
-                .AddDataLoader<ApplicationUserByIdDataLoader>()
+                .AddDataLoader<UserByIdDataLoader>()
                 .AddDataLoader<ClassroomByIdDataLoader>();
 
             return services;

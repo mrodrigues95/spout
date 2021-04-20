@@ -1,5 +1,5 @@
-﻿namespace API.Schema.ApplicationUsers {
-    public record AddApplicationUserInput(
+﻿namespace API.Schema.Users {
+    public record CreateUserInput(
         string FirstName,
         string LastName,
         string Email,

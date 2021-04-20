@@ -9,11 +9,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace API.Schema.ApplicationUsers {
-    public class ApplicationUserByIdDataLoader : BatchDataLoader<int, ApplicationUser> {
+namespace API.Schema.Users {
+    public class UserByIdDataLoader : BatchDataLoader<int, User> {
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
-        public ApplicationUserByIdDataLoader(
+        public UserByIdDataLoader(
             IBatchScheduler batchScheduler,
             IDbContextFactory<ApplicationDbContext> dbContextFactory)
             : base(batchScheduler) {
@@ -21,13 +21,13 @@ namespace API.Schema.ApplicationUsers {
                 throw new ArgumentNullException(nameof(dbContextFactory));
         }
 
-        protected override async Task<IReadOnlyDictionary<int, ApplicationUser>> LoadBatchAsync(
+        protected override async Task<IReadOnlyDictionary<int, User>> LoadBatchAsync(
             IReadOnlyList<int> keys,
             CancellationToken cancellationToken) {
             await using ApplicationDbContext dbContext =
                 _dbContextFactory.CreateDbContext();
 
-            return await dbContext.ApplicationUsers
+            return await dbContext.Users
                 .Where(au => keys.Contains(au.Id))
                 .ToDictionaryAsync(t => t.Id, cancellationToken);
         }

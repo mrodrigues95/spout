@@ -9,9 +9,9 @@ namespace API.Extensions {
     public static class IdentityServiceExtensions {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services,
             IConfiguration config) {
-            services.AddDefaultIdentity<ApplicationUser>()
+            services.AddDefaultIdentity<User>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddSignInManager<SignInManager<ApplicationUser>>()
+                .AddSignInManager<SignInManager<User>>()
                 .AddDefaultTokenProviders();
 
             return services;

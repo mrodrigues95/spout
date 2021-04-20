@@ -1,4 +1,4 @@
 ﻿namespace API.Schema.Classrooms {
-    public record AddClassroomInput(
+    public record CreateClassroomInput(
         string Name);
 }

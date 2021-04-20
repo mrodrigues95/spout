@@ -11,31 +11,31 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace API.Schema.ApplicationUsers {
-    public class ApplicationUserType : ObjectType<ApplicationUser> {
-        protected override void Configure(IObjectTypeDescriptor<ApplicationUser> descriptor) {
+namespace API.Schema.Users {
+    public class UserType : ObjectType<User> {
+        protected override void Configure(IObjectTypeDescriptor<User> descriptor) {
             descriptor
                 .ImplementsNode()
                 .IdField(x => x.Id)
-                .ResolveNode((ctx, id) => ctx.DataLoader<ApplicationUserByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+                .ResolveNode((ctx, id) => ctx.DataLoader<UserByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
             descriptor
-                .Field(x => x.ApplicationUserClassrooms)
-                .ResolveWith<ApplicationUserResolvers>(x => x.GetClassroomsAsync(default!, default!, default!, default!))
+                .Field(x => x.UserClassrooms)
+                .ResolveWith<UserResolvers>(x => x.GetClassroomsAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .Name("classrooms");
         }
 
-        private class ApplicationUserResolvers {
+        private class UserResolvers {
             public async Task<IEnumerable<Classroom>> GetClassroomsAsync(
-                ApplicationUser applicationUser,
+                User user,
                 [ScopedService] ApplicationDbContext dbContext,
                 ClassroomByIdDataLoader classroomById,
                 CancellationToken cancellationToken) {
-                int[] classroomIds = await dbContext.ApplicationUsers
-                    .Where(au => au.Id == applicationUser.Id)
-                    .Include(au => au.ApplicationUserClassrooms)
-                    .SelectMany(au => au.ApplicationUserClassrooms.Select(cau => cau.ClassroomId))
+                int[] classroomIds = await dbContext.Users
+                    .Where(au => au.Id == user.Id)
+                    .Include(au => au.UserClassrooms)
+                    .SelectMany(au => au.UserClassrooms.Select(cau => cau.ClassroomId))
                     .ToArrayAsync();
 
                 return await classroomById.LoadAsync(classroomIds, cancellationToken);

@@ -1,7 +1,7 @@
 ﻿using API.Data;
 using API.Data.Entities;
 using API.Extensions;
-using API.Schema.ApplicationUsers;
+using API.Schema.Users;
 using HotChocolate;
 using HotChocolate.Resolvers;
 using HotChocolate.Types;
@@ -20,25 +20,25 @@ namespace API.Schema.Classrooms {
                 .ResolveNode((ctx, id) => ctx.DataLoader<ClassroomByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
             descriptor
-                .Field(x => x.ApplicationUserClassrooms)
-                .ResolveWith<ClassroomResolvers>(x => x.GetApplicationUsersAsync(default!, default!, default!, default!))
+                .Field(x => x.UserClassrooms)
+                .ResolveWith<ClassroomResolvers>(x => x.GetUsersAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
-                .Name("applicationUsers");
+                .Name("users");
         }
 
         private class ClassroomResolvers {
-            public async Task<IEnumerable<ApplicationUser>> GetApplicationUsersAsync(
+            public async Task<IEnumerable<User>> GetUsersAsync(
                 Classroom classroom,
                 [ScopedService] ApplicationDbContext dbContext,
-                ApplicationUserByIdDataLoader applicationUserById,
+                UserByIdDataLoader userById,
                 CancellationToken cancellationToken) {
                 int[] userIds = await dbContext.Classrooms
                     .Where(c => c.Id == classroom.Id)
-                    .Include(c => c.ApplicationUserClassrooms)
-                    .SelectMany(c => c.ApplicationUserClassrooms.Select(cau => cau.ApplicationUserId!))
+                    .Include(c => c.UserClassrooms)
+                    .SelectMany(c => c.UserClassrooms.Select(cau => cau.UserId!))
                     .ToArrayAsync();
 
-                return await applicationUserById.LoadAsync(userIds, cancellationToken);
+                return await userById.LoadAsync(userIds, cancellationToken);
             }
         }
     }

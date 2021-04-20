@@ -5,14 +5,25 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace API.Data {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int> {
+    public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, int> {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        public DbSet<ApplicationUser> ApplicationUsers { get; set; } = default!;
+        public override DbSet<User> Users { get; set; } = default!;
         public DbSet<Classroom> Classrooms { get; set; } = default!;
+        public DbSet<UserClassroom> UserClassrooms { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
+
+            // Configure default ASP.NET table names.
+            builder.Entity<User>().ToTable("users");
+            builder.Entity<IdentityUserLogin<int>>().ToTable("user_logins");
+            builder.Entity<IdentityUserToken<int>>().ToTable("users_tokens");
+            builder.Entity<IdentityUserClaim<int>>().ToTable("user_claims");
+            builder.Entity<IdentityUserRole<int>>().ToTable("user_roles");
+            builder.Entity<IdentityRoleClaim<int>>().ToTable("role_claims");
+            builder.Entity<IdentityRole<int>>().ToTable("roles");
+
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
