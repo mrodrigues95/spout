@@ -1,7 +1,6 @@
 ﻿using API.Data;
-using API.Data.Entities;
+using Entity = API.Data.Entities;
 using API.Extensions;
-using API.Schema.Users;
 using HotChocolate;
 using HotChocolate.Resolvers;
 using HotChocolate.Types;
@@ -10,10 +9,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using API.Schema.Entities.User;
 
-namespace API.Schema.Classrooms {
-    public class ClassroomType : ObjectType<Classroom> {
-        protected override void Configure(IObjectTypeDescriptor<Classroom> descriptor) {
+namespace API.Schema.Entities.Classroom {
+    public class ClassroomType : ObjectType<Entity.Classroom> {
+        protected override void Configure(IObjectTypeDescriptor<Entity.Classroom> descriptor) {
             descriptor
                 .ImplementsNode()
                 .IdField(x => x.Id)
@@ -27,8 +27,8 @@ namespace API.Schema.Classrooms {
         }
 
         private class ClassroomResolvers {
-            public async Task<IEnumerable<User>> GetUsersAsync(
-                Classroom classroom,
+            public async Task<IEnumerable<Entity.User>> GetUsersAsync(
+                Entity.Classroom classroom,
                 [ScopedService] ApplicationDbContext dbContext,
                 UserByIdDataLoader userById,
                 CancellationToken cancellationToken) {

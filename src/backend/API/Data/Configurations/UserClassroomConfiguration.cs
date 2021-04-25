@@ -5,16 +5,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace API.Data.Configurations {
     public class UserClassroomConfiguration : IEntityTypeConfiguration<UserClassroom> {
         public void Configure(EntityTypeBuilder<UserClassroom> builder) {
-            // Many-to-many: ApplicationUser <--> Classroom
-            builder.HasKey(auc => new { auc.UserId, auc.ClassroomId });
+            // Many-to-many: User <--> Classroom
+            builder.HasKey(uc => new { uc.UserId, uc.ClassroomId });
 
-            builder.HasOne(auc => auc.User)
-                .WithMany(au => au!.UserClassrooms)
-                .HasForeignKey(auc => auc.UserId);
+            builder.HasOne(uc => uc.User)
+                .WithMany(u => u!.UserClassrooms)
+                .HasForeignKey(uc => uc.UserId);
 
-            builder.HasOne(auc => auc.Classroom)
+            builder.HasOne(uc => uc.Classroom)
                 .WithMany(c => c!.UserClassrooms)
-                .HasForeignKey(auc => auc.ClassroomId);
+                .HasForeignKey(uc => uc.ClassroomId);
         }
     }
 }

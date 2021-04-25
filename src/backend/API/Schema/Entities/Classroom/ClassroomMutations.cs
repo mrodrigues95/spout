@@ -1,12 +1,12 @@
 ﻿using API.Data;
-using API.Data.Entities;
+using Entity = API.Data.Entities;
 using API.Extensions;
 using HotChocolate;
 using HotChocolate.Types;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace API.Schema.Classrooms {
+namespace API.Schema.Entities.Classroom {
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class ClassroomMutations {
         [UseApplicationDbContext]
@@ -14,7 +14,7 @@ namespace API.Schema.Classrooms {
             CreateClassroomInput input,
             [ScopedService] ApplicationDbContext context,
             CancellationToken cancellationToken) {
-            var classroom = new Classroom {
+            var classroom = new Entity.Classroom {
                 Name = input.Name,
             };
 

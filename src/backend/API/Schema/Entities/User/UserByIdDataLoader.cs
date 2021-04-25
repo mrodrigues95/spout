@@ -1,5 +1,5 @@
 ﻿using API.Data;
-using API.Data.Entities;
+using Entity = API.Data.Entities;
 using GreenDonut;
 using HotChocolate.DataLoader;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +9,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace API.Schema.Classrooms {
-    public class ClassroomByIdDataLoader : BatchDataLoader<int, Classroom> {
+namespace API.Schema.Entities.User {
+    public class UserByIdDataLoader : BatchDataLoader<int, Entity.User> {
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
-        public ClassroomByIdDataLoader(
+        public UserByIdDataLoader(
             IBatchScheduler batchScheduler,
             IDbContextFactory<ApplicationDbContext> dbContextFactory)
             : base(batchScheduler) {
@@ -21,14 +21,14 @@ namespace API.Schema.Classrooms {
                 throw new ArgumentNullException(nameof(dbContextFactory));
         }
 
-        protected override async Task<IReadOnlyDictionary<int, Classroom>> LoadBatchAsync(
+        protected override async Task<IReadOnlyDictionary<int, Entity.User>> LoadBatchAsync(
             IReadOnlyList<int> keys,
             CancellationToken cancellationToken) {
             await using ApplicationDbContext dbContext =
                 _dbContextFactory.CreateDbContext();
 
-            return await dbContext.Classrooms
-                .Where(s => keys.Contains(s.Id))
+            return await dbContext.Users
+                .Where(au => keys.Contains(au.Id))
                 .ToDictionaryAsync(t => t.Id, cancellationToken);
         }
     }

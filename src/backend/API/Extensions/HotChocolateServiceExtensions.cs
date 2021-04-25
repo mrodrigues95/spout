@@ -1,5 +1,7 @@
-﻿using API.Schema.Classrooms;
-using API.Schema.Users;
+﻿using API.Schema.Entities.Classroom;
+using API.Schema.Entities.User;
+using API.Schema.Services.Auth;
+using AppAny.HotChocolate.FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace API.Extensions {
@@ -11,13 +13,15 @@ namespace API.Extensions {
                     .AddTypeExtension<UserQueries>()
                     .AddTypeExtension<ClassroomQueries>()
                 .AddMutationType()
-                    .AddTypeExtension<UserMutations>()
                     .AddTypeExtension<ClassroomMutations>()
+                    .AddTypeExtension<AuthMutations>()
                 .AddType<UserType>()
                 .AddType<ClassroomType>()
                 .EnableRelaySupport()
                 .AddDataLoader<UserByIdDataLoader>()
-                .AddDataLoader<ClassroomByIdDataLoader>();
+                .AddDataLoader<ClassroomByIdDataLoader>()
+                .AddAuthorization()
+                .AddFairyBread();
 
             return services;
         }
