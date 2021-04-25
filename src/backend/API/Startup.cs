@@ -1,6 +1,6 @@
 using API.Data;
 using API.Extensions;
-using FluentValidation;
+using API.Middleware;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,7 +29,6 @@ namespace API {
                 .AddFluentValidation(cfg => {
                 cfg.RegisterValidatorsFromAssemblyContaining<Startup>();
             });
-            services.AddValidatorsFromAssemblyContaining<Startup>();
             services.AddHotChocolateServices();
             services.AddIdentityServices();
         }
@@ -37,6 +36,7 @@ namespace API {
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
             app
+                .UseMiddleware<ExceptionHandlingMiddleware>()
                 .UseRouting()
                 .UseAuthentication()
                 .UseAuthorization()

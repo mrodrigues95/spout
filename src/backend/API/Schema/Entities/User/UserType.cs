@@ -33,9 +33,9 @@ namespace API.Schema.Entities.User {
                 ClassroomByIdDataLoader classroomById,
                 CancellationToken cancellationToken) {
                 int[] classroomIds = await dbContext.Users
-                    .Where(au => au.Id == user.Id)
-                    .Include(au => au.UserClassrooms)
-                    .SelectMany(au => au.UserClassrooms.Select(cau => cau.ClassroomId))
+                    .Where(u => u.Id == user.Id)
+                    .Include(u => u.UserClassrooms)
+                    .SelectMany(u => u.UserClassrooms.Select(uc => uc.ClassroomId))
                     .ToArrayAsync();
 
                 return await classroomById.LoadAsync(classroomIds, cancellationToken);

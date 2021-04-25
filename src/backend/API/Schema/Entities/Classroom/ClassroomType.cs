@@ -35,7 +35,7 @@ namespace API.Schema.Entities.Classroom {
                 int[] userIds = await dbContext.Classrooms
                     .Where(c => c.Id == classroom.Id)
                     .Include(c => c.UserClassrooms)
-                    .SelectMany(c => c.UserClassrooms.Select(cau => cau.UserId!))
+                    .SelectMany(c => c.UserClassrooms.Select(uc => uc.UserId!))
                     .ToArrayAsync();
 
                 return await userById.LoadAsync(userIds, cancellationToken);

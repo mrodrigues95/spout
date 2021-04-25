@@ -8,7 +8,6 @@
   <ItemGroup>
     <PackageReference Include="AppAny.HotChocolate.FluentValidation" Version="0.2.7" />
     <PackageReference Include="EFCore.NamingConventions" Version="5.0.2" />
-    <PackageReference Include="FairyBread" Version="6.0.0" />
     <PackageReference Include="FluentValidation" Version="10.0.4" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="10.0.4" />
     <PackageReference Include="HotChocolate.AspNetCore" Version="11.1.0" />

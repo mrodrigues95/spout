@@ -33,6 +33,8 @@ namespace API.Migrations
                     first_name = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: false),
                     last_name = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: false),
                     email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalized_user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalized_email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -83,6 +85,7 @@ namespace API.Migrations
                     name = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: false),
                     created_by_id = table.Column<int>(type: "integer", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     is_active = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>

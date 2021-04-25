@@ -3,11 +3,11 @@
 namespace API.Schema.Services.Auth {
     public class AuthPayload {
         public User? User { get; }
-        public bool IsSignedIn { get; }
+        public bool IsLoggedIn { get; }
 
-        public AuthPayload(User? user, bool isSignedIn) {
+        public AuthPayload(User? user, bool isLoggedIn) {
             User = user;
-            IsSignedIn = isSignedIn;
+            IsLoggedIn = isLoggedIn;
         }
     }
 }

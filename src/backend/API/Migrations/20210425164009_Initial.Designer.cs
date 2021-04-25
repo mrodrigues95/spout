@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210420234022_Initial")]
+    [Migration("20210425164009_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,7 +37,7 @@ namespace API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("created_by_id");
 
-                    b.Property<Guid>("GUID")
+                    b.Property<Guid>("Guid")
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
 
@@ -50,6 +50,11 @@ namespace API.Migrations
                         .HasMaxLength(35)
                         .HasColumnType("character varying(35)")
                         .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .IsRequired()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at");
 
                     b.HasKey("Id")
                         .HasName("pk_classrooms");
@@ -77,6 +82,11 @@ namespace API.Migrations
                         .HasColumnType("text")
                         .HasColumnName("concurrency_stamp");
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .IsRequired()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -93,7 +103,7 @@ namespace API.Migrations
                         .HasColumnType("character varying(35)")
                         .HasColumnName("first_name");
 
-                    b.Property<Guid>("GUID")
+                    b.Property<Guid>("Guid")
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
 
@@ -140,6 +150,11 @@ namespace API.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean")
                         .HasColumnName("two_factor_enabled");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .IsRequired()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)

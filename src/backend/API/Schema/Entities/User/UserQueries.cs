@@ -15,14 +15,16 @@ namespace API.Schema.Entities.User {
     [ExtendObjectType(OperationTypeNames.Query)]
     public class UserQueries {
         [UseApplicationDbContext]
-        public Task<List<Entity.User>> GetUsers([ScopedService] ApplicationDbContext context) =>
-            context.Users.ToListAsync();
+        public async Task<IEnumerable<Entity.User>> GetUsersAsync(
+            [ScopedService] ApplicationDbContext context,
+            CancellationToken cancellationToken) =>
+            await context.Users.ToListAsync(cancellationToken);
 
         [UseApplicationDbContext]
         public Task<Entity.User> GetUserByIdAsync(
             [ID(nameof(Entity.User))] int id,
-            UserByIdDataLoader dataLoader,
+            UserByIdDataLoader userById,
             CancellationToken cancellationToken) =>
-            dataLoader.LoadAsync(id, cancellationToken);
+            userById.LoadAsync(id, cancellationToken);
     }
 }

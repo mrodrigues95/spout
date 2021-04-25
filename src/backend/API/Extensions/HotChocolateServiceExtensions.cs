@@ -12,6 +12,7 @@ namespace API.Extensions {
                 .AddQueryType()
                     .AddTypeExtension<UserQueries>()
                     .AddTypeExtension<ClassroomQueries>()
+                    .AddTypeExtension<AuthQueries>()
                 .AddMutationType()
                     .AddTypeExtension<ClassroomMutations>()
                     .AddTypeExtension<AuthMutations>()
@@ -20,8 +21,8 @@ namespace API.Extensions {
                 .EnableRelaySupport()
                 .AddDataLoader<UserByIdDataLoader>()
                 .AddDataLoader<ClassroomByIdDataLoader>()
-                .AddAuthorization()
-                .AddFairyBread();
+                //.AddAuthorization()
+                .AddFluentValidation();
 
             return services;
         }
