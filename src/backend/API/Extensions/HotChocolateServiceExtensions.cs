@@ -21,7 +21,7 @@ namespace API.Extensions {
                 .EnableRelaySupport()
                 .AddDataLoader<UserByIdDataLoader>()
                 .AddDataLoader<ClassroomByIdDataLoader>()
-                //.AddAuthorization()
+                .AddAuthorization()
                 .AddFluentValidation();
 
             return services;

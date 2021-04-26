@@ -17,7 +17,7 @@ namespace API.Data {
             try {
                 if (!await userManager.Users.AnyAsync()) {
                     foreach (User user in GetPreconfiguredUsers()) {
-                        await userManager.CreateAsync(user, "Pa$$w0rd");
+                        await userManager.CreateAsync(user, "Pa$$w0rd!");
                     }
                     await context.SaveChangesAsync();
                 }

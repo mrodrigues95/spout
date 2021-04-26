@@ -2,9 +2,7 @@
 using FluentValidation;
 
 namespace API.Schema.Services.Auth {
-    public record LoginInput(
-        string Email,
-        string Password);
+    public record LoginInput(string Email, string Password);
 
     public class LoginInputValidator : AbstractValidator<LoginInput> {
         public LoginInputValidator() {

@@ -47,7 +47,7 @@ namespace API.Schema.Services.Auth {
         }
 
         public async Task<AuthPayload> LoginAsync(
-            LoginInput input,
+            [UseFluentValidation, UseValidator(typeof(LoginInputValidator))] LoginInput input,
             [Service] UserManager<User> userManager,
             [Service] SignInManager<User> signInManager,
             [Service] IHttpContextAccessor httpContextAccessor) {
