@@ -30,8 +30,7 @@ namespace API.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     guid = table.Column<Guid>(type: "uuid", nullable: false),
-                    first_name = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: false),
-                    last_name = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: false),
+                    name = table.Column<string>(type: "character varying(70)", maxLength: 70, nullable: false),
                     email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),

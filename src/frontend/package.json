@@ -2,6 +2,9 @@
   "name": "frontend",
   "version": "0.1.0",
   "main": "index.js",
+  "engines": {
+    "node": ">=14"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/mrodrigues95/spout.git"
@@ -15,8 +18,10 @@
     "prettier:check": "prettier --check ./src/**/*.{ts,tsx}"
   },
   "dependencies": {
+    "@hookform/resolvers": "^2.4.0",
     "clsx": "^1.1.1",
-    "next": "10.1.3",
+    "next": "^10.2.0",
+    "next-seo": "^4.24.0",
     "nprogress": "^0.2.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",

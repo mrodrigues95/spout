@@ -28,8 +28,7 @@ namespace API.Schema.Services.Auth {
             }
 
             var user = new User {
-                FirstName = input.FirstName,
-                LastName = input.LastName,
+                Name = input.Name,
                 UserName = input.Email,
                 Email = input.Email,
                 UpdatedAt = DateTime.UtcNow

@@ -7,9 +7,7 @@ namespace API.Data.Entities {
     public class User : IdentityUser<int> {
         public Guid Guid { get; set; } = Guid.NewGuid();
         [Required]
-        public string? FirstName { get; set; }
-        [Required]
-        public string? LastName { get; set; }
+        public string? Name { get; set; }
         [Required]
         public override string? Email { get; set; }
         [Required]

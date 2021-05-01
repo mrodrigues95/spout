@@ -45,29 +45,25 @@ namespace API.Data {
         private static IEnumerable<User> GetPreconfiguredUsers() {
             return new List<User>() {
                     new User {
-                        FirstName = "Marcus",
-                        LastName = "Rodrigues",
+                        Name = "Marcus Rodrigues",
                         UserName = "mrodrigues@test.com",
                         Email = "mrodrigues@test.com",
                         UpdatedAt = DateTime.UtcNow
                     },
                     new User {
-                        FirstName = "John",
-                        LastName = "Doe",
+                        Name = "John Doe",
                         UserName = "jdoe@test.com",
                         Email = "jdoe@test.com",
                         UpdatedAt = DateTime.UtcNow
                     },
                     new User {
-                        FirstName = "Debbie",
-                        LastName = "Ray",
+                        Name = "Debbie Ray",
                         UserName = "dray@test.com",
                         Email = "dray@test.com",
                         UpdatedAt = DateTime.UtcNow
                     },
                     new User {
-                        FirstName = "Heather",
-                        LastName = "Dook",
+                        Name = "Heather Dook",
                         UserName = "hdook@test.com",
                         Email = "hdook@test.com",
                         UpdatedAt = DateTime.UtcNow

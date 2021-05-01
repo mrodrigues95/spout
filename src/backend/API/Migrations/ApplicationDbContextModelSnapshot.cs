@@ -95,21 +95,9 @@ namespace API.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("email_confirmed");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(35)
-                        .HasColumnType("character varying(35)")
-                        .HasColumnName("first_name");
-
                     b.Property<Guid>("Guid")
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(35)
-                        .HasColumnType("character varying(35)")
-                        .HasColumnName("last_name");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean")
@@ -118,6 +106,12 @@ namespace API.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("lockout_end");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(70)
+                        .HasColumnType("character varying(70)")
+                        .HasColumnName("name");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
