@@ -3,7 +3,6 @@ using API.Extensions;
 using API.Middleware;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,15 +28,17 @@ namespace API {
                 .AddFluentValidation(cfg => {
                 cfg.RegisterValidatorsFromAssemblyContaining<Startup>();
             });
+            services.AddApplicationServices();
             services.AddHotChocolateServices();
             services.AddIdentityServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+        public void Configure(IApplicationBuilder app) {
             app
                 .UseMiddleware<ExceptionHandlingMiddleware>()
                 .UseRouting()
+                .UseCors("CorsPolicy")
                 .UseAuthentication()
                 .UseAuthorization()
                 .UseEndpoints(endpoints => endpoints.MapGraphQL());

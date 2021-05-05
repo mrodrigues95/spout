@@ -15,12 +15,16 @@
     "build": "next build",
     "start": "next start",
     "prettier": "prettier --write ./src/**/*.{ts,tsx}",
-    "prettier:check": "prettier --check ./src/**/*.{ts,tsx}"
+    "prettier:check": "prettier --check ./src/**/*.{ts,tsx}",
+    "codegen:graphql": "graphql-codegen"
   },
   "dependencies": {
+    "@apollo/client": "^3.3.16",
     "@hookform/resolvers": "^2.4.0",
     "clsx": "^1.1.1",
+    "graphql": "^15.5.0",
     "next": "^10.2.0",
+    "next-iron-session": "^4.1.13",
     "next-seo": "^4.24.0",
     "nprogress": "^0.2.0",
     "react": "17.0.2",
@@ -29,6 +33,10 @@
     "zod": "^1.11.16"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^1.21.4",
+    "@graphql-codegen/near-operation-file-preset": "^1.18.0",
+    "@graphql-codegen/typescript": "^1.22.0",
+    "@graphql-codegen/typescript-operations": "^1.17.16",
     "@tailwindcss/aspect-ratio": "^0.2.0",
     "@tailwindcss/forms": "^0.3.2",
     "@tailwindcss/typography": "^0.4.0",

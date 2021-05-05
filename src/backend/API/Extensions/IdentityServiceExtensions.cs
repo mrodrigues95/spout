@@ -10,9 +10,8 @@ namespace API.Extensions {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services) {
             services.AddDefaultIdentity<User>(opt => {
                 opt.User.RequireUniqueEmail = true;
-            })
+            })  
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddSignInManager<SignInManager<User>>()
                 .AddDefaultTokenProviders();
 
             services.ConfigureApplicationCookie(opt => {
@@ -21,7 +20,7 @@ namespace API.Extensions {
                 opt.ExpireTimeSpan = TimeSpan.FromDays(14);
                 opt.Cookie.SameSite = SameSiteMode.Strict;
                 opt.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                opt.SlidingExpiration = true;
+                opt.SlidingExpiration = false;
             });
 
             return services;

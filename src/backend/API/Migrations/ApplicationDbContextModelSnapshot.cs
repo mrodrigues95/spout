@@ -63,6 +63,40 @@ namespace API.Migrations
                     b.ToTable("classrooms");
                 });
 
+            modelBuilder.Entity("API.Data.Entities.Session", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .IsRequired()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int?>("UserId")
+                        .IsRequired()
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_sessions");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_sessions_user_id");
+
+                    b.ToTable("sessions");
+                });
+
             modelBuilder.Entity("API.Data.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -360,6 +394,18 @@ namespace API.Migrations
                     b.Navigation("CreatedBy");
                 });
 
+            modelBuilder.Entity("API.Data.Entities.Session", b =>
+                {
+                    b.HasOne("API.Data.Entities.User", "User")
+                        .WithMany("Sessions")
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("fk_sessions_users_user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("API.Data.Entities.UserClassroom", b =>
                 {
                     b.HasOne("API.Data.Entities.Classroom", "Classroom")
@@ -445,6 +491,8 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Data.Entities.User", b =>
                 {
+                    b.Navigation("Sessions");
+
                     b.Navigation("UserClassrooms");
                 });
 #pragma warning restore 612, 618

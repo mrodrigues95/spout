@@ -20,6 +20,6 @@ const Input = forwardRef<HTMLInputElement, Props>(
         />
       </label>
     );
-  }
+  },
 );
 export default Input;

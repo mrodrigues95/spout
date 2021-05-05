@@ -1,5 +1,4 @@
-﻿using API.Common.Validators;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace API.Schema.Services.Auth {
     public record LoginInput(string Email, string Password);
@@ -7,7 +6,7 @@ namespace API.Schema.Services.Auth {
     public class LoginInputValidator : AbstractValidator<LoginInput> {
         public LoginInputValidator() {
             RuleFor(x => x.Email).NotEmpty().EmailAddress();
-            RuleFor(x => x.Password).Password();
+            RuleFor(x => x.Password).NotEmpty();
         }
     }
 }

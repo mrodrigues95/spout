@@ -11,11 +11,11 @@ import AuthCard from '../AuthCard';
 
 const signUpSchema = object({
   name: string()
-    .min(1, { message: '- Name is required' })
+    .min(1, { message: '- Invalid name' })
     .max(70, { message: '- Name is too long' }),
   email: string().email({ message: '- Invalid email' }),
   password: string()
-    .min(1, { message: '- Password is required' })
+    .min(1, { message: '- Invalid password' })
     .regex(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/, {
       message: '- That password is too easy to guess',
     }),
@@ -34,6 +34,7 @@ const SignUpForm = () => {
     <Link
       href="/auth/login"
       className="text-green-600 font-semibold focus:outline-none focus:underline hover:underline"
+      preserveRedirect
     >
       Login.
     </Link>

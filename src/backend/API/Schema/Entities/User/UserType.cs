@@ -10,6 +10,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using API.Schema.Entities.Classroom;
+using System;
+using API.Schema.Entities.Session;
 
 namespace API.Schema.Entities.User {
     public class UserType : ObjectType<Entity.User> {
@@ -24,6 +26,12 @@ namespace API.Schema.Entities.User {
                 .ResolveWith<UserResolvers>(x => x.GetClassroomsAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .Name("classrooms");
+
+            descriptor
+                .Field(x => x.Sessions)
+                .ResolveWith<UserResolvers>(x => x.GetSessionsAsync(default!, default!, default!, default!))
+                .UseDbContext<ApplicationDbContext>()
+                .Name("sessions");
         }
 
         private class UserResolvers {
@@ -39,6 +47,20 @@ namespace API.Schema.Entities.User {
                     .ToArrayAsync();
 
                 return await classroomById.LoadAsync(classroomIds, cancellationToken);
+            }
+
+            public async Task<IEnumerable<Entity.Session>> GetSessionsAsync(
+                Entity.User user,
+                [ScopedService] ApplicationDbContext dbContext,
+                SessionByIdDataLoader sessionById,
+                CancellationToken cancellationToken) {
+                Guid[] sessionIds = await dbContext.Users
+                    .Where(u => u.Id == user.Id)
+                    .Include(u => u.Sessions)
+                    .SelectMany(u => u.Sessions.Select(us => us.Id))
+                    .ToArrayAsync();
+
+                return await sessionById.LoadAsync(sessionIds, cancellationToken);
             }
         }
     }

@@ -1,3 +1,6 @@
-const Index = () => <h1>Test</h1>;
+import { GetServerSideProps } from 'next';
+import { authenticatedRoute } from '~/shared/utils/redirects';
 
-export default Index;
+export const getServerSideProps: GetServerSideProps = authenticatedRoute;
+
+export { Home as default } from '~/modules';

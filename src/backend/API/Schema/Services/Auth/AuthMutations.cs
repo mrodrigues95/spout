@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using HotChocolate.Execution;
 using AppAny.HotChocolate.FluentValidation;
 using Microsoft.AspNetCore.Http;
 using HotChocolate.AspNetCore.Authorization;
 using System;
+using API.Schema.Services.Auth.Common;
 
 namespace API.Schema.Services.Auth {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -24,7 +24,7 @@ namespace API.Schema.Services.Auth {
             [Service] SignInManager<User> signInManager,
             CancellationToken cancellationToken) {
             if (await context.Users.AnyAsync(x => x.Email == input.Email || x.UserName == input.Email)) {
-                throw new QueryException("Email already exists.");
+                throw new GraphQLException("Email already exists.");
             }
 
             var user = new User {
@@ -35,39 +35,49 @@ namespace API.Schema.Services.Auth {
             };
 
             var createUser = await userManager.CreateAsync(user, input.Password);
-            if (!createUser.Succeeded) throw new QueryException("Unable to create new user.");
-
-            await context.SaveChangesAsync(cancellationToken);
+            if (!createUser.Succeeded) throw new GraphQLException("Unable to create new user.");
 
             var loginUser = await signInManager.PasswordSignInAsync(user, input.Password, true, false);
-            if (!loginUser.Succeeded) throw new QueryException("Unable to sign in user.");
+            if (!loginUser.Succeeded) throw new GraphQLException("Unable to sign in user.");
 
-            return new AuthPayload(user, true);
+            var session = await SessionManagement.CreateSession(user.Email, context, cancellationToken);
+
+            return new AuthPayload(user, session, true);
         }
 
+        [UseApplicationDbContext]
         public async Task<AuthPayload> LoginAsync(
             [UseFluentValidation, UseValidator(typeof(LoginInputValidator))] LoginInput input,
+            [ScopedService] ApplicationDbContext context,
             [Service] UserManager<User> userManager,
             [Service] SignInManager<User> signInManager,
-            [Service] IHttpContextAccessor httpContextAccessor) {
-            var user = await userManager.FindByEmailAsync(input.Email);
-            if (user is null) throw new QueryException("Unable to find user.");
-
+            [Service] IHttpContextAccessor httpContextAccessor,
+            CancellationToken cancellationToken) {
             if (signInManager.IsSignedIn(httpContextAccessor.HttpContext?.User)) {
-                throw new QueryException("User is already signed in.");
+                throw new GraphQLException("User is already signed in.");
             }
 
-            var loginUser = await signInManager.PasswordSignInAsync(user, input.Password, true, false);
-            if (!loginUser.Succeeded) throw new QueryException("Invalid email address or password.");
+            var user = await userManager.FindByEmailAsync(input.Email);
+            if (user is null) throw new GraphQLException("Unable to find user.");
 
-            return new AuthPayload(user, true);
+            var loginUser = await signInManager.PasswordSignInAsync(user, input.Password, true, false);
+            if (!loginUser.Succeeded) throw new GraphQLException("Invalid email address or password.");
+
+            var session = await SessionManagement.CreateSession(user.Email!, context, cancellationToken);
+
+            return new AuthPayload(user, session, true);
         }
 
         [Authorize]
+        [UseApplicationDbContext]
         public async Task<AuthPayload> LogoutAsync(
-            [Service] SignInManager<User> signInManager) {
+            [UseFluentValidation, UseValidator(typeof(LogoutInputValidator))] LogoutInput input,
+            [ScopedService] ApplicationDbContext context,
+            [Service] SignInManager<User> signInManager,
+            CancellationToken cancellationToken) {
+            await SessionManagement.RemoveSession(input.SessionId, context, cancellationToken);
             await signInManager.SignOutAsync();
-            return new AuthPayload(null, false);
+            return new AuthPayload(false);
         }
     }
 }

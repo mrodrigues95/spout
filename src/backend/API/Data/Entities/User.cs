@@ -16,5 +16,6 @@ namespace API.Data.Entities {
         public DateTime? UpdatedAt { get; set; }
 
         public ICollection<UserClassroom> UserClassrooms { get; set; } = new List<UserClassroom>();
+        public ICollection<Session> Sessions { get; set; } = new List<Session>();
     }
 }

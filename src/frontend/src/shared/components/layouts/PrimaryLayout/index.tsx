@@ -9,7 +9,7 @@ interface Props {
 const PrimaryLayout = ({ title, children }: Props) => {
   return (
     <>
-      <NextSeo title={`${title} | Spout`} />
+      <NextSeo title={title} />
       <div className="min-h-screen flex flex-col bg-white">
         <div className="flex flex-1">{children}</div>
       </div>

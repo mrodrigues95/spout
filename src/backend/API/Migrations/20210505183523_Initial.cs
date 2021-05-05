@@ -99,6 +99,27 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "sessions",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    expires_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    user_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_sessions", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_sessions_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "user_claims",
                 columns: table => new
                 {
@@ -224,6 +245,11 @@ namespace API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "ix_sessions_user_id",
+                table: "sessions",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_user_claims_user_id",
                 table: "user_claims",
                 column: "user_id");
@@ -259,6 +285,9 @@ namespace API.Migrations
         {
             migrationBuilder.DropTable(
                 name: "role_claims");
+
+            migrationBuilder.DropTable(
+                name: "sessions");
 
             migrationBuilder.DropTable(
                 name: "user_claims");
