@@ -11,16 +11,16 @@ namespace API.Extensions {
             services.AddDefaultIdentity<User>(opt => {
                 opt.User.RequireUniqueEmail = true;
             })  
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
             services.ConfigureApplicationCookie(opt => {
                 opt.Cookie.Name = "SP_IDENTITY";
                 opt.Cookie.HttpOnly = true;
-                opt.ExpireTimeSpan = TimeSpan.FromDays(14);
+                opt.ExpireTimeSpan = TimeSpan.FromDays(7);
                 opt.Cookie.SameSite = SameSiteMode.Strict;
                 opt.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                opt.SlidingExpiration = false;
+                opt.SlidingExpiration = true;
             });
 
             return services;

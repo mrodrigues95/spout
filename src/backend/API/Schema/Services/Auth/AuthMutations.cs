@@ -17,7 +17,7 @@ namespace API.Schema.Services.Auth {
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class AuthMutations {
         [UseApplicationDbContext]
-        public async Task<AuthPayload> SignupAsync(
+        public async Task<AuthPayload> SignUpAsync(
             [UseFluentValidation, UseValidator(typeof(SignUpInputValidator))] SignUpInput input,
             [ScopedService] ApplicationDbContext context,
             [Service] UserManager<User> userManager,
@@ -42,7 +42,7 @@ namespace API.Schema.Services.Auth {
 
             var session = await SessionManagement.CreateSession(user.Email, context, cancellationToken);
 
-            return new AuthPayload(user, session, true);
+            return new AuthPayload(user, session.Session, true);
         }
 
         [UseApplicationDbContext]
@@ -65,7 +65,7 @@ namespace API.Schema.Services.Auth {
 
             var session = await SessionManagement.CreateSession(user.Email!, context, cancellationToken);
 
-            return new AuthPayload(user, session, true);
+            return new AuthPayload(user, session.Session, true);
         }
 
         [Authorize]
@@ -78,6 +78,23 @@ namespace API.Schema.Services.Auth {
             await SessionManagement.RemoveSession(input.SessionId, context, cancellationToken);
             await signInManager.SignOutAsync();
             return new AuthPayload(false);
+        }
+
+        [Authorize]
+        [UseApplicationDbContext]
+        public async Task<AuthPayload> RefreshSessionAsync(
+            [ScopedService] ApplicationDbContext context,
+            [Service] IHttpContextAccessor httpContextAccessor,
+            CancellationToken cancellationToken) {
+            var email = httpContextAccessor.HttpContext?.User.Identity?.Name;
+            if (string.IsNullOrEmpty(email)) {
+                httpContextAccessor.HttpContext?.Response.Cookies.Delete("SP_IDENTITY");
+                throw new GraphQLException("Unable to find user.");
+            }
+
+            var session = await SessionManagement.CreateSession(email, context, cancellationToken);
+
+            return new AuthPayload(session.User, session.Session, true);
         }
     }
 }

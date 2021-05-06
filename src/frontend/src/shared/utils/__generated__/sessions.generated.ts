@@ -7,6 +7,20 @@ export type SessionQuery = (
   { __typename?: 'Query' }
   & { sessionById: (
     { __typename?: 'Session' }
-    & Pick<Types.Session, 'id' | 'createdAt' | 'updatedAt'>
+    & Pick<Types.Session, 'id' | 'createdAt' | 'updatedAt' | 'expiresAt'>
+  ) }
+);
+
+export type RefreshSessionMutationVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type RefreshSessionMutation = (
+  { __typename?: 'Mutation' }
+  & { refreshSession: (
+    { __typename?: 'AuthPayload' }
+    & { session?: Types.Maybe<(
+      { __typename?: 'Session' }
+      & Pick<Types.Session, 'id' | 'createdAt' | 'updatedAt' | 'expiresAt'>
+    )> }
   ) }
 );

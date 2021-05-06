@@ -69,9 +69,10 @@ export type LogoutInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createClassroom: CreateClassroomPayload;
-  signup: AuthPayload;
+  signUp: AuthPayload;
   login: AuthPayload;
   logout: AuthPayload;
+  refreshSession: AuthPayload;
 };
 
 
@@ -80,7 +81,7 @@ export type MutationCreateClassroomArgs = {
 };
 
 
-export type MutationSignupArgs = {
+export type MutationSignUpArgs = {
   input: SignUpInput;
 };
 

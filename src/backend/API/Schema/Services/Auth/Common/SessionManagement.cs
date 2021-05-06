@@ -6,8 +6,13 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace API.Schema.Services.Auth.Common {
+    public class SessionPayload {
+        public User User { get; set; } = default!;
+        public Session Session { get; set; } = default!;
+    }
+
     public static class SessionManagement {
-        public async static Task<Session> CreateSession(
+        public async static Task<SessionPayload> CreateSession(
             string email,
             ApplicationDbContext context,
             CancellationToken cancellationToken) {
@@ -22,7 +27,7 @@ namespace API.Schema.Services.Auth.Common {
             context.Sessions.Add(session);
             await context.SaveChangesAsync(cancellationToken);
 
-            return session;
+            return new SessionPayload { User = user, Session = session };
         }
 
         public async static Task RemoveSession(

@@ -5,7 +5,7 @@ namespace API.Data.Entities {
     public class Session {
         public Guid Id { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime ExpiresAt { get; set; } = DateTime.UtcNow;
+        public DateTime ExpiresAt { get; set; } = (DateTime.UtcNow).AddDays(14);
         [Required]
         public DateTime? UpdatedAt { get; set; }
         [Required]
