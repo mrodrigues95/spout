@@ -37,6 +37,7 @@ namespace API {
         public void Configure(IApplicationBuilder app) {
             app
                 .UseMiddleware<ExceptionHandlingMiddleware>()
+                //.UseHttpsRedirection()
                 .UseRouting()
                 .UseCors("CorsPolicy")
                 .UseAuthentication()

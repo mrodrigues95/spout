@@ -59,11 +59,13 @@ export const removeClientSession = async (req: IncomingMessage) => {
   return sessionId;
 };
 
+// TODO: Create short lived cookies and test.
 const sessionCache = new WeakMap<IncomingMessage, Partial<Session> | null>();
 export const resolveClientSession = async ({
   req,
   res,
 }: Pick<GetServerSidePropsContext, 'req' | 'res'>) => {
+  // sessionCache allows us to safely call resolveClientSession multiple times a request.
   if (sessionCache.has(req)) return sessionCache.get(req);
 
   const client = createApolloClient({

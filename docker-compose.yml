@@ -1,1 +1,69 @@
-TODO
+version: '3.8'
+
+services:
+  db:
+    container_name: spout-postgres
+    restart: unless-stopped
+    image: postgres:latest
+    ports:
+      # NOTE: To avoid overlapping with any Postgres database run on the host machine,
+      # we bind Postgres to port "15432" instead.
+      - 15432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: spout
+      POSTGRES_PASSWORD: pgserver
+  
+  backend:
+    container_name: spout-backend
+    restart: unless-stopped
+    image: mcr.microsoft.com/dotnet/sdk:5.0
+    ports:
+      - 8080:80
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - DOTNET_USE_POLLING_FILE_WATCHER=true
+      - DOTNET_RUNNING_IN_CONTAINER=true
+    volumes:
+      - ./src/backend:/srv/backend:rw
+      - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
+      - ${APPDATA}\.aspnet\https:/root/.aspnet/https/
+    working_dir: /srv/backend
+    command: bash -c "dotnet restore && dotnet watch --project API run --no-launch-profile"
+    depends_on: 
+      - db
+
+  frontend:
+    container_name: spout-frontend
+    restart: unless-stopped
+    image: node:14
+    build:
+      context: src/frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./src/frontend:/srv/frontend:rw
+      - /srv/frontend/node_modules
+      - /srv/frontend/.next
+    env_file:
+      - src/frontend/.env
+    depends_on:
+      - backend
+  
+  compiler:
+    container_name: spout-compiler
+    restart: unless-stopped
+    image: node:14
+    command: ["scripts/wait-for-it.sh", "backend:80", "--", "yarn", "codegen:graphql", "--watch"]
+    volumes:
+      - ./src/frontend:/srv/compiler:rw
+    working_dir: /srv/compiler
+    depends_on:
+      - backend
+      - frontend
+      
+volumes:
+  pgdata: {}

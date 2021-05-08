@@ -55,14 +55,23 @@ export const useApollo = (initialState?: Record<string, any>) => {
   return client;
 };
 
-export const createApolloClient = ({ initialState, headers }: ClientOptions) => {
+export const createApolloClient = ({
+  initialState,
+  headers,
+}: ClientOptions) => {
   let nextClient = apolloClient;
 
   if (!nextClient) {
     nextClient = new ApolloClient({
       ssrMode: typeof window === 'undefined',
       link: new HttpLink({
-        uri: 'http://localhost:5000/graphql/',
+        // When running in Docker, we need to expose the graphql endpoint
+        // to the browser environment outside of Docker for SSR and client requests.
+        // See: https://github.com/apollographql/apollo-link/issues/375
+        uri:
+          typeof window !== 'undefined'
+            ? 'http://localhost:8080/graphql/'
+            : 'http://backend:80/graphql/',
         headers: headers,
         credentials: 'include',
       }),

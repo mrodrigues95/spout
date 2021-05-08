@@ -1,1 +1,9 @@
-TODO
+.dockerignore
+.gitignore
+**/.next/
+**/cache/
+**/build/
+**/node_modules/
+**/bin/
+**/obj/
+**/*.*proj.user/
