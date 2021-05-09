@@ -1,6 +1,25 @@
 version: '3.8'
 
 services:
+  reverse-proxy:
+    container_name: spout-reverse-proxy
+    restart: unless-stopped
+    image: traefik:latest
+    command:
+      - --api.insecure=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.web-secure.address=:443
+      - --providers.docker=true
+      - --providers.file.filename=/etc/traefik/config.yml
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      # In order to run HTTPS, you will need to change `http` below to `https`.
+      - ./src/frontend/config/traefik.http.yml:/etc/traefik/config.yml:ro
+      # See: https://stackoverflow.com/questions/36765138/bind-to-docker-socket-on-windows
+      - //var/run/docker.sock:/var/run/docker.sock:ro
+
   db:
     container_name: spout-postgres
     restart: unless-stopped
@@ -20,10 +39,11 @@ services:
     restart: unless-stopped
     image: mcr.microsoft.com/dotnet/sdk:5.0
     ports:
-      - 8080:80
+      - 5000:5000
+      - 5001:5001
     environment: 
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_URLS=https://+:5001;http://+:5000
       - DOTNET_USE_POLLING_FILE_WATCHER=true
       - DOTNET_RUNNING_IN_CONTAINER=true
     volumes:
@@ -48,22 +68,26 @@ services:
       - ./src/frontend:/srv/frontend:rw
       - /srv/frontend/node_modules
       - /srv/frontend/.next
-    env_file:
-      - src/frontend/.env
     depends_on:
       - backend
+    labels:
+      - traefik.http.routers.frontend-http.rule=Host(`spout.localhost`)
+      - traefik.http.routers.frontend-http.service=frontend
+      - traefik.http.services.frontend.loadbalancer.server.port=3000
   
   compiler:
     container_name: spout-compiler
     restart: unless-stopped
     image: node:14
-    command: ["scripts/wait-for-it.sh", "backend:80", "--", "yarn", "codegen:graphql", "--watch"]
     volumes:
       - ./src/frontend:/srv/compiler:rw
     working_dir: /srv/compiler
+    command: scripts/wait-for-it.sh backend:5000 -- yarn codegen:graphql:watch
     depends_on:
       - backend
       - frontend
+    labels: 
+      - traefik.enable=false
       
 volumes:
   pgdata: {}
