@@ -1,3 +1,4 @@
+import { gql, useMutation } from '@apollo/client';
 import { object, string } from 'zod';
 import {
   Button,
@@ -7,7 +8,23 @@ import {
   useZodForm,
   PrimaryLayout,
 } from '~/shared/components';
+import useAuthRedirect from '../../hooks/useAuthRedirect';
+import AuthError from '../AuthError';
 import AuthCard from '../AuthCard';
+import {
+  SignUpMutation,
+  SignUpMutationVariables,
+} from './__generated__/index.generated';
+
+const SIGN_UP_MUTATION = gql`
+  mutation SignUpMutation($input: SignUpInput!) {
+    signUp(input: $input) {
+      session {
+        id
+      }
+    }
+  }
+`;
 
 const signUpSchema = object({
   name: string()
@@ -26,6 +43,21 @@ const signUpSchema = object({
 });
 
 const SignUpForm = () => {
+  const authRedirect = useAuthRedirect();
+  const [signup, signupResult] = useMutation<
+    SignUpMutation,
+    SignUpMutationVariables
+  >(SIGN_UP_MUTATION, {
+    async onCompleted({ signUp }) {
+      await fetch('/api/sessions/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(signUp.session?.id),
+      });
+      authRedirect();
+    },
+  });
+
   const form = useZodForm({
     schema: signUpSchema,
   });
@@ -51,9 +83,12 @@ const SignUpForm = () => {
       >
         <Form
           form={form}
-          onSubmit={() => console.log('Submitted!')}
+          onSubmit={({ name, email, password }) => {
+            signup({ variables: { input: { name, email, password } } });
+          }}
           className="flex flex-col w-full"
         >
+          <AuthError title="Sign Up failed." error={signupResult.error} />
           <Input
             label="Name"
             autoComplete="name"

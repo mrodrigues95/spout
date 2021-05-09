@@ -1,6 +1,10 @@
 overwrite: true
 schema: 'http://backend:5000/graphql/'
 documents: 'src/**/!(*.d).{ts,tsx}'
+watch: true
+watchConfig:
+  usePolling: true
+  interval: 1000
 generates:
   src/__generated__/schema.generated.ts:
     plugins:

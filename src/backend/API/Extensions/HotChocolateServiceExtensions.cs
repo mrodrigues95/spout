@@ -31,7 +31,7 @@ namespace API.Extensions {
                 .AddDataLoader<UserByIdDataLoader>()
                 .AddDataLoader<SessionByIdDataLoader>()
                 .AddDataLoader<ClassroomByIdDataLoader>()
-                //.AddAuthorization()
+                .AddAuthorization()
                 .AddFluentValidation()
                 .AddErrorFilter<ErrorFilter>()
                 .ModifyRequestOptions(opt => {

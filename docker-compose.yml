@@ -52,6 +52,10 @@ services:
       - ${APPDATA}\.aspnet\https:/root/.aspnet/https/
     working_dir: /srv/backend
     command: bash -c "dotnet restore && dotnet watch --project API run --no-launch-profile"
+    labels:
+      - traefik.http.routers.backend-http.rule=Host(`spout.localhost`) && PathPrefix(`/graphql`)
+      - traefik.http.routers.backend-http.service=backend
+      - traefik.http.services.backend.loadbalancer.server.port=5000
     depends_on: 
       - db
 
@@ -68,12 +72,12 @@ services:
       - ./src/frontend:/srv/frontend:rw
       - /srv/frontend/node_modules
       - /srv/frontend/.next
-    depends_on:
-      - backend
     labels:
       - traefik.http.routers.frontend-http.rule=Host(`spout.localhost`)
       - traefik.http.routers.frontend-http.service=frontend
       - traefik.http.services.frontend.loadbalancer.server.port=3000
+    depends_on:
+      - backend
   
   compiler:
     container_name: spout-compiler

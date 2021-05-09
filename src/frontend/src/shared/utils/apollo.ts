@@ -70,8 +70,8 @@ export const createApolloClient = ({
         // See: https://github.com/apollographql/apollo-link/issues/375
         uri:
           typeof window !== 'undefined'
-            ? 'http://localhost:5000/graphql/'
-            : 'http://backend:5000/graphql/',
+            ? 'http://spout.localhost/graphql'
+            : 'http://backend:5000/graphql',
         headers: headers,
         credentials: 'include',
       }),
