@@ -9,7 +9,7 @@ namespace API.Extensions {
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials()
-                        .WithOrigins("http://spout.localhost");
+                        .WithOrigins(new[] { "http://spout.localhost", "http://localhost:3000" });
                 });
             });
 
