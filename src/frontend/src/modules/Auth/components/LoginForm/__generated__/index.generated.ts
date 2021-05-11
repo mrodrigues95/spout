@@ -12,6 +12,9 @@ export type LoginMutation = (
     & { session?: Types.Maybe<(
       { __typename?: 'Session' }
       & Pick<Types.Session, 'id'>
-    )> }
+    )>, userErrors?: Types.Maybe<Array<(
+      { __typename?: 'UserError' }
+      & Pick<Types.UserError, 'message' | 'code'>
+    )>> }
   ) }
 );

@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace API.Schema.Services.Auth.Common {
+namespace API.Schema.Services.Auth.Sessions {
     public class SessionPayload {
         public User User { get; set; } = default!;
         public Session Session { get; set; } = default!;

@@ -1,5 +1,4 @@
-﻿using API.Common.Exceptions;
-using API.Schema.Entities.Classroom;
+﻿using API.Schema.Entities.Classroom;
 using API.Schema.Entities.Session;
 using API.Schema.Entities.User;
 using API.Schema.Services.Auth;
@@ -13,30 +12,36 @@ namespace API.Extensions {
         public static IServiceCollection AddHotChocolateServices(this IServiceCollection services) {
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-            services
-                .AddHttpResultSerializer<GraphQLHttpResultSerializer>()
-                .AddGraphQLServer()
+            var gql = services.AddGraphQLServer();
+            gql
+                //.AddAuthorization()
+                .AddFluentValidation()
+                .EnableRelaySupport()
+                .ModifyRequestOptions(opt => {
+                    opt.IncludeExceptionDetails = env == Environments.Development;
+                });
+
+            gql
                 .AddQueryType()
                     .AddTypeExtension<UserQueries>()
                     .AddTypeExtension<SessionQueries>()
                     .AddTypeExtension<ClassroomQueries>()
-                    .AddTypeExtension<AuthQueries>()
+                    .AddTypeExtension<AuthQueries>();
+
+            gql
                 .AddMutationType()
                     .AddTypeExtension<ClassroomMutations>()
-                    .AddTypeExtension<AuthMutations>()
+                    .AddTypeExtension<AuthMutations>();
+
+            gql
                 .AddType<UserType>()
                 .AddType<SessionType>()
-                .AddType<ClassroomType>()
-                .EnableRelaySupport()
+                .AddType<ClassroomType>();
+
+            gql
                 .AddDataLoader<UserByIdDataLoader>()
                 .AddDataLoader<SessionByIdDataLoader>()
-                .AddDataLoader<ClassroomByIdDataLoader>()
-                .AddAuthorization()
-                .AddFluentValidation()
-                .AddErrorFilter<ErrorFilter>()
-                .ModifyRequestOptions(opt => {
-                    opt.IncludeExceptionDetails = env == Environments.Development;
-                });
+                .AddDataLoader<ClassroomByIdDataLoader>();
 
             return services;
         }

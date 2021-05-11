@@ -1,7 +1,8 @@
 ﻿using API.Data.Entities;
+using API.Schema.Common;
 
 namespace API.Schema.Services.Auth {
-    public class AuthPayload {
+    public class AuthPayload : Payload {
         public User? User { get; }
         public Session? Session { get; }
         public bool IsLoggedIn { get; }
@@ -15,5 +16,7 @@ namespace API.Schema.Services.Auth {
         public AuthPayload(bool isLoggedIn) {
             IsLoggedIn = isLoggedIn;
         }
+
+        public AuthPayload(UserError error) : base(new[] { error }) { }
     }
 }

@@ -26,6 +26,7 @@ export type AuthPayload = {
   user?: Maybe<User>;
   session?: Maybe<Session>;
   isLoggedIn: Scalars['Boolean'];
+  userErrors?: Maybe<Array<UserError>>;
 };
 
 export type AuthorizeDirective = {
@@ -53,7 +54,8 @@ export type CreateClassroomInput = {
 
 export type CreateClassroomPayload = {
   __typename?: 'CreateClassroomPayload';
-  classroom: Classroom;
+  classroom?: Maybe<Classroom>;
+  userErrors?: Maybe<Array<UserError>>;
 };
 
 
@@ -177,5 +179,11 @@ export type User = Node & {
   lockoutEnd?: Maybe<Scalars['DateTime']>;
   lockoutEnabled: Scalars['Boolean'];
   accessFailedCount: Scalars['Int'];
+};
+
+export type UserError = {
+  __typename?: 'UserError';
+  message: Scalars['String'];
+  code: Scalars['String'];
 };
 

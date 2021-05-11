@@ -11,7 +11,8 @@ using AppAny.HotChocolate.FluentValidation;
 using Microsoft.AspNetCore.Http;
 using HotChocolate.AspNetCore.Authorization;
 using System;
-using API.Schema.Services.Auth.Common;
+using API.Schema.Services.Auth.Sessions;
+using API.Schema.Common;
 
 namespace API.Schema.Services.Auth {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -24,7 +25,8 @@ namespace API.Schema.Services.Auth {
             [Service] SignInManager<User> signInManager,
             CancellationToken cancellationToken) {
             if (await context.Users.AnyAsync(x => x.Email == input.Email || x.UserName == input.Email)) {
-                throw new GraphQLException("Email already exists.");
+                //throw new GraphQLException("Unable to create new user.");
+                return new AuthPayload(new UserError("Email already exists.", "EMAIL_ALREADY_EXISTS"));
             }
 
             var user = new User {
@@ -35,10 +37,10 @@ namespace API.Schema.Services.Auth {
             };
 
             var createUser = await userManager.CreateAsync(user, input.Password);
-            if (!createUser.Succeeded) throw new GraphQLException("Unable to create new user.");
+            if (!createUser.Succeeded) return new AuthPayload(new UserError("Unable to create new user.", "INVALID_USER"));
 
             var loginUser = await signInManager.PasswordSignInAsync(user, input.Password, true, false);
-            if (!loginUser.Succeeded) throw new GraphQLException("Unable to sign in user.");
+            if (!loginUser.Succeeded) return new AuthPayload(new UserError("Unable to sign in user.", "INVALID_USER"));
 
             var session = await SessionManagement.CreateSession(user.Email, context, cancellationToken);
 
@@ -54,14 +56,14 @@ namespace API.Schema.Services.Auth {
             [Service] IHttpContextAccessor httpContextAccessor,
             CancellationToken cancellationToken) {
             if (signInManager.IsSignedIn(httpContextAccessor.HttpContext?.User)) {
-                throw new GraphQLException("User is already signed in.");
+                return new AuthPayload(new UserError("User is already signed in.", "SESSION_EXISTS"));
             }
 
             var user = await userManager.FindByEmailAsync(input.Email);
-            if (user is null) throw new GraphQLException("Unable to find user.");
+            if (user is null) return new AuthPayload(new UserError("Unable to find user.", "USER_NOT_FOUND"));
 
             var loginUser = await signInManager.PasswordSignInAsync(user, input.Password, true, false);
-            if (!loginUser.Succeeded) throw new GraphQLException("Invalid email address or password.");
+            if (!loginUser.Succeeded) return new AuthPayload(new UserError("Invalid email address or password.", "BAD_USER_INPUT"));
 
             var session = await SessionManagement.CreateSession(user.Email!, context, cancellationToken);
 
@@ -89,7 +91,7 @@ namespace API.Schema.Services.Auth {
             var email = httpContextAccessor.HttpContext?.User.Identity?.Name;
             if (string.IsNullOrEmpty(email)) {
                 httpContextAccessor.HttpContext?.Response.Cookies.Delete("SP_IDENTITY");
-                throw new GraphQLException("Unable to find user.");
+                return new AuthPayload(new UserError("Unable to find user.", "USER_NOT_FOUND"));
             }
 
             var session = await SessionManagement.CreateSession(email, context, cancellationToken);

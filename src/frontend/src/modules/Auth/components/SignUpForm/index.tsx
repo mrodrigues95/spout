@@ -22,6 +22,10 @@ const SIGN_UP_MUTATION = gql`
       session {
         id
       }
+      userErrors {
+        message
+        code
+      }
     }
   }
 `;
@@ -49,13 +53,16 @@ const SignUpForm = () => {
     SignUpMutationVariables
   >(SIGN_UP_MUTATION, {
     async onCompleted({ signUp }) {
-      await fetch('/api/sessions/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(signUp.session?.id),
-      });
-      authRedirect();
+      if (!signUp.userErrors) {
+        await fetch('/api/sessions/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(signUp.session?.id),
+        });
+        authRedirect();
+      }
     },
+    onError: (error) => console.log(error.message),
   });
 
   const form = useZodForm({
@@ -84,11 +91,19 @@ const SignUpForm = () => {
         <Form
           form={form}
           onSubmit={({ name, email, password }) => {
-            signup({ variables: { input: { name, email, password } } });
+            signup({
+              variables: { input: { name, email, password } },
+            });
           }}
           className="flex flex-col w-full"
         >
-          <AuthError title="Sign Up failed." error={signupResult.error} />
+          <AuthError
+            title="Sign Up failed."
+            error={
+              signupResult.error ||
+              signupResult.data?.signUp.userErrors?.shift()
+            }
+          />
           <Input
             label="Name"
             autoComplete="name"

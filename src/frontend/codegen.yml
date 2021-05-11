@@ -1,5 +1,6 @@
 overwrite: true
 # TODO: Fetch schema from api once auth issues are resolved in HotChocolate.
+# http://backend:5000/graphql/
 schema: src/graphql/schema.graphql
 documents: 'src/**/!(*.d).{ts,tsx}'
 watchConfig:

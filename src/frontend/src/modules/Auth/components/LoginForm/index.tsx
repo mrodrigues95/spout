@@ -22,6 +22,10 @@ const LOGIN_MUTATION = gql`
       session {
         id
       }
+      userErrors {
+        message
+        code
+      }
     }
   }
 `;
@@ -38,13 +42,16 @@ const LoginForm = () => {
     LoginMutationVariables
   >(LOGIN_MUTATION, {
     async onCompleted({ login }) {
-      await fetch('/api/sessions/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(login.session?.id),
-      });
-      authRedirect();
+      if (!login.userErrors) {
+        await fetch('/api/sessions/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(login.session?.id),
+        });
+        authRedirect();
+      }
     },
+    onError: (error) => console.log(error.message),
   });
 
   const form = useZodForm({
@@ -74,11 +81,18 @@ const LoginForm = () => {
         <Form
           form={form}
           onSubmit={({ email, password }) => {
-            login({ variables: { input: { email, password } } });
+            login({
+              variables: { input: { email, password } },
+            });
           }}
           className="flex flex-col w-full"
         >
-          <AuthError title="Login failed." error={loginResult.error} />
+          <AuthError
+            title="Login failed."
+            error={
+              loginResult.error || loginResult.data?.login.userErrors?.shift()
+            }
+          />
           <Input
             label="Email"
             placeholder="Email"

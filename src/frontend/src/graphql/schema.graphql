@@ -12,6 +12,7 @@ type AuthPayload {
   user: User
   session: Session
   isLoggedIn: Boolean!
+  userErrors: [UserError!]
 }
 
 type AuthorizeDirective {
@@ -32,7 +33,8 @@ type Classroom implements Node {
 }
 
 type CreateClassroomPayload {
-  classroom: Classroom!
+  classroom: Classroom
+  userErrors: [UserError!]
 }
 
 type Mutation {
@@ -86,6 +88,11 @@ type User implements Node {
   lockoutEnd: DateTime
   lockoutEnabled: Boolean!
   accessFailedCount: Int!
+}
+
+type UserError {
+  message: String!
+  code: String!
 }
 
 input CreateClassroomInput {
