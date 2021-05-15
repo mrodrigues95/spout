@@ -1,16 +1,19 @@
-import { object, string } from 'zod';
+import { useState } from 'react';
+import Zod, { object, string } from 'zod';
 import { gql, useMutation } from '@apollo/client';
 import {
-  Button,
+  FormSubmitButton,
   Link,
   Input,
   Form,
   useZodForm,
   PrimaryLayout,
+  useToast,
 } from '~/shared/components';
+import { useAuthRedirect, useInitializeSessionMutation } from '~/modules';
 import AuthCard from '../AuthCard';
 import AuthError from '../AuthError';
-import useAuthRedirect from '../../hooks/useAuthRedirect';
+import { UserError } from '~/__generated__/schema.generated';
 import {
   LoginMutation,
   LoginMutationVariables,
@@ -37,22 +40,12 @@ const loginSchema = object({
 
 const LoginForm = () => {
   const authRedirect = useAuthRedirect();
-  const [login, loginResult] = useMutation<
-    LoginMutation,
-    LoginMutationVariables
-  >(LOGIN_MUTATION, {
-    async onCompleted({ login }) {
-      if (!login.userErrors) {
-        await fetch('/api/sessions/create', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(login.session?.id),
-        });
-        authRedirect();
-      }
-    },
-    onError: (error) => console.log(error.message),
-  });
+  const init = useInitializeSessionMutation();
+  const [loginError, setLoginError] = useState<Error | UserError>();
+  const { handleError } = useToast();
+  const [login] = useMutation<LoginMutation, LoginMutationVariables>(
+    LOGIN_MUTATION
+  );
 
   const form = useZodForm({
     schema: loginSchema,
@@ -68,6 +61,28 @@ const LoginForm = () => {
     </Link>
   );
 
+  const onSubmit = async ({
+    email,
+    password,
+  }: Zod.infer<typeof loginSchema>) => {
+    try {
+      const result = await login({
+        variables: { input: { email, password } },
+      });
+
+      if (result.data?.login?.userErrors) {
+        setLoginError(result.data?.login?.userErrors?.shift());
+        return;
+      }
+
+      await init(result.data?.login?.session?.id!);
+      authRedirect();
+    } catch (error) {
+      handleError(error);
+      console.error(error.message);
+    }
+  };
+
   return (
     <PrimaryLayout title="Login">
       <AuthCard
@@ -78,21 +93,8 @@ const LoginForm = () => {
           link: signUpLink,
         }}
       >
-        <Form
-          form={form}
-          onSubmit={({ email, password }) => {
-            login({
-              variables: { input: { email, password } },
-            });
-          }}
-          className="flex flex-col w-full"
-        >
-          <AuthError
-            title="Login failed."
-            error={
-              loginResult.error || loginResult.data?.login.userErrors?.shift()
-            }
-          />
+        <Form form={form} onSubmit={onSubmit} className="flex flex-col w-full">
+          <AuthError title="Login failed." error={loginError} />
           <Input
             label="Email"
             placeholder="Email"
@@ -109,7 +111,7 @@ const LoginForm = () => {
             {...form.register('password')}
           />
           <p className="font-semibold">Forgot your password?</p>
-          <Button type="submit">Login</Button>
+          <FormSubmitButton>Login</FormSubmitButton>
         </Form>
       </AuthCard>
     </PrimaryLayout>

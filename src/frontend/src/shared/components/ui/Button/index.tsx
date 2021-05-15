@@ -1,11 +1,11 @@
 import clsx from 'clsx';
 import ButtonOrLink, { Props as ButtonOrLinkProps } from '../ButtonOrLink';
 
-interface Props extends ButtonOrLinkProps {
+export interface ButtonProps extends ButtonOrLinkProps {
   fullWidth?: boolean;
 }
 
-const Button = ({ fullWidth = true, ...props }: Props) => {
+const Button = ({ fullWidth = true, ...props }: ButtonProps) => {
   return (
     <ButtonOrLink
       className={clsx(

@@ -1,16 +1,19 @@
+import { useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
-import { object, string } from 'zod';
+import Zod, { object, string } from 'zod';
 import {
-  Button,
+  FormSubmitButton,
   Link,
   Input,
   Form,
   useZodForm,
   PrimaryLayout,
+  useToast,
 } from '~/shared/components';
-import useAuthRedirect from '../../hooks/useAuthRedirect';
+import { useAuthRedirect, useInitializeSessionMutation } from '~/modules';
 import AuthError from '../AuthError';
 import AuthCard from '../AuthCard';
+import { UserError } from '~/__generated__/schema.generated';
 import {
   SignUpMutation,
   SignUpMutationVariables,
@@ -48,22 +51,12 @@ const signUpSchema = object({
 
 const SignUpForm = () => {
   const authRedirect = useAuthRedirect();
-  const [signup, signupResult] = useMutation<
-    SignUpMutation,
-    SignUpMutationVariables
-  >(SIGN_UP_MUTATION, {
-    async onCompleted({ signUp }) {
-      if (!signUp.userErrors) {
-        await fetch('/api/sessions/create', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(signUp.session?.id),
-        });
-        authRedirect();
-      }
-    },
-    onError: (error) => console.log(error.message),
-  });
+  const init = useInitializeSessionMutation();
+  const { handleError } = useToast();
+  const [signUpError, setSignUpError] = useState<Error | UserError>();
+  const [signup] = useMutation<SignUpMutation, SignUpMutationVariables>(
+    SIGN_UP_MUTATION
+  );
 
   const form = useZodForm({
     schema: signUpSchema,
@@ -79,6 +72,29 @@ const SignUpForm = () => {
     </Link>
   );
 
+  const onSubmit = async ({
+    name,
+    email,
+    password,
+  }: Zod.infer<typeof signUpSchema>) => {
+    try {
+      const result = await signup({
+        variables: { input: { name, email, password } },
+      });
+
+      if (result.data?.signUp?.userErrors) {
+        setSignUpError(result.data?.signUp?.userErrors?.shift());
+        return;
+      }
+      
+      await init(result.data?.signUp?.session?.id!);
+      authRedirect();
+    } catch (error) {
+      handleError(error);
+      console.error(error.message);
+    }
+  };
+
   return (
     <PrimaryLayout title="Sign Up">
       <AuthCard
@@ -88,22 +104,8 @@ const SignUpForm = () => {
           link: loginLink,
         }}
       >
-        <Form
-          form={form}
-          onSubmit={({ name, email, password }) => {
-            signup({
-              variables: { input: { name, email, password } },
-            });
-          }}
-          className="flex flex-col w-full"
-        >
-          <AuthError
-            title="Sign Up failed."
-            error={
-              signupResult.error ||
-              signupResult.data?.signUp.userErrors?.shift()
-            }
-          />
+        <Form form={form} onSubmit={onSubmit} className="flex flex-col w-full">
+          <AuthError title="Sign Up failed." error={signUpError} />
           <Input
             label="Name"
             autoComplete="name"
@@ -131,7 +133,7 @@ const SignUpForm = () => {
             type="password"
             {...form.register('confirmPassword')}
           />
-          <Button type="submit">Sign Up</Button>
+          <FormSubmitButton>Sign Up</FormSubmitButton>
         </Form>
       </AuthCard>
     </PrimaryLayout>

@@ -62,7 +62,7 @@ services:
   frontend:
     container_name: spout-frontend
     restart: unless-stopped
-    image: node:14
+    image: node:16
     build:
       context: src/frontend
       dockerfile: Dockerfile
@@ -72,6 +72,8 @@ services:
       - ./src/frontend:/srv/frontend:rw
       - /srv/frontend/node_modules
       - /srv/frontend/.next
+    env_file: 
+      - ./src/frontend/.env
     labels:
       - traefik.http.routers.frontend-http.rule=Host(`spout.localhost`)
       - traefik.http.routers.frontend-http.service=frontend
@@ -82,7 +84,7 @@ services:
   compiler:
     container_name: spout-compiler
     restart: unless-stopped
-    image: node:14
+    image: node:16
     volumes:
       - ./src/frontend:/srv/compiler:rw
     working_dir: /srv/compiler

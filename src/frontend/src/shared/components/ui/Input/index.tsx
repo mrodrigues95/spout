@@ -1,5 +1,5 @@
 import { ComponentProps, forwardRef } from 'react';
-import { FieldError } from '../Form';
+import { FieldError } from '../Form/Form';
 
 interface Props extends ComponentProps<'input'> {
   label: string;

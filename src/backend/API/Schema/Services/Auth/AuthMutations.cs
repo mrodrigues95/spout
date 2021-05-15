@@ -25,7 +25,6 @@ namespace API.Schema.Services.Auth {
             [Service] SignInManager<User> signInManager,
             CancellationToken cancellationToken) {
             if (await context.Users.AnyAsync(x => x.Email == input.Email || x.UserName == input.Email)) {
-                //throw new GraphQLException("Unable to create new user.");
                 return new AuthPayload(new UserError("Email already exists.", "EMAIL_ALREADY_EXISTS"));
             }
 

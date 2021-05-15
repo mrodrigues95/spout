@@ -1,2 +1,3 @@
 export * from './components';
-export { default as useAuthRedirect } from './hooks/useAuthRedirect';
+export { useAuthRedirect } from './hooks/useAuthRedirect';
+export { useInitializeSessionMutation } from './hooks/useInitializeSessionMutation';

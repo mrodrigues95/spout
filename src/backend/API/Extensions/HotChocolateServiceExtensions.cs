@@ -14,7 +14,7 @@ namespace API.Extensions {
 
             var gql = services.AddGraphQLServer();
             gql
-                //.AddAuthorization()
+                .AddAuthorization()
                 .AddFluentValidation()
                 .EnableRelaySupport()
                 .ModifyRequestOptions(opt => {

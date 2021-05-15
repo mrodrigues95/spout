@@ -1,7 +1,7 @@
 import { useApolloClient } from '@apollo/client';
 import { useRouter } from 'next/router';
 
-const useAuthRedirect = () => {
+export const useAuthRedirect = () => {
   const client = useApolloClient();
   const router = useRouter();
 
@@ -12,5 +12,3 @@ const useAuthRedirect = () => {
     router.push((router.query.redirect as string) ?? '/');
   };
 };
-
-export default useAuthRedirect;
