@@ -37,21 +37,16 @@ services:
   backend:
     container_name: spout-backend
     restart: unless-stopped
-    image: mcr.microsoft.com/dotnet/sdk:5.0
+    build:
+      context: src/backend
+      dockerfile: Dockerfile
     ports:
       - 5000:5000
       - 5001:5001
-    environment: 
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:5001;http://+:5000
-      - DOTNET_USE_POLLING_FILE_WATCHER=true
-      - DOTNET_RUNNING_IN_CONTAINER=true
     volumes:
       - ./src/backend:/srv/backend:rw
       - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
       - ${APPDATA}\.aspnet\https:/root/.aspnet/https/
-    working_dir: /srv/backend
-    command: bash -c "dotnet restore && dotnet watch --project API run --no-launch-profile"
     labels:
       - traefik.http.routers.backend-http.rule=Host(`spout.localhost`) && PathPrefix(`/graphql`)
       - traefik.http.routers.backend-http.service=backend
@@ -62,7 +57,6 @@ services:
   frontend:
     container_name: spout-frontend
     restart: unless-stopped
-    image: node:16
     build:
       context: src/frontend
       dockerfile: Dockerfile
@@ -82,7 +76,7 @@ services:
       - backend
   
   compiler:
-    container_name: spout-compiler
+    container_name: spout-gql-compiler
     restart: unless-stopped
     image: node:16
     volumes:

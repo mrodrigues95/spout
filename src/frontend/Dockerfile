@@ -1,16 +1,13 @@
-FROM node:16
+FROM node:16 as dev
 
 ENV PORT 3000
-ENV NODE_ENV development
 ENV TAILWIND_MODE watch
 
 WORKDIR /srv/frontend
 
-COPY package.json /srv/frontend/
-COPY yarn.lock /srv/frontend/
-RUN yarn install
-
-COPY . .
+COPY package.json ./
+COPY yarn.lock ./
+RUN yarn
 
 EXPOSE ${PORT}
 CMD [ "yarn", "dev" ]
