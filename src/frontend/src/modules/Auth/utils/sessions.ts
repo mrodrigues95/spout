@@ -2,14 +2,14 @@ import { gql, ApolloClient } from '@apollo/client';
 import { IncomingMessage } from 'http';
 import { GetServerSidePropsContext } from 'next';
 import { applySession, SessionOptions } from 'next-iron-session';
-import { createApolloClient } from './apollo';
+import { createApolloClient } from '../../../shared/utils/apollo';
 import { Session } from '~/__generated__/schema.generated';
 import {
   SessionQuery,
   SessionQueryVariables,
   RefreshSessionMutation,
   RefreshSessionMutationVariables,
-} from './__generated__/sessions.generated';
+} from '../../../shared/utils/__generated__/sessions.generated';
 
 const IRON_SESSION_ID_KEY = 'sessionId';
 

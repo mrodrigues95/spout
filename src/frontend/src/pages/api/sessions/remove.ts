@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { applySession } from 'next-iron-session';
-import { removeClientSession, sessionOptions } from '~/shared/utils/sessions';
+import { removeClientSession, sessionOptions } from '~/modules';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   await applySession(req, res, sessionOptions);
