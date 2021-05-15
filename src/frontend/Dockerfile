@@ -2,6 +2,7 @@ FROM node:16 as dev
 
 ENV PORT 3000
 ENV TAILWIND_MODE watch
+ENV CHOKIDAR_USEPOLLING true
 
 WORKDIR /srv/frontend
 
