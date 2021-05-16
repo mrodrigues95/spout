@@ -3,6 +3,7 @@ import { DefaultSeo } from 'next-seo';
 import { ApolloProvider } from '@apollo/client';
 import { Toaster } from 'react-hot-toast';
 import { useApollo } from '~/shared/utils/apollo';
+import { NProgress } from '~/shared/components';
 import '~/css/styles.css';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
@@ -13,6 +14,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <DefaultSeo defaultTitle="Spout" titleTemplate="%s | Spout" />
       <Component {...pageProps} />
       <Toaster position="bottom-right" />
+      <NProgress />
     </ApolloProvider>
   );
 };

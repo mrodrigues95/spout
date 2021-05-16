@@ -1,16 +1,29 @@
 import clsx from 'clsx';
 import ButtonOrLink, { Props as ButtonOrLinkProps } from '../ButtonOrLink';
+import { buttonOrLinkVariants as variants } from '../utils/variants';
 
-export interface ButtonProps extends ButtonOrLinkProps {
-  fullWidth?: boolean;
-}
+const Button = ({
+  ignoreStyles = false,
+  variant = 'default',
+  active = false,
+  fullWidth = false,
+  rounded = '2xl',
+  className,
+  ...props
+}: ButtonOrLinkProps) => {
+  const styles = variants[variant] || variants.default;
 
-const Button = ({ fullWidth = true, ...props }: ButtonProps) => {
+  if (ignoreStyles) return <ButtonOrLink className={className} {...props} />;
+
   return (
     <ButtonOrLink
+      type="button"
       className={clsx(
-        'flex items-center justify-center p-3 font-semibold tracking-wider border-none rounded-md bg-black text-white transition duration-200 ease-in-out disabled:opacity-60 disabled:pointer-events-none focus:outline-none focus:bg-opacity-80 hover:bg-opacity-80 active:bg-gray-800',
+        styles.base,
+        active ? styles.active : styles.inactive,
+        `rounded-${rounded}`,
         fullWidth && 'w-full',
+        className
       )}
       {...props}
     />

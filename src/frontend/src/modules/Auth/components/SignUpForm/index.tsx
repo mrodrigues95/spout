@@ -65,6 +65,7 @@ const SignUpForm = () => {
   const loginLink = (
     <Link
       href="/auth/login"
+      ignoreStyles
       className="text-green-600 font-semibold focus:outline-none focus:underline hover:underline"
       preserveRedirect
     >
@@ -86,7 +87,7 @@ const SignUpForm = () => {
         setSignUpError(result.data?.signUp?.userErrors?.shift());
         return;
       }
-      
+
       await init(result.data?.signUp?.session?.id!);
       authRedirect();
     } catch (error) {
@@ -96,7 +97,7 @@ const SignUpForm = () => {
   };
 
   return (
-    <PrimaryLayout title="Sign Up">
+    <PrimaryLayout title="Sign Up" unauthenticated>
       <AuthCard
         title="Create an account"
         action={{

@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next';
-import { authenticatedRoute } from '~/modules/Auth/utils/redirects';
+import { authenticatedRoute } from '~/modules';
 
 export const getServerSideProps: GetServerSideProps = authenticatedRoute;
 

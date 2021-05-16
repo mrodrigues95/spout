@@ -1,7 +1,7 @@
 overwrite: true
-# TODO: Fetch schema from api once auth issues are resolved in HotChocolate.
+# TODO: Figure out auth stuff so we can fetch the schema directly from the API.
 # http://backend:5000/graphql/
-schema: src/graphql/schema.graphql
+schema: schema.graphql
 documents: 'src/**/!(*.d).{ts,tsx}'
 watchConfig:
   usePolling: true

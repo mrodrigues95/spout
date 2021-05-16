@@ -12,11 +12,6 @@ import {
 } from '../../../shared/utils/__generated__/sessions.generated';
 
 const IRON_SESSION_ID_KEY = 'sessionId';
-
-interface ReqWithSession extends IncomingMessage {
-  session: import('next-iron-session').Session;
-}
-
 export const sessionOptions: SessionOptions = {
   password: [
     {
@@ -32,6 +27,10 @@ export const sessionOptions: SessionOptions = {
     maxAge: 604800 - 60, // 7 days - 60 seconds to make up for clock difference between the server and client.
   },
 };
+
+interface ReqWithSession extends IncomingMessage {
+  session: import('next-iron-session').Session;
+}
 
 const create = async (req: ReqWithSession, sessionId: string) => {
   req.session.set(IRON_SESSION_ID_KEY, sessionId);
@@ -146,7 +145,7 @@ const refreshClientSession = async (
       `,
     });
 
-    return data.data?.refreshSession.session || null;
+    return data.data?.refreshSession?.session || null;
   } catch (error) {
     console.log(error);
     return null;

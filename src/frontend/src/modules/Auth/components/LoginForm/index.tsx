@@ -54,6 +54,7 @@ const LoginForm = () => {
   const signUpLink = (
     <Link
       href="/auth/signup"
+      ignoreStyles
       className="text-green-600 font-semibold focus:outline-none focus:underline hover:underline"
       preserveRedirect
     >
@@ -84,7 +85,7 @@ const LoginForm = () => {
   };
 
   return (
-    <PrimaryLayout title="Login">
+    <PrimaryLayout title="Login" unauthenticated>
       <AuthCard
         title="Welcome back!"
         subtitle="Use the form below to login"

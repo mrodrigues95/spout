@@ -12,16 +12,12 @@ form {
   margin-block-end: 0;
 }
 
-input:-webkit-autofill {
-	-webkit-text-fill-color: theme('colors.gray.800') !important;
-}
-
 #nprogress {
   @apply pointer-events-none z-50;
 }
 
 #nprogress .bar {
-  @apply bg-green-500 fixed z-50 top-0 left-0 w-full h-0.5;
+  @apply bg-green-600 fixed z-50 top-0 left-0 w-full h-0.5;
 }
 
 .placeholder-semibold::-webkit-input-placeholder {
