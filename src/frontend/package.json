@@ -23,9 +23,12 @@
   },
   "dependencies": {
     "@apollo/client": "^3.3.16",
+    "@headlessui/react": "^1.2.0",
     "@hookform/resolvers": "^2.4.0",
     "@next/bundle-analyzer": "^10.2.0",
+    "@popperjs/core": "^2.9.2",
     "clsx": "^1.1.1",
+    "framer-motion": "^4.1.17",
     "graphql": "^15.5.0",
     "next": "^10.2.0",
     "next-iron-session": "^4.1.13",

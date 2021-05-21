@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { NotificationsIcon, HamburgerMenuIcon } from '~/shared/assets';
 import Button from '../Button';
 import Search from '../Search';
+import Tooltip from '../Tooltip';
 
 interface Props {
   title?: string;
@@ -26,12 +27,14 @@ const ContainerHeader = ({ title, children }: Props) => {
         )}
         <div className="flex justify-end items-center w-3/5">
           <Search placeholder="Search" />
-          <Button
-            className="p-2 sm:p-3 sm:ml-3"
-            aria-label="View notifications"
-          >
-            <NotificationsIcon className="w-4 h-4 sm:w-6 sm:h-6" />
-          </Button>
+          <Tooltip label="Notifications">
+            <Button
+              className="p-2 sm:p-3 sm:ml-3"
+              aria-label="View notifications"
+            >
+              <NotificationsIcon className="w-4 h-4 sm:w-6 sm:h-6" />
+            </Button>
+          </Tooltip>
         </div>
       </div>
       <div className="flex items-center justify-between">{children}</div>

@@ -9,5 +9,6 @@ export { default as Container } from './Container';
 export { default as Search } from './Search';
 export { default as Badge, BadgeVariants } from './Badge';
 export { default as TextArea } from './TextArea';
+export { default as Tooltip } from './Tooltip';
 export * from './Form';
 export * from './Messages';

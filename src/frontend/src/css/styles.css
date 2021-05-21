@@ -4,6 +4,18 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 
+@layer utilities {
+  .placeholder-medium::placeholder {
+    font-weight: 500;
+  }
+  .placeholder-semibold::placeholder {
+    font-weight: 600;
+  }
+  .placeholder-bold::placeholder {
+    font-weight: 700;
+  }
+}
+
 body {
   @apply antialiased font-sans;
 }
@@ -18,14 +30,4 @@ form {
 
 #nprogress .bar {
   @apply bg-green-600 fixed z-50 top-0 left-0 w-full h-0.5;
-}
-
-.placeholder-semibold::-webkit-input-placeholder {
-  font-weight: 500;
-}
-.placeholder-semibold::-moz-placeholder {
-  font-weight: 500;
-}
-.placeholder-semibold::-ms-input-placeholder {
-  font-weight: 500;
 }
