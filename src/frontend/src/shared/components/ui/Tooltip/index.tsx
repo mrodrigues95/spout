@@ -4,13 +4,12 @@ import {
   isValidElement,
   ReactElement,
   ReactNode,
-  useEffect,
   useState,
 } from 'react';
 import { Portal } from '@headlessui/react';
 import { Placement } from '@popperjs/core';
+import { usePopper } from 'react-popper';
 import { AnimatePresence, motion, Variants } from 'framer-motion';
-import usePopper from '~/shared/hooks/usePopper';
 
 interface Props {
   label: string;
@@ -21,7 +20,9 @@ interface Props {
 
 const Tooltip = ({ label, children, placement, delay }: Props) => {
   const [isShowing, setIsShowing] = useState(false);
-  const [trigger, container] = usePopper({
+  const [referenceElement, setReferenceElement] = useState<Element | null>(null);
+  const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
+  const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: placement || 'top',
     strategy: 'fixed',
     modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
@@ -43,7 +44,7 @@ const Tooltip = ({ label, children, placement, delay }: Props) => {
     onMouseLeave: hideTooltip,
     onFocus: showTooltip,
     onBlur: hideTooltip,
-    ref: trigger,
+    ref: setReferenceElement,
     'aria-describedby': isShowing ? 'spout-tooltip' : undefined,
   };
 
@@ -58,15 +59,19 @@ const Tooltip = ({ label, children, placement, delay }: Props) => {
 
   const variants: Variants = {
     exit: {
+      scale: 0.85,
       opacity: 0,
       transition: {
         opacity: { duration: 0.15, easings: 'easeInOut' },
+        scale: { duration: 0.2, easings: 'easeInOut' },
       },
     },
     enter: {
+      scale: 1,
       opacity: 1,
       transition: {
-        opacity: { easings: 'easeOut', duration: 0.15 },
+        opacity: { easings: 'easeOut', duration: 0.2 },
+        scale: { duration: 0.2, ease: [0.175, 0.885, 0.4, 1.1] },
       },
     },
   };
@@ -77,18 +82,23 @@ const Tooltip = ({ label, children, placement, delay }: Props) => {
       <AnimatePresence>
         {isShowing && (
           <Portal>
-            <motion.div
-              id="spout-tooltip"
-              role="tooltip"
-              className="flex items-center justify-center px-2 py-1 tracking-wider font-semibold whitespace-nowrap bg-black text-white text-xs rounded-md"
-              ref={container}
-              variants={variants}
-              initial="exit"
-              animate="enter"
-              exit="exit"
+            <div
+              ref={setPopperElement}
+              style={styles.popper}
+              {...attributes.popper}
             >
-              {label}
-            </motion.div>
+              <motion.p
+                id="spout-tooltip"
+                role="tooltip"
+                className="flex items-center justify-center px-2 py-1 tracking-wider font-semibold whitespace-nowrap bg-black text-white text-xs rounded-md"
+                variants={variants}
+                initial="exit"
+                animate="enter"
+                exit="exit"
+              >
+                {label}
+              </motion.p>
+            </div>
           </Portal>
         )}
       </AnimatePresence>

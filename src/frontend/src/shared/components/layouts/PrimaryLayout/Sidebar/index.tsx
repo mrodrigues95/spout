@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
+import { cloneElement, ComponentProps, ReactElement, ReactNode } from 'react';
+import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import { VerticalNav } from '~/shared/components';
+import { Link, Button } from '~/shared/components';
 import {
   HomeIcon,
   MessagesIcon,
@@ -10,6 +11,7 @@ import {
 import ProfileInfo from './ProfileInfo';
 import ActivityFeed from './ActivityFeed';
 import Logout from './Logout';
+import ClassroomsMenu from '../ClassroomMenu';
 
 const SidebarContainer = ({
   className,
@@ -30,6 +32,60 @@ const SidebarContainer = ({
   );
 };
 
+interface ClassroomMenuOptions {
+  pathname: string;
+}
+
+interface SidebarItemProps {
+  icon: ReactElement;
+  label: string;
+  href?: string;
+  isClassroomMenu?: boolean;
+  classroomMenuOptions?: ClassroomMenuOptions;
+}
+
+const SidebarItem = ({
+  icon,
+  label,
+  href,
+  isClassroomMenu = false,
+  classroomMenuOptions,
+}: SidebarItemProps) => {
+  if (isClassroomMenu && !classroomMenuOptions) {
+    throw new Error('Bad implementation!');
+  }
+
+  const router = useRouter();
+  const selected = isClassroomMenu
+    ? router.pathname.includes(classroomMenuOptions!.pathname)
+    : router.pathname === href;
+
+  const commonProps = {
+    active: selected,
+    fullWidth: true,
+    'aria-labelledby': 'spout-sidebar-item-label',
+  };
+
+  const children = (
+    <>
+      <p className="mx-auto xl:mx-0">{icon}</p>
+      <p id="spout-sidebar-item-label" className="inline-flex flex-1">
+        {label}
+      </p>
+    </>
+  );
+
+  if (isClassroomMenu) {
+    return <ClassroomsMenu menuButtonProps={{ ...commonProps, children }} />;
+  }
+
+  return (
+    <Link href={href} {...commonProps}>
+      {children}
+    </Link>
+  );
+};
+
 const Sidebar = () => {
   return (
     <aside className="md:mr-4 lg:mr-0">
@@ -41,28 +97,31 @@ const Sidebar = () => {
           <ProfileInfo />
         </SidebarContainer>
         <SidebarContainer className="border lg:p-5">
-          <VerticalNav>
-            <VerticalNav.Item
+          <nav className="flex flex-col w-full space-y-3">
+            <SidebarItem
               href="/"
               icon={<HomeIcon className="mx-auto xl:mr-3 xl:ml-0" />}
               label="Home"
             />
-            <VerticalNav.Item
-              href="/classrooms"
+            <SidebarItem
               icon={<ClassroomIcon className="mx-auto xl:mr-3 xl:ml-0" />}
               label="Classrooms"
+              isClassroomMenu
+              classroomMenuOptions={{
+                pathname: '/discussion',
+              }}
             />
-            <VerticalNav.Item
+            <SidebarItem
               href="/messages"
               icon={<MessagesIcon className="mx-auto xl:mr-3 xl:ml-0" />}
               label="Messages"
             />
-            <VerticalNav.Item
+            <SidebarItem
               href="/calendar"
               icon={<CalendarIcon className="mx-auto xl:mr-3 xl:ml-0" />}
               label="Calendar"
             />
-          </VerticalNav>
+          </nav>
         </SidebarContainer>
         <SidebarContainer className="hidden lg:p-5 xl:block">
           <ActivityFeed />

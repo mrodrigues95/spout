@@ -4,7 +4,6 @@ export { default as Input } from './Input';
 export { default as useToast } from './Toast';
 export { default as NProgress } from './NProgress';
 export { default as Avatar } from './Avatar';
-export { default as VerticalNav } from './VerticalNav';
 export { default as Container } from './Container';
 export { default as Search } from './Search';
 export { default as Badge, BadgeVariants } from './Badge';
