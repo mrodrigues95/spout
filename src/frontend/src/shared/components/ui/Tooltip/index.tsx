@@ -8,8 +8,8 @@ import {
 } from 'react';
 import { Portal } from '@headlessui/react';
 import { Placement } from '@popperjs/core';
-import { usePopper } from 'react-popper';
 import { AnimatePresence, motion, Variants } from 'framer-motion';
+import usePopper from '~/shared/hooks/usePopper';
 
 interface Props {
   label: string;
@@ -20,9 +20,7 @@ interface Props {
 
 const Tooltip = ({ label, children, placement, delay }: Props) => {
   const [isShowing, setIsShowing] = useState(false);
-  const [referenceElement, setReferenceElement] = useState<Element | null>(null);
-  const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
-  const { styles, attributes } = usePopper(referenceElement, popperElement, {
+  const [trigger, container] = usePopper({
     placement: placement || 'top',
     strategy: 'fixed',
     modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
@@ -44,7 +42,7 @@ const Tooltip = ({ label, children, placement, delay }: Props) => {
     onMouseLeave: hideTooltip,
     onFocus: showTooltip,
     onBlur: hideTooltip,
-    ref: setReferenceElement,
+    ref: trigger,
     'aria-describedby': isShowing ? 'spout-tooltip' : undefined,
   };
 
@@ -82,11 +80,7 @@ const Tooltip = ({ label, children, placement, delay }: Props) => {
       <AnimatePresence>
         {isShowing && (
           <Portal>
-            <div
-              ref={setPopperElement}
-              style={styles.popper}
-              {...attributes.popper}
-            >
+            <div ref={container}>
               <motion.p
                 id="spout-tooltip"
                 role="tooltip"

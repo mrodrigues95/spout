@@ -19,6 +19,7 @@ namespace API.Data.Configurations {
 
             builder.HasMany(u => u.Sessions)
                 .WithOne(s => s.User!)
+                .HasForeignKey(s => s.UserId)
                 .IsRequired();
         }
     }

@@ -23,7 +23,9 @@ const Button = forwardRef<
   ) => {
     const styles = variants[variant] || variants.default;
 
-    if (ignoreStyles) return <ButtonOrLink className={className} {...props} />;
+    if (ignoreStyles) {
+      return <ButtonOrLink type="button" className={className} {...props} />;
+    }
 
     return (
       <ButtonOrLink

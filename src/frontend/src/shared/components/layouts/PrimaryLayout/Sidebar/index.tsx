@@ -1,4 +1,4 @@
-import { cloneElement, ComponentProps, ReactElement, ReactNode } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { Link, Button } from '~/shared/components';
@@ -11,7 +11,7 @@ import {
 import ProfileInfo from './ProfileInfo';
 import ActivityFeed from './ActivityFeed';
 import Logout from './Logout';
-import ClassroomsMenu from '../ClassroomMenu';
+import ClassroomMenu from '../ClassroomMenu';
 
 const SidebarContainer = ({
   className,
@@ -76,7 +76,14 @@ const SidebarItem = ({
   );
 
   if (isClassroomMenu) {
-    return <ClassroomsMenu menuButtonProps={{ ...commonProps, children }} />;
+    return (
+      <ClassroomMenu
+        menuButtonProps={{
+          ...commonProps,
+          children,
+        }}
+      />
+    );
   }
 
   return (
