@@ -37,7 +37,7 @@ type MenuItems = any[];
 const DiscussionMenuItems = ({ discussions }: { discussions: MenuItems }) => {
   return (
     <>
-      <div className="max-h-52 p-1 overflow-y-scroll">
+      <div className="max-h-52 p-1 overflow-y-auto">
         {discussions.map((discussion: any) => (
           <ClassroomMenuItem
             key={discussion.name}
@@ -58,7 +58,7 @@ const DiscussionMenuItems = ({ discussions }: { discussions: MenuItems }) => {
       </ClassroomMenuItem>
       <ClassroomMenuItem
         type="button"
-        variant="primary"
+        variant="info"
         onClick={() => console.log('Create a discussion clicked!')}
       >
         Create a discussion
@@ -100,7 +100,7 @@ const ClassroomMenuItems = ({ classrooms }: { classrooms: MenuItems }) => {
       <ClassroomMenuSeperator />
       <ClassroomMenuItem
         type="button"
-        variant="primary"
+        variant="info"
         onClick={() => console.log('Create a classroom clicked!')}
       >
         Create a classroom
@@ -160,7 +160,7 @@ interface Props {
 }
 
 // TODO: Ideally, we could extract alot of this logic into our own
-// `Popover` component for re-use.
+// `Popover` component for reuse.
 const ClassroomMenu = ({ menuButtonProps }: Props) => {
   const {
     activeMenu,
@@ -201,7 +201,7 @@ const ClassroomMenu = ({ menuButtonProps }: Props) => {
                   <Popover.Panel
                     as="section"
                     static
-                    className="w-72 p-2 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden"
+                    className="w-80 p-2 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden"
                     aria-labelledby="spout-popover-header"
                   >
                     {activeMenu === ActiveMenu.CLASSROOMS ? (
@@ -216,7 +216,7 @@ const ClassroomMenu = ({ menuButtonProps }: Props) => {
                         enterTo="translate-x-0"
                       >
                         <>
-                          <ClassroomMenuHeader>Discussions</ClassroomMenuHeader>
+                          <ClassroomMenuHeader>{selectedClassroom.name} / Discussions</ClassroomMenuHeader>
                           <DiscussionMenuItems
                             discussions={selectedClassroom.discussions}
                           />

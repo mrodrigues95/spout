@@ -68,8 +68,8 @@ const SidebarItem = ({
 
   const children = (
     <>
-      <p className="mx-auto xl:mx-0">{icon}</p>
-      <p id="spout-sidebar-item-label" className="inline-flex flex-1">
+      <p className="mr-0 lg:mr-3">{icon}</p>
+      <p id="spout-sidebar-item-label" className="hidden lg:inline-flex flex-1">
         {label}
       </p>
     </>
@@ -107,11 +107,11 @@ const Sidebar = () => {
           <nav className="flex flex-col w-full space-y-3">
             <SidebarItem
               href="/"
-              icon={<HomeIcon className="mx-auto xl:mr-3 xl:ml-0" />}
+              icon={<HomeIcon />}
               label="Home"
             />
             <SidebarItem
-              icon={<ClassroomIcon className="mx-auto xl:mr-3 xl:ml-0" />}
+              icon={<ClassroomIcon />}
               label="Classrooms"
               isClassroomMenu
               classroomMenuOptions={{
@@ -120,12 +120,12 @@ const Sidebar = () => {
             />
             <SidebarItem
               href="/messages"
-              icon={<MessagesIcon className="mx-auto xl:mr-3 xl:ml-0" />}
+              icon={<MessagesIcon />}
               label="Messages"
             />
             <SidebarItem
               href="/calendar"
-              icon={<CalendarIcon className="mx-auto xl:mr-3 xl:ml-0" />}
+              icon={<CalendarIcon />}
               label="Calendar"
             />
           </nav>
