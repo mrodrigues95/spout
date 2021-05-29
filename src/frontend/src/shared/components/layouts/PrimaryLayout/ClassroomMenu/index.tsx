@@ -1,6 +1,7 @@
 import { Fragment, ReactNode, useContext } from 'react';
 import { Popover, Transition, Portal } from '@headlessui/react';
-import { Button, Link } from '~/shared/components';
+import clsx from 'clsx';
+import { Button, ButtonOrLink, ButtonOrLinkProps } from '~/shared/components';
 import mockClassrooms from './utils/mockClassrooms';
 import usePopper from '~/shared/hooks/usePopper';
 import ClassroomMenuProvider, {
@@ -8,24 +9,68 @@ import ClassroomMenuProvider, {
   ActiveMenu,
 } from './ClassroomMenuProvider';
 
-const commonStyles =
-  'flex items-center w-full rounded-md p-2 font-semibold tracking-wide text-sm text-gray-700 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50 focus:bg-orange-400 focus:text-white hover:bg-orange-400 hover:text-white';
+const menuVariants = {
+  default: {
+    base: 'text-black',
+    active:
+      'focus-visible:ring-orange-500 focus-visible:ring-opacity-50 focus:bg-orange-400 focus:text-white hover:bg-orange-400 hover:text-white',
+  },
+  primary: {
+    base: 'text-green-700',
+    active:
+      'focus-visible:ring-green-600 focus-visible:ring-opacity-50 focus:bg-green-700 focus:text-white hover:bg-green-700 hover:text-white',
+  },
+  info: {
+    base: 'text-indigo-700',
+    active:
+      'focus-visible:ring-indigo-600 focus-visible:ring-opacity-50 focus:bg-indigo-700 focus:text-white hover:bg-indigo-700 hover:text-white',
+  },
+  danger: {
+    base: 'text-red-700',
+    active:
+      'focus-visible:ring-red-600 focus-visible:ring-opacity-50 focus:bg-red-700 focus:text-white hover:bg-red-700 hover:text-white',
+  },
+};
 
 type MenuItems = any[];
 
 const DiscussionMenuItems = ({ discussions }: { discussions: MenuItems }) => {
   return (
     <>
-      {discussions.map((discussion: any) => (
-        <Link
-          key={discussion.name}
-          href={`/${discussion.id}`}
-          className={commonStyles}
-          ignoreStyles
-        >
-          {discussion.name}
-        </Link>
-      ))}
+      <div className="max-h-52 p-1 overflow-y-scroll">
+        {discussions.map((discussion: any) => (
+          <ClassroomMenuItem
+            key={discussion.name}
+            href={`/${discussion.id}`}
+            variant="default"
+          >
+            {discussion.name}
+          </ClassroomMenuItem>
+        ))}
+      </div>
+      <ClassroomMenuSeperator />
+      <ClassroomMenuItem
+        type="button"
+        variant="info"
+        onClick={() => console.log('Invite students clicked!')}
+      >
+        Invite students
+      </ClassroomMenuItem>
+      <ClassroomMenuItem
+        type="button"
+        variant="primary"
+        onClick={() => console.log('Create a discussion clicked!')}
+      >
+        Create a discussion
+      </ClassroomMenuItem>
+      <ClassroomMenuSeperator />
+      <ClassroomMenuItem
+        type="button"
+        variant="danger"
+        onClick={() => console.log('Delete classroom clicked!')}
+      >
+        Delete classroom
+      </ClassroomMenuItem>
     </>
   );
 };
@@ -37,21 +82,69 @@ const ClassroomMenuItems = ({ classrooms }: { classrooms: MenuItems }) => {
 
   return (
     <>
-      {classrooms.map((classroom: any) => (
-        <Button
-          key={classroom.name}
-          type="button"
-          className={commonStyles}
-          ignoreStyles
-          onClick={() => {
-            setActiveMenu(ActiveMenu.DISCUSSIONS);
-            setSelectedClassroom(classroom);
-          }}
-        >
-          {classroom.name}
-        </Button>
-      ))}
+      <div className="max-h-52 p-1 overflow-y-auto">
+        {classrooms.map((classroom: any) => (
+          <ClassroomMenuItem
+            key={classroom.name}
+            type="button"
+            variant="default"
+            onClick={() => {
+              setActiveMenu(ActiveMenu.DISCUSSIONS);
+              setSelectedClassroom(classroom);
+            }}
+          >
+            {classroom.name}
+          </ClassroomMenuItem>
+        ))}
+      </div>
+      <ClassroomMenuSeperator />
+      <ClassroomMenuItem
+        type="button"
+        variant="primary"
+        onClick={() => console.log('Create a classroom clicked!')}
+      >
+        Create a classroom
+      </ClassroomMenuItem>
     </>
+  );
+};
+
+const ClassroomMenuSeperator = () => {
+  return (
+    <div className="p-1" aria-hidden="true">
+      <div className="w-full border border-gray-100"></div>
+    </div>
+  );
+};
+
+interface ClassroomMenuItemProps extends Omit<ButtonOrLinkProps, 'variant'> {
+  variant: keyof typeof menuVariants;
+}
+
+const ClassroomMenuItem = ({ variant, ...props }: ClassroomMenuItemProps) => {
+  const styles = menuVariants[variant];
+
+  const Item = ButtonOrLink;
+  return (
+    <Item
+      className={clsx(
+        'block w-full rounded-md p-2 text-left font-semibold tracking-wide text-sm truncate focus:outline-none focus-visible:ring',
+        styles.base,
+        styles.active
+      )}
+      {...props}
+    />
+  );
+};
+
+const ClassroomMenuHeader = ({ children }: { children: ReactNode }) => {
+  return (
+    <p
+      id="spout-popover-header"
+      className="p-2 uppercase text-gray-500 font-bold text-xs tracking-wide truncate"
+    >
+      {children}
+    </p>
   );
 };
 
@@ -66,7 +159,8 @@ interface Props {
   menuButtonProps: MenuButtonProps;
 }
 
-// TODO: Add react-focus-lock.
+// TODO: Ideally, we could extract alot of this logic into our own
+// `Popover` component for re-use.
 const ClassroomMenu = ({ menuButtonProps }: Props) => {
   const {
     activeMenu,
@@ -105,20 +199,28 @@ const ClassroomMenu = ({ menuButtonProps }: Props) => {
                   beforeEnter={resetMenu}
                 >
                   <Popover.Panel
+                    as="section"
                     static
-                    className="w-64 mt-2 p-2 overflow-hidden bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
+                    className="w-72 p-2 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden"
+                    aria-labelledby="spout-popover-header"
                   >
                     {activeMenu === ActiveMenu.CLASSROOMS ? (
-                      <ClassroomMenuItems classrooms={mockClassrooms} />
+                      <>
+                        <ClassroomMenuHeader>Classrooms</ClassroomMenuHeader>
+                        <ClassroomMenuItems classrooms={mockClassrooms} />
+                      </>
                     ) : (
                       <Transition.Child
-                        enter="transform transition ease-in-out duration-100"
+                        enter="pointer-events-none transform transition ease-in-out duration-150"
                         enterFrom="translate-x-10"
                         enterTo="translate-x-0"
                       >
-                        <DiscussionMenuItems
-                          discussions={selectedClassroom.discussions}
-                        />
+                        <>
+                          <ClassroomMenuHeader>Discussions</ClassroomMenuHeader>
+                          <DiscussionMenuItems
+                            discussions={selectedClassroom.discussions}
+                          />
+                        </>
                       </Transition.Child>
                     )}
                   </Popover.Panel>
