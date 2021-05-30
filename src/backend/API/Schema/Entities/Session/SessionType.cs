@@ -24,8 +24,7 @@ namespace API.Schema.Entities.Session {
                 Entity.Session session,
                 UserByIdDataLoader userById,
                 CancellationToken cancellationToken) {
-                if (session.UserId is null) return null;
-                return await userById.LoadAsync(session.UserId.Value, cancellationToken);
+                return await userById.LoadAsync(session.UserId, cancellationToken);
             }
         }
     }

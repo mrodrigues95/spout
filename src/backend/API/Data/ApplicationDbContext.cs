@@ -12,6 +12,9 @@ namespace API.Data {
         public DbSet<Session> Sessions { get; set; } = default!;
         public DbSet<Classroom> Classrooms { get; set; } = default!;
         public DbSet<UserClassroom> UserClassrooms { get; set; } = default!;
+        public DbSet<UserDiscussion> UserDiscussions { get; set; } = default!;
+        public DbSet<Discussion> Discussions { get; set; } = default!;
+        public DbSet<Message> Messages { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);

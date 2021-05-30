@@ -13,6 +13,8 @@ namespace API.Data.Configurations {
 
             builder.Property(s => s.UserId).IsRequired();
 
+            builder.HasIndex(s => s.UserId);
+
             builder.HasOne(s => s.User)
                 .WithMany(u => u!.Sessions)
                 .HasForeignKey(s => s.UserId)

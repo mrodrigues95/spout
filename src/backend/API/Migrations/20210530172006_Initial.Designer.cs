@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210505183523_Initial")]
+    [Migration("20210530172006_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,7 +33,7 @@ namespace API.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<int?>("CreatedById")
+                    b.Property<int>("CreatedById")
                         .HasColumnType("integer")
                         .HasColumnName("created_by_id");
 
@@ -51,8 +51,7 @@ namespace API.Migrations
                         .HasColumnType("character varying(35)")
                         .HasColumnName("name");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .IsRequired()
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("updated_at");
 
@@ -63,6 +62,94 @@ namespace API.Migrations
                         .HasDatabaseName("ix_classrooms_created_by_id");
 
                     b.ToTable("classrooms");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.Discussion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("ClassroomId")
+                        .HasColumnType("integer")
+                        .HasColumnName("classroom_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("guid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(35)
+                        .HasColumnType("character varying(35)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_discussions");
+
+                    b.HasIndex("ClassroomId")
+                        .HasDatabaseName("ix_discussions_classroom_id");
+
+                    b.HasIndex("CreatedById", "ClassroomId")
+                        .HasDatabaseName("ix_discussions_created_by_id_classroom_id");
+
+                    b.ToTable("discussions");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("body");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id");
+
+                    b.Property<int>("DiscussionId")
+                        .HasColumnType("integer")
+                        .HasColumnName("discussion_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_messages");
+
+                    b.HasIndex("DiscussionId")
+                        .HasDatabaseName("ix_messages_discussion_id");
+
+                    b.HasIndex("CreatedById", "DiscussionId")
+                        .HasDatabaseName("ix_messages_created_by_id_discussion_id");
+
+                    b.ToTable("messages");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Session", b =>
@@ -80,13 +167,11 @@ namespace API.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("expires_at");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .IsRequired()
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("updated_at");
 
-                    b.Property<int?>("UserId")
-                        .IsRequired()
+                    b.Property<int>("UserId")
                         .HasColumnType("integer")
                         .HasColumnName("user_id");
 
@@ -116,8 +201,7 @@ namespace API.Migrations
                         .HasColumnType("text")
                         .HasColumnName("concurrency_stamp");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .IsRequired()
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("created_at");
 
@@ -179,8 +263,7 @@ namespace API.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("two_factor_enabled");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .IsRequired()
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("updated_at");
 
@@ -218,7 +301,32 @@ namespace API.Migrations
                     b.HasIndex("ClassroomId")
                         .HasDatabaseName("ix_user_classrooms_classroom_id");
 
+                    b.HasIndex("UserId", "ClassroomId")
+                        .HasDatabaseName("ix_user_classrooms_user_id_classroom_id");
+
                     b.ToTable("user_classrooms");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.UserDiscussion", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("DiscussionId")
+                        .HasColumnType("integer")
+                        .HasColumnName("discussion_id");
+
+                    b.HasKey("UserId", "DiscussionId")
+                        .HasName("pk_user_discussions");
+
+                    b.HasIndex("DiscussionId")
+                        .HasDatabaseName("ix_user_discussions_discussion_id");
+
+                    b.HasIndex("UserId", "DiscussionId")
+                        .HasDatabaseName("ix_user_discussions_user_id_discussion_id");
+
+                    b.ToTable("user_discussions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -391,9 +499,53 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
-                        .HasConstraintName("fk_classrooms_users_created_by_id");
+                        .HasConstraintName("fk_classrooms_users_created_by_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CreatedBy");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.Discussion", b =>
+                {
+                    b.HasOne("API.Data.Entities.Classroom", "Classroom")
+                        .WithMany("Discussions")
+                        .HasForeignKey("ClassroomId")
+                        .HasConstraintName("fk_discussions_classrooms_classroom_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Data.Entities.User", "CreatedBy")
+                        .WithMany("Discussions")
+                        .HasForeignKey("CreatedById")
+                        .HasConstraintName("fk_discussions_users_created_by_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Classroom");
+
+                    b.Navigation("CreatedBy");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.Message", b =>
+                {
+                    b.HasOne("API.Data.Entities.User", "CreatedBy")
+                        .WithMany("Messages")
+                        .HasForeignKey("CreatedById")
+                        .HasConstraintName("fk_messages_users_created_by_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Data.Entities.Discussion", "Discussion")
+                        .WithMany("Messages")
+                        .HasForeignKey("DiscussionId")
+                        .HasConstraintName("fk_messages_discussions_discussion_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Discussion");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Session", b =>
@@ -425,6 +577,27 @@ namespace API.Migrations
                         .IsRequired();
 
                     b.Navigation("Classroom");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.UserDiscussion", b =>
+                {
+                    b.HasOne("API.Data.Entities.Discussion", "Discussion")
+                        .WithMany("UserDiscussions")
+                        .HasForeignKey("DiscussionId")
+                        .HasConstraintName("fk_user_discussions_discussions_discussion_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Data.Entities.User", "User")
+                        .WithMany("UserDiscussions")
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("fk_user_discussions_users_user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Discussion");
 
                     b.Navigation("User");
                 });
@@ -488,14 +661,29 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Data.Entities.Classroom", b =>
                 {
+                    b.Navigation("Discussions");
+
                     b.Navigation("UserClassrooms");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.Discussion", b =>
+                {
+                    b.Navigation("Messages");
+
+                    b.Navigation("UserDiscussions");
                 });
 
             modelBuilder.Entity("API.Data.Entities.User", b =>
                 {
+                    b.Navigation("Discussions");
+
+                    b.Navigation("Messages");
+
                     b.Navigation("Sessions");
 
                     b.Navigation("UserClassrooms");
+
+                    b.Navigation("UserDiscussions");
                 });
 #pragma warning restore 612, 618
         }

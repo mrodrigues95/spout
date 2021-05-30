@@ -57,7 +57,7 @@ namespace API.Schema.Entities.User {
                 Guid[] sessionIds = await dbContext.Users
                     .Where(u => u.Id == user.Id)
                     .Include(u => u.Sessions)
-                    .SelectMany(u => u.Sessions.Select(us => us.Id))
+                    .SelectMany(u => u.Sessions.Select(s => s.Id))
                     .ToArrayAsync();
 
                 return await sessionById.LoadAsync(sessionIds, cancellationToken);

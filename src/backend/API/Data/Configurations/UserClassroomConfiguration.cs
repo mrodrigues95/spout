@@ -8,6 +8,8 @@ namespace API.Data.Configurations {
             // Many-to-many: User <--> Classroom
             builder.HasKey(uc => new { uc.UserId, uc.ClassroomId });
 
+            builder.HasIndex(uc => new { uc.UserId, uc.ClassroomId });
+
             builder.HasOne(uc => uc.User)
                 .WithMany(u => u!.UserClassrooms)
                 .HasForeignKey(uc => uc.UserId);

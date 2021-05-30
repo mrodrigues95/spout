@@ -1,4 +1,5 @@
 ﻿using API.Schema.Entities.Classroom;
+using API.Schema.Entities.Discussion;
 using API.Schema.Entities.Session;
 using API.Schema.Entities.User;
 using API.Schema.Services.Auth;
@@ -14,7 +15,7 @@ namespace API.Extensions {
 
             var gql = services.AddGraphQLServer();
             gql
-                .AddAuthorization()
+                //.AddAuthorization()
                 .AddFluentValidation()
                 .EnableRelaySupport()
                 .ModifyRequestOptions(opt => {
@@ -26,6 +27,7 @@ namespace API.Extensions {
                     .AddTypeExtension<UserQueries>()
                     .AddTypeExtension<SessionQueries>()
                     .AddTypeExtension<ClassroomQueries>()
+                    .AddTypeExtension<DiscussionQueries>()
                     .AddTypeExtension<AuthQueries>();
 
             gql
@@ -36,12 +38,14 @@ namespace API.Extensions {
             gql
                 .AddType<UserType>()
                 .AddType<SessionType>()
-                .AddType<ClassroomType>();
+                .AddType<ClassroomType>()
+                .AddType<DiscussionType>();
 
             gql
                 .AddDataLoader<UserByIdDataLoader>()
                 .AddDataLoader<SessionByIdDataLoader>()
-                .AddDataLoader<ClassroomByIdDataLoader>();
+                .AddDataLoader<ClassroomByIdDataLoader>()
+                .AddDataLoader<DiscussionByIdDataLoader>();
 
             return services;
         }

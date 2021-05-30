@@ -21,6 +21,11 @@ namespace API.Data.Configurations {
                 .WithOne(s => s.User!)
                 .HasForeignKey(s => s.UserId)
                 .IsRequired();
+
+            builder.HasMany(u => u.Discussions)
+                .WithOne(d => d.CreatedBy!)
+                .HasForeignKey(d => d.CreatedById)
+                .IsRequired();
         }
     }
 }

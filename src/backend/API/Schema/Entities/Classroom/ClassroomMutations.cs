@@ -14,6 +14,7 @@ namespace API.Schema.Entities.Classroom {
             CreateClassroomInput input,
             [ScopedService] ApplicationDbContext context,
             CancellationToken cancellationToken) {
+            // TODO: Fix this - it should also insert into UserClassroom.
             var classroom = new Entity.Classroom {
                 Name = input.Name,
             };
