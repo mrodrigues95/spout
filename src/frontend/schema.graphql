@@ -15,17 +15,13 @@ type AuthPayload {
   userErrors: [UserError!]
 }
 
-type AuthorizeDirective {
-  policy: String
-  roles: [String!]
-  apply: ApplyPolicy!
-}
-
 type Classroom implements Node {
   id: ID!
   users: [User]
+  discussions: [Discussion]
   guid: Uuid!
   name: String!
+  createdById: Int!
   createdBy: User!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -37,15 +33,39 @@ type CreateClassroomPayload {
   userErrors: [UserError!]
 }
 
+type Discussion implements Node {
+  id: ID!
+  createdBy: User
+  classroom: Classroom
+  guid: Uuid!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  classroomId: Int!
+  createdById: Int!
+  userDiscussions: [UserDiscussion!]!
+}
+
+type Message {
+  id: Int!
+  body: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  discussionId: Int!
+  discussion: Discussion!
+  createdById: Int!
+  createdBy: User!
+}
+
 type Mutation {
   createClassroom(input: CreateClassroomInput!): CreateClassroomPayload!
   signUp(input: SignUpInput!): AuthPayload!
   login(input: LoginInput!): AuthPayload!
-  logout(input: LogoutInput!): AuthPayload!
-  refreshSession: AuthPayload!
+  logout(input: LogoutInput!): AuthPayload! @authorize(apply: BEFORE_RESOLVER)
+  refreshSession: AuthPayload! @authorize(apply: BEFORE_RESOLVER)
 }
 
-type Query {
+type Query @authorize(apply: BEFORE_RESOLVER) @authorize(apply: BEFORE_RESOLVER) @authorize(apply: BEFORE_RESOLVER) @authorize(apply: BEFORE_RESOLVER) @authorize(apply: BEFORE_RESOLVER) {
   node(id: ID!): Node
   users: [User!]!
   userById(id: ID!): User!
@@ -54,6 +74,9 @@ type Query {
   classrooms: [Classroom!]!
   classroomById(id: ID!): Classroom!
   classroomsById(ids: [ID!]!): [Classroom!]!
+  discussions: [Discussion!]!
+  discussionById(id: ID!): Discussion!
+  discussionsById(ids: [ID!]!): [Discussion!]!
   me: User
 }
 
@@ -75,6 +98,8 @@ type User implements Node {
   email: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  userDiscussions: [UserDiscussion!]!
+  messages: [Message!]!
   userName: String
   normalizedUserName: String
   normalizedEmail: String
@@ -88,6 +113,13 @@ type User implements Node {
   lockoutEnd: DateTime
   lockoutEnabled: Boolean!
   accessFailedCount: Int!
+}
+
+type UserDiscussion {
+  discussionId: Int!
+  discussion: Discussion
+  userId: Int!
+  user: User
 }
 
 type UserError {
@@ -118,6 +150,8 @@ enum ApplyPolicy {
   BEFORE_RESOLVER
   AFTER_RESOLVER
 }
+
+directive @authorize("The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!] "Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field." apply: ApplyPolicy! = BEFORE_RESOLVER) repeatable on SCHEMA | OBJECT | FIELD_DEFINITION
 
 "The `@defer` directive may be provided for fragment spreads and inline fragments to inform the executor to delay the execution of the current fragment to indicate deprioritization of the current fragment. A query with `@defer` directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred is delivered in a subsequent response. `@include` and `@skip` take precedence over `@defer`."
 directive @defer("If this argument label has a value other than null, it will be passed on to the result of this defer directive. This label is intended to give client applications a way to identify to which fragment a deferred result belongs to." label: String "Deferred when true." if: Boolean) on FRAGMENT_SPREAD | INLINE_FRAGMENT

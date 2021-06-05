@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210530172006_Initial")]
+    [Migration("20210605145513_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -516,7 +516,7 @@ namespace API.Migrations
                         .IsRequired();
 
                     b.HasOne("API.Data.Entities.User", "CreatedBy")
-                        .WithMany("Discussions")
+                        .WithMany()
                         .HasForeignKey("CreatedById")
                         .HasConstraintName("fk_discussions_users_created_by_id")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -675,8 +675,6 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Data.Entities.User", b =>
                 {
-                    b.Navigation("Discussions");
-
                     b.Navigation("Messages");
 
                     b.Navigation("Sessions");

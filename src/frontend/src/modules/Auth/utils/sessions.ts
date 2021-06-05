@@ -118,7 +118,7 @@ const fetchClientSession = async (
 
     return data.data.sessionById;
   } catch (error) {
-    console.log(error);
+    console.log('Fetch client session: ', error);
     return null;
   }
 };
@@ -147,7 +147,7 @@ const refreshClientSession = async (
 
     return data.data?.refreshSession?.session || null;
   } catch (error) {
-    console.log(error);
+    console.log('Refresh client session: ', error);
     return null;
   }
 };

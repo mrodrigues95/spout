@@ -6,7 +6,8 @@ const EmojiHappyIcon = ({ ...props }: SVGProps<SVGSVGElement>) => (
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
-    role="presentation"
+    aria-hidden="true"
+    focusable="false"
     {...props}
   >
     <path

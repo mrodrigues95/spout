@@ -6,7 +6,8 @@ const ChevronIcon = ({ ...props }: SVGProps<SVGSVGElement>) => (
     stroke="currentColor"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
-    role="presentation"
+    aria-hidden="true"
+    focusable="false"
     {...props}
   >
     <path

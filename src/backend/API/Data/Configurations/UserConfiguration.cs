@@ -22,9 +22,9 @@ namespace API.Data.Configurations {
                 .HasForeignKey(s => s.UserId)
                 .IsRequired();
 
-            builder.HasMany(u => u.Discussions)
-                .WithOne(d => d.CreatedBy!)
-                .HasForeignKey(d => d.CreatedById)
+            builder.HasMany(u => u.Messages)
+                .WithOne(m => m.CreatedBy!)
+                .HasForeignKey(m => m.CreatedById)
                 .IsRequired();
         }
     }

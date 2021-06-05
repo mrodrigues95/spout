@@ -16,6 +16,7 @@ export type Scalars = {
 
 
 
+
 export enum ApplyPolicy {
   BeforeResolver = 'BEFORE_RESOLVER',
   AfterResolver = 'AFTER_RESOLVER'
@@ -29,19 +30,14 @@ export type AuthPayload = {
   userErrors?: Maybe<Array<UserError>>;
 };
 
-export type AuthorizeDirective = {
-  __typename?: 'AuthorizeDirective';
-  policy?: Maybe<Scalars['String']>;
-  roles?: Maybe<Array<Scalars['String']>>;
-  apply: ApplyPolicy;
-};
-
 export type Classroom = Node & {
   __typename?: 'Classroom';
   id: Scalars['ID'];
   users?: Maybe<Array<Maybe<User>>>;
+  discussions?: Maybe<Array<Maybe<Discussion>>>;
   guid: Scalars['Uuid'];
   name: Scalars['String'];
+  createdById: Scalars['Int'];
   createdBy: User;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
@@ -59,6 +55,20 @@ export type CreateClassroomPayload = {
 };
 
 
+export type Discussion = Node & {
+  __typename?: 'Discussion';
+  id: Scalars['ID'];
+  createdBy?: Maybe<User>;
+  classroom?: Maybe<Classroom>;
+  guid: Scalars['Uuid'];
+  name: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+  classroomId: Scalars['Int'];
+  createdById: Scalars['Int'];
+  userDiscussions: Array<UserDiscussion>;
+};
+
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -66,6 +76,18 @@ export type LoginInput = {
 
 export type LogoutInput = {
   sessionId: Scalars['ID'];
+};
+
+export type Message = {
+  __typename?: 'Message';
+  id: Scalars['Int'];
+  body: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+  discussionId: Scalars['Int'];
+  discussion: Discussion;
+  createdById: Scalars['Int'];
+  createdBy: User;
 };
 
 export type Mutation = {
@@ -112,6 +134,9 @@ export type Query = {
   classrooms: Array<Classroom>;
   classroomById: Classroom;
   classroomsById: Array<Classroom>;
+  discussions: Array<Discussion>;
+  discussionById: Discussion;
+  discussionsById: Array<Discussion>;
   me?: Maybe<User>;
 };
 
@@ -137,6 +162,16 @@ export type QueryClassroomByIdArgs = {
 
 
 export type QueryClassroomsByIdArgs = {
+  ids: Array<Scalars['ID']>;
+};
+
+
+export type QueryDiscussionByIdArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryDiscussionsByIdArgs = {
   ids: Array<Scalars['ID']>;
 };
 
@@ -166,6 +201,8 @@ export type User = Node & {
   email: Scalars['String'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  userDiscussions: Array<UserDiscussion>;
+  messages: Array<Message>;
   userName?: Maybe<Scalars['String']>;
   normalizedUserName?: Maybe<Scalars['String']>;
   normalizedEmail?: Maybe<Scalars['String']>;
@@ -179,6 +216,14 @@ export type User = Node & {
   lockoutEnd?: Maybe<Scalars['DateTime']>;
   lockoutEnabled: Scalars['Boolean'];
   accessFailedCount: Scalars['Int'];
+};
+
+export type UserDiscussion = {
+  __typename?: 'UserDiscussion';
+  discussionId: Scalars['Int'];
+  discussion?: Maybe<Discussion>;
+  userId: Scalars['Int'];
+  user?: Maybe<User>;
 };
 
 export type UserError = {

@@ -27,7 +27,7 @@ namespace API.Data.Configurations {
                 .IsRequired();
 
             builder.HasOne(d => d.CreatedBy)
-                .WithMany(u => u!.Discussions)
+                .WithMany()
                 .HasForeignKey(d => d.CreatedById)
                 .IsRequired();
 

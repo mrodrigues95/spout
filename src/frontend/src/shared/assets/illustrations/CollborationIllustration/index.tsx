@@ -7,7 +7,8 @@ const CollaborationIllustration = ({ ...props }: SVGProps<SVGSVGElement>) => {
       width={677.858}
       height={623.712}
       viewBox="0 0 677.858 623.712"
-      role="presentation"
+      aria-hidden="true"
+      focusable="false"
       {...props}
     >
       <path

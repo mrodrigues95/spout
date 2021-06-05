@@ -22,8 +22,7 @@ namespace API.Data.Entities {
         [Required]
         public User? CreatedBy { get; set; }
 
-
-        public ICollection<Message> Messages = new List<Message>();
         public ICollection<UserDiscussion> UserDiscussions { get; set; } = new List<UserDiscussion>();
+        public ICollection<Message> Messages = new List<Message>();
     }
 }

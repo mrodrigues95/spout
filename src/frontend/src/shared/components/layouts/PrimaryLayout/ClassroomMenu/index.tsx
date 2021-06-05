@@ -2,12 +2,13 @@ import { Fragment, ReactNode, useContext } from 'react';
 import { Popover, Transition, Portal } from '@headlessui/react';
 import clsx from 'clsx';
 import { Button, ButtonOrLink, ButtonOrLinkProps } from '~/shared/components';
-import mockClassrooms from './utils/mockClassrooms';
 import usePopper from '~/shared/hooks/usePopper';
 import ClassroomMenuProvider, {
   ClassroomMenuContext,
   ActiveMenu,
 } from './ClassroomMenuProvider';
+import { gql, useQuery } from '@apollo/client';
+import { ClassroomsQuery } from './__generated__/index.generated';
 
 const menuVariants = {
   default: {
@@ -32,15 +33,15 @@ const menuVariants = {
   },
 };
 
-type MenuItems = any[];
+type MenuItems = any[] | undefined;
 
 const DiscussionMenuItems = ({ discussions }: { discussions: MenuItems }) => {
   return (
     <>
       <div className="max-h-52 -mb-1 p-1 overflow-y-auto">
-        {discussions.map((discussion: any) => (
+        {discussions?.map((discussion: any) => (
           <ClassroomMenuItem
-            key={discussion.name}
+            key={discussion.id}
             href={`/${discussion.id}`}
             variant="default"
           >
@@ -83,9 +84,9 @@ const ClassroomMenuItems = ({ classrooms }: { classrooms: MenuItems }) => {
   return (
     <>
       <div className="max-h-52 -mb-1 p-1 overflow-y-auto">
-        {classrooms.map((classroom: any) => (
+        {classrooms?.map((classroom: any) => (
           <ClassroomMenuItem
-            key={classroom.name}
+            key={classroom.id}
             type="button"
             variant="default"
             onClick={() => {
@@ -150,6 +151,19 @@ const ClassroomMenuHeader = ({ children }: { children: ReactNode }) => {
   );
 };
 
+const CLASSROOMS_QUERY = gql`
+  query ClassroomsQuery {
+    classroomsByUser {
+      id
+      name
+      discussions {
+        id
+        name
+      }
+    }
+  }
+`;
+
 interface MenuButtonProps {
   active: boolean;
   fullWidth: boolean;
@@ -164,6 +178,9 @@ interface Props {
 // TODO: Ideally, we could extract alot of this logic into our own
 // `Popover` component for reuse.
 const ClassroomMenu = ({ menuButtonProps }: Props) => {
+  // TODO: Handle loading/error states.
+  // TODO: Finish implementing query logic.
+  const { data, loading, error } = useQuery<ClassroomsQuery>(CLASSROOMS_QUERY);
   const {
     activeMenu,
     selectedClassroom,
@@ -182,6 +199,8 @@ const ClassroomMenu = ({ menuButtonProps }: Props) => {
     setActiveMenu(ActiveMenu.CLASSROOMS);
     setSelectedClassroom(null);
   };
+
+  console.log(data);
 
   return (
     <Popover as={Fragment}>
@@ -209,7 +228,7 @@ const ClassroomMenu = ({ menuButtonProps }: Props) => {
                     {activeMenu === ActiveMenu.CLASSROOMS ? (
                       <>
                         <ClassroomMenuHeader>Classrooms</ClassroomMenuHeader>
-                        <ClassroomMenuItems classrooms={mockClassrooms} />
+                        <ClassroomMenuItems classrooms={data?.classrooms} />
                       </>
                     ) : (
                       <Transition.Child

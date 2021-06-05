@@ -514,7 +514,7 @@ namespace API.Migrations
                         .IsRequired();
 
                     b.HasOne("API.Data.Entities.User", "CreatedBy")
-                        .WithMany("Discussions")
+                        .WithMany()
                         .HasForeignKey("CreatedById")
                         .HasConstraintName("fk_discussions_users_created_by_id")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -673,8 +673,6 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Data.Entities.User", b =>
                 {
-                    b.Navigation("Discussions");
-
                     b.Navigation("Messages");
 
                     b.Navigation("Sessions");
