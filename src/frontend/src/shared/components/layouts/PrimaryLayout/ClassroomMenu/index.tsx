@@ -1,14 +1,22 @@
 import { Fragment, ReactNode, useContext } from 'react';
+import { gql, useQuery } from '@apollo/client';
 import { Popover, Transition, Portal } from '@headlessui/react';
 import clsx from 'clsx';
-import { Button, ButtonOrLink, ButtonOrLinkProps } from '~/shared/components';
+import {
+  Button,
+  ButtonOrLink,
+  ButtonOrLinkProps,
+  ErrorFallback,
+  EmptyFallback,
+  Spinner,
+} from '~/shared/components';
 import usePopper from '~/shared/hooks/usePopper';
 import ClassroomMenuProvider, {
   ClassroomMenuContext,
   ActiveMenu,
 } from './ClassroomMenuProvider';
-import { gql, useQuery } from '@apollo/client';
 import { ClassroomsQuery } from './__generated__/index.generated';
+import { Classroom, Discussion } from '~/__generated__/schema.generated';
 
 const menuVariants = {
   default: {
@@ -33,36 +41,45 @@ const menuVariants = {
   },
 };
 
-type MenuItems = any[] | undefined;
+type MenuItems = Partial<Classroom>[] | Partial<Discussion>[];
 
 const DiscussionMenuItems = ({ discussions }: { discussions: MenuItems }) => {
   return (
     <>
-      <div className="max-h-52 -mb-1 p-1 overflow-y-auto">
-        {discussions?.map((discussion: any) => (
-          <ClassroomMenuItem
-            key={discussion.id}
-            href={`/${discussion.id}`}
-            variant="default"
-          >
-            {discussion.name}
-          </ClassroomMenuItem>
-        ))}
+      <div className="max-h-52 -mb-1 p-1 overflow-auto">
+        {discussions && discussions.length ? (
+          discussions.map((discussion: any) => (
+            <ClassroomMenuItem
+              key={discussion.id}
+              href={`/${discussion.id}`}
+              variant="default"
+            >
+              {discussion.name}
+            </ClassroomMenuItem>
+          ))
+        ) : (
+          <div className="my-4">
+            <EmptyFallback
+              message="There's nothing here, yet."
+              submessage="Use the button below to create your first discussion."
+            />
+          </div>
+        )}
       </div>
       <ClassroomMenuSeperator />
-      <ClassroomMenuItem
-        type="button"
-        variant="info"
-        onClick={() => console.log('Invite students clicked!')}
-      >
-        Invite students
-      </ClassroomMenuItem>
       <ClassroomMenuItem
         type="button"
         variant="info"
         onClick={() => console.log('Create a discussion clicked!')}
       >
         Create a discussion
+      </ClassroomMenuItem>
+      <ClassroomMenuItem
+        type="button"
+        variant="info"
+        onClick={() => console.log('Invite students clicked!')}
+      >
+        Invite students
       </ClassroomMenuItem>
       <ClassroomMenuSeperator />
       <ClassroomMenuItem
@@ -83,20 +100,29 @@ const ClassroomMenuItems = ({ classrooms }: { classrooms: MenuItems }) => {
 
   return (
     <>
-      <div className="max-h-52 -mb-1 p-1 overflow-y-auto">
-        {classrooms?.map((classroom: any) => (
-          <ClassroomMenuItem
-            key={classroom.id}
-            type="button"
-            variant="default"
-            onClick={() => {
-              setActiveMenu(ActiveMenu.DISCUSSIONS);
-              setSelectedClassroom(classroom);
-            }}
-          >
-            {classroom.name}
-          </ClassroomMenuItem>
-        ))}
+      <div className="max-h-52 -mb-1 p-1 overflow-auto">
+        {classrooms && classrooms.length ? (
+          classrooms.map((classroom: any) => (
+            <ClassroomMenuItem
+              key={classroom.id}
+              type="button"
+              variant="default"
+              onClick={() => {
+                setActiveMenu(ActiveMenu.DISCUSSIONS);
+                setSelectedClassroom(classroom);
+              }}
+            >
+              {classroom.name}
+            </ClassroomMenuItem>
+          ))
+        ) : (
+          <div className="my-4">
+            <EmptyFallback
+              message="There's nothing here, yet."
+              submessage="Use the button below to create your first classroom."
+            />
+          </div>
+        )}
       </div>
       <ClassroomMenuSeperator />
       <ClassroomMenuItem
@@ -131,7 +157,7 @@ const ClassroomMenuItem = ({ variant, ...props }: ClassroomMenuItemProps) => {
   return (
     <Item
       className={clsx(
-        'block w-full rounded-md p-2 text-left font-semibold tracking-wide text-sm truncate focus:outline-none focus-visible:ring',
+        'block w-full rounded-md p-2 text-left font-bold tracking-wide text-sm truncate focus:outline-none focus-visible:ring',
         styles.base,
         styles.active
       )}
@@ -178,9 +204,9 @@ interface Props {
 // TODO: Ideally, we could extract alot of this logic into our own
 // `Popover` component for reuse.
 const ClassroomMenu = ({ menuButtonProps }: Props) => {
-  // TODO: Handle loading/error states.
-  // TODO: Finish implementing query logic.
-  const { data, loading, error } = useQuery<ClassroomsQuery>(CLASSROOMS_QUERY);
+  const { data, loading, error, refetch } = useQuery<ClassroomsQuery>(
+    CLASSROOMS_QUERY
+  );
   const {
     activeMenu,
     selectedClassroom,
@@ -199,8 +225,6 @@ const ClassroomMenu = ({ menuButtonProps }: Props) => {
     setActiveMenu(ActiveMenu.CLASSROOMS);
     setSelectedClassroom(null);
   };
-
-  console.log(data);
 
   return (
     <Popover as={Fragment}>
@@ -222,31 +246,46 @@ const ClassroomMenu = ({ menuButtonProps }: Props) => {
                   <Popover.Panel
                     static
                     as="section"
-                    className="w-80 p-2 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden"
+                    className="p-2 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden"
                     aria-labelledby="spout-popover-header"
+                    style={{ minWidth: '20rem' }}
                   >
-                    {activeMenu === ActiveMenu.CLASSROOMS ? (
+                    {loading && <Spinner className="h-5 w-5 text-black" />}
+                    {error && (
+                      <ErrorFallback message={error.message} action={refetch} />
+                    )}
+                    {data && activeMenu === ActiveMenu.CLASSROOMS && (
                       <>
                         <ClassroomMenuHeader>Classrooms</ClassroomMenuHeader>
-                        <ClassroomMenuItems classrooms={data?.classrooms} />
+                        {/* TODO: Fix ugly type casting... */}
+                        <ClassroomMenuItems
+                          classrooms={
+                            (data.classroomsByUser as unknown) as Classroom[]
+                          }
+                        />
                       </>
-                    ) : (
-                      <Transition.Child
-                        enter="pointer-events-none transform transition ease-in-out duration-150"
-                        enterFrom="translate-x-10"
-                        enterTo="translate-x-0"
-                      >
-                        <>
-                          <ClassroomMenuHeader>
-                            {selectedClassroom.name}{' '}
-                            <span aria-hidden="true">/</span> Discussions
-                          </ClassroomMenuHeader>
-                          <DiscussionMenuItems
-                            discussions={selectedClassroom.discussions}
-                          />
-                        </>
-                      </Transition.Child>
                     )}
+                    {selectedClassroom &&
+                      activeMenu === ActiveMenu.DISCUSSIONS && (
+                        <Transition.Child
+                          enter="pointer-events-none transform transition ease-in-out duration-150"
+                          enterFrom="translate-x-10"
+                          enterTo="translate-x-0"
+                        >
+                          <>
+                            <ClassroomMenuHeader>
+                              {selectedClassroom.name}{' '}
+                              <span aria-hidden="true">/</span> Discussions
+                            </ClassroomMenuHeader>
+                            {/* TODO: Fix ugly type casting... */}
+                            <DiscussionMenuItems
+                              discussions={
+                                (selectedClassroom.discussions as unknown) as Discussion[]
+                              }
+                            />
+                          </>
+                        </Transition.Child>
+                      )}
                   </Popover.Panel>
                 </Transition.Child>
               </Transition>

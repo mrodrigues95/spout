@@ -134,6 +134,7 @@ export type Query = {
   classrooms: Array<Classroom>;
   classroomById: Classroom;
   classroomsById: Array<Classroom>;
+  classroomsByUser: Array<Classroom>;
   discussions: Array<Discussion>;
   discussionById: Discussion;
   discussionsById: Array<Discussion>;

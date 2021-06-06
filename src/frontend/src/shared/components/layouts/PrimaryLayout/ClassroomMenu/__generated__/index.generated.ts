@@ -5,7 +5,7 @@ export type ClassroomsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 export type ClassroomsQuery = (
   { __typename?: 'Query' }
-  & { classrooms: Array<(
+  & { classroomsByUser: Array<(
     { __typename?: 'Classroom' }
     & Pick<Types.Classroom, 'id' | 'name'>
     & { discussions?: Types.Maybe<Array<Types.Maybe<(

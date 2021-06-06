@@ -74,6 +74,7 @@ type Query @authorize(apply: BEFORE_RESOLVER) @authorize(apply: BEFORE_RESOLVER)
   classrooms: [Classroom!]!
   classroomById(id: ID!): Classroom!
   classroomsById(ids: [ID!]!): [Classroom!]!
+  classroomsByUser: [Classroom!]!
   discussions: [Discussion!]!
   discussionById(id: ID!): Discussion!
   discussionsById(ids: [ID!]!): [Discussion!]!

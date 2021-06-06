@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useMemo, useState } from 'react';
+import { Classroom } from '~/__generated__/schema.generated';
 
 export enum ActiveMenu {
   CLASSROOMS,
@@ -7,9 +8,9 @@ export enum ActiveMenu {
 
 interface ClassroomMenuContextType {
   activeMenu: ActiveMenu;
-  selectedClassroom: any;
+  selectedClassroom: Partial<Classroom> | null;
   setActiveMenu: (activeMenu: ActiveMenu) => void;
-  setSelectedClassroom: (classroom: any) => void;
+  setSelectedClassroom: (classroom: Partial<Classroom> | null) => void;
 }
 
 export const ClassroomMenuContext = createContext<ClassroomMenuContextType | null>(
@@ -18,7 +19,9 @@ export const ClassroomMenuContext = createContext<ClassroomMenuContextType | nul
 
 const ClassroomMenuProvider = ({ children }: { children: ReactNode }) => {
   const [activeMenu, setActiveMenu] = useState(ActiveMenu.CLASSROOMS);
-  const [selectedClassroom, setSelectedClassroom] = useState<any | null>(null);
+  const [selectedClassroom, setSelectedClassroom] = useState<Partial<
+    Classroom
+  > | null>(null);
 
   const values = useMemo(
     () => ({

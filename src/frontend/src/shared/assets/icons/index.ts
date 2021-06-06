@@ -12,3 +12,5 @@ export { default as SettingsIcon } from './SettingsIcon';
 export { default as DotsVerticalIcon } from './DotsVerticalIcon';
 export { default as EmojiHappyIcon } from './EmojiHappyIcon';
 export { default as PaperClipIcon } from './PaperClipIcon';
+export { default as SparklesIcon } from './SparklesIcon';
+export { default as RefreshIcon } from './RefreshIcon';

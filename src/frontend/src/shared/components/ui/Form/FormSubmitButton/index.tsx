@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form';
-import { LoadingIcon } from '~/shared/assets';
 import Button from '../../Button';
 import { Props as ButtonProps } from '../../ButtonOrLink';
+import Spinner from './../../Spinner';
 
 const FormSubmitButton = ({ children, ...props }: ButtonProps) => {
   const { formState } = useFormContext();
@@ -15,7 +15,7 @@ const FormSubmitButton = ({ children, ...props }: ButtonProps) => {
       {...props}
     >
       {formState.isSubmitting && (
-        <LoadingIcon className="animate-spin h-3 w-3 mr-1 text-white" />
+        <Spinner className="h-4 w-4 mr-3 text-white" />
       )}
       {children}
     </Button>

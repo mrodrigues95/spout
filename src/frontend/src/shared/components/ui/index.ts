@@ -10,6 +10,10 @@ export { default as Search } from './Search';
 export { default as Badge, BadgeVariants } from './Badge';
 export { default as TextArea } from './TextArea';
 export { default as Tooltip } from './Tooltip';
+export { default as ErrorFallback } from './ErrorFallback';
+export { default as EmptyFallback } from './EmptyFallback';
+export { default as Spinner } from './Spinner';
+export { default as VisuallyHidden } from './VisuallyHidden';
 export * from './Form';
 export * from './Messages';
 
