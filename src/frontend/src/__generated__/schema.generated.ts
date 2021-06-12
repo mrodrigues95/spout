@@ -16,7 +16,6 @@ export type Scalars = {
 
 
 
-
 export enum ApplyPolicy {
   BeforeResolver = 'BEFORE_RESOLVER',
   AfterResolver = 'AFTER_RESOLVER'
@@ -28,6 +27,13 @@ export type AuthPayload = {
   session?: Maybe<Session>;
   isLoggedIn: Scalars['Boolean'];
   userErrors?: Maybe<Array<UserError>>;
+};
+
+export type AuthorizeDirective = {
+  __typename?: 'AuthorizeDirective';
+  policy?: Maybe<Scalars['String']>;
+  roles?: Maybe<Array<Scalars['String']>>;
+  apply: ApplyPolicy;
 };
 
 export type Classroom = Node & {
@@ -119,6 +125,11 @@ export type MutationLogoutArgs = {
   input: LogoutInput;
 };
 
+
+export type MutationRefreshSessionArgs = {
+  input: RefreshSessionInput;
+};
+
 /** The node interface is implemented by entities that have a global unique identifier. */
 export type Node = {
   id: Scalars['ID'];
@@ -174,6 +185,10 @@ export type QueryDiscussionByIdArgs = {
 
 export type QueryDiscussionsByIdArgs = {
   ids: Array<Scalars['ID']>;
+};
+
+export type RefreshSessionInput = {
+  sessionId: Scalars['ID'];
 };
 
 export type Session = Node & {

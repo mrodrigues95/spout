@@ -205,7 +205,14 @@ interface Props {
 // `Popover` component for reuse.
 const ClassroomMenu = ({ menuButtonProps }: Props) => {
   const { data, loading, error, refetch } = useQuery<ClassroomsQuery>(
-    CLASSROOMS_QUERY
+    CLASSROOMS_QUERY,
+    {
+      onError: (error) => {
+        console.log('KAJJEEIEIEIEI')
+        console.log(error.graphQLErrors);
+        console.log(error.message);
+      },
+    }
   );
   const {
     activeMenu,
@@ -225,6 +232,8 @@ const ClassroomMenu = ({ menuButtonProps }: Props) => {
     setActiveMenu(ActiveMenu.CLASSROOMS);
     setSelectedClassroom(null);
   };
+
+  console.log('data: ', data);
 
   return (
     <Popover as={Fragment}>

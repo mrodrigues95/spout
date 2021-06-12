@@ -1,4 +1,4 @@
-import * as Types from '../../../__generated__/schema.generated';
+import * as Types from '../../../../__generated__/schema.generated';
 
 export type SessionQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
@@ -11,7 +11,9 @@ export type SessionQuery = (
   ) }
 );
 
-export type RefreshSessionMutationVariables = Types.Exact<{ [key: string]: never; }>;
+export type RefreshSessionMutationVariables = Types.Exact<{
+  input: Types.RefreshSessionInput;
+}>;
 
 
 export type RefreshSessionMutation = (

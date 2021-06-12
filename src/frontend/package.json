@@ -5,6 +5,11 @@
   "engines": {
     "node": ">=14"
   },
+  "browserslist": [
+    "defaults",
+    "not IE 11",
+    "maintained node versions"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/mrodrigues95/spout.git"
@@ -28,6 +33,7 @@
     "@next/bundle-analyzer": "^10.2.0",
     "@popperjs/core": "^2.9.2",
     "clsx": "^1.1.1",
+    "date-fns": "^2.22.1",
     "framer-motion": "^4.1.17",
     "graphql": "^15.5.0",
     "next": "^10.2.0",

@@ -2,16 +2,22 @@ import { gql, ApolloClient } from '@apollo/client';
 import { IncomingMessage } from 'http';
 import { GetServerSidePropsContext } from 'next';
 import { applySession, SessionOptions } from 'next-iron-session';
+import { differenceInSeconds } from 'date-fns';
 import { createApolloClient } from '../../../shared/utils/apollo';
 import { Session } from '~/__generated__/schema.generated';
 import {
-  SessionQuery,
-  SessionQueryVariables,
   RefreshSessionMutation,
   RefreshSessionMutationVariables,
-} from '../../../shared/utils/__generated__/sessions.generated';
+  SessionQuery,
+  SessionQueryVariables,
+} from './__generated__/index.generated';
 
+// The duration that the session will be valid for in seconds (default: 7 days).
+// Sessions will automatically be renewed after 50% of the validity period.
+// NOTE: The duration is meant to match the backend Identity cookie duration, which is 7 days.
+const IRON_SESSION_TTL = 7 * 24 * 3600;
 const IRON_SESSION_ID_KEY = 'sessionId';
+
 export const sessionOptions: SessionOptions = {
   password: [
     {
@@ -20,11 +26,11 @@ export const sessionOptions: SessionOptions = {
     },
   ],
   cookieName: 'SP_SESSION',
+  ttl: IRON_SESSION_TTL,
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     httpOnly: true,
-    maxAge: 604800 - 60, // 7 days - 60 seconds to make up for clock difference between the server and client.
   },
 };
 
@@ -58,7 +64,6 @@ export const removeClientSession = async (req: IncomingMessage) => {
   return sessionId;
 };
 
-// TODO: Create short lived cookies and test.
 const sessionCache = new WeakMap<IncomingMessage, Partial<Session> | null>();
 export const resolveClientSession = async ({
   req,
@@ -78,25 +83,27 @@ export const resolveClientSession = async ({
   const reqWithSession = (req as unknown) as ReqWithSession;
   const sessionId = reqWithSession.session.get(IRON_SESSION_ID_KEY) as string;
 
-  // If we have an active client session, that means there is a `sessionId` associated
-  // with it and therefore we can fetch it from the server. Otherwise, the session
-  // has most likely expired and requires a refresh.
   if (sessionId) {
-    session = await fetchClientSession(client, sessionId);
-    if (!session) return destroy(reqWithSession);
-  } else {
-    session = await refreshClientSession(client);
+    session = await fetchSession(client, sessionId);
     if (!session) return destroy(reqWithSession);
 
-    // A new session needs to be created with `next-iron-session`.
-    await create(reqWithSession, session.id!);
+    // Renew the session if 50% of the session time has elapsed.
+    const shouldRefreshSession =
+      differenceInSeconds(new Date(session.expiresAt!), new Date()) <
+      0.5 * IRON_SESSION_TTL;
+
+    if (shouldRefreshSession) {
+      session = await refreshSession(client, session.id!);
+      if (!session) return destroy(reqWithSession);
+      await create(reqWithSession, session.id!);
+    }
   }
 
   sessionCache.set(req, session);
   return session;
 };
 
-const fetchClientSession = async (
+const fetchSession = async (
   client: ApolloClient<any>,
   sessionId: string
 ): Promise<Partial<Session> | null> => {
@@ -123,17 +130,19 @@ const fetchClientSession = async (
   }
 };
 
-const refreshClientSession = async (
-  client: ApolloClient<any>
+const refreshSession = async (
+  client: ApolloClient<any>,
+  sessionId: string
 ): Promise<Partial<Session> | null> => {
   try {
     const data = await client.mutate<
       RefreshSessionMutation,
       RefreshSessionMutationVariables
     >({
+      variables: { input: { sessionId } },
       mutation: gql`
-        mutation RefreshSessionMutation {
-          refreshSession {
+        mutation RefreshSessionMutation($input: RefreshSessionInput!) {
+          refreshSession(input: $input) {
             session {
               id
               createdAt
@@ -147,7 +156,7 @@ const refreshClientSession = async (
 
     return data.data?.refreshSession?.session || null;
   } catch (error) {
-    console.log('Refresh client session: ', error);
+    console.log('Refresh client session error: ', error);
     return null;
   }
 };

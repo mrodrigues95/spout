@@ -11,7 +11,9 @@ export type SessionQuery = (
   ) }
 );
 
-export type RefreshSessionMutationVariables = Types.Exact<{ [key: string]: never; }>;
+export type RefreshSessionMutationVariables = Types.Exact<{
+  input: Types.RefreshSessionInput;
+}>;
 
 
 export type RefreshSessionMutation = (

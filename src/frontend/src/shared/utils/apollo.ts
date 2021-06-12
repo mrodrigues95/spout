@@ -1,9 +1,11 @@
 import {
   ApolloClient,
+  from,
   HttpLink,
   InMemoryCache,
   QueryOptions,
 } from '@apollo/client';
+import { onError } from '@apollo/client/link/error';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { useMemo } from 'react';
 
@@ -61,20 +63,34 @@ export const createApolloClient = ({
 }: ClientOptions) => {
   let nextClient = apolloClient;
 
+  const httpLink = new HttpLink({
+    // When running in Docker, we need to expose the graphql endpoint
+    // to the browser environment outside of Docker for SSR and client requests.
+    // See: https://github.com/apollographql/apollo-link/issues/375
+    uri:
+      typeof window !== 'undefined'
+        ? 'http://spout.localhost/graphql'
+        : 'http://backend:5000/graphql',
+    headers: headers,
+    credentials: 'include',
+  });
+
+  const errorLink = onError(({ graphQLErrors, networkError }) => {
+    if (graphQLErrors) {
+      graphQLErrors.forEach(({ message, locations, path }) =>
+        console.log(
+          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+        )
+      );
+    }
+
+    if (networkError) console.log(`[Network error]: ${networkError}`);
+  });
+
   if (!nextClient) {
     nextClient = new ApolloClient({
       ssrMode: typeof window === 'undefined',
-      link: new HttpLink({
-        // When running in Docker, we need to expose the graphql endpoint
-        // to the browser environment outside of Docker for SSR and client requests.
-        // See: https://github.com/apollographql/apollo-link/issues/375
-        uri:
-          typeof window !== 'undefined'
-            ? 'http://spout.localhost/graphql'
-            : 'http://backend:5000/graphql',
-        headers: headers,
-        credentials: 'include',
-      }),
+      link: from([errorLink, httpLink]),
       cache: new InMemoryCache(),
     });
   }

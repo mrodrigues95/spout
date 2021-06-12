@@ -11,8 +11,8 @@ using AppAny.HotChocolate.FluentValidation;
 using Microsoft.AspNetCore.Http;
 using HotChocolate.AspNetCore.Authorization;
 using System;
-using API.Schema.Services.Auth.Sessions;
 using API.Schema.Common;
+using API.Schema.Entities.Session.Helpers;
 
 namespace API.Schema.Services.Auth {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -41,9 +41,10 @@ namespace API.Schema.Services.Auth {
             var loginUser = await signInManager.PasswordSignInAsync(user, input.Password, true, false);
             if (!loginUser.Succeeded) return new AuthPayload(new UserError("Unable to sign in user.", "INVALID_USER"));
 
-            var session = await SessionManagement.CreateSession(user.Email, context, cancellationToken);
+            var session = await SessionManagement.CreateSession(user.Id, context, cancellationToken);
+            if (session is null) return new AuthPayload(new UserError("Unable to refresh session", "SESSION_PROBLEM"));
 
-            return new AuthPayload(user, session.Session, true);
+            return new AuthPayload(user, session.Session!, true);
         }
 
         [UseApplicationDbContext]
@@ -64,7 +65,8 @@ namespace API.Schema.Services.Auth {
             var loginUser = await signInManager.PasswordSignInAsync(user, input.Password, true, false);
             if (!loginUser.Succeeded) return new AuthPayload(new UserError("Invalid email address or password.", "BAD_USER_INPUT"));
 
-            var session = await SessionManagement.CreateSession(user.Email!, context, cancellationToken);
+            var session = await SessionManagement.CreateSession(user.Id, context, cancellationToken);
+            if (session is null) return new AuthPayload(new UserError("Unable to refresh session", "SESSION_PROBLEM"));
 
             return new AuthPayload(user, session.Session, true);
         }
@@ -72,30 +74,13 @@ namespace API.Schema.Services.Auth {
         [Authorize]
         [UseApplicationDbContext]
         public async Task<AuthPayload> LogoutAsync(
-            [UseFluentValidation, UseValidator(typeof(LogoutInputValidator))] LogoutInput input,
+            LogoutInput input,
             [ScopedService] ApplicationDbContext context,
             [Service] SignInManager<User> signInManager,
             CancellationToken cancellationToken) {
             await SessionManagement.RemoveSession(input.SessionId, context, cancellationToken);
             await signInManager.SignOutAsync();
             return new AuthPayload(false);
-        }
-
-        [Authorize]
-        [UseApplicationDbContext]
-        public async Task<AuthPayload> RefreshSessionAsync(
-            [ScopedService] ApplicationDbContext context,
-            [Service] IHttpContextAccessor httpContextAccessor,
-            CancellationToken cancellationToken) {
-            var email = httpContextAccessor.HttpContext?.User.Identity?.Name;
-            if (string.IsNullOrEmpty(email)) {
-                httpContextAccessor.HttpContext?.Response.Cookies.Delete("SP_IDENTITY");
-                return new AuthPayload(new UserError("Unable to find user.", "USER_NOT_FOUND"));
-            }
-
-            var session = await SessionManagement.CreateSession(email, context, cancellationToken);
-
-            return new AuthPayload(session.User, session.Session, true);
         }
     }
 }

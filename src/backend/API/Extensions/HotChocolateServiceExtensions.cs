@@ -41,7 +41,8 @@ namespace API.Extensions {
             gql
                 .AddMutationType()
                     .AddTypeExtension<ClassroomMutations>()
-                    .AddTypeExtension<AuthMutations>();
+                    .AddTypeExtension<AuthMutations>()
+                    .AddTypeExtension<SessionMutations>();
 
             gql
                 .AddType<UserType>()
