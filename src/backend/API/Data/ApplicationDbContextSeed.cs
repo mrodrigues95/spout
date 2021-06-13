@@ -266,7 +266,6 @@ namespace API.Data {
 
         private static User GetUser(ApplicationDbContext context, int skip = 0) =>
             context.Users.OrderBy(x => x.Id).Skip(skip).First();
-
         private static Classroom GetClassroom(ApplicationDbContext context, int skip = 0) =>
             context.Classrooms.OrderBy(x => x.Id).Skip(skip).First();
         private static Discussion GetDiscussion(ApplicationDbContext context, int skip = 0) =>

@@ -10,5 +10,7 @@ COPY package.json ./
 COPY yarn.lock ./
 RUN yarn
 
+COPY . .
+
 EXPOSE ${PORT}
 CMD [ "yarn", "dev" ]

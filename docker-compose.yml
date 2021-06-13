@@ -62,10 +62,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - 3000:3000
-    volumes:
-      - ./src/frontend:/srv/frontend:rw
-      - /srv/frontend/node_modules
-      - /srv/frontend/.next
     env_file: 
       - ./src/frontend/.env
     labels:

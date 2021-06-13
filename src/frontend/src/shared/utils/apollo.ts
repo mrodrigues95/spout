@@ -3,7 +3,7 @@ import {
   from,
   HttpLink,
   InMemoryCache,
-  QueryOptions,
+  QueryOptions
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
