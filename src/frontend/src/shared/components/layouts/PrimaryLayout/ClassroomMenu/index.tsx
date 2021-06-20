@@ -51,7 +51,7 @@ const DiscussionMenuItems = ({ discussions }: { discussions: MenuItems }) => {
           discussions.map((discussion: any) => (
             <ClassroomMenuItem
               key={discussion.id}
-              href={`/${discussion.id}`}
+              href={`/discussion/${discussion.id}`}
               variant="default"
             >
               {discussion.name}

@@ -21,7 +21,7 @@ namespace API.Extensions {
 
             var gql = services.AddGraphQLServer();
             gql
-                .AddAuthorization()
+                //.AddAuthorization()
                 .AddHttpRequestInterceptor<CustomHttpRequestInterceptor>()
                 .AddFiltering()
                 .AddFluentValidation()

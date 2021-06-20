@@ -45,8 +45,8 @@ services:
       - 5001:5001
     volumes:
       - ./src/backend:/srv/backend:rw
-      - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
-      - ${APPDATA}\.aspnet\https:/root/.aspnet/https/
+      - ${APPDATA}/microsoft/UserSecrets:/root/.microsoft/usersecrets
+      - ${APPDATA}/.aspnet/https:/root/.aspnet/https/
     labels:
       - traefik.http.routers.backend-http.rule=Host(`spout.localhost`) && PathPrefix(`/graphql`)
       - traefik.http.routers.backend-http.service=backend
@@ -62,6 +62,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - 3000:3000
+    volumes: 
+      - ./src/frontend:/srv/frontend:rw
+      - /srv/frontend/node_modules
     env_file: 
       - ./src/frontend/.env
     labels:
@@ -78,9 +81,8 @@ services:
     volumes:
       - ./src/frontend:/srv/compiler:rw
     working_dir: /srv/compiler
-    command: scripts/wait-for-it.sh backend:5000 -- yarn codegen:graphql:watch
+    command: yarn codegen:graphql:watch
     depends_on:
-      - backend
       - frontend
     labels: 
       - traefik.enable=false

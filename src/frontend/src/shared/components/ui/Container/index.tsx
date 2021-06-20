@@ -4,16 +4,17 @@ import Button from '../Button';
 import Search from '../Search';
 import Tooltip from '../Tooltip';
 
-interface Props {
-  title?: string;
-  children: ReactNode;
-}
-
-const ContainerBody = ({ children }: Pick<Props, 'children'>) => {
+const ContainerBody = ({ children }: { children: ReactNode }) => {
   return <section className="relative flex-1">{children}</section>;
 };
 
-const ContainerHeader = ({ title, children }: Props) => {
+const ContainerHeader = ({
+  title,
+  children,
+}: {
+  title?: string;
+  children?: ReactNode;
+}) => {
   return (
     <section className="flex flex-col justify-between border-b border-gray-200 p-3 sm:border-none sm:p-0 sm:mb-3 lg:mb-6">
       <div className="flex items-center justify-between sm:mb-2">
@@ -37,12 +38,14 @@ const ContainerHeader = ({ title, children }: Props) => {
           </Tooltip>
         </div>
       </div>
-      <div className="flex items-center justify-between">{children}</div>
+      {children && (
+        <div className="flex items-center justify-between">{children}</div>
+      )}
     </section>
   );
 };
 
-const Container = ({ children }: Pick<Props, 'children'>) => {
+const Container = ({ children }: { children: ReactNode }) => {
   return (
     <main className="flex flex-col flex-1 w-full sm:p-3 lg:p-10">
       {children}

@@ -1,16 +1,21 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import clsx from 'clsx';
 import { EmojiHappyIcon, PaperClipIcon, ChevronIcon } from '~/shared/assets';
 import { formatMessage } from '../utils/formatMessage';
 import TextArea from '../../TextArea';
 import Button from '../../Button';
+import { MessageContext } from './../MessageProvider';
 
 const MessageInput = () => {
+  const { onNewMessage } = useContext(MessageContext)!;
   const [message, setMessage] = useState('');
   const [focused, setFocused] = useState(false);
 
   const handleNewMessage = () => {
-    if (message.trim().length !== 0) console.log(formatMessage(message));
+    if (message.trim().length !== 0) {
+      onNewMessage({ body: formatMessage(message) });
+      setMessage('');
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -18,7 +23,7 @@ const MessageInput = () => {
   };
 
   const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    // If a user wants to enter a new line, they must use SHIFT+ENTER.
+    // If the user wants to enter a new line, they must use SHIFT+ENTER.
     if (e.target.value !== '\n') setMessage(e.target.value);
   };
 

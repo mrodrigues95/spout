@@ -41,15 +41,16 @@ type CreateClassroomPayload {
 
 type Discussion implements Node {
   id: ID!
-  createdBy: User
-  classroom: Classroom
+  createdBy: User!
+  classroom: Classroom!
+  users: [User!]!
   guid: Uuid!
   name: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   classroomId: Int!
   createdById: Int!
-  userDiscussions: [UserDiscussion!]!
+  messages: [Message!]!
 }
 
 type Message {

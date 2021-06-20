@@ -64,15 +64,16 @@ export type CreateClassroomPayload = {
 export type Discussion = Node & {
   __typename?: 'Discussion';
   id: Scalars['ID'];
-  createdBy?: Maybe<User>;
-  classroom?: Maybe<Classroom>;
+  createdBy: User;
+  classroom: Classroom;
+  users: Array<User>;
   guid: Scalars['Uuid'];
   name: Scalars['String'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   classroomId: Scalars['Int'];
   createdById: Scalars['Int'];
-  userDiscussions: Array<UserDiscussion>;
+  messages: Array<Message>;
 };
 
 export type LoginInput = {

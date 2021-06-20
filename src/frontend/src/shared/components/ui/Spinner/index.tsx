@@ -9,7 +9,7 @@ interface Props {
 
 const Spinner = ({ className, label = 'Loading...' }: Props) => {
   return (
-    <div className="flex items-center justify-center" role="status">
+    <div className="flex items-center justify-center h-full" role="status">
       <LoadingIcon className={clsx('animate-spin', className)} />
       <VisuallyHidden>{label}</VisuallyHidden>
     </div>
