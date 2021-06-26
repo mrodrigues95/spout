@@ -17,14 +17,13 @@ export const DISCUSSION_QUERY = gql`
 
 const Discussion = () => {
   const router = useRouter();
-  const result = useQuery<DiscussionQuery>(DISCUSSION_QUERY, {
+  const { data } = useQuery<DiscussionQuery>(DISCUSSION_QUERY, {
     variables: { id: router.query.discussionId },
-    skip: !router.isReady,
   });
 
   return (
-    <PrimaryLayout title={result.data?.discussionById.name ?? 'Discussion'}>
-      <DiscussionContainer queryResult={result} />
+    <PrimaryLayout title={data?.discussionById.name ?? 'Discussion'}>
+      <DiscussionContainer />
     </PrimaryLayout>
   );
 };

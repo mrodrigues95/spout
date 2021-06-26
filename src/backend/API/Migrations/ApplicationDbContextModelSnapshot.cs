@@ -28,20 +28,26 @@ namespace API.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 6, 23, 0, 3, 26, 951, DateTimeKind.Utc).AddTicks(5207))
                         .HasColumnName("created_at");
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer")
                         .HasColumnName("created_by_id");
 
+                    b.Property<int?>("DelLogId")
+                        .HasColumnType("integer")
+                        .HasColumnName("del_log_id");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("deleted_at");
+
                     b.Property<Guid>("Guid")
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_active");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -49,8 +55,14 @@ namespace API.Migrations
                         .HasColumnType("character varying(35)")
                         .HasColumnName("name");
 
+                    b.Property<int>("StateId")
+                        .HasColumnType("integer")
+                        .HasColumnName("state_id");
+
                     b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 6, 23, 0, 3, 26, 952, DateTimeKind.Utc).AddTicks(5868))
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
@@ -59,7 +71,66 @@ namespace API.Migrations
                     b.HasIndex("CreatedById")
                         .HasDatabaseName("ix_classrooms_created_by_id");
 
+                    b.HasIndex("DelLogId")
+                        .HasDatabaseName("ix_classrooms_del_log_id");
+
+                    b.HasIndex("StateId")
+                        .HasDatabaseName("ix_classrooms_state_id");
+
                     b.ToTable("classrooms");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.DelLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 6, 23, 0, 3, 26, 955, DateTimeKind.Utc).AddTicks(6684))
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("DeletedForId")
+                        .HasColumnType("integer")
+                        .HasColumnName("deleted_for_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 6, 23, 0, 3, 26, 955, DateTimeKind.Utc).AddTicks(7059))
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_del_logs");
+
+                    b.HasIndex("DeletedForId")
+                        .HasDatabaseName("ix_del_logs_deleted_for_id");
+
+                    b.ToTable("del_logs");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.DelLogType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(35)
+                        .HasColumnType("character varying(35)")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_del_log_types");
+
+                    b.ToTable("del_log_types");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Discussion", b =>
@@ -75,12 +146,22 @@ namespace API.Migrations
                         .HasColumnName("classroom_id");
 
                     b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 6, 23, 0, 3, 26, 957, DateTimeKind.Utc).AddTicks(9024))
                         .HasColumnName("created_at");
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer")
                         .HasColumnName("created_by_id");
+
+                    b.Property<int?>("DelLogId")
+                        .HasColumnType("integer")
+                        .HasColumnName("del_log_id");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("deleted_at");
 
                     b.Property<Guid>("Guid")
                         .HasColumnType("uuid")
@@ -92,8 +173,14 @@ namespace API.Migrations
                         .HasColumnType("character varying(35)")
                         .HasColumnName("name");
 
+                    b.Property<int>("StateId")
+                        .HasColumnType("integer")
+                        .HasColumnName("state_id");
+
                     b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 6, 23, 0, 3, 26, 957, DateTimeKind.Utc).AddTicks(9301))
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
@@ -101,6 +188,12 @@ namespace API.Migrations
 
                     b.HasIndex("ClassroomId")
                         .HasDatabaseName("ix_discussions_classroom_id");
+
+                    b.HasIndex("DelLogId")
+                        .HasDatabaseName("ix_discussions_del_log_id");
+
+                    b.HasIndex("StateId")
+                        .HasDatabaseName("ix_discussions_state_id");
 
                     b.HasIndex("CreatedById", "ClassroomId")
                         .HasDatabaseName("ix_discussions_created_by_id_classroom_id");
@@ -123,23 +216,38 @@ namespace API.Migrations
                         .HasColumnName("body");
 
                     b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 6, 23, 0, 3, 26, 960, DateTimeKind.Utc).AddTicks(3093))
                         .HasColumnName("created_at");
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer")
                         .HasColumnName("created_by_id");
 
+                    b.Property<int?>("DelLogId")
+                        .HasColumnType("integer")
+                        .HasColumnName("del_log_id");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("deleted_at");
+
                     b.Property<int>("DiscussionId")
                         .HasColumnType("integer")
                         .HasColumnName("discussion_id");
 
                     b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 6, 23, 0, 3, 26, 960, DateTimeKind.Utc).AddTicks(3460))
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
                         .HasName("pk_messages");
+
+                    b.HasIndex("DelLogId")
+                        .HasDatabaseName("ix_messages_del_log_id");
 
                     b.HasIndex("DiscussionId")
                         .HasDatabaseName("ix_messages_discussion_id");
@@ -158,15 +266,21 @@ namespace API.Migrations
                         .HasColumnName("id");
 
                     b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 6, 23, 0, 3, 26, 961, DateTimeKind.Utc).AddTicks(6173))
                         .HasColumnName("created_at");
 
                     b.Property<DateTime>("ExpiresAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 6, 23, 0, 3, 26, 961, DateTimeKind.Utc).AddTicks(6509))
                         .HasColumnName("expires_at");
 
                     b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 6, 23, 0, 3, 26, 961, DateTimeKind.Utc).AddTicks(6667))
                         .HasColumnName("updated_at");
 
                     b.Property<int>("UserId")
@@ -180,6 +294,38 @@ namespace API.Migrations
                         .HasDatabaseName("ix_sessions_user_id");
 
                     b.ToTable("sessions");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.State", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 6, 23, 0, 3, 26, 962, DateTimeKind.Utc).AddTicks(5656))
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(35)
+                        .HasColumnType("character varying(35)")
+                        .HasColumnName("status");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 6, 23, 0, 3, 26, 962, DateTimeKind.Utc).AddTicks(6041))
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_states");
+
+                    b.ToTable("states");
                 });
 
             modelBuilder.Entity("API.Data.Entities.User", b =>
@@ -200,7 +346,9 @@ namespace API.Migrations
                         .HasColumnName("concurrency_stamp");
 
                     b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 6, 23, 0, 3, 26, 965, DateTimeKind.Utc).AddTicks(1474))
                         .HasColumnName("created_at");
 
                     b.Property<string>("Email")
@@ -216,6 +364,12 @@ namespace API.Migrations
                     b.Property<Guid>("Guid")
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
+
+                    b.Property<DateTime>("LastSeen")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 6, 23, 0, 3, 26, 965, DateTimeKind.Utc).AddTicks(1214))
+                        .HasColumnName("last_seen");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean")
@@ -257,12 +411,18 @@ namespace API.Migrations
                         .HasColumnType("text")
                         .HasColumnName("security_stamp");
 
+                    b.Property<int>("StateId")
+                        .HasColumnType("integer")
+                        .HasColumnName("state_id");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean")
                         .HasColumnName("two_factor_enabled");
 
                     b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 6, 23, 0, 3, 26, 965, DateTimeKind.Utc).AddTicks(1621))
                         .HasColumnName("updated_at");
 
                     b.Property<string>("UserName")
@@ -279,6 +439,9 @@ namespace API.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
+
+                    b.HasIndex("StateId")
+                        .HasDatabaseName("ix_users_state_id");
 
                     b.ToTable("users");
                 });
@@ -501,7 +664,35 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("API.Data.Entities.DelLog", "DelLog")
+                        .WithMany("DeletedClassrooms")
+                        .HasForeignKey("DelLogId")
+                        .HasConstraintName("fk_classrooms_del_logs_del_log_id");
+
+                    b.HasOne("API.Data.Entities.State", "State")
+                        .WithMany("Classrooms")
+                        .HasForeignKey("StateId")
+                        .HasConstraintName("fk_classrooms_states_state_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("CreatedBy");
+
+                    b.Navigation("DelLog");
+
+                    b.Navigation("State");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.DelLog", b =>
+                {
+                    b.HasOne("API.Data.Entities.DelLogType", "DeletedFor")
+                        .WithMany("DelLogs")
+                        .HasForeignKey("DeletedForId")
+                        .HasConstraintName("fk_del_logs_del_log_types_deleted_for_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DeletedFor");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Discussion", b =>
@@ -520,9 +711,25 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("API.Data.Entities.DelLog", "DelLog")
+                        .WithMany("DeletedDiscussions")
+                        .HasForeignKey("DelLogId")
+                        .HasConstraintName("fk_discussions_del_logs_del_log_id");
+
+                    b.HasOne("API.Data.Entities.State", "State")
+                        .WithMany("Discussions")
+                        .HasForeignKey("StateId")
+                        .HasConstraintName("fk_discussions_states_state_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Classroom");
 
                     b.Navigation("CreatedBy");
+
+                    b.Navigation("DelLog");
+
+                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Message", b =>
@@ -534,6 +741,11 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("API.Data.Entities.DelLog", "DelLog")
+                        .WithMany("DeletedMessages")
+                        .HasForeignKey("DelLogId")
+                        .HasConstraintName("fk_messages_del_logs_del_log_id");
+
                     b.HasOne("API.Data.Entities.Discussion", "Discussion")
                         .WithMany("Messages")
                         .HasForeignKey("DiscussionId")
@@ -542,6 +754,8 @@ namespace API.Migrations
                         .IsRequired();
 
                     b.Navigation("CreatedBy");
+
+                    b.Navigation("DelLog");
 
                     b.Navigation("Discussion");
                 });
@@ -556,6 +770,18 @@ namespace API.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.User", b =>
+                {
+                    b.HasOne("API.Data.Entities.State", "State")
+                        .WithMany("Users")
+                        .HasForeignKey("StateId")
+                        .HasConstraintName("fk_users_states_state_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("API.Data.Entities.UserClassroom", b =>
@@ -664,11 +890,34 @@ namespace API.Migrations
                     b.Navigation("UserClassrooms");
                 });
 
+            modelBuilder.Entity("API.Data.Entities.DelLog", b =>
+                {
+                    b.Navigation("DeletedClassrooms");
+
+                    b.Navigation("DeletedDiscussions");
+
+                    b.Navigation("DeletedMessages");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.DelLogType", b =>
+                {
+                    b.Navigation("DelLogs");
+                });
+
             modelBuilder.Entity("API.Data.Entities.Discussion", b =>
                 {
                     b.Navigation("Messages");
 
                     b.Navigation("UserDiscussions");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.State", b =>
+                {
+                    b.Navigation("Classrooms");
+
+                    b.Navigation("Discussions");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("API.Data.Entities.User", b =>

@@ -1,6 +1,6 @@
 import MessageDivider from '../MessageDivider';
 import Message from '../Message';
-import MessageInput from '../MessageInput';
+import MessageComposer from '../MessageComposer';
 
 const testMessage = {
   body: 'Wow, this is cool!',
@@ -16,7 +16,7 @@ const MessageContainer = () => {
           <MessageDivider date="November 04/2020" />
           <Message message={testMessage} isLastMessage />
         </div>
-        <MessageInput />
+        <MessageComposer />
       </div>
     </>
   );

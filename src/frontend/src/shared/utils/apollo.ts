@@ -4,10 +4,13 @@ import {
   HttpLink,
   InMemoryCache,
   QueryOptions,
+  split,
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
+import { getMainDefinition } from '@apollo/client/utilities';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { useMemo } from 'react';
+import { wsLink } from './websockets';
 
 let apolloClient: ApolloClient<any>;
 
@@ -75,6 +78,22 @@ export const createApolloClient = ({
     credentials: 'include',
   });
 
+  // Websocket link can only be instantiated on the client side.
+  const splitLink =
+    typeof window !== 'undefined'
+      ? split(
+          ({ query }) => {
+            const definition = getMainDefinition(query);
+            return (
+              definition.kind === 'OperationDefinition' &&
+              definition.operation === 'subscription'
+            );
+          },
+          wsLink!,
+          httpLink
+        )
+      : httpLink;
+
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
       graphQLErrors.forEach(({ message, locations, path }) =>
@@ -90,7 +109,7 @@ export const createApolloClient = ({
   if (!nextClient) {
     nextClient = new ApolloClient({
       ssrMode: typeof window === 'undefined',
-      link: from([errorLink, httpLink]),
+      link: from([errorLink, splitLink]),
       cache: new InMemoryCache(),
     });
   }

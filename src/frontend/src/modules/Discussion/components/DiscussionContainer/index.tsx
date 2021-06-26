@@ -1,4 +1,6 @@
-import { OperationVariables, QueryResult } from '@apollo/client';
+import { useCallback } from 'react';
+import { gql, useMutation, useQuery, useSubscription } from '@apollo/client';
+import { useRouter } from 'next/router';
 import {
   Container,
   Spinner,
@@ -7,22 +9,79 @@ import {
 } from '~/shared/components';
 import { MessageProvider } from '~/shared/components';
 import { FeelingBlueIllustration } from '~/shared/assets';
+import { DISCUSSION_QUERY } from '../Discussion';
 import { DiscussionQuery } from '../Discussion/__generated__/index.generated';
-import { Message } from '~/__generated__/schema.generated';
 import DiscussionActionsMenu from '../DiscussionActionsMenu';
 import DiscussionMembers from '../DiscussionMembers';
-import { useCallback } from 'react';
+import {
+  OnDiscussionMessageReceived,
+  OnDiscussionMessageReceivedVariables,
+  SendDiscussionMessage,
+  SendDiscussionMessageVariables,
+} from './__generated__/index.generated';
 
-interface Props {
-  queryResult: QueryResult<DiscussionQuery, OperationVariables>;
-}
+const MESSAGE_RECEIVED = gql`
+  subscription OnDiscussionMessageReceived($discussionId: ID!) {
+    onDiscussionMessageReceived(discussionId: $discussionId) {
+      message {
+        body
+      }
+    }
+  }
+`;
 
-const DiscussionContainer = ({ queryResult }: Props) => {
-  const { data, loading, error, refetch } = queryResult;
+const SEND_MESSAGE_MUTATION = gql`
+  mutation SendDiscussionMessage($input: SendDiscussionMessageInput!) {
+    sendDiscussionMessage(input: $input) {
+      message {
+        id
+      }
+      userErrors {
+        message
+        code
+      }
+    }
+  }
+`;
 
-  const onNewMessage = useCallback((message: Partial<Message>) => {
-    console.log(message);
-  }, []);
+const DiscussionContainer = () => {
+  const router = useRouter();
+  const { data, loading, error, refetch } = useQuery<DiscussionQuery>(
+    DISCUSSION_QUERY,
+    {
+      variables: { id: router.query.discussionId },
+    }
+  );
+
+  const {
+    data: subscriptionData,
+  } = useSubscription<
+    OnDiscussionMessageReceived,
+    OnDiscussionMessageReceivedVariables
+  >(MESSAGE_RECEIVED, {
+    variables: { discussionId: router.query.discussionId as string },
+  });
+
+  const [sendMessage] = useMutation<
+    SendDiscussionMessage,
+    SendDiscussionMessageVariables
+  >(SEND_MESSAGE_MUTATION);
+
+  const onNewMessage = useCallback(
+    (message: string) => {
+      sendMessage({
+        variables: {
+          input: {
+            discussionId: router.query.discussionId as string,
+            body: message,
+          },
+        },
+      });
+    },
+    [router.query.discussionId, sendMessage]
+  );
+
+  console.log(subscriptionData);
 
   return (
     <Container>

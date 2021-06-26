@@ -43,7 +43,7 @@ namespace API.Schema.Entities.Classroom {
                     .Where(c => c.Id == classroom.Id)
                     .Include(c => c.UserClassrooms)
                     .SelectMany(c => c.UserClassrooms.Select(uc => uc.UserId))
-                    .ToArrayAsync();
+                    .ToArrayAsync(cancellationToken);
 
                 return await userById.LoadAsync(userIds, cancellationToken);
             }
@@ -57,7 +57,7 @@ namespace API.Schema.Entities.Classroom {
                     .Where(c => c.Id == classroom.Id)
                     .Include(c => c.Discussions)
                     .SelectMany(c => c.Discussions.Select(d => d.Id))
-                    .ToArrayAsync();
+                    .ToArrayAsync(cancellationToken);
 
                 return await discussionById.LoadAsync(discussionIds, cancellationToken);
             }

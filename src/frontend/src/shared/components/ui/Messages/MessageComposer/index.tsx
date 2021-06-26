@@ -4,16 +4,16 @@ import { EmojiHappyIcon, PaperClipIcon, ChevronIcon } from '~/shared/assets';
 import { formatMessage } from '../utils/formatMessage';
 import TextArea from '../../TextArea';
 import Button from '../../Button';
-import { MessageContext } from './../MessageProvider';
+import { MessageContext } from '../MessageProvider';
 
-const MessageInput = () => {
+const MessageComposer = () => {
   const { onNewMessage } = useContext(MessageContext)!;
   const [message, setMessage] = useState('');
   const [focused, setFocused] = useState(false);
 
   const handleNewMessage = () => {
     if (message.trim().length !== 0) {
-      onNewMessage({ body: formatMessage(message) });
+      onNewMessage(formatMessage(message));
       setMessage('');
     }
   };
@@ -76,4 +76,4 @@ const MessageInput = () => {
   );
 };
 
-export default MessageInput;
+export default MessageComposer;

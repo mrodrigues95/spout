@@ -12,6 +12,10 @@ namespace API.Data.Entities {
         [Required]
         public override string? Email { get; set; }
         [Required]
+        public int StateId { get; set; }
+        [Required]
+        public State? State { get; set; }
+        [Required]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

@@ -45,9 +45,13 @@ export type Classroom = Node & {
   name: Scalars['String'];
   createdById: Scalars['Int'];
   createdBy: User;
+  stateId: Scalars['Int'];
+  state: State;
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  delLogId?: Maybe<Scalars['Int']>;
+  delLog?: Maybe<DelLog>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
-  isActive: Scalars['Boolean'];
 };
 
 export type CreateClassroomInput = {
@@ -61,6 +65,25 @@ export type CreateClassroomPayload = {
 };
 
 
+export type DelLog = {
+  __typename?: 'DelLog';
+  id: Scalars['Int'];
+  deletedForId: Scalars['Int'];
+  deletedFor: DelLogType;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+  deletedClassrooms: Array<Classroom>;
+  deletedDiscussions: Array<Discussion>;
+  deletedMessages: Array<Message>;
+};
+
+export type DelLogType = {
+  __typename?: 'DelLogType';
+  id: Scalars['Int'];
+  type: Scalars['String'];
+  delLogs: Array<DelLog>;
+};
+
 export type Discussion = Node & {
   __typename?: 'Discussion';
   id: Scalars['ID'];
@@ -69,11 +92,24 @@ export type Discussion = Node & {
   users: Array<User>;
   guid: Scalars['Uuid'];
   name: Scalars['String'];
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
   classroomId: Scalars['Int'];
   createdById: Scalars['Int'];
+  stateId: Scalars['Int'];
+  state: State;
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  delLogId?: Maybe<Scalars['Int']>;
+  delLog?: Maybe<DelLog>;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
   messages: Array<Message>;
+};
+
+export type DiscussionMessageSubscriptionPayload = {
+  __typename?: 'DiscussionMessageSubscriptionPayload';
+  discussion: Discussion;
+  message: Message;
+  discussionId: Scalars['ID'];
+  messageId: Scalars['ID'];
 };
 
 export type LoginInput = {
@@ -85,21 +121,25 @@ export type LogoutInput = {
   sessionId: Scalars['ID'];
 };
 
-export type Message = {
+export type Message = Node & {
   __typename?: 'Message';
-  id: Scalars['Int'];
+  id: Scalars['ID'];
   body: Scalars['String'];
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
   discussionId: Scalars['Int'];
   discussion: Discussion;
   createdById: Scalars['Int'];
   createdBy: User;
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  delLogId?: Maybe<Scalars['Int']>;
+  delLog?: Maybe<DelLog>;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   createClassroom: CreateClassroomPayload;
+  sendDiscussionMessage: SendDiscussionMessagePayload;
   signUp: AuthPayload;
   login: AuthPayload;
   logout: AuthPayload;
@@ -109,6 +149,11 @@ export type Mutation = {
 
 export type MutationCreateClassroomArgs = {
   input: CreateClassroomInput;
+};
+
+
+export type MutationSendDiscussionMessageArgs = {
+  input: SendDiscussionMessageInput;
 };
 
 
@@ -192,6 +237,17 @@ export type RefreshSessionInput = {
   sessionId: Scalars['ID'];
 };
 
+export type SendDiscussionMessageInput = {
+  discussionId: Scalars['ID'];
+  body: Scalars['String'];
+};
+
+export type SendDiscussionMessagePayload = {
+  __typename?: 'SendDiscussionMessagePayload';
+  message?: Maybe<Message>;
+  userErrors?: Maybe<Array<UserError>>;
+};
+
 export type Session = Node & {
   __typename?: 'Session';
   id: Scalars['ID'];
@@ -208,6 +264,27 @@ export type SignUpInput = {
   password: Scalars['String'];
 };
 
+export type State = {
+  __typename?: 'State';
+  id: Scalars['Int'];
+  status: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+  users: Array<User>;
+  classrooms: Array<Classroom>;
+  discussions: Array<Discussion>;
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  onDiscussionMessageReceived: DiscussionMessageSubscriptionPayload;
+};
+
+
+export type SubscriptionOnDiscussionMessageReceivedArgs = {
+  discussionId: Scalars['ID'];
+};
+
 export type User = Node & {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -216,6 +293,8 @@ export type User = Node & {
   guid: Scalars['Uuid'];
   name: Scalars['String'];
   email: Scalars['String'];
+  stateId: Scalars['Int'];
+  state: State;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   userDiscussions: Array<UserDiscussion>;

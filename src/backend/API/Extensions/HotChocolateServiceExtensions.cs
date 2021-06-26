@@ -1,5 +1,7 @@
 ﻿using API.Schema.Entities.Classroom;
 using API.Schema.Entities.Discussion;
+using API.Schema.Entities.Discussion.Subscriptions;
+using API.Schema.Entities.Message;
 using API.Schema.Entities.Session;
 using API.Schema.Entities.User;
 using API.Schema.Services.Auth;
@@ -23,9 +25,10 @@ namespace API.Extensions {
             gql
                 //.AddAuthorization()
                 .AddHttpRequestInterceptor<CustomHttpRequestInterceptor>()
-                .AddFiltering()
                 .AddFluentValidation()
                 .EnableRelaySupport()
+                .AddInMemorySubscriptions()
+                .AddFiltering()
                 .ModifyRequestOptions(opt => {
                     opt.IncludeExceptionDetails = env == Environments.Development;
                 });
@@ -41,20 +44,27 @@ namespace API.Extensions {
             gql
                 .AddMutationType()
                     .AddTypeExtension<ClassroomMutations>()
+                    .AddTypeExtension<DiscussionMutations>()
                     .AddTypeExtension<AuthMutations>()
                     .AddTypeExtension<SessionMutations>();
+
+            gql
+                .AddSubscriptionType()
+                    .AddTypeExtension<DiscussionSubscriptions>();
 
             gql
                 .AddType<UserType>()
                 .AddType<SessionType>()
                 .AddType<ClassroomType>()
-                .AddType<DiscussionType>();
+                .AddType<DiscussionType>()
+                .AddType<MessageType>();
 
             gql
                 .AddDataLoader<UserByIdDataLoader>()
                 .AddDataLoader<SessionByIdDataLoader>()
                 .AddDataLoader<ClassroomByIdDataLoader>()
-                .AddDataLoader<DiscussionByIdDataLoader>();
+                .AddDataLoader<DiscussionByIdDataLoader>()
+                .AddDataLoader<MessageByIdDataLoader>();
 
             return services;
         }

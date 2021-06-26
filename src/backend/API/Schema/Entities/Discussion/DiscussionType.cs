@@ -62,7 +62,7 @@ namespace API.Schema.Entities.Discussion {
                     .Where(d => d.Id == discussion.Id)
                     .Include(d => d.UserDiscussions)
                     .SelectMany(d => d.UserDiscussions.Select(ud => ud.UserId))
-                    .ToArrayAsync();
+                    .ToArrayAsync(cancellationToken);
 
                 return await userById.LoadAsync(userIds, cancellationToken);
             }

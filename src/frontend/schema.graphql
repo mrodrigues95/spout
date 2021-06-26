@@ -1,6 +1,7 @@
 ﻿schema {
   query: Query
   mutation: Mutation
+  subscription: Subscription
 }
 
 "The node interface is implemented by entities that have a global unique identifier."
@@ -29,14 +30,35 @@ type Classroom implements Node {
   name: String!
   createdById: Int!
   createdBy: User!
+  stateId: Int!
+  state: State!
+  deletedAt: DateTime
+  delLogId: Int
+  delLog: DelLog
   createdAt: DateTime!
   updatedAt: DateTime!
-  isActive: Boolean!
 }
 
 type CreateClassroomPayload {
   classroom: Classroom
   userErrors: [UserError!]
+}
+
+type DelLog {
+  id: Int!
+  deletedForId: Int!
+  deletedFor: DelLogType!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedClassrooms: [Classroom!]!
+  deletedDiscussions: [Discussion!]!
+  deletedMessages: [Message!]!
+}
+
+type DelLogType {
+  id: Int!
+  type: String!
+  delLogs: [DelLog!]!
 }
 
 type Discussion implements Node {
@@ -46,26 +68,42 @@ type Discussion implements Node {
   users: [User!]!
   guid: Uuid!
   name: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
   classroomId: Int!
   createdById: Int!
+  stateId: Int!
+  state: State!
+  deletedAt: DateTime
+  delLogId: Int
+  delLog: DelLog
+  createdAt: DateTime!
+  updatedAt: DateTime!
   messages: [Message!]!
 }
 
-type Message {
-  id: Int!
+type DiscussionMessageSubscriptionPayload {
+  discussion: Discussion!
+  message: Message!
+  discussionId: ID!
+  messageId: ID!
+}
+
+type Message implements Node {
+  id: ID!
   body: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
   discussionId: Int!
   discussion: Discussion!
   createdById: Int!
   createdBy: User!
+  deletedAt: DateTime
+  delLogId: Int
+  delLog: DelLog
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Mutation {
   createClassroom(input: CreateClassroomInput!): CreateClassroomPayload!
+  sendDiscussionMessage(input: SendDiscussionMessageInput!): SendDiscussionMessagePayload!
   signUp(input: SignUpInput!): AuthPayload!
   login(input: LoginInput!): AuthPayload!
   logout(input: LogoutInput!): AuthPayload!
@@ -88,6 +126,11 @@ type Query {
   me: User
 }
 
+type SendDiscussionMessagePayload {
+  message: Message
+  userErrors: [UserError!]
+}
+
 type Session implements Node {
   id: ID!
   user: User
@@ -97,6 +140,20 @@ type Session implements Node {
   userId: Int!
 }
 
+type State {
+  id: Int!
+  status: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  users: [User!]!
+  classrooms: [Classroom!]!
+  discussions: [Discussion!]!
+}
+
+type Subscription {
+  onDiscussionMessageReceived(discussionId: ID!): DiscussionMessageSubscriptionPayload!
+}
+
 type User implements Node {
   id: ID!
   classrooms: [Classroom]
@@ -104,6 +161,8 @@ type User implements Node {
   guid: Uuid!
   name: String!
   email: String!
+  stateId: Int!
+  state: State!
   createdAt: DateTime!
   updatedAt: DateTime!
   userDiscussions: [UserDiscussion!]!
@@ -150,6 +209,11 @@ input LogoutInput {
 
 input RefreshSessionInput {
   sessionId: ID!
+}
+
+input SendDiscussionMessageInput {
+  discussionId: ID!
+  body: String!
 }
 
 input SignUpInput {

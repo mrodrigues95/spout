@@ -9,25 +9,19 @@ namespace API.Data.Configurations {
             builder.HasKey(s => s.Id);
 
             builder.Property(s => s.CreatedAt)
-                .HasDefaultValue(DateTime.UtcNow)
-                .IsRequired();
+                .HasDefaultValue(DateTime.UtcNow);
 
             builder.Property(s => s.ExpiresAt)
-                .HasDefaultValue(DateTime.UtcNow)
-                .IsRequired();
+                .HasDefaultValue(DateTime.UtcNow);
 
             builder.Property(s => s.UpdatedAt)
-                .HasDefaultValue(DateTime.UtcNow)
-                .IsRequired();
-
-            builder.Property(s => s.UserId).IsRequired();
+                .HasDefaultValue(DateTime.UtcNow);
 
             builder.HasIndex(s => s.UserId);
 
             builder.HasOne(s => s.User)
                 .WithMany(u => u!.Sessions)
-                .HasForeignKey(s => s.UserId)
-                .IsRequired();
+                .HasForeignKey(s => s.UserId);
         }
     }
 }

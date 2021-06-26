@@ -14,11 +14,16 @@ namespace API.Data.Entities {
         [Required]
         public User? CreatedBy { get; set; }
         [Required]
+        public int StateId { get; set; }
+        [Required]
+        public State? State { get; set; }
+        public DateTime? DeletedAt { get; set; }
+        public int? DelLogId { get; set; }
+        public DelLog? DelLog { get; set; }
+        [Required]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-        [Required]
-        public bool IsActive { get; set; } = true;
 
         public ICollection<UserClassroom> UserClassrooms { get; set; } = new List<UserClassroom>();
         public ICollection<Discussion> Discussions { get; set; } = new List<Discussion>();

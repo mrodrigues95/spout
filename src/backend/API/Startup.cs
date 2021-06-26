@@ -38,6 +38,7 @@ namespace API {
             app
                 .UseMiddleware<ExceptionHandlingMiddleware>()
                 //.UseHttpsRedirection()
+                .UseWebSockets()
                 .UseRouting()
                 .UseCors("CorsPolicy")
                 .UseAuthentication()

@@ -1,4 +1,5 @@
 ﻿using API.Data.Entities;
+using Enums = API.Common.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -15,8 +16,18 @@ namespace API.Data {
             ILoggerFactory loggerFactory,
             int retry = 0) {
             try {
+                if (!await context.States.AnyAsync()) {
+                    await context.States.AddRangeAsync(GetPreconfiguredStates());
+                    await context.SaveChangesAsync();
+                }
+
+                if (!await context.DelLogTypes.AnyAsync()) {
+                    await context.DelLogTypes.AddRangeAsync(GetPreconfiguredDelLogTypes());
+                    await context.SaveChangesAsync();
+                }
+
                 if (!await userManager.Users.AnyAsync()) {
-                    foreach (User user in GetPreconfiguredUsers()) {
+                    foreach (User user in GetPreconfiguredUsers(context)) {
                         await userManager.CreateAsync(user, "Pa$$w0rd!");
                     }
                     await context.SaveChangesAsync();
@@ -52,31 +63,62 @@ namespace API.Data {
             }
         }
 
-        private static IEnumerable<User> GetPreconfiguredUsers() {
+        private static IEnumerable<State> GetPreconfiguredStates() {
+            return new List<State>() {
+                new State {
+                    Status = Enums.From.State(Enums.State.Active),
+                },
+                new State {
+                    Status = Enums.From.State(Enums.State.Active),
+                },
+                new State {
+                    Status = Enums.From.State(Enums.State.Active),
+                },
+                new State {
+                    Status = Enums.From.State(Enums.State.Active)
+                },
+            };
+        }
+
+        private static IEnumerable<DelLogType> GetPreconfiguredDelLogTypes() {
+            return new List<DelLogType>() {
+                new DelLogType {
+                    Type = Enums.DelLogType.Classrooms
+                },
+                new DelLogType {
+                    Type = Enums.DelLogType.Discussions
+                },
+                new DelLogType {
+                    Type = Enums.DelLogType.Messages
+                },
+            };
+        }
+
+        private static IEnumerable<User> GetPreconfiguredUsers(ApplicationDbContext context) {
             return new List<User>() {
                     new User {
                         Name = "Marcus Rodrigues",
                         UserName = "mrodrigues@test.com",
                         Email = "mrodrigues@test.com",
-                        UpdatedAt = DateTime.UtcNow
+                        State = GetState(context)
                     },
                     new User {
                         Name = "John Doe",
                         UserName = "jdoe@test.com",
                         Email = "jdoe@test.com",
-                        UpdatedAt = DateTime.UtcNow
+                        State = GetState(context)
                     },
                     new User {
                         Name = "Debbie Ray",
                         UserName = "dray@test.com",
                         Email = "dray@test.com",
-                        UpdatedAt = DateTime.UtcNow
+                        State = GetState(context)
                     },
                     new User {
                         Name = "Heather Dook",
                         UserName = "hdook@test.com",
                         Email = "hdook@test.com",
-                        UpdatedAt = DateTime.UtcNow
+                        State = GetState(context)
                     },
                 };
         }
@@ -85,28 +127,29 @@ namespace API.Data {
             return new List<Classroom>() {
                     new Classroom {
                         Name = "Introduction to C# - SE42",
-                        UpdatedAt = DateTime.UtcNow,
-                        CreatedBy = GetUser(context)
+                        CreatedBy = GetUser(context),
+                        StateId = GetState(context).Id,
+                        State = GetState(context)
                     },
                     new Classroom {
                         Name = "Computer Programming - CP425",
-                        UpdatedAt = DateTime.UtcNow,
-                        CreatedBy = GetUser(context, skip: 1)
+                        CreatedBy = GetUser(context, skip: 1),
+                        State = GetState(context)
                     },
                     new Classroom {
                         Name = "Group Dynamics - GD108",
-                        UpdatedAt = DateTime.UtcNow,
-                        CreatedBy = GetUser(context, skip: 2)
+                        CreatedBy = GetUser(context, skip: 2),
+                        State = GetState(context)
                     },
                     new Classroom {
                         Name = "UX Fundamentals - UX302",
-                        UpdatedAt = DateTime.UtcNow,
-                        CreatedBy = GetUser(context)
+                        CreatedBy = GetUser(context),
+                        State = GetState(context)
                     },
                     new Classroom {
                         Name = "Networking Infrastructure - NI21",
-                        UpdatedAt = DateTime.UtcNow,
-                        CreatedBy = GetUser(context, skip: 3)
+                        CreatedBy = GetUser(context, skip: 3),
+                        State = GetState(context)
                     },
                 };
         }
@@ -165,52 +208,62 @@ namespace API.Data {
                 new Discussion {
                     Name = "Assignment help",
                     CreatedBy = GetUser(context),
-                    Classroom = GetClassroom(context)
+                    Classroom = GetClassroom(context),
+                    State = GetState(context)
                 },
                 new Discussion {
                     Name = "Off topic",
                     CreatedBy = GetUser(context),
-                    Classroom = GetClassroom(context)
+                    Classroom = GetClassroom(context),
+                    State = GetState(context)
                 },
                 new Discussion {
                     Name = "Exam help",
                     CreatedBy = GetUser(context),
-                    Classroom = GetClassroom(context)
+                    Classroom = GetClassroom(context),
+                    State = GetState(context)
                 },
                 new Discussion {
                     Name = "Teacher AMA",
                     CreatedBy = GetUser(context, skip: 1),
-                    Classroom = GetClassroom(context, skip: 1)
+                    Classroom = GetClassroom(context, skip: 1),
+                    State = GetState(context)
                 },
                 new Discussion {
                     Name = "Pair programming",
                     CreatedBy = GetUser(context, skip: 2),
-                    Classroom = GetClassroom(context, skip: 2)
+                    Classroom = GetClassroom(context, skip: 2),
+                    State = GetState(context)
                 },
                 new Discussion {
                     Name = "Design topics",
                     CreatedBy = GetUser(context),
-                    Classroom = GetClassroom(context, skip: 3)
+                    Classroom = GetClassroom(context, skip: 3),
+                    State = GetState(context)
                 },
                 new Discussion {
                     Name = "Frontend",
                     CreatedBy = GetUser(context, skip: 1),
-                    Classroom = GetClassroom(context, skip: 3)
+                    Classroom = GetClassroom(context, skip: 3),
+                    State = GetState(context)
                 },
                 new Discussion {
                     Name = "Job help",
                     CreatedBy = GetUser(context, skip: 3),
-                    Classroom = GetClassroom(context, skip: 4)
+                    Classroom = GetClassroom(context, skip: 4),
+                    State = GetState(context)
                 },
                 new Discussion {
                     Name = "Course stuff",
                     CreatedBy = GetUser(context, skip: 2),
-                    Classroom = GetClassroom(context, skip: 4)
+                    Classroom = GetClassroom(context, skip: 4),
+                    State = GetState(context)
                 },
                 new Discussion {
                     Name = "Reading",
                     CreatedBy = GetUser(context, skip: 1),
-                    Classroom = GetClassroom(context, skip: 4)
+                    Classroom = GetClassroom(context, skip: 4),
+                    State = GetState(context)
                 },
             };
         }
@@ -264,6 +317,8 @@ namespace API.Data {
             };
         }
 
+        private static State GetState(ApplicationDbContext context, int skip = 0) =>
+            context.States.OrderBy(x => x.Id).Skip(skip).First();
         private static User GetUser(ApplicationDbContext context, int skip = 0) =>
             context.Users.OrderBy(x => x.Id).Skip(skip).First();
         private static Classroom GetClassroom(ApplicationDbContext context, int skip = 0) =>

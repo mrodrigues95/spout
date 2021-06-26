@@ -15,6 +15,9 @@ namespace API.Data {
         public DbSet<UserDiscussion> UserDiscussions { get; set; } = default!;
         public DbSet<Discussion> Discussions { get; set; } = default!;
         public DbSet<Message> Messages { get; set; } = default!;
+        public DbSet<State> States { get; set; } = default!;
+        public DbSet<DelLogType> DelLogTypes { get; set; } = default!;
+        public DbSet<DelLog> DelLogs { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);

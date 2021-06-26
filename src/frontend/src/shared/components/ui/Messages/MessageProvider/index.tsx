@@ -1,8 +1,7 @@
 import { createContext, ReactNode, useCallback } from 'react';
-import { Message } from '~/__generated__/schema.generated';
 
 interface MessageContextType {
-  onNewMessage(message: Partial<Message>): void;
+  onNewMessage(message: string): void;
 }
 
 export const MessageContext = createContext<MessageContextType | null>(null);
@@ -12,9 +11,8 @@ interface Props extends MessageContextType {
 }
 
 const MessageProvider = ({ onNewMessage: onNewMessageCb, children }: Props) => {
-    
   const onNewMessage = useCallback(
-    (message: Partial<Message>) => {
+    (message: string) => {
       onNewMessageCb(message);
     },
     [onNewMessageCb]

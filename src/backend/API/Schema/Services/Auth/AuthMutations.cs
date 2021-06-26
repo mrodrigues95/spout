@@ -1,6 +1,7 @@
 ﻿using API.Data;
 using API.Extensions;
 using API.Data.Entities;
+using Enums = API.Common.Enums;
 using HotChocolate;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Identity;
@@ -10,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using AppAny.HotChocolate.FluentValidation;
 using Microsoft.AspNetCore.Http;
 using HotChocolate.AspNetCore.Authorization;
-using System;
 using API.Schema.Common;
 using API.Schema.Entities.Session.Helpers;
 
@@ -32,7 +32,7 @@ namespace API.Schema.Services.Auth {
                 Name = input.Name,
                 UserName = input.Email,
                 Email = input.Email,
-                UpdatedAt = DateTime.UtcNow
+                StateId = (int) Enums.State.Active
             };
 
             var createUser = await userManager.CreateAsync(user, input.Password);
