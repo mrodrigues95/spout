@@ -38,14 +38,12 @@ namespace API {
             app
                 .UseMiddleware<ExceptionHandlingMiddleware>()
                 //.UseHttpsRedirection()
-                .UseWebSockets()
                 .UseRouting()
+                .UseWebSockets()
                 .UseCors("CorsPolicy")
                 .UseAuthentication()
                 .UseAuthorization()
-                .UseEndpoints(endpoints => endpoints
-                    .MapGraphQL());
-                        //.RequireAuthorization("TestPolicy"));
+                .UseEndpoints(endpoints => endpoints.MapGraphQL());
         }
     }
 }

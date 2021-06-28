@@ -10,7 +10,7 @@ import { onError } from '@apollo/client/link/error';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { useMemo } from 'react';
-import { wsLink } from './websockets';
+import { createWSLink } from './websockets';
 
 let apolloClient: ApolloClient<any>;
 
@@ -64,35 +64,34 @@ export const createApolloClient = ({
   initialState,
   headers,
 }: ClientOptions) => {
+  const ssrMode = typeof window === 'undefined';
   let nextClient = apolloClient;
 
   const httpLink = new HttpLink({
     // When running in Docker, we need to expose the graphql endpoint
     // to the browser environment outside of Docker for SSR and client requests.
     // See: https://github.com/apollographql/apollo-link/issues/375
-    uri:
-      typeof window !== 'undefined'
-        ? 'http://spout.localhost/graphql'
-        : 'http://backend:5000/graphql',
+    uri: ssrMode
+      ? 'http://backend:5000/graphql'
+      : 'http://spout.localhost/graphql',
     headers: headers,
     credentials: 'include',
   });
 
   // Websocket link can only be instantiated on the client side.
-  const splitLink =
-    typeof window !== 'undefined'
-      ? split(
-          ({ query }) => {
-            const definition = getMainDefinition(query);
-            return (
-              definition.kind === 'OperationDefinition' &&
-              definition.operation === 'subscription'
-            );
-          },
-          wsLink!,
-          httpLink
-        )
-      : httpLink;
+  const splitLink = ssrMode
+    ? httpLink
+    : split(
+        ({ query }) => {
+          const definition = getMainDefinition(query);
+          return (
+            definition.kind === 'OperationDefinition' &&
+            definition.operation === 'subscription'
+          );
+        },
+        createWSLink(),
+        httpLink
+      );
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
@@ -108,7 +107,7 @@ export const createApolloClient = ({
 
   if (!nextClient) {
     nextClient = new ApolloClient({
-      ssrMode: typeof window === 'undefined',
+      ssrMode,
       link: from([errorLink, splitLink]),
       cache: new InMemoryCache(),
     });
@@ -119,7 +118,7 @@ export const createApolloClient = ({
     nextClient.cache.restore({ ...existingCache, ...initialState });
   }
 
-  if (typeof window === 'undefined') return nextClient;
+  if (ssrMode) return nextClient;
   if (!apolloClient) apolloClient = nextClient;
 
   return nextClient;

@@ -27,11 +27,11 @@ namespace API.Schema.Entities.Discussion {
             var message = new Entity.Message {
                 Body = input.Body,
                 DiscussionId = input.DiscussionId,
-                CreatedById = userId
+                CreatedById = 1
             };
 
             discussion.Messages.Add(message);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
 
             await sender.SendAsync("OnDiscussionMessageReceived_" + input.DiscussionId, message.Id, cancellationToken);
 
