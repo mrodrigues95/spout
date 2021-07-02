@@ -21,10 +21,12 @@ const ContainerHeader = ({
         <Button className="inline-flex mr-1 sm:hidden" aria-label="Open menu">
           <HamburgerMenuIcon className="w-4 h-4" />
         </Button>
-        {title && (
+        {title ? (
           <h1 className="hidden sm:block font-bold truncate sm:text-4xl">
             {title}
           </h1>
+        ) : (
+          <div aria-hidden="true"></div>
         )}
         <div className="flex justify-end items-center w-3/5">
           <Search placeholder="Search" />

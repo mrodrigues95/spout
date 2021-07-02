@@ -65,6 +65,7 @@ type Discussion implements Node {
   id: ID!
   createdBy: User!
   classroom: Classroom!
+  messages: [Message!]!
   users: [User!]!
   guid: Uuid!
   name: String!
@@ -77,7 +78,6 @@ type Discussion implements Node {
   delLog: DelLog
   createdAt: DateTime!
   updatedAt: DateTime!
-  messages: [Message!]!
 }
 
 type DiscussionMessageSubscriptionPayload {
@@ -89,11 +89,11 @@ type DiscussionMessageSubscriptionPayload {
 
 type Message implements Node {
   id: ID!
+  createdBy: User!
   body: String!
   discussionId: Int!
   discussion: Discussion!
   createdById: Int!
-  createdBy: User!
   deletedAt: DateTime
   delLogId: Int
   delLog: DelLog

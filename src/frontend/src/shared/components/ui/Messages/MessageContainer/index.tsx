@@ -1,20 +1,32 @@
+import React, { useMemo, Fragment } from 'react';
 import MessageDivider from '../MessageDivider';
 import Message from '../Message';
 import MessageComposer from '../MessageComposer';
+import { DiscussionMessages_Message } from '~/modules/Discussion/components/DiscussionContainer/__generated__/index.generated';
+import { groupMessagesByDate } from '../utils/format';
 
-const testMessage = {
-  body: 'Wow, this is cool!',
-  createdAt: 'November 04/2020',
-  createdBy: 'Marcus Rodrigues',
-};
+interface Props {
+  messages: DiscussionMessages_Message[];
+}
 
-const MessageContainer = () => {
+const MessageContainer = ({ messages }: Props) => {
+  const groupedMessages = useMemo(() => groupMessagesByDate(messages), [
+    messages,
+  ]);
+
   return (
     <>
       <div className="flex flex-col absolute inset-0 border border-transparent sm:shadow-container sm:rounded-md">
         <div className="h-full px-4 py-2 overflow-y-auto">
-          <MessageDivider date="November 04/2020" />
-          <Message message={testMessage} isLastMessage />
+          {groupedMessages &&
+            Object.keys(groupedMessages).map((date) => (
+              <Fragment key={date}>
+                <MessageDivider date={date} />
+                {groupedMessages[date].map((message) => (
+                  <Message key={message.id} message={message} isLastMessage />
+                ))}
+              </Fragment>
+            ))}
         </div>
         <MessageComposer />
       </div>

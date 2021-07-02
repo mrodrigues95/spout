@@ -89,6 +89,7 @@ export type Discussion = Node & {
   id: Scalars['ID'];
   createdBy: User;
   classroom: Classroom;
+  messages: Array<Message>;
   users: Array<User>;
   guid: Scalars['Uuid'];
   name: Scalars['String'];
@@ -101,7 +102,6 @@ export type Discussion = Node & {
   delLog?: Maybe<DelLog>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
-  messages: Array<Message>;
 };
 
 export type DiscussionMessageSubscriptionPayload = {
@@ -124,11 +124,11 @@ export type LogoutInput = {
 export type Message = Node & {
   __typename?: 'Message';
   id: Scalars['ID'];
+  createdBy: User;
   body: Scalars['String'];
   discussionId: Scalars['Int'];
   discussion: Discussion;
   createdById: Scalars['Int'];
-  createdBy: User;
   deletedAt?: Maybe<Scalars['DateTime']>;
   delLogId?: Maybe<Scalars['Int']>;
   delLog?: Maybe<DelLog>;

@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import clsx from 'clsx';
 import { EmojiHappyIcon, PaperClipIcon, ChevronIcon } from '~/shared/assets';
-import { formatMessage } from '../utils/formatMessage';
+import { formatNewMessage } from '../utils/format';
 import TextArea from '../../TextArea';
 import Button from '../../Button';
 import { MessageContext } from '../MessageProvider';
@@ -13,7 +13,7 @@ const MessageComposer = () => {
 
   const handleNewMessage = () => {
     if (message.trim().length !== 0) {
-      onNewMessage(formatMessage(message));
+      onNewMessage(formatNewMessage(message));
       setMessage('');
     }
   };
