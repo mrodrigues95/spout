@@ -7,7 +7,10 @@ import {
   split,
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
-import { getMainDefinition } from '@apollo/client/utilities';
+import {
+  getMainDefinition,
+  relayStylePagination,
+} from '@apollo/client/utilities';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { useMemo } from 'react';
 import { createWSLink } from './websockets';
@@ -109,7 +112,15 @@ export const createApolloClient = ({
     nextClient = new ApolloClient({
       ssrMode,
       link: from([errorLink, splitLink]),
-      cache: new InMemoryCache(),
+      cache: new InMemoryCache({
+        typePolicies: {
+          Discussion: {
+            fields: {
+              messages: relayStylePagination()
+            },
+          },
+        },
+      }),
     });
   }
 

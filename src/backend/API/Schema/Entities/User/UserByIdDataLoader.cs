@@ -28,7 +28,7 @@ namespace API.Schema.Entities.User {
                 _dbContextFactory.CreateDbContext();
 
             return await dbContext.Users
-                .Where(au => keys.Contains(au.Id))
+                .Where(u => keys.Contains(u.Id))
                 .ToDictionaryAsync(t => t.Id, cancellationToken);
         }
     }

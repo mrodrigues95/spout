@@ -7,7 +7,8 @@ export const createWSLink = () => {
     uri: 'ws://spout.localhost/graphql',
     options: {
       reconnect: true,
-    },
+      lazy: true,
+    }
   });
 };
 
@@ -54,5 +55,6 @@ export const createWSLink = () => {
 // export const createWSLink = () => {
 //   return new WebSocketLink({
 //     url: 'ws://spout.localhost/graphql',
+//     webSocketImpl: typeof window === 'undefined' ? ws.client : WebSocket
 //   });
 // };

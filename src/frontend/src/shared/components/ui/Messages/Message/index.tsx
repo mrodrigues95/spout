@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 import clsx from 'clsx';
 import Avatar from '../../Avatar';
 import { getRandomAvatar } from '~/shared/utils/getRandomAvatar';
-import { DiscussionMessages_Message } from '~/modules/Discussion/components/DiscussionContainer/__generated__/index.generated';
+import { Message_Message } from '~/modules/Discussion/components/DiscussionContainer/__generated__/index.generated';
 import { formatMessageDate } from '../utils/format';
 
 interface Props {
-  message: DiscussionMessages_Message;
+  message: Message_Message;
   isLastMessage: boolean;
 }
 

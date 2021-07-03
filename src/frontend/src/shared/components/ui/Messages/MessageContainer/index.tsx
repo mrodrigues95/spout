@@ -2,11 +2,11 @@ import React, { useMemo, Fragment } from 'react';
 import MessageDivider from '../MessageDivider';
 import Message from '../Message';
 import MessageComposer from '../MessageComposer';
-import { DiscussionMessages_Message } from '~/modules/Discussion/components/DiscussionContainer/__generated__/index.generated';
 import { groupMessagesByDate } from '../utils/format';
+import { Message_Message } from '~/modules/Discussion/components/DiscussionContainer/__generated__/index.generated';
 
 interface Props {
-  messages: DiscussionMessages_Message[];
+  messages: Message_Message[];
 }
 
 const MessageContainer = ({ messages }: Props) => {

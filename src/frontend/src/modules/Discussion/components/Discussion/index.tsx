@@ -8,7 +8,6 @@ import {
   Container,
 } from '~/shared/components';
 import DiscussionContainer from '../DiscussionContainer';
-import DisucssionActionsMenu from '../DiscussionActionsMenu';
 import { DiscussionQuery } from './__generated__/index.generated';
 
 export const USER_INFO_FRAGMENT = gql`
@@ -18,7 +17,7 @@ export const USER_INFO_FRAGMENT = gql`
   }
 `;
 
-export const DISCUSSION_QUERY = gql`
+const DISCUSSION_QUERY = gql`
   query DiscussionQuery($id: ID!) {
     discussionById(id: $id) {
       id
@@ -36,11 +35,10 @@ const Discussion = () => {
   const { data, loading, error, refetch } = useQuery<DiscussionQuery>(
     DISCUSSION_QUERY,
     {
-      variables: { id: router.query.discussionId },
+      variables: { id: router.query.discussionId as string },
     }
   );
 
-  // TODO: Loading/error state.
   return (
     <>
       <PrimaryLayout title={data?.discussionById.name ?? 'Discussion'}>

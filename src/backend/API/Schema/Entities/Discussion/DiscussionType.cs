@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using API.Extensions;
+using API.Schema.Entities.Message;
+using HotChocolate.Types.Pagination;
 
 namespace API.Schema.Entities.Discussion {
     public class DiscussionType : ObjectType<Entity.Discussion> {
@@ -33,6 +35,14 @@ namespace API.Schema.Entities.Discussion {
                 .Name("classroom");
 
             descriptor
+                .Field(d => d.Messages)
+                .Type<NonNullType<ListType<NonNullType<MessageType>>>>()
+                .UsePaging<NonNullType<MessageType>>(options: new PagingOptions { MaxPageSize = 50 })
+                .ResolveWith<DiscussionResolvers>(x => x.GetMessagesAsync(default!, default!, default!, default!))
+                .UseDbContext<ApplicationDbContext>()
+                .Name("messages");
+
+            descriptor
                 .Field(d => d.UserDiscussions)
                 .Type<NonNullType<ListType<NonNullType<UserType>>>>()
                 .ResolveWith<DiscussionResolvers>(x => x.GetUsersAsync(default!, default!, default!, default!))
@@ -45,13 +55,31 @@ namespace API.Schema.Entities.Discussion {
                 Entity.Discussion discussion,
                 ClassroomByIdDataLoader classroomById,
                 CancellationToken cancellationToken) =>
-                    await classroomById.LoadAsync(discussion.ClassroomId, cancellationToken);
+                await classroomById.LoadAsync(discussion.ClassroomId, cancellationToken);
 
             public async Task<Entity.User> GetCreatedByAsync(
                 Entity.Discussion discussion,
                 UserByIdDataLoader userById,
                 CancellationToken cancellationToken) =>
-                    await userById.LoadAsync(discussion.CreatedById, cancellationToken);
+                await userById.LoadAsync(discussion.CreatedById, cancellationToken);
+
+            public async Task<IEnumerable<Entity.Message>> GetMessagesAsync(
+                Entity.Discussion discussion,
+                [ScopedService] ApplicationDbContext dbContext,
+                MessageByIdDataLoader messageById,
+                CancellationToken cancellationToken) {
+                // TODO: Paginate this.
+                // This will currently fetch all messages and chop the pages in memory but
+                // instead we should paginate the messages before passing it into the data loader.
+                // See: https://github.com/ChilliCream/graphql-workshop/blob/master/docs/6-adding-complex-filter-capabilities.md
+                int[] messageIds = await dbContext.Discussions
+                    .Where(d => d.Id == discussion.Id)
+                    .Include(d => d.Messages)
+                    .SelectMany(d => d.Messages.Select(m => m.Id))
+                    .ToArrayAsync(cancellationToken);
+
+                return await messageById.LoadAsync(messageIds, cancellationToken);
+            }
 
             public async Task<IEnumerable<Entity.User>> GetUsersAsync(
                 Entity.Discussion discussion,

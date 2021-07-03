@@ -1,7 +1,7 @@
 import * as Types from '../../../../../__generated__/schema.generated';
 
 import { UserInfo_User } from '../../Discussion/__generated__/index.generated';
-export type DiscussionMessages_Message = (
+export type Message_Message = (
   { __typename?: 'Message' }
   & Pick<Types.Message, 'id' | 'body' | 'createdAt'>
   & { createdBy: (
@@ -12,6 +12,7 @@ export type DiscussionMessages_Message = (
 
 export type DiscussionMessagesQueryVariables = Types.Exact<{
   id: Types.Scalars['ID'];
+  after?: Types.Maybe<Types.Scalars['String']>;
 }>;
 
 
@@ -20,9 +21,18 @@ export type DiscussionMessagesQuery = (
   & { discussionById: (
     { __typename?: 'Discussion' }
     & Pick<Types.Discussion, 'id' | 'name'>
-    & { messages: Array<(
-      { __typename?: 'Message' }
-      & DiscussionMessages_Message
+    & { messages?: Types.Maybe<(
+      { __typename?: 'MessageConnection' }
+      & { edges?: Types.Maybe<Array<(
+        { __typename?: 'MessageEdge' }
+        & { node: (
+          { __typename?: 'Message' }
+          & Message_Message
+        ) }
+      )>>, pageInfo: (
+        { __typename?: 'PageInfo' }
+        & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>
+      ) }
     )> }
   ) }
 );
@@ -38,7 +48,7 @@ export type OnDiscussionMessageReceived = (
     { __typename?: 'DiscussionMessageSubscriptionPayload' }
     & { message: (
       { __typename?: 'Message' }
-      & DiscussionMessages_Message
+      & Message_Message
     ) }
   ) }
 );

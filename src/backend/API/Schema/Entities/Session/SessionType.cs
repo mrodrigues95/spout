@@ -23,9 +23,8 @@ namespace API.Schema.Entities.Session {
             public async Task<Entity.User?> GetUserAsync(
                 Entity.Session session,
                 UserByIdDataLoader userById,
-                CancellationToken cancellationToken) {
-                return await userById.LoadAsync(session.UserId, cancellationToken);
-            }
+                CancellationToken cancellationToken) =>
+                await userById.LoadAsync(session.UserId, cancellationToken);            
         }
     }
 }

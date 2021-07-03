@@ -7,18 +7,19 @@ using System.Threading.Tasks;
 using HotChocolate;
 using API.Data;
 using System.Threading;
-using Microsoft.EntityFrameworkCore;
 using HotChocolate.Types.Relay;
+using System.Linq;
+using HotChocolate.Data;
 
 namespace API.Schema.Entities.Discussion {
     [Authorize]
     [ExtendObjectType(OperationTypeNames.Query)]
     public class DiscussionQueries {
         [UseApplicationDbContext]
-        public async Task<IEnumerable<Entity.Discussion>> GetDiscussionsAsync(
-            [ScopedService] ApplicationDbContext context,
-            CancellationToken cancellationToken) =>
-            await context.Discussions.ToListAsync(cancellationToken);
+        [UsePaging]
+        public IQueryable<Entity.Discussion> GetDiscussions(
+            [ScopedService] ApplicationDbContext context) =>
+            context.Discussions.OrderBy(d => d.Id);
 
         [UseApplicationDbContext]
         public Task<Entity.Discussion> GetDiscussionByIdAsync(

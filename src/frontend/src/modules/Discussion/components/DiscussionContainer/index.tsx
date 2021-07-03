@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect } from 'react';
+import { useCallback, useLayoutEffect, useEffect, useMemo } from 'react';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import {
@@ -21,8 +21,8 @@ import {
   SendDiscussionMessageVariables,
 } from './__generated__/index.generated';
 
-export const DISCUSSION_MESSAGES_FRAGMENT = gql`
-  fragment DiscussionMessages_message on Message {
+export const MESSAGE_FRAGMENT = gql`
+  fragment Message_message on Message {
     id
     body
     createdAt
@@ -34,28 +34,37 @@ export const DISCUSSION_MESSAGES_FRAGMENT = gql`
 `;
 
 const DISCUSSION_MESSAGES_QUERY = gql`
-  query DiscussionMessagesQuery($id: ID!) {
+  query DiscussionMessagesQuery($id: ID!, $after: String) {
     discussionById(id: $id) {
       id
       name
-      messages {
-        ...DiscussionMessages_message
+      messages(first: 5, after: $after) {
+        edges {
+          node {
+            ...Message_message
+          }
+        }
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
       }
     }
   }
-  ${USER_INFO_FRAGMENT}
-  ${DISCUSSION_MESSAGES_FRAGMENT}
+  ${MESSAGE_FRAGMENT}
 `;
 
 const MESSAGE_SUBSCRIPTION = gql`
   subscription OnDiscussionMessageReceived($discussionId: ID!) {
     onDiscussionMessageReceived(discussionId: $discussionId) {
       message {
-        ...DiscussionMessages_message
+        ...Message_message
       }
     }
   }
-  ${DISCUSSION_MESSAGES_FRAGMENT}
+  ${MESSAGE_FRAGMENT}
 `;
 
 const SEND_MESSAGE_MUTATION = gql`
@@ -76,12 +85,18 @@ interface Props {
   members: UserInfo_User[];
 }
 
+// TODO: Sort messages.
 const DiscussionContainer = ({ members }: Props) => {
   const router = useRouter();
-  const { data, loading, error, refetch, subscribeToMore } = useQuery<
-    DiscussionMessagesQuery
-  >(DISCUSSION_MESSAGES_QUERY, {
-    variables: { id: router.query.discussionId },
+  const {
+    data,
+    loading,
+    error,
+    refetch,
+    subscribeToMore,
+    fetchMore,
+  } = useQuery<DiscussionMessagesQuery>(DISCUSSION_MESSAGES_QUERY, {
+    variables: { id: router.query.discussionId as string }
   });
 
   const [sendMessage] = useMutation<
@@ -103,30 +118,78 @@ const DiscussionContainer = ({ members }: Props) => {
     [router.query.discussionId, sendMessage]
   );
 
-  useLayoutEffect(() => {
-    subscribeToMore<
-      OnDiscussionMessageReceived,
-      OnDiscussionMessageReceivedVariables
-    >({
-      document: MESSAGE_SUBSCRIPTION,
-      variables: { discussionId: router.query.discussionId as string },
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) return prev;
-        return {
-          discussionById: {
-            ...prev.discussionById,
-            messages: [
-              ...prev.discussionById.messages,
-              subscriptionData.data.onDiscussionMessageReceived.message,
-            ],
-          },
-        };
-      },
-    });
-  }, [router.query.discussionId, subscribeToMore]);
+  // const handleLoadMore = useCallback(() => {
+  //   const pageInfo = data?.discussionById.messages?.pageInfo;
+  //   console.log('PAGE INFO: ', pageInfo);
+
+  //   if (pageInfo?.hasNextPage) {
+  //     console.log('LOADING MORE...');
+  //     fetchMore({
+  //       variables: {
+  //         discussionId: router.query.discussionId as string,
+  //         after: data?.discussionById.messages?.pageInfo.endCursor,
+  //       },
+  //     });
+  //   }
+  // }, [
+  //   router.query.discussionId,
+  //   data?.discussionById.messages?.pageInfo,
+  //   fetchMore,
+  // ]);
+
+  const handleLoadMore = () => {
+    const pageInfo = data?.discussionById.messages?.pageInfo;
+
+    if (pageInfo?.hasNextPage) {
+      fetchMore({
+        variables: {
+          discussionId: router.query.discussionId as string,
+          after: data?.discussionById.messages?.pageInfo.endCursor,
+        },
+      });
+    }
+  };
+
+  // useLayoutEffect(() => {
+  //   subscribeToMore<
+  //     OnDiscussionMessageReceived,
+  //     OnDiscussionMessageReceivedVariables
+  //   >({
+  //     document: MESSAGE_SUBSCRIPTION,
+  //     variables: { discussionId: router.query.discussionId as string },
+  //     updateQuery: (prev, { subscriptionData }) => {
+  //       if (!subscriptionData.data) return prev;
+  //       const { message } = subscriptionData.data.onDiscussionMessageReceived;
+  //       const draft = { ...prev };
+
+  //       // Only insert if this message is not already in the discussion.
+  //       if (
+  //         !data?.discussionById.messages?.edges?.find(
+  //           ({ node }) => node.id === message.id
+  //         )
+  //       ) {
+  //         draft.discussionById.messages?.edges?.push({
+  //           __typename: 'MessageEdge',
+  //           node: message,
+  //         });
+  //       }
+
+  //       return draft;
+  //     },
+  //   });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [router.query.discussionId, subscribeToMore]);
+
+  const messages = useMemo(() => {
+    const edges = data?.discussionById.messages?.edges ?? [];
+    return edges.map((edge) => ({ ...edge.node }));
+  }, [data?.discussionById.messages?.edges]);
 
   return (
     <Container>
+      <button type="button" onClick={handleLoadMore}>
+        FETCH MORE
+      </button>
       <Container.Header title={data?.discussionById.name}>
         <DiscussionMembers members={members} />
         <DiscussionActionsMenu />
@@ -142,7 +205,7 @@ const DiscussionContainer = ({ members }: Props) => {
       {data && (
         <Container.Body>
           <MessageProvider onNewMessage={onNewMessage}>
-            <MessageContainer messages={data.discussionById.messages} />
+            <MessageContainer messages={messages} />
           </MessageProvider>
         </Container.Body>
       )}

@@ -1,10 +1,5 @@
 # Frontend files
 ngrok.yml
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 .next/
 build/
 .cache/
@@ -28,9 +23,6 @@ lerna-debug.log*
 *.user
 *.userosscache
 *.sln.docstates
-**/appsettings.development.json
-**/appsettings.staging.json
-**/appsettings.production.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

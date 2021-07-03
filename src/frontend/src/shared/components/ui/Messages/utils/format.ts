@@ -1,5 +1,5 @@
 import { differenceInDays, format, formatDistance } from 'date-fns';
-import { DiscussionMessages_Message } from '~/modules/Discussion/components/DiscussionContainer/__generated__/index.generated';
+import { Message_Message } from '~/modules/Discussion/components/DiscussionContainer/__generated__/index.generated';
 
 /**
  * Formats chat message dates as follows:
@@ -22,7 +22,7 @@ export const formatMessageDate = (date: string | Date): string => {
 };
 
 type GroupedMessagesByDate = {
-  [id: string]: DiscussionMessages_Message[];
+  [id: string]: Message_Message[];
 };
 
 /**
@@ -31,7 +31,7 @@ type GroupedMessagesByDate = {
  * @returns An `object` who's keys are grouped by date or `null`.
  */
 export const groupMessagesByDate = (
-  messages: DiscussionMessages_Message[]
+  messages: Message_Message[]
 ): GroupedMessagesByDate | null => {
   if (!messages.length) return null;
 
@@ -44,7 +44,7 @@ export const groupMessagesByDate = (
       return { ...acc, Yesterday: [...(acc['Yesterday'] || []), message] };
     }
     const createdAt = format(new Date(message.createdAt), 'MMM d, yyyy');
-    return { ...acc, createdAt: [...(acc[createdAt] || []), message] };
+    return { ...acc, [createdAt]: [...(acc[createdAt] || []), message] };
   }, {});
 };
 

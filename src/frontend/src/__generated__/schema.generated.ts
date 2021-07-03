@@ -89,7 +89,7 @@ export type Discussion = Node & {
   id: Scalars['ID'];
   createdBy: User;
   classroom: Classroom;
-  messages: Array<Message>;
+  messages?: Maybe<MessageConnection>;
   users: Array<User>;
   guid: Scalars['Uuid'];
   name: Scalars['String'];
@@ -102,6 +102,34 @@ export type Discussion = Node & {
   delLog?: Maybe<DelLog>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+};
+
+
+export type DiscussionMessagesArgs = {
+  first?: Maybe<Scalars['Int']>;
+  after?: Maybe<Scalars['String']>;
+  last?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['String']>;
+};
+
+/** A connection to a list of items. */
+export type DiscussionConnection = {
+  __typename?: 'DiscussionConnection';
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** A list of edges. */
+  edges?: Maybe<Array<DiscussionEdge>>;
+  /** A flattened list of the nodes. */
+  nodes?: Maybe<Array<Discussion>>;
+};
+
+/** An edge in a connection. */
+export type DiscussionEdge = {
+  __typename?: 'DiscussionEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node: Discussion;
 };
 
 export type DiscussionMessageSubscriptionPayload = {
@@ -134,6 +162,26 @@ export type Message = Node & {
   delLog?: Maybe<DelLog>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+};
+
+/** A connection to a list of items. */
+export type MessageConnection = {
+  __typename?: 'MessageConnection';
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** A list of edges. */
+  edges?: Maybe<Array<MessageEdge>>;
+  /** A flattened list of the nodes. */
+  nodes?: Maybe<Array<Message>>;
+};
+
+/** An edge in a connection. */
+export type MessageEdge = {
+  __typename?: 'MessageEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node: Message;
 };
 
 export type Mutation = {
@@ -181,6 +229,19 @@ export type Node = {
   id: Scalars['ID'];
 };
 
+/** Information about pagination in a connection. */
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  /** Indicates whether more edges exist following the set defined by the clients arguments. */
+  hasNextPage: Scalars['Boolean'];
+  /** Indicates whether more edges exist prior the set defined by the clients arguments. */
+  hasPreviousPage: Scalars['Boolean'];
+  /** When paginating backwards, the cursor to continue. */
+  startCursor?: Maybe<Scalars['String']>;
+  /** When paginating forwards, the cursor to continue. */
+  endCursor?: Maybe<Scalars['String']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   node?: Maybe<Node>;
@@ -192,7 +253,7 @@ export type Query = {
   classroomById: Classroom;
   classroomsById: Array<Classroom>;
   classroomsByUser: Array<Classroom>;
-  discussions: Array<Discussion>;
+  discussions?: Maybe<DiscussionConnection>;
   discussionById: Discussion;
   discussionsById: Array<Discussion>;
   me?: Maybe<User>;
@@ -221,6 +282,14 @@ export type QueryClassroomByIdArgs = {
 
 export type QueryClassroomsByIdArgs = {
   ids: Array<Scalars['ID']>;
+};
+
+
+export type QueryDiscussionsArgs = {
+  first?: Maybe<Scalars['Int']>;
+  after?: Maybe<Scalars['String']>;
+  last?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['String']>;
 };
 
 
