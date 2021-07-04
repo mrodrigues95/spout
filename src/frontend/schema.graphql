@@ -65,7 +65,7 @@ type Discussion implements Node {
   id: ID!
   createdBy: User!
   classroom: Classroom!
-  messages(first: Int after: String last: Int before: String): MessageConnection
+  messages(first: Int after: String last: Int before: String order: [MessageSortInput!]): MessageConnection
   users: [User!]!
   guid: Uuid!
   name: String!
@@ -242,8 +242,53 @@ type UserError {
   code: String!
 }
 
+input ClassroomSortInput {
+  id: SortEnumType
+  guid: SortEnumType
+  name: SortEnumType
+  createdById: SortEnumType
+  createdBy: UserSortInput
+  stateId: SortEnumType
+  state: StateSortInput
+  deletedAt: SortEnumType
+  delLogId: SortEnumType
+  delLog: DelLogSortInput
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
+}
+
 input CreateClassroomInput {
   name: String!
+}
+
+input DelLogSortInput {
+  id: SortEnumType
+  deletedForId: SortEnumType
+  deletedFor: DelLogTypeSortInput
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
+}
+
+input DelLogTypeSortInput {
+  id: SortEnumType
+  type: SortEnumType
+}
+
+input DiscussionSortInput {
+  id: SortEnumType
+  guid: SortEnumType
+  name: SortEnumType
+  classroomId: SortEnumType
+  classroom: ClassroomSortInput
+  createdById: SortEnumType
+  createdBy: UserSortInput
+  stateId: SortEnumType
+  state: StateSortInput
+  deletedAt: SortEnumType
+  delLogId: SortEnumType
+  delLog: DelLogSortInput
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
 }
 
 input LoginInput {
@@ -253,6 +298,20 @@ input LoginInput {
 
 input LogoutInput {
   sessionId: ID!
+}
+
+input MessageSortInput {
+  id: SortEnumType
+  body: SortEnumType
+  discussionId: SortEnumType
+  discussion: DiscussionSortInput
+  createdById: SortEnumType
+  createdBy: UserSortInput
+  deletedAt: SortEnumType
+  delLogId: SortEnumType
+  delLog: DelLogSortInput
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
 }
 
 input RefreshSessionInput {
@@ -270,9 +329,45 @@ input SignUpInput {
   password: String!
 }
 
+input StateSortInput {
+  id: SortEnumType
+  status: SortEnumType
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
+}
+
+input UserSortInput {
+  guid: SortEnumType
+  name: SortEnumType
+  email: SortEnumType
+  stateId: SortEnumType
+  state: StateSortInput
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
+  id: SortEnumType
+  userName: SortEnumType
+  normalizedUserName: SortEnumType
+  normalizedEmail: SortEnumType
+  emailConfirmed: SortEnumType
+  passwordHash: SortEnumType
+  securityStamp: SortEnumType
+  concurrencyStamp: SortEnumType
+  phoneNumber: SortEnumType
+  phoneNumberConfirmed: SortEnumType
+  twoFactorEnabled: SortEnumType
+  lockoutEnd: SortEnumType
+  lockoutEnabled: SortEnumType
+  accessFailedCount: SortEnumType
+}
+
 enum ApplyPolicy {
   BEFORE_RESOLVER
   AFTER_RESOLVER
+}
+
+enum SortEnumType {
+  ASC
+  DESC
 }
 
 "The `@defer` directive may be provided for fragment spreads and inline fragments to inform the executor to delay the execution of the current fragment to indicate deprioritization of the current fragment. A query with `@defer` directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred is delivered in a subsequent response. `@include` and `@skip` take precedence over `@defer`."

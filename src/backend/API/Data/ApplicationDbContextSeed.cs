@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Common.Utilities;
 
 namespace API.Data {
     public class ApplicationDbContextSeed {
@@ -50,6 +51,11 @@ namespace API.Data {
 
                 if (!await context.UserDiscussions.AnyAsync()) {
                     await context.UserDiscussions.AddRangeAsync(GetPreConfiguredUserDiscussions(context));
+                    await context.SaveChangesAsync();
+                }
+
+                if (!await context.Messages.AnyAsync()) {
+                    await context.Messages.AddRangeAsync(await GetPreconfiguredDiscussionMessages(context));
                     await context.SaveChangesAsync();
                 }
             } catch (Exception ex) {
@@ -315,6 +321,23 @@ namespace API.Data {
                     Discussion = GetDiscussion(context, skip: 4)
                 },
             };
+        }
+
+        private static async Task<IEnumerable<Message>> GetPreconfiguredDiscussionMessages(ApplicationDbContext context) {
+            var discussions = await context.Discussions.ToListAsync();
+            var messages = new List<Message>();
+
+            foreach (Discussion discussion in discussions) {
+                for (int i = 0; i < 500; ++i) {
+                    messages.Add(new Message {
+                        Discussion = discussion,
+                        CreatedBy = discussion.CreatedBy,
+                        Body = RandomMessageGenerator.Generate(1, 1, 5, 1, 20)
+                    });
+                }
+            }
+
+            return messages;
         }
 
         private static State GetState(ApplicationDbContext context, int skip = 0) =>

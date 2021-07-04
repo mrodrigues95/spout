@@ -4,10 +4,11 @@ import { useRouter } from 'next/router';
 import {
   Container,
   Spinner,
+  InfiniteList,
   ErrorFallback,
   MessageContainer,
+  MessageProvider,
 } from '~/shared/components';
-import { MessageProvider } from '~/shared/components';
 import { FeelingBlueIllustration } from '~/shared/assets';
 import { USER_INFO_FRAGMENT } from '../Discussion';
 import { UserInfo_User } from '../Discussion/__generated__/index.generated';
@@ -38,7 +39,7 @@ const DISCUSSION_MESSAGES_QUERY = gql`
     discussionById(id: $id) {
       id
       name
-      messages(first: 5, after: $after) {
+      messages(first: 50, after: $after, order: { id: DESC }) {
         edges {
           node {
             ...Message_message
@@ -85,7 +86,6 @@ interface Props {
   members: UserInfo_User[];
 }
 
-// TODO: Sort messages.
 const DiscussionContainer = ({ members }: Props) => {
   const router = useRouter();
   const {
@@ -96,7 +96,7 @@ const DiscussionContainer = ({ members }: Props) => {
     subscribeToMore,
     fetchMore,
   } = useQuery<DiscussionMessagesQuery>(DISCUSSION_MESSAGES_QUERY, {
-    variables: { id: router.query.discussionId as string }
+    variables: { id: router.query.discussionId as string },
   });
 
   const [sendMessage] = useMutation<
@@ -118,26 +118,7 @@ const DiscussionContainer = ({ members }: Props) => {
     [router.query.discussionId, sendMessage]
   );
 
-  // const handleLoadMore = useCallback(() => {
-  //   const pageInfo = data?.discussionById.messages?.pageInfo;
-  //   console.log('PAGE INFO: ', pageInfo);
-
-  //   if (pageInfo?.hasNextPage) {
-  //     console.log('LOADING MORE...');
-  //     fetchMore({
-  //       variables: {
-  //         discussionId: router.query.discussionId as string,
-  //         after: data?.discussionById.messages?.pageInfo.endCursor,
-  //       },
-  //     });
-  //   }
-  // }, [
-  //   router.query.discussionId,
-  //   data?.discussionById.messages?.pageInfo,
-  //   fetchMore,
-  // ]);
-
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
     const pageInfo = data?.discussionById.messages?.pageInfo;
 
     if (pageInfo?.hasNextPage) {
@@ -148,7 +129,11 @@ const DiscussionContainer = ({ members }: Props) => {
         },
       });
     }
-  };
+  }, [
+    router.query.discussionId,
+    data?.discussionById.messages?.pageInfo,
+    fetchMore,
+  ]);
 
   // useLayoutEffect(() => {
   //   subscribeToMore<
@@ -182,14 +167,11 @@ const DiscussionContainer = ({ members }: Props) => {
 
   const messages = useMemo(() => {
     const edges = data?.discussionById.messages?.edges ?? [];
-    return edges.map((edge) => ({ ...edge.node }));
+    return edges.map((edge) => ({ ...edge.node })).reverse();
   }, [data?.discussionById.messages?.edges]);
 
   return (
     <Container>
-      <button type="button" onClick={handleLoadMore}>
-        FETCH MORE
-      </button>
       <Container.Header title={data?.discussionById.name}>
         <DiscussionMembers members={members} />
         <DiscussionActionsMenu />
@@ -205,7 +187,16 @@ const DiscussionContainer = ({ members }: Props) => {
       {data && (
         <Container.Body>
           <MessageProvider onNewMessage={onNewMessage}>
-            <MessageContainer messages={messages} />
+            <MessageContainer
+              messages={messages}
+              infiniteListOpts={{
+                length: messages.length,
+                hasNext: data.discussionById.messages!.pageInfo.hasNextPage,
+                next: handleLoadMore,
+                isReverse: true,
+                loader: <span>LOADING...</span>,
+              }}
+            />
           </MessageProvider>
         </Container.Body>
       )}

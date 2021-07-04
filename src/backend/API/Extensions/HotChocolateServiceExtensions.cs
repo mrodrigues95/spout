@@ -29,6 +29,7 @@ namespace API.Extensions {
                 .EnableRelaySupport()
                 .AddInMemorySubscriptions()
                 .AddFiltering()
+                .AddSorting()
                 .ModifyRequestOptions(opt => {
                     opt.IncludeExceptionDetails = env == Environments.Development;
                 });

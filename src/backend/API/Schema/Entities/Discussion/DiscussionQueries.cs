@@ -9,7 +9,6 @@ using API.Data;
 using System.Threading;
 using HotChocolate.Types.Relay;
 using System.Linq;
-using HotChocolate.Data;
 
 namespace API.Schema.Entities.Discussion {
     [Authorize]

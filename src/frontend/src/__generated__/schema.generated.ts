@@ -54,6 +54,21 @@ export type Classroom = Node & {
   updatedAt: Scalars['DateTime'];
 };
 
+export type ClassroomSortInput = {
+  id?: Maybe<SortEnumType>;
+  guid?: Maybe<SortEnumType>;
+  name?: Maybe<SortEnumType>;
+  createdById?: Maybe<SortEnumType>;
+  createdBy?: Maybe<UserSortInput>;
+  stateId?: Maybe<SortEnumType>;
+  state?: Maybe<StateSortInput>;
+  deletedAt?: Maybe<SortEnumType>;
+  delLogId?: Maybe<SortEnumType>;
+  delLog?: Maybe<DelLogSortInput>;
+  createdAt?: Maybe<SortEnumType>;
+  updatedAt?: Maybe<SortEnumType>;
+};
+
 export type CreateClassroomInput = {
   name: Scalars['String'];
 };
@@ -77,11 +92,24 @@ export type DelLog = {
   deletedMessages: Array<Message>;
 };
 
+export type DelLogSortInput = {
+  id?: Maybe<SortEnumType>;
+  deletedForId?: Maybe<SortEnumType>;
+  deletedFor?: Maybe<DelLogTypeSortInput>;
+  createdAt?: Maybe<SortEnumType>;
+  updatedAt?: Maybe<SortEnumType>;
+};
+
 export type DelLogType = {
   __typename?: 'DelLogType';
   id: Scalars['Int'];
   type: Scalars['String'];
   delLogs: Array<DelLog>;
+};
+
+export type DelLogTypeSortInput = {
+  id?: Maybe<SortEnumType>;
+  type?: Maybe<SortEnumType>;
 };
 
 export type Discussion = Node & {
@@ -110,6 +138,7 @@ export type DiscussionMessagesArgs = {
   after?: Maybe<Scalars['String']>;
   last?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['String']>;
+  order?: Maybe<Array<MessageSortInput>>;
 };
 
 /** A connection to a list of items. */
@@ -138,6 +167,23 @@ export type DiscussionMessageSubscriptionPayload = {
   message: Message;
   discussionId: Scalars['ID'];
   messageId: Scalars['ID'];
+};
+
+export type DiscussionSortInput = {
+  id?: Maybe<SortEnumType>;
+  guid?: Maybe<SortEnumType>;
+  name?: Maybe<SortEnumType>;
+  classroomId?: Maybe<SortEnumType>;
+  classroom?: Maybe<ClassroomSortInput>;
+  createdById?: Maybe<SortEnumType>;
+  createdBy?: Maybe<UserSortInput>;
+  stateId?: Maybe<SortEnumType>;
+  state?: Maybe<StateSortInput>;
+  deletedAt?: Maybe<SortEnumType>;
+  delLogId?: Maybe<SortEnumType>;
+  delLog?: Maybe<DelLogSortInput>;
+  createdAt?: Maybe<SortEnumType>;
+  updatedAt?: Maybe<SortEnumType>;
 };
 
 export type LoginInput = {
@@ -182,6 +228,20 @@ export type MessageEdge = {
   cursor: Scalars['String'];
   /** The item at the end of the edge. */
   node: Message;
+};
+
+export type MessageSortInput = {
+  id?: Maybe<SortEnumType>;
+  body?: Maybe<SortEnumType>;
+  discussionId?: Maybe<SortEnumType>;
+  discussion?: Maybe<DiscussionSortInput>;
+  createdById?: Maybe<SortEnumType>;
+  createdBy?: Maybe<UserSortInput>;
+  deletedAt?: Maybe<SortEnumType>;
+  delLogId?: Maybe<SortEnumType>;
+  delLog?: Maybe<DelLogSortInput>;
+  createdAt?: Maybe<SortEnumType>;
+  updatedAt?: Maybe<SortEnumType>;
 };
 
 export type Mutation = {
@@ -333,6 +393,11 @@ export type SignUpInput = {
   password: Scalars['String'];
 };
 
+export enum SortEnumType {
+  Asc = 'ASC',
+  Desc = 'DESC'
+}
+
 export type State = {
   __typename?: 'State';
   id: Scalars['Int'];
@@ -342,6 +407,13 @@ export type State = {
   users: Array<User>;
   classrooms: Array<Classroom>;
   discussions: Array<Discussion>;
+};
+
+export type StateSortInput = {
+  id?: Maybe<SortEnumType>;
+  status?: Maybe<SortEnumType>;
+  createdAt?: Maybe<SortEnumType>;
+  updatedAt?: Maybe<SortEnumType>;
 };
 
 export type Subscription = {
@@ -395,5 +467,29 @@ export type UserError = {
   __typename?: 'UserError';
   message: Scalars['String'];
   code: Scalars['String'];
+};
+
+export type UserSortInput = {
+  guid?: Maybe<SortEnumType>;
+  name?: Maybe<SortEnumType>;
+  email?: Maybe<SortEnumType>;
+  stateId?: Maybe<SortEnumType>;
+  state?: Maybe<StateSortInput>;
+  createdAt?: Maybe<SortEnumType>;
+  updatedAt?: Maybe<SortEnumType>;
+  id?: Maybe<SortEnumType>;
+  userName?: Maybe<SortEnumType>;
+  normalizedUserName?: Maybe<SortEnumType>;
+  normalizedEmail?: Maybe<SortEnumType>;
+  emailConfirmed?: Maybe<SortEnumType>;
+  passwordHash?: Maybe<SortEnumType>;
+  securityStamp?: Maybe<SortEnumType>;
+  concurrencyStamp?: Maybe<SortEnumType>;
+  phoneNumber?: Maybe<SortEnumType>;
+  phoneNumberConfirmed?: Maybe<SortEnumType>;
+  twoFactorEnabled?: Maybe<SortEnumType>;
+  lockoutEnd?: Maybe<SortEnumType>;
+  lockoutEnabled?: Maybe<SortEnumType>;
+  accessFailedCount?: Maybe<SortEnumType>;
 };
 

@@ -38,6 +38,7 @@ namespace API.Schema.Entities.Discussion {
                 .Field(d => d.Messages)
                 .Type<NonNullType<ListType<NonNullType<MessageType>>>>()
                 .UsePaging<NonNullType<MessageType>>(options: new PagingOptions { MaxPageSize = 50 })
+                .UseSorting()
                 .ResolveWith<DiscussionResolvers>(x => x.GetMessagesAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .Name("messages");
