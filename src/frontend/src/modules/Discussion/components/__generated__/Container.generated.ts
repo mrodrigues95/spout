@@ -1,6 +1,6 @@
-import * as Types from '../../../../../__generated__/schema.generated';
+import * as Types from '../../../../__generated__/schema.generated';
 
-import { UserInfo_User } from '../../Discussion/__generated__/index.generated';
+import { UserInfo_User } from './index.generated';
 export type Message_Message = (
   { __typename?: 'Message' }
   & Pick<Types.Message, 'id' | 'body' | 'createdAt'>

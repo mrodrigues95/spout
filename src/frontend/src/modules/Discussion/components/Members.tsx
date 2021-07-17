@@ -1,7 +1,7 @@
 import { Avatar, Button, Badge, BadgeVariants } from '~/shared/components';
 import { DotsVerticalIcon } from '~/shared/assets';
 import { getRandomAvatar } from '~/shared/utils/getRandomAvatar';
-import { UserInfo_User } from '../Discussion/__generated__/index.generated';
+import { UserInfo_User } from './__generated__/index.generated';
 
 interface Props {
   members: UserInfo_User[];

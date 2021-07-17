@@ -15,6 +15,7 @@ export { default as EmptyFallback } from './EmptyFallback';
 export { default as Spinner } from './Spinner';
 export { default as VisuallyHidden } from './VisuallyHidden';
 export { default as InfiniteList } from './InfiniteList';
+export { default as Skeleton } from './Skeleton';
 export * from './Form';
 export * from './Messages';
 

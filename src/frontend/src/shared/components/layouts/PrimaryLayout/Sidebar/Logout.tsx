@@ -1,5 +1,5 @@
 import { gql, useMutation } from '@apollo/client';
-import { useAuthRedirect } from '~/modules';
+import { useAuthRedirect } from '~/modules/Auth/hooks';
 import { Button } from '~/shared/components';
 import {
   LogoutMutation,

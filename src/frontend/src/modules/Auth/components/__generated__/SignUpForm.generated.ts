@@ -1,13 +1,13 @@
-import * as Types from '../../../../../__generated__/schema.generated';
+import * as Types from '../../../../__generated__/schema.generated';
 
-export type LoginMutationVariables = Types.Exact<{
-  input: Types.LoginInput;
+export type SignUpMutationVariables = Types.Exact<{
+  input: Types.SignUpInput;
 }>;
 
 
-export type LoginMutation = (
+export type SignUpMutation = (
   { __typename?: 'Mutation' }
-  & { login: (
+  & { signUp: (
     { __typename?: 'AuthPayload' }
     & { session?: Types.Maybe<(
       { __typename?: 'Session' }

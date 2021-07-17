@@ -10,14 +10,14 @@ import {
   PrimaryLayout,
   useToast,
 } from '~/shared/components';
-import { useAuthRedirect, useInitializeSessionMutation } from '~/modules';
-import AuthError from '../AuthError';
-import AuthCard from '../AuthCard';
+import { useAuthRedirect, useInitializeSessionMutation } from '../hooks';
+import AuthError from './AuthError';
+import AuthCard from './AuthCard';
 import { UserError } from '~/__generated__/schema.generated';
 import {
   SignUpMutation,
   SignUpMutationVariables,
-} from './__generated__/index.generated';
+} from './__generated__/SignUpForm.generated';
 
 const SIGN_UP_MUTATION = gql`
   mutation SignUpMutation($input: SignUpInput!) {

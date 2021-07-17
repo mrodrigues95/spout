@@ -1,26 +1,26 @@
-import { useCallback, useLayoutEffect, useEffect, useMemo } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
+import { USER_INFO_FRAGMENT } from '.';
 import {
   Container,
   Spinner,
-  InfiniteList,
+  Skeleton,
   ErrorFallback,
   MessageContainer,
   MessageProvider,
 } from '~/shared/components';
 import { FeelingBlueIllustration } from '~/shared/assets';
-import { USER_INFO_FRAGMENT } from '../Discussion';
-import { UserInfo_User } from '../Discussion/__generated__/index.generated';
-import DiscussionActionsMenu from '../DiscussionActionsMenu';
-import DiscussionMembers from '../DiscussionMembers';
+import { UserInfo_User } from './__generated__/index.generated';
+import ActionsMenu from './ActionsMenu';
+import Members from './Members';
 import {
   DiscussionMessagesQuery,
   OnDiscussionMessageReceived,
   OnDiscussionMessageReceivedVariables,
   SendDiscussionMessage,
   SendDiscussionMessageVariables,
-} from './__generated__/index.generated';
+} from './__generated__/Container.generated';
 
 export const MESSAGE_FRAGMENT = gql`
   fragment Message_message on Message {
@@ -87,6 +87,7 @@ interface Props {
 }
 
 const DiscussionContainer = ({ members }: Props) => {
+  const [shouldScrollBottom, setShouldScrollBottom] = useState(false);
   const router = useRouter();
   const {
     data,
@@ -97,12 +98,15 @@ const DiscussionContainer = ({ members }: Props) => {
     fetchMore,
   } = useQuery<DiscussionMessagesQuery>(DISCUSSION_MESSAGES_QUERY, {
     variables: { id: router.query.discussionId as string },
+    fetchPolicy: 'network-only',
   });
 
   const [sendMessage] = useMutation<
     SendDiscussionMessage,
     SendDiscussionMessageVariables
-  >(SEND_MESSAGE_MUTATION);
+  >(SEND_MESSAGE_MUTATION, {
+    onCompleted: () => setShouldScrollBottom(true),
+  });
 
   const onNewMessage = useCallback(
     (message: string) => {
@@ -135,35 +139,44 @@ const DiscussionContainer = ({ members }: Props) => {
     fetchMore,
   ]);
 
-  // useLayoutEffect(() => {
-  //   subscribeToMore<
-  //     OnDiscussionMessageReceived,
-  //     OnDiscussionMessageReceivedVariables
-  //   >({
-  //     document: MESSAGE_SUBSCRIPTION,
-  //     variables: { discussionId: router.query.discussionId as string },
-  //     updateQuery: (prev, { subscriptionData }) => {
-  //       if (!subscriptionData.data) return prev;
-  //       const { message } = subscriptionData.data.onDiscussionMessageReceived;
-  //       const draft = { ...prev };
+  useLayoutEffect(() => {
+    subscribeToMore<
+      OnDiscussionMessageReceived,
+      OnDiscussionMessageReceivedVariables
+    >({
+      document: MESSAGE_SUBSCRIPTION,
+      variables: { discussionId: router.query.discussionId as string },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev;
+        console.log('Prev: ', prev);
+        const { message } = subscriptionData.data.onDiscussionMessageReceived;
+        const edges = [...(prev.discussionById?.messages?.edges ?? [])];
 
-  //       // Only insert if this message is not already in the discussion.
-  //       if (
-  //         !data?.discussionById.messages?.edges?.find(
-  //           ({ node }) => node.id === message.id
-  //         )
-  //       ) {
-  //         draft.discussionById.messages?.edges?.push({
-  //           __typename: 'MessageEdge',
-  //           node: message,
-  //         });
-  //       }
+        // Only insert if this message is not already in the discussion.
+        if (
+          !prev?.discussionById.messages?.edges?.find(
+            ({ node }) => node.id === message.id
+          )
+        ) {
+          edges.unshift({
+            __typename: 'MessageEdge',
+            node: message,
+          });
+        }
 
-  //       return draft;
-  //     },
-  //   });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [router.query.discussionId, subscribeToMore]);
+        const draft = {
+          ...prev,
+          discussionById: {
+            ...prev.discussionById,
+            messages: { ...prev.discussionById.messages!, edges },
+          },
+        };
+
+        return draft;
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.query.discussionId, subscribeToMore]);
 
   const messages = useMemo(() => {
     const edges = data?.discussionById.messages?.edges ?? [];
@@ -173,8 +186,8 @@ const DiscussionContainer = ({ members }: Props) => {
   return (
     <Container>
       <Container.Header title={data?.discussionById.name}>
-        <DiscussionMembers members={members} />
-        <DiscussionActionsMenu />
+        <Members members={members} />
+        <ActionsMenu />
       </Container.Header>
       {loading && <Spinner className="h-5 w-5 text-black" />}
       {error && (
@@ -189,12 +202,16 @@ const DiscussionContainer = ({ members }: Props) => {
           <MessageProvider onNewMessage={onNewMessage}>
             <MessageContainer
               messages={messages}
+              scrollOnNewMessage={{
+                shouldScroll: shouldScrollBottom,
+                setShouldScroll: setShouldScrollBottom,
+              }}
               infiniteListOpts={{
                 length: messages.length,
                 hasNext: data.discussionById.messages!.pageInfo.hasNextPage,
                 next: handleLoadMore,
                 isReverse: true,
-                loader: <span>LOADING...</span>,
+                loader: <Skeleton h="h-3" />,
               }}
             />
           </MessageProvider>

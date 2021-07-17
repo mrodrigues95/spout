@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import clsx from 'clsx';
 import Avatar from '../../Avatar';
 import { getRandomAvatar } from '~/shared/utils/getRandomAvatar';
 import { Message_Message } from '~/modules/Discussion/components/DiscussionContainer/__generated__/index.generated';
@@ -7,21 +6,15 @@ import { formatMessageDate } from '../utils/format';
 
 interface Props {
   message: Message_Message;
-  isLastMessage: boolean;
 }
 
-const Message = ({ message, isLastMessage }: Props) => {
+const Message = ({ message }: Props) => {
   const formattedDate = useMemo(() => formatMessageDate(message.createdAt), [
     message,
   ]);
 
   return (
-    <div
-      className={clsx(
-        'flex items-center justify-center',
-        isLastMessage && 'pb-2'
-      )}
-    >
+    <div className="flex items-center justify-center">
       <div className="flex flex-1">
         <Avatar url={getRandomAvatar()} containerClassName="h-5 w-5" rounded />
         <div className="flex flex-col w-full ml-2">

@@ -5,6 +5,7 @@ import {
   useState,
   RefObject,
   useCallback,
+  Fragment,
 } from 'react';
 import { useObserver } from '~/shared/hooks/useObserver';
 
@@ -19,6 +20,10 @@ export interface Props {
   isReverse?: boolean;
 }
 
+// TODO: Fix an issue that occurs when you manually hold the scrollbar to the top of the container
+// it will infinitely fetch.
+// We should detect if the scrollbar is being held and if so, don't trigger `next()` until it has
+// been released.
 const InfiniteList = ({
   children,
   hasNext,
@@ -32,12 +37,12 @@ const InfiniteList = ({
   const loaderRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
   const [scrollParentHeight, setScrollParentHeight] = useState(0);
-  const entry = useObserver(loaderRef, { threshold: 1 });
+  const entry = useObserver(loaderRef, { threshold: 0.5 });
 
   const goToPrevScroll = useCallback(
     (oldHeight: number) => {
       if (!scrollParent.current) return;
-
+      console.log('GOING TO PREV SCROLL');
       scrollParent.current.scrollTop =
         scrollParent.current.scrollHeight -
         oldHeight +
@@ -49,15 +54,19 @@ const InfiniteList = ({
   useEffect(() => {
     // Avoid immediately fetching on render for reversed lists.
     if (isReverse && scrollParent.current) {
+      console.log('SETTING SCROLLTOP');
       scrollParent.current.scrollTop = scrollParent.current.scrollHeight;
     }
-  }, [isReverse, scrollParent]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReverse]);
 
   useEffect(() => {
-    // Reposition the scroll bar.
+    if (!loading) return;
+
+    // Reposition the scroll bar after fetching more data.
     const timeout = setTimeout(() => {
-      setLoading(false);
       goToPrevScroll(scrollParentHeight);
+      setLoading(false);
     }, 100);
 
     return () => clearTimeout(timeout);
@@ -66,6 +75,7 @@ const InfiniteList = ({
 
   useEffect(() => {
     if (loading || !entry?.isIntersecting || !hasNext) return;
+    console.log('FETCHING NEXT PAGE')
     setLoading(true);
     setScrollParentHeight(scrollParent.current?.scrollHeight ?? 0);
     next(amount);
@@ -78,7 +88,13 @@ const InfiniteList = ({
     ? [hasNext && <div ref={loaderRef} />, loading && loader, children]
     : [children, loading && loader, hasNext && <div ref={loaderRef} />];
 
-  return <>{sortedElements.map((element) => element)}</>;
+  return (
+    <>
+      {sortedElements.map((element, index) => (
+        <Fragment key={index}>{element}</Fragment>
+      ))}
+    </>
+  );
 };
 
 export default InfiniteList;

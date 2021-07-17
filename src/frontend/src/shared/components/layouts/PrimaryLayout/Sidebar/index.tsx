@@ -1,7 +1,7 @@
 import { ReactElement, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import { Link, Button } from '~/shared/components';
+import { Link } from '~/shared/components';
 import {
   HomeIcon,
   MessagesIcon,
