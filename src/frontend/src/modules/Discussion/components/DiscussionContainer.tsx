@@ -1,7 +1,7 @@
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { USER_INFO_FRAGMENT } from '.';
+import { USER_INFO_FRAGMENT } from './Discussion';
 import {
   Container,
   Spinner,

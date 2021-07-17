@@ -7,7 +7,7 @@ import {
   ErrorFallback,
   Container,
 } from '~/shared/components';
-import DiscussionContainer from './Container';
+import DiscussionContainer from './DiscussionContainer';
 import { DiscussionQuery } from './__generated__/index.generated';
 
 export const USER_INFO_FRAGMENT = gql`

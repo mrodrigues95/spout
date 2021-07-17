@@ -7,7 +7,7 @@ interface Props {
   members: UserInfo_User[];
 }
 
-const DiscussionMembers = ({ members }: Props) => {
+const Members = ({ members }: Props) => {
   return (
     <div className="hidden sm:block">
       <div className="flex items-center">
@@ -33,4 +33,4 @@ const DiscussionMembers = ({ members }: Props) => {
   );
 };
 
-export default DiscussionMembers;
+export default Members;
