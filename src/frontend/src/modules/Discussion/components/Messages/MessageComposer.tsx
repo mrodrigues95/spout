@@ -1,19 +1,64 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import clsx from 'clsx';
 import { EmojiHappyIcon, PaperClipIcon, ChevronIcon } from '~/shared/assets';
-import { formatNewMessage } from '../utils/format';
-import TextArea from '../../TextArea';
-import Button from '../../Button';
-import { MessageContext } from '../MessageProvider';
+import { formatNewMessage } from '../../utils/format';
+import { TextArea, Button } from '~/shared/components';
+import { useStore } from '../../utils/messagesStore';
+import {
+  MeQuery,
+  SendDiscussionMessageMutation,
+  SendDiscussionMessageMutationVariables,
+} from './__generated__/MessageComposer.generated';
+import { UserInfoFragment } from '../../utils/fragments';
 
-const MessageComposer = () => {
-  const { onNewMessage } = useContext(MessageContext)!;
+interface Props {
+  discussionId: string;
+}
+
+const mutation = gql`
+  mutation SendDiscussionMessageMutation($input: SendDiscussionMessageInput!) {
+    sendDiscussionMessage(input: $input) {
+      message {
+        id
+      }
+      userErrors {
+        message
+        code
+      }
+    }
+  }
+`;
+
+const MessageComposer = ({ discussionId }: Props) => {
+  const { data } = useQuery<MeQuery>(
+    gql`
+      query MeQuery {
+        me {
+          ...UserInfo_user
+        }
+      }
+      ${UserInfoFragment}
+    `,
+    { fetchPolicy: 'cache-only' }
+  );
+  const [sendMessage] = useMutation<
+    SendDiscussionMessageMutation,
+    SendDiscussionMessageMutationVariables
+  >(mutation);
+  const add = useStore((state) => state.add);
   const [message, setMessage] = useState('');
   const [focused, setFocused] = useState(false);
 
   const handleNewMessage = () => {
     if (message.trim().length !== 0) {
-      onNewMessage(formatNewMessage(message));
+      // add(discussionId, formatNewMessage(message), data!.me!);
+      sendMessage({
+        variables: { input: { discussionId, body: message } },
+        optimisticResponse: {
+          sendDiscussionMessage: {message: { id} },
+        },
+      });
       setMessage('');
     }
   };

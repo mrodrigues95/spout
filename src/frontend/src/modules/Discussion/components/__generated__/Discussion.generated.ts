@@ -1,10 +1,6 @@
 import * as Types from '../../../../__generated__/schema.generated';
 
-export type UserInfo_User = (
-  { __typename?: 'User' }
-  & Pick<Types.User, 'id' | 'name'>
-);
-
+import { UserInfo_User } from '../../utils/__generated__/fragments.generated';
 export type DiscussionQueryVariables = Types.Exact<{
   id: Types.Scalars['ID'];
 }>;

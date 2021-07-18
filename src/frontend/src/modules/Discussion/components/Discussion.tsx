@@ -1,5 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
+import { DiscussionQuery } from '../components/__generated__/Discussion.generated';
 import { FeelingBlueIllustration } from '~/shared/assets';
 import {
   PrimaryLayout,
@@ -8,16 +9,9 @@ import {
   Container,
 } from '~/shared/components';
 import DiscussionContainer from './DiscussionContainer';
-import { DiscussionQuery } from './__generated__/index.generated';
+import { UserInfoFragment } from '../utils/fragments';
 
-export const USER_INFO_FRAGMENT = gql`
-  fragment UserInfo_user on User {
-    id
-    name
-  }
-`;
-
-const DISCUSSION_QUERY = gql`
+const query = gql`
   query DiscussionQuery($id: ID!) {
     discussionById(id: $id) {
       id
@@ -27,17 +21,14 @@ const DISCUSSION_QUERY = gql`
       }
     }
   }
-  ${USER_INFO_FRAGMENT}
+  ${UserInfoFragment}
 `;
 
 const Discussion = () => {
   const router = useRouter();
-  const { data, loading, error, refetch } = useQuery<DiscussionQuery>(
-    DISCUSSION_QUERY,
-    {
-      variables: { id: router.query.discussionId as string },
-    }
-  );
+  const { data, loading, error, refetch } = useQuery<DiscussionQuery>(query, {
+    variables: { id: router.query.discussionId as string },
+  });
 
   return (
     <>
@@ -53,7 +44,7 @@ const Discussion = () => {
             />
           </Container>
         )}
-        {data && <DiscussionContainer members={data.discussionById.users} />}
+        {data && <DiscussionContainer discussion={data.discussionById} />}
       </PrimaryLayout>
     </>
   );

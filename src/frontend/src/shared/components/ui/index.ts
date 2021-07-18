@@ -17,6 +17,6 @@ export { default as VisuallyHidden } from './VisuallyHidden';
 export { default as InfiniteList } from './InfiniteList';
 export { default as Skeleton } from './Skeleton';
 export * from './Form';
-export * from './Messages';
 
 export type { Props as ButtonOrLinkProps } from './ButtonOrLink';
+export type { Props as InfiniteListProps } from './InfiniteList';

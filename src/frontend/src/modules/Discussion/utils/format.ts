@@ -1,5 +1,6 @@
 import { differenceInDays, format, formatDistance } from 'date-fns';
-import { Message_Message } from '~/modules/Discussion/components/DiscussionContainer/__generated__/index.generated';
+import { Message_Message } from '../components/Messages/__generated__/index.generated';
+import { OptimisticMessage } from './messagesStore';
 
 /**
  * Formats chat message dates as follows:
@@ -22,7 +23,7 @@ export const formatMessageDate = (date: string | Date): string => {
 };
 
 type GroupedMessagesByDate = {
-  [id: string]: Message_Message[];
+  [id: string]:  (OptimisticMessage | Message_Message)[];
 };
 
 /**
@@ -31,7 +32,7 @@ type GroupedMessagesByDate = {
  * @returns An `object` who's keys are grouped by date or `null`.
  */
 export const groupMessagesByDate = (
-  messages: Message_Message[]
+  messages: (OptimisticMessage | Message_Message)[]
 ): GroupedMessagesByDate | null => {
   if (!messages.length) return null;
 

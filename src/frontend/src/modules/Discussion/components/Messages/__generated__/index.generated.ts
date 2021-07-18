@@ -1,15 +1,6 @@
-import * as Types from '../../../../__generated__/schema.generated';
+import * as Types from '../../../../../__generated__/schema.generated';
 
-import { UserInfo_User } from './index.generated';
-export type Message_Message = (
-  { __typename?: 'Message' }
-  & Pick<Types.Message, 'id' | 'body' | 'createdAt'>
-  & { createdBy: (
-    { __typename?: 'User' }
-    & UserInfo_User
-  ) }
-);
-
+import { Message_Message } from '../../../utils/__generated__/fragments.generated';
 export type DiscussionMessagesQueryVariables = Types.Exact<{
   id: Types.Scalars['ID'];
   after?: Types.Maybe<Types.Scalars['String']>;
@@ -50,24 +41,5 @@ export type OnDiscussionMessageReceived = (
       { __typename?: 'Message' }
       & Message_Message
     ) }
-  ) }
-);
-
-export type SendDiscussionMessageVariables = Types.Exact<{
-  input: Types.SendDiscussionMessageInput;
-}>;
-
-
-export type SendDiscussionMessage = (
-  { __typename?: 'Mutation' }
-  & { sendDiscussionMessage: (
-    { __typename?: 'SendDiscussionMessagePayload' }
-    & { message?: Types.Maybe<(
-      { __typename?: 'Message' }
-      & Pick<Types.Message, 'id'>
-    )>, userErrors?: Types.Maybe<Array<(
-      { __typename?: 'UserError' }
-      & Pick<Types.UserError, 'message' | 'code'>
-    )>> }
   ) }
 );

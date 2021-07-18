@@ -16,7 +16,7 @@ export interface Props {
   next(amount?: number): void;
   hasNext: boolean;
   loader: ReactNode;
-  scrollParent: RefObject<Element>;
+  container: RefObject<Element>;
   isReverse?: boolean;
 }
 
@@ -31,7 +31,7 @@ const InfiniteList = ({
   amount,
   length,
   loader,
-  scrollParent,
+  container,
   isReverse = false,
 }: Props) => {
   const loaderRef = useRef<HTMLDivElement>(null);
@@ -41,21 +41,21 @@ const InfiniteList = ({
 
   const goToPrevScroll = useCallback(
     (oldHeight: number) => {
-      if (!scrollParent.current) return;
+      if (!container.current) return;
       console.log('GOING TO PREV SCROLL');
-      scrollParent.current.scrollTop =
-        scrollParent.current.scrollHeight -
+      container.current.scrollTop =
+      container.current.scrollHeight -
         oldHeight +
-        scrollParent.current.scrollTop;
+        container.current.scrollTop;
     },
-    [scrollParent]
+    [container]
   );
 
   useEffect(() => {
     // Avoid immediately fetching on render for reversed lists.
-    if (isReverse && scrollParent.current) {
+    if (isReverse && container.current) {
       console.log('SETTING SCROLLTOP');
-      scrollParent.current.scrollTop = scrollParent.current.scrollHeight;
+      container.current.scrollTop = container.current.scrollHeight;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReverse]);
@@ -77,7 +77,7 @@ const InfiniteList = ({
     if (loading || !entry?.isIntersecting || !hasNext) return;
     console.log('FETCHING NEXT PAGE')
     setLoading(true);
-    setScrollParentHeight(scrollParent.current?.scrollHeight ?? 0);
+    setScrollParentHeight(container.current?.scrollHeight ?? 0);
     next(amount);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry?.isIntersecting, loading, hasNext]);

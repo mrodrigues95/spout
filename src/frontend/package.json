@@ -46,7 +46,8 @@
     "react-hot-toast": "^1.0.2",
     "react-textarea-autosize": "^8.3.2",
     "subscriptions-transport-ws": "^0.9.19",
-    "zod": "^1.11.16"
+    "zod": "^1.11.16",
+    "zustand": "^3.5.7"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.21.4",
