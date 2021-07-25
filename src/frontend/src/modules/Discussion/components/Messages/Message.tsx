@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import Avatar from '../../../../shared/components/ui/Avatar';
 import { getRandomAvatar } from '~/shared/utils/getRandomAvatar';
-import { Message_Message } from './__generated__/index.generated';
+import { Message_Message } from '../../utils/__generated__/fragments.generated';
 import { formatMessageDate } from '../../utils/format';
 
 interface Props {

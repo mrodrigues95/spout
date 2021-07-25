@@ -1,21 +1,17 @@
 import create from 'zustand';
-import { Message_Message } from '../components/Messages/__generated__/index.generated';
-import { UserInfo_User } from '../components/__generated__/Discussion.generated';
+import { Message_Message } from '../utils/__generated__/fragments.generated';
+import { UserInfo_User } from '../utils/__generated__/fragments.generated';
 
 let optimisticId = -1;
 const getOptimisticId = () => optimisticId--;
 
-export interface OptimisticMessageType extends Message_Message {
+export interface OptimisticMessage extends Message_Message {
   optimisticId: number;
 }
 
 interface MessagesStore {
-  messagesByDiscussionId: { [index: string]: OptimisticMessageType[] };
-  add: (
-    discussionId: string,
-    message: string,
-    createdBy: UserInfo_User
-  ) => void;
+  messagesByDiscussionId: { [index: string]: OptimisticMessage[] };
+  add: (discussionId: string, message: string, createdBy: UserInfo_User) => void;
   remove: (discussionId: string, optimisticMessageId: number) => void;
 }
 
@@ -28,30 +24,46 @@ export const useStore = create<MessagesStore>((set) => ({
         state.messagesByDiscussionId[discussionId] = [];
       }
 
-      state.messagesByDiscussionId[discussionId].unshift({
-        id: discussionId,
-        optimisticId: getOptimisticId(),
-        body: message,
-        createdAt: String(Date.now()),
-        createdBy: createdBy,
-      });
+      return {
+        messagesByDiscussionId: {
+          ...state.messagesByDiscussionId,
+          [discussionId]: [
+            {
+              id: discussionId,
+              optimisticId: getOptimisticId(),
+              body: message,
+              createdAt: new Date().toString(),
+              createdBy: createdBy,
+            },
+            ...state.messagesByDiscussionId[discussionId],
+          ],
+        },
+      };
     }),
   remove: (discussionId: string, optimisticMessageId: number) =>
     set((state) => {
       if (!state.messagesByDiscussionId[discussionId]) {
-        return;
+        return { messagesByDiscussionId: { ...state.messagesByDiscussionId } };
       }
 
       // If a message at this index is found, remove it.
       const messageIndex = state.messagesByDiscussionId[discussionId].findIndex(
-        (message: OptimisticMessageType) =>
+        (message: OptimisticMessage) =>
           message.optimisticId === optimisticMessageId
       );
 
       if (messageIndex === -1) {
-        return;
+        return { messagesByDiscussionId: { ...state.messagesByDiscussionId } };
       }
 
-      state.messagesByDiscussionId[discussionId].splice(messageIndex, 1);
+      return {
+        messagesByDiscussionId: {
+          ...state.messagesByDiscussionId,
+          [discussionId]: state.messagesByDiscussionId[discussionId].splice(
+            messageIndex,
+            1
+          ),
+        },
+      };
     }),
 }));

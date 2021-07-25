@@ -1,55 +1,98 @@
-import React, { useMemo, Fragment, useRef, useEffect } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
+import { Virtuoso } from 'react-virtuoso';
 import MessageDivider from './MessageDivider';
 import Message from './Message';
-import { groupMessagesByDate } from '../../utils/format';
-import { Message_Message } from './__generated__/index.generated';
-import { InfiniteList, InfiniteListProps } from '~/shared/components';
-import { OptimisticMessageType } from './../../utils/messagesStore';
+import { generateItems, Day } from '../../utils/format';
+import { Message_Message } from '../../utils/__generated__/fragments.generated';
+import { InfiniteListProps } from '~/shared/components';
+import { OptimisticMessage as OptimisticMessageType } from './../../utils/messagesStore';
+import OptimisticMessage from './OptimisticMessage';
 
 interface MessageType {
   node: OptimisticMessageType | Message_Message;
 }
 
 interface Props {
+  discussionId: string;
   messages: MessageType[];
   opts: Omit<InfiniteListProps, 'container' | 'children'>;
 }
 
-const isOptimistic = (message: OptimisticMessageType) =>
-  !!(message.optimisticId && message.optimisticId < 0);
+const isOptimistic = (message: OptimisticMessageType | Message_Message) =>
+  'optimisticId' in message && message.optimisticId < 0;
 
-const MessageList = ({ messages, opts }: Props) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  //   const { shouldScroll, setShouldScroll } = scrollOnNewMessage;
+const isDay = (item: OptimisticMessageType | Message_Message | Day) =>
+  'type' in item && item.type === 'day';
 
-  //   useEffect(() => {
-  //     if (shouldScroll && scrollParentRef.current) {
-  //       scrollParentRef.current.scrollTop = scrollParentRef.current.scrollHeight;
-  //       setShouldScroll(false);
-  //     }
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, [messages]);
+const START_INDEX = 0;
+const PAGE_SIZE = 50;
 
-  const groupedMessages = useMemo(
-    () => groupMessagesByDate(messages.map((edge) => edge.node)),
+const MessageList = ({ discussionId, messages, opts }: Props) => {
+  const [firstItemIndex, setFirstItemIndex] = useState(START_INDEX); //  Total of items to be loaded - the one we have already loaded.
+
+  const groupedItems = useMemo(
+    () => generateItems(messages.map((edge) => edge.node)),
     [messages]
   );
 
+  console.log('Sorted days: ', groupedItems);
+
+  const prependItems = useCallback(() => {
+    const messagesToPrepend = 50;
+    const nextFirstItemIndex = firstItemIndex - messagesToPrepend;
+
+    // Should check for `hasNext` here before fetching.
+    setTimeout(() => {
+      setFirstItemIndex(nextFirstItemIndex);
+      opts.next();
+    }, 500);
+
+    return false;
+  }, [firstItemIndex, opts]);
+
+  if (!groupedItems.length) return null;
+
   return (
     <>
-      <div ref={containerRef} className="h-full px-4 py-2 overflow-y-auto">
-        <InfiniteList container={containerRef} {...opts}>
-          {groupedMessages &&
-            Object.keys(groupedMessages).map((date) => (
-              <Fragment key={date}>
-                <MessageDivider date={date} />
-                {groupedMessages[date].map((message) => (
-                  <Message key={message.id} message={message} />
-                ))}
-              </Fragment>
-            ))}
-        </InfiniteList>
-      </div>
+      <Virtuoso
+        className="h-full px-4 py-2 overflow-x-hidden"
+        data={groupedItems}
+        firstItemIndex={firstItemIndex}
+        initialTopMostItemIndex={PAGE_SIZE - 1}
+        startReached={prependItems}
+        itemContent={(_, item) => {
+          if (isDay(item)) {
+            return <MessageDivider date={(item as Day).date} />;
+          }
+
+          const message = item as OptimisticMessageType | Message_Message;
+
+          return isOptimistic(message) ? (
+            <OptimisticMessage
+              key={(message as OptimisticMessageType).optimisticId}
+              discussionId={discussionId}
+              message={message as OptimisticMessageType}
+            />
+          ) : (
+            <Message message={message as Message_Message} />
+          );
+        }}
+        components={{
+          Header: () => {
+            return (
+              <div
+                style={{
+                  padding: '2rem',
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              >
+                Loading...
+              </div>
+            );
+          },
+        }}
+      />
     </>
   );
 };

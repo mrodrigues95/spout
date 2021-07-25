@@ -27,7 +27,7 @@ namespace API.Schema.Entities.Discussion {
             var message = new Entity.Message {
                 Body = input.Body,
                 DiscussionId = input.DiscussionId,
-                CreatedById = 1
+                CreatedById = userId
             };
 
             discussion.Messages.Add(message);

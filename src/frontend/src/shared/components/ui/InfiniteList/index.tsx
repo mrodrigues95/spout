@@ -5,7 +5,6 @@ import {
   useState,
   RefObject,
   useCallback,
-  Fragment,
 } from 'react';
 import { useObserver } from '~/shared/hooks/useObserver';
 
@@ -44,7 +43,7 @@ const InfiniteList = ({
       if (!container.current) return;
       console.log('GOING TO PREV SCROLL');
       container.current.scrollTop =
-      container.current.scrollHeight -
+        container.current.scrollHeight -
         oldHeight +
         container.current.scrollTop;
     },
@@ -53,9 +52,9 @@ const InfiniteList = ({
 
   useEffect(() => {
     // Avoid immediately fetching on render for reversed lists.
-    if (isReverse && container.current) {
+    if (container.current) {
       console.log('SETTING SCROLLTOP');
-      container.current.scrollTop = container.current.scrollHeight;
+      container.current.scrollTop = container.current.scrollHeight
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReverse]);
@@ -75,24 +74,25 @@ const InfiniteList = ({
 
   useEffect(() => {
     if (loading || !entry?.isIntersecting || !hasNext) return;
-    console.log('FETCHING NEXT PAGE')
-    setLoading(true);
-    setScrollParentHeight(container.current?.scrollHeight ?? 0);
-    next(amount);
+    console.log('FETCHING NEXT PAGE');
+    // setLoading(true);
+    // setScrollParentHeight(container.current?.scrollHeight ?? 0);
+    // next(amount);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry?.isIntersecting, loading, hasNext]);
 
-  // If reversed, the intersection ref will be at the top and only intersect
-  // when the viewport reaches the top as opposed to the bottom.
-  const sortedElements = isReverse
-    ? [hasNext && <div ref={loaderRef} />, loading && loader, children]
-    : [children, loading && loader, hasNext && <div ref={loaderRef} />];
+  const load = (
+    <>
+      {loading && loader}
+      {<div ref={loaderRef} />}
+    </>
+  );
 
   return (
     <>
-      {sortedElements.map((element, index) => (
-        <Fragment key={index}>{element}</Fragment>
-      ))}
+      {isReverse && load}
+      {children}
+      {!isReverse && load}
     </>
   );
 };

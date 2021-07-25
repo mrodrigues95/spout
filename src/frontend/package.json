@@ -45,7 +45,9 @@
     "react-hook-form": "^7.3.4",
     "react-hot-toast": "^1.0.2",
     "react-textarea-autosize": "^8.3.2",
+    "react-virtuoso": "^1.10.0",
     "subscriptions-transport-ws": "^0.9.19",
+    "yarn": "^1.22.10",
     "zod": "^1.11.16",
     "zustand": "^3.5.7"
   },

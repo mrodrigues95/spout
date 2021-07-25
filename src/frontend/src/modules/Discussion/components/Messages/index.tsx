@@ -118,19 +118,20 @@ const Messages = ({ discussionId }: Props) => {
 
   const messages = useMemo(() => {
     const edges = (data?.discussionById.messages?.edges ?? []).map((edge) => ({
-      node: edge.node,
+      node: { ...edge.node, type: 'message' },
     }));
     const messagesToSendEdges = messagesToSend.map((message) => ({
-      node: message,
+      node: { message, type: 'optimistic' },
     }));
 
-    return [...edges, ...messagesToSendEdges].reverse();
+    return [...messagesToSendEdges, ...edges].reverse();
   }, [data?.discussionById.messages?.edges, messagesToSend]);
 
   // TODO: Handle error/loading states.
   return (
     <div className="flex flex-col absolute inset-0 border border-transparent sm:shadow-container sm:rounded-md">
       <MessageList
+        discussionId={discussionId}
         messages={messages}
         opts={{
           length: messages.length,

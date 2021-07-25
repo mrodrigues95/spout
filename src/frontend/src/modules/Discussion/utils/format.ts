@@ -1,6 +1,14 @@
 import { differenceInDays, format, formatDistance } from 'date-fns';
-import { Message_Message } from '../components/Messages/__generated__/index.generated';
+import { Message_Message } from '../utils/__generated__/fragments.generated';
 import { OptimisticMessage } from './messagesStore';
+
+type Message =
+  | {
+      type: 'day' | 'message' | 'optimistic';
+    }
+  | OptimisticMessage
+  | Message_Message
+  | Day;
 
 /**
  * Formats chat message dates as follows:
@@ -22,21 +30,19 @@ export const formatMessageDate = (date: string | Date): string => {
   return format(to, 'MMM d, yyyy');
 };
 
-type GroupedMessagesByDate = {
-  [id: string]:  (OptimisticMessage | Message_Message)[];
-};
+interface GroupedDays {
+  [id: string]: (OptimisticMessage | Message_Message)[];
+}
 
 /**
  * Groups an array of messages by date.
  * @param messages An array of messages.
- * @returns An `object` who's keys are grouped by date or `null`.
+ * @returns An `object` who's keys are grouped by date.
  */
 export const groupMessagesByDate = (
-  messages: (OptimisticMessage | Message_Message)[]
-): GroupedMessagesByDate | null => {
-  if (!messages.length) return null;
-
-  return messages.reduce((acc: GroupedMessagesByDate, message) => {
+  messages: (OptimisticMessage | Message_Message)[] = []
+): GroupedDays => {
+  return messages.reduce((acc: GroupedDays, message) => {
     if (differenceInDays(new Date(), new Date(message.createdAt)) === 0) {
       return { ...acc, Today: [...(acc['Today'] || []), message] };
     } else if (
@@ -47,6 +53,36 @@ export const groupMessagesByDate = (
     const createdAt = format(new Date(message.createdAt), 'MMM d, yyyy');
     return { ...acc, [createdAt]: [...(acc[createdAt] || []), message] };
   }, {});
+};
+
+// TODO: Merge OptimisticMessage | Message_Message | Day into one type
+// that has a `type` key which will be used to differentiate the types.
+export interface Day {
+  id: string;
+  type: string;
+  date: string;
+}
+
+export const generateItems = (
+  messages: (OptimisticMessage | Message_Message)[]
+): (OptimisticMessage | Message_Message | Day)[] => {
+  const days = groupMessagesByDate(messages);
+  const sortedDays = Object.keys(days).sort();
+
+  console.log(sortedDays);
+
+  const items = sortedDays.reduce(
+    (acc: (OptimisticMessage | Message_Message | Day)[], date) => {
+      const sortedMessages = days[date].sort(
+        (x, y) =>
+          new Date(y.createdAt).getTime() - new Date(x.createdAt).getTime()
+      );
+      return [...acc, { type: 'day', date, id: date }, ...sortedMessages];
+    },
+    []
+  );
+
+  return items;
 };
 
 /**
