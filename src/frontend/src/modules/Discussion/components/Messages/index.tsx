@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Skeleton } from '~/shared/components';
 import { useStore } from '../../utils/messagesStore';
 import {
@@ -59,19 +59,18 @@ const Messages = ({ discussionId }: Props) => {
     fetchMore,
   } = useQuery<DiscussionMessagesQuery>(query, {
     variables: { id: discussionId },
-    fetchPolicy: 'network-only',
   });
 
-  const handleLoadMore = useCallback(() => {
+  const handleLoadMore = useCallback(async () => {
     const pageInfo = data?.discussionById.messages?.pageInfo;
 
     if (pageInfo?.hasNextPage) {
-      fetchMore({
+      return fetchMore({
         variables: {
           discussionId: discussionId,
           after: data?.discussionById.messages?.pageInfo.endCursor,
         },
-      });
+      }).then(({ data }) => data);
     }
   }, [discussionId, data?.discussionById.messages?.pageInfo, fetchMore]);
 
@@ -113,18 +112,19 @@ const Messages = ({ discussionId }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [discussionId, subscribeToMore]);
 
-  const messagesToSend =
-    useStore((state) => state.messagesByDiscussionId[discussionId]) ?? [];
+  const messagesToSend = useStore(
+    (state) => state.messagesByDiscussionId[discussionId]
+  );
 
   const messages = useMemo(() => {
     const edges = (data?.discussionById.messages?.edges ?? []).map((edge) => ({
-      node: { ...edge.node, type: 'message' },
+      node: edge.node,
     }));
-    const messagesToSendEdges = messagesToSend.map((message) => ({
-      node: { message, type: 'optimistic' },
+    const messagesToSendEdges = (messagesToSend ?? []).map((message) => ({
+      node: message,
     }));
 
-    return [...messagesToSendEdges, ...edges].reverse();
+    return [...messagesToSendEdges, ...edges];
   }, [data?.discussionById.messages?.edges, messagesToSend]);
 
   // TODO: Handle error/loading states.
@@ -133,13 +133,8 @@ const Messages = ({ discussionId }: Props) => {
       <MessageList
         discussionId={discussionId}
         messages={messages}
-        opts={{
-          length: messages.length,
-          hasNext: data?.discussionById.messages!.pageInfo.hasNextPage ?? false,
-          next: handleLoadMore,
-          isReverse: true,
-          loader: <Skeleton h="h-3" />,
-        }}
+        hasNext={data?.discussionById.messages!.pageInfo.hasNextPage ?? false}
+        next={handleLoadMore}
       />
       <MessageComposer discussionId={discussionId} />
     </div>

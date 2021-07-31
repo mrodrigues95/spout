@@ -1,99 +1,111 @@
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import { gql, useQuery } from '@apollo/client';
 import { Virtuoso } from 'react-virtuoso';
+import { Skeleton } from '~/shared/components';
 import MessageDivider from './MessageDivider';
 import Message from './Message';
-import { generateItems, Day } from '../../utils/format';
+import { generateItems, Item, Day } from '../../utils/format';
+import { DiscussionMessagesQuery } from './__generated__/index.generated';
 import { Message_Message } from '../../utils/__generated__/fragments.generated';
-import { InfiniteListProps } from '~/shared/components';
 import { OptimisticMessage as OptimisticMessageType } from './../../utils/messagesStore';
+import { MeQuery } from './__generated__/MessageComposer.generated';
 import OptimisticMessage from './OptimisticMessage';
+import { useStore } from '../../utils/messagesStore';
+import { UserInfoFragment } from '../../utils/fragments';
 
-interface MessageType {
-  node: OptimisticMessageType | Message_Message;
-}
+const isOptimistic = (message: Item) =>
+  'optimisticId' in message && message.optimisticId < 0;
+
+const isDay = (item: Item) => 'type' in item && item.type === 'day';
 
 interface Props {
   discussionId: string;
-  messages: MessageType[];
-  opts: Omit<InfiniteListProps, 'container' | 'children'>;
+  messages: { node: OptimisticMessageType | Message_Message }[];
+  next(): Promise<DiscussionMessagesQuery | undefined>;
+  hasNext: boolean;
 }
 
-const isOptimistic = (message: OptimisticMessageType | Message_Message) =>
-  'optimisticId' in message && message.optimisticId < 0;
+const MessageList = ({ discussionId, messages, hasNext, next }: Props) => {
+  const { data } = useQuery<MeQuery>(
+    gql`
+      query MeQuery {
+        me {
+          ...UserInfo_user
+        }
+      }
+      ${UserInfoFragment}
+    `,
+    { fetchPolicy: 'cache-only' }
+  );
 
-const isDay = (item: OptimisticMessageType | Message_Message | Day) =>
-  'type' in item && item.type === 'day';
-
-const START_INDEX = 0;
-const PAGE_SIZE = 50;
-
-const MessageList = ({ discussionId, messages, opts }: Props) => {
-  const [firstItemIndex, setFirstItemIndex] = useState(START_INDEX); //  Total of items to be loaded - the one we have already loaded.
+  const [firstItemIndex, setFirstItemIndex] = useState(1000000); //  (total of items to be loaded - the one we have already loaded).
+  const [isFetching, setIsFetching] = useState(false);
 
   const groupedItems = useMemo(
     () => generateItems(messages.map((edge) => edge.node)),
     [messages]
   );
 
-  console.log('Sorted days: ', groupedItems);
-
   const prependItems = useCallback(() => {
-    const messagesToPrepend = 50;
-    const nextFirstItemIndex = firstItemIndex - messagesToPrepend;
+    setIsFetching(true);
 
-    // Should check for `hasNext` here before fetching.
-    setTimeout(() => {
-      setFirstItemIndex(nextFirstItemIndex);
-      opts.next();
+    setTimeout(async () => {
+      const items = await next();
+      const itemsToPrepend = items?.discussionById.messages?.edges?.length ?? 0;
+      setFirstItemIndex(firstItemIndex - itemsToPrepend);
+      setIsFetching(false);
     }, 500);
 
     return false;
-  }, [firstItemIndex, opts]);
+  }, [firstItemIndex, next]);
 
-  if (!groupedItems.length) return null;
+  const optimisticMessages =
+    useStore((state) => state.messagesByDiscussionId[discussionId]) ?? [];
 
   return (
-    <>
-      <Virtuoso
-        className="h-full px-4 py-2 overflow-x-hidden"
-        data={groupedItems}
-        firstItemIndex={firstItemIndex}
-        initialTopMostItemIndex={PAGE_SIZE - 1}
-        startReached={prependItems}
-        itemContent={(_, item) => {
-          if (isDay(item)) {
-            return <MessageDivider date={(item as Day).date} />;
-          }
+    <Virtuoso
+      data={groupedItems}
+      firstItemIndex={firstItemIndex}
+      initialTopMostItemIndex={messages.length - 1}
+      startReached={hasNext ? prependItems : undefined}
+      followOutput={(isAtBottom) => {
+        const myMessages = optimisticMessages.some(
+          (message) => message.createdBy.id === data!.me!.id
+        );
 
-          const message = item as OptimisticMessageType | Message_Message;
+        // If the user is scrolled away and sends a message - bring them to the bottom.
+        if (myMessages) return 'auto';
 
-          return isOptimistic(message) ? (
-            <OptimisticMessage
-              key={(message as OptimisticMessageType).optimisticId}
-              discussionId={discussionId}
-              message={message as OptimisticMessageType}
-            />
-          ) : (
-            <Message message={message as Message_Message} />
-          );
-        }}
-        components={{
-          Header: () => {
-            return (
-              <div
-                style={{
-                  padding: '2rem',
-                  display: 'flex',
-                  justifyContent: 'center',
-                }}
-              >
-                Loading...
-              </div>
-            );
-          },
-        }}
-      />
-    </>
+        // A message from another user has been received - don't pull to bottom unless already there.
+        return isAtBottom ? 'auto' : false;
+      }}
+      itemContent={(_, item) => {
+        if (isDay(item)) {
+          return <MessageDivider date={(item as Day).date} />;
+        }
+
+        return isOptimistic(item) ? (
+          <OptimisticMessage
+            key={(item as OptimisticMessageType).optimisticId}
+            discussionId={discussionId}
+            message={item as OptimisticMessageType}
+          />
+        ) : (
+          <Message
+            message={item as Message_Message}
+            isLast={groupedItems.slice(-1).pop() === item}
+          />
+        );
+      }}
+      components={{
+        Header: () =>
+          isFetching ? (
+            <div className="px-4 py-1">
+              <Skeleton h="h-3" />
+            </div>
+          ) : null,
+      }}
+    />
   );
 };
 

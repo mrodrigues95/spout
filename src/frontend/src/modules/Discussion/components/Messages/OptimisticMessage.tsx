@@ -40,21 +40,20 @@ const OptimisticMessage = ({ discussionId, message }: Props) => {
         variables: { input: { discussionId, body: message.body } },
       });
     }
-  }, [message, sendMessage, discussionId, data, loading, error]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [message]);
 
   useEffect(() => {
+    // Once removed, the list of messages will be re-rendered and this
+    // optimistic message will no longer exist.
     if (data) remove(discussionId, message.optimisticId);
-  }, [data, remove, discussionId, message.optimisticId]);
-
-  // Message has been successfully sent.
-  if (data) return null;
+  }, [data]);
 
   // TODO: Handle loading/error states.
-  // There was an error or the mutation is still in flight.
   return error ? (
     <div>Message failed to send</div>
   ) : (
-    <Message message={message} />
+    <Message message={message} isLast />
   );
 };
 

@@ -10,8 +10,12 @@ export interface OptimisticMessage extends Message_Message {
 }
 
 interface MessagesStore {
-  messagesByDiscussionId: { [index: string]: OptimisticMessage[] };
-  add: (discussionId: string, message: string, createdBy: UserInfo_User) => void;
+  messagesByDiscussionId: { [key: string]: OptimisticMessage[] };
+  add: (
+    discussionId: string,
+    message: string,
+    createdBy: UserInfo_User
+  ) => void;
   remove: (discussionId: string, optimisticMessageId: number) => void;
 }
 
@@ -28,14 +32,14 @@ export const useStore = create<MessagesStore>((set) => ({
         messagesByDiscussionId: {
           ...state.messagesByDiscussionId,
           [discussionId]: [
+            ...state.messagesByDiscussionId[discussionId],
             {
               id: discussionId,
               optimisticId: getOptimisticId(),
               body: message,
-              createdAt: new Date().toString(),
+              createdAt: new Date().toISOString(),
               createdBy: createdBy,
             },
-            ...state.messagesByDiscussionId[discussionId],
           ],
         },
       };
@@ -56,13 +60,14 @@ export const useStore = create<MessagesStore>((set) => ({
         return { messagesByDiscussionId: { ...state.messagesByDiscussionId } };
       }
 
+      const messages = state.messagesByDiscussionId[discussionId].filter(
+        (_, i) => i !== messageIndex
+      );
+
       return {
         messagesByDiscussionId: {
           ...state.messagesByDiscussionId,
-          [discussionId]: state.messagesByDiscussionId[discussionId].splice(
-            messageIndex,
-            1
-          ),
+          [discussionId]: messages,
         },
       };
     }),

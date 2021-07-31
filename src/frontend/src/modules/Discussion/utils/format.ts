@@ -2,14 +2,6 @@ import { differenceInDays, format, formatDistance } from 'date-fns';
 import { Message_Message } from '../utils/__generated__/fragments.generated';
 import { OptimisticMessage } from './messagesStore';
 
-type Message =
-  | {
-      type: 'day' | 'message' | 'optimistic';
-    }
-  | OptimisticMessage
-  | Message_Message
-  | Day;
-
 /**
  * Formats chat message dates as follows:
  *
@@ -40,7 +32,7 @@ interface GroupedDays {
  * @returns An `object` who's keys are grouped by date.
  */
 export const groupMessagesByDate = (
-  messages: (OptimisticMessage | Message_Message)[] = []
+  messages: (OptimisticMessage | Message_Message)[]
 ): GroupedDays => {
   return messages.reduce((acc: GroupedDays, message) => {
     if (differenceInDays(new Date(), new Date(message.createdAt)) === 0) {
@@ -55,32 +47,27 @@ export const groupMessagesByDate = (
   }, {});
 };
 
-// TODO: Merge OptimisticMessage | Message_Message | Day into one type
-// that has a `type` key which will be used to differentiate the types.
 export interface Day {
   id: string;
-  type: string;
   date: string;
+  type: string;
 }
+
+export type Item = OptimisticMessage | Message_Message | Day;
 
 export const generateItems = (
   messages: (OptimisticMessage | Message_Message)[]
-): (OptimisticMessage | Message_Message | Day)[] => {
+): Item[] => {
   const days = groupMessagesByDate(messages);
   const sortedDays = Object.keys(days).sort();
 
-  console.log(sortedDays);
-
-  const items = sortedDays.reduce(
-    (acc: (OptimisticMessage | Message_Message | Day)[], date) => {
-      const sortedMessages = days[date].sort(
-        (x, y) =>
-          new Date(y.createdAt).getTime() - new Date(x.createdAt).getTime()
-      );
-      return [...acc, { type: 'day', date, id: date }, ...sortedMessages];
-    },
-    []
-  );
+  const items = sortedDays.reduce((acc: Item[], date) => {
+    const sortedMessages = days[date].sort(
+      (x, y) =>
+        new Date(x.createdAt).getTime() - new Date(y.createdAt).getTime()
+    );
+    return [...acc, { type: 'day', date, id: date }, ...sortedMessages];
+  }, []);
 
   return items;
 };
