@@ -1,6 +1,6 @@
 import * as Types from '../../../../../__generated__/schema.generated';
 
-import { Message_Message } from '../../../utils/__generated__/fragments.generated';
+import { Message_Message, UserInfo_User } from '../../../utils/__generated__/fragments.generated';
 export type DiscussionMessagesQueryVariables = Types.Exact<{
   id: Types.Scalars['ID'];
   after?: Types.Maybe<Types.Scalars['String']>;
@@ -42,4 +42,15 @@ export type OnDiscussionMessageReceived = (
       & Message_Message
     ) }
   ) }
+);
+
+export type MeQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = (
+  { __typename?: 'Query' }
+  & { me?: Types.Maybe<(
+    { __typename?: 'User' }
+    & UserInfo_User
+  )> }
 );

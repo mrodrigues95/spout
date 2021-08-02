@@ -1,17 +1,24 @@
+import { useCallback, useEffect } from 'react';
 import { gql, useMutation } from '@apollo/client';
-import { useEffect } from 'react';
-import { OptimisticMessage as OptimisticMessageType, useStore } from './../../utils/messagesStore';
+import {
+  OptimisticMessage as OptimisticMessageType,
+  useStore,
+} from './../../utils/messagesStore';
 import Message from './Message';
+import { query } from './';
 import {
   SendDiscussionMessageMutation,
   SendDiscussionMessageMutationVariables,
 } from './__generated__/OptimisticMessage.generated';
+import { DiscussionMessagesQuery } from './__generated__/index.generated';
+import { updateMessagesQuery } from './../../utils/updateMessagesQuery';
+import { MessageFragment } from '../../utils/fragments';
 
 const mutation = gql`
   mutation SendDiscussionMessageMutation($input: SendDiscussionMessageInput!) {
     sendDiscussionMessage(input: $input) {
       message {
-        id
+        ...Message_message
       }
       userErrors {
         message
@@ -19,6 +26,7 @@ const mutation = gql`
       }
     }
   }
+  ${MessageFragment}
 `;
 
 interface Props {
@@ -32,28 +40,53 @@ const OptimisticMessage = ({ discussionId, message }: Props) => {
   const [sendMessage, { data, loading, error }] = useMutation<
     SendDiscussionMessageMutation,
     SendDiscussionMessageMutationVariables
-  >(mutation);
+  >(mutation, {
+    // Unfortunately, we need to update the cache manually for this mutation
+    // because the subscription result will get returned before the mutation
+    // is completed. This means that there will be cases where the messages list
+    // contains the optimistic message and the new message from the subscription
+    // which results in duplicates values for a short period of time.
+    // TODO: Maybe there's a better way to handle this?
+    update: (cache, { data }) => {
+      const newMessage = data?.sendDiscussionMessage.message;
+      const prev = cache.readQuery<DiscussionMessagesQuery>({
+        query: query,
+        variables: { id: discussionId },
+      });
 
-  useEffect(() => {
-    if (!data && !loading && !error) {
+      if (prev && newMessage) {
+        const draft = updateMessagesQuery(prev, newMessage);
+
+        // TODO: This will cause two re-renders in the `Messages` component, ideally it should
+        // only cause one.
+        remove(discussionId, message.optimisticId);
+        cache.writeQuery<DiscussionMessagesQuery>({
+          query: query,
+          data: draft,
+        });
+      }
+    },
+  });
+
+  const send = useCallback(
+    () =>
       sendMessage({
         variables: { input: { discussionId, body: message.body } },
-      });
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [message]);
+      }),
+    [discussionId, sendMessage, message]
+  );
 
   useEffect(() => {
-    // Once removed, the list of messages will be re-rendered and this
-    // optimistic message will no longer exist.
-    if (data) remove(discussionId, message.optimisticId);
-  }, [data]);
+    // Fire mutation as soon as this component is rendered.
+    if (!data && !loading && !error) send();
+  }, [data, loading, error, send]);
 
-  // TODO: Handle loading/error states.
-  return error ? (
-    <div>Message failed to send</div>
-  ) : (
-    <Message message={message} isLast />
+  return (
+    <Message
+      message={message}
+      optimisticOpts={{ error, loading, retry: send }}
+      isLast
+    />
   );
 };
 

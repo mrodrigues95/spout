@@ -1,10 +1,22 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import React, {
+  useMemo,
+  useCallback,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { Virtuoso } from 'react-virtuoso';
+import { differenceInDays, format } from 'date-fns';
 import { Skeleton } from '~/shared/components';
 import MessageDivider from './MessageDivider';
 import Message from './Message';
-import { generateItems, Item, Day } from '../../utils/format';
+import {
+  generateItems,
+  Item,
+  Day,
+  groupMessagesByDate,
+} from '../../utils/format';
 import { DiscussionMessagesQuery } from './__generated__/index.generated';
 import { Message_Message } from '../../utils/__generated__/fragments.generated';
 import { OptimisticMessage as OptimisticMessageType } from './../../utils/messagesStore';
@@ -18,13 +30,46 @@ const isOptimistic = (message: Item) =>
 
 const isDay = (item: Item) => 'type' in item && item.type === 'day';
 
+// Items to prepend should always be <= 50 (the page size) but since
+// we are not using GroupedVirtuoso, we need to account for the
+// message dividers as well.
+const getItemsToPrepend = (
+  oldMessages: Props['messages'],
+  newMessages: Props['messages']
+) => {
+  console.log('Calculating items to prepend...');
+  const messagesToPrepend = newMessages.length;
+
+  const oldDatesGrouped = groupMessagesByDate(
+    oldMessages.map(({ node }) => node),
+    false
+  );
+
+  const newDatesGrouped = groupMessagesByDate(
+    newMessages.map(({ node }) => node),
+    false
+  );
+
+  let datesToPrepend = 0;
+  for (const newDate in newDatesGrouped) {
+    if (!oldDatesGrouped[newDate]) datesToPrepend++;
+  }
+
+  console.log(messagesToPrepend + datesToPrepend);
+
+  return messagesToPrepend + datesToPrepend;
+};
+
 interface Props {
   discussionId: string;
   messages: { node: OptimisticMessageType | Message_Message }[];
   next(): Promise<DiscussionMessagesQuery | undefined>;
-  hasNext: boolean;
+  hasNext?: boolean;
 }
 
+// TODO: Dates seem to be out of order slightly when more than one user
+// is chatting. This might be because we are removing and updating cache
+// at the same time in OptimisticMessage.tsx.
 const MessageList = ({ discussionId, messages, hasNext, next }: Props) => {
   const { data } = useQuery<MeQuery>(
     gql`
@@ -40,33 +85,49 @@ const MessageList = ({ discussionId, messages, hasNext, next }: Props) => {
 
   const [firstItemIndex, setFirstItemIndex] = useState(1000000); //  (total of items to be loaded - the one we have already loaded).
   const [isFetching, setIsFetching] = useState(false);
+  const timeoutRef = useRef(0);
 
-  const groupedItems = useMemo(
+  // NOTE: GroupedVirtuoso doesn't work very well with prepended items so that requires us
+  // to create a flattened array of messages and message dividers.
+  // Ideally, when GroupedVirtuoso supports prepended items, it will clean up a lot of this code.
+  const items = useMemo(
     () => generateItems(messages.map((edge) => edge.node)),
     [messages]
   );
 
   const prependItems = useCallback(() => {
+    clearTimeout(timeoutRef.current);
     setIsFetching(true);
 
-    setTimeout(async () => {
-      const items = await next();
-      const itemsToPrepend = items?.discussionById.messages?.edges?.length ?? 0;
-      setFirstItemIndex(firstItemIndex - itemsToPrepend);
+    timeoutRef.current = window.setTimeout(async () => {
+      const oldMessages = [...messages];
+
+      const data = await next();
+      const itemsToPrepend = getItemsToPrepend(
+        oldMessages,
+        data?.discussionById.messages?.edges ?? []
+      );
+      setFirstItemIndex((firstItemIndex) => firstItemIndex - itemsToPrepend);
       setIsFetching(false);
+      clearTimeout(timeoutRef.current);
     }, 500);
 
     return false;
-  }, [firstItemIndex, next]);
+  }, [next, messages]);
 
   const optimisticMessages =
     useStore((state) => state.messagesByDiscussionId[discussionId]) ?? [];
 
+  useEffect(() => () => clearTimeout(timeoutRef.current), []);
+
+  // TODO: Create a 'Jump to Present' footer.
+  // TODO: Look into using ScrollSeekPlaceholder for performance improvement.
   return (
     <Virtuoso
-      data={groupedItems}
+      data={items}
+      overscan={{ main: 200, reverse: 200 }}
       firstItemIndex={firstItemIndex}
-      initialTopMostItemIndex={messages.length - 1}
+      initialTopMostItemIndex={items.length - 1}
       startReached={hasNext ? prependItems : undefined}
       followOutput={(isAtBottom) => {
         const myMessages = optimisticMessages.some(
@@ -93,7 +154,7 @@ const MessageList = ({ discussionId, messages, hasNext, next }: Props) => {
         ) : (
           <Message
             message={item as Message_Message}
-            isLast={groupedItems.slice(-1).pop() === item}
+            isLast={items.slice(-1).pop() === item}
           />
         );
       }}

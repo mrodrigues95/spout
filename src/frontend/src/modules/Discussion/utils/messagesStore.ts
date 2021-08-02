@@ -38,7 +38,7 @@ export const useStore = create<MessagesStore>((set) => ({
               optimisticId: getOptimisticId(),
               body: message,
               createdAt: new Date().toISOString(),
-              createdBy: createdBy,
+              createdBy: createdBy
             },
           ],
         },
@@ -46,6 +46,7 @@ export const useStore = create<MessagesStore>((set) => ({
     }),
   remove: (discussionId: string, optimisticMessageId: number) =>
     set((state) => {
+      console.log('Attempting to remove message from store...')
       if (!state.messagesByDiscussionId[discussionId]) {
         return { messagesByDiscussionId: { ...state.messagesByDiscussionId } };
       }
@@ -57,12 +58,15 @@ export const useStore = create<MessagesStore>((set) => ({
       );
 
       if (messageIndex === -1) {
+        console.log('No index found for this message.')
         return { messagesByDiscussionId: { ...state.messagesByDiscussionId } };
       }
 
       const messages = state.messagesByDiscussionId[discussionId].filter(
         (_, i) => i !== messageIndex
       );
+
+      console.log('Removed message from store.')
 
       return {
         messagesByDiscussionId: {

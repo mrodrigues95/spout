@@ -15,19 +15,6 @@ const DiscussionContainer = ({ discussion }: Props) => {
         <Members members={discussion.users} />
         <ActionsMenu />
       </Container.Header>
-      {/* {loading && <Spinner className="h-5 w-5 text-black" />}
-      {error && (
-        <ErrorFallback
-          icon={<FeelingBlueIllustration className="w-full h-64" />}
-          message="Sorry, we can't load any messages for this discussion right now."
-          action={refetch}
-        />
-      )} */}
-      {/* {data && (
-        <Container.Body>
-          <Messages discussionId={discussion.id} />
-        </Container.Body>
-      )} */}
       <Container.Body>
         <Messages discussionId={discussion.id} />
       </Container.Body>

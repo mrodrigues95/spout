@@ -11,6 +11,8 @@ using API.Common.Utilities;
 
 namespace API.Data {
     public class ApplicationDbContextSeed {
+        // TODO: Fix members not showing in some groups.
+        // TODO: Make discussion messages different days instead of now.
         public static async Task SeedDataAsync(
             ApplicationDbContext context,
             UserManager<User> userManager,

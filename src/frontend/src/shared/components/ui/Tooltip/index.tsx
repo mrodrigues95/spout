@@ -4,7 +4,9 @@ import {
   isValidElement,
   ReactElement,
   ReactNode,
+  useRef,
   useState,
+  useEffect
 } from 'react';
 import { Portal } from '@headlessui/react';
 import { Placement } from '@popperjs/core';
@@ -25,15 +27,18 @@ const Tooltip = ({ label, children, placement, delay }: Props) => {
     strategy: 'fixed',
     modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
   });
+  const timeoutRef = useRef(0);
 
-  let timeout: NodeJS.Timeout;
   const showTooltip = () => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => setIsShowing(true), delay || 0);
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = window.setTimeout(
+      () => setIsShowing(true),
+      delay || 0
+    );
   };
 
   const hideTooltip = () => {
-    clearTimeout(timeout);
+    clearTimeout(timeoutRef.current);
     setIsShowing(false);
   };
 
@@ -54,6 +59,8 @@ const Tooltip = ({ label, children, placement, delay }: Props) => {
 
     return <div {...withProps}>{child}</div>;
   });
+
+  useEffect(() => () => clearTimeout(timeoutRef.current), []);
 
   const variants: Variants = {
     exit: {

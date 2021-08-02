@@ -14,7 +14,7 @@ const ErrorFallback = ({ action, icon, message }: Props) => {
   return (
     <div className="flex flex-1 flex-col justify-center items-center space-y-4 my-12">
       {icon ? icon : <SparklesIcon className="h-12 w-12 text-gray-500" />}
-      <p className="font-bold text-gray-500">
+      <p className="font-bold text-gray-400">
         {message ? message : 'Something went wrong.'}
       </p>
       <Button className="text-sm" rounded="md" active onClick={action}>

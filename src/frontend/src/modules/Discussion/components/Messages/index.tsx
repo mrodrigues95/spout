@@ -1,17 +1,20 @@
 import { gql, useQuery } from '@apollo/client';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Skeleton } from '~/shared/components';
+import { useCallback, useEffect, useMemo } from 'react';
+import { Spinner, ErrorFallback } from '~/shared/components';
+import { FeelingBlueIllustration } from '~/shared/assets';
 import { useStore } from '../../utils/messagesStore';
 import {
   DiscussionMessagesQuery,
+  MeQuery,
   OnDiscussionMessageReceived,
   OnDiscussionMessageReceivedVariables,
 } from './__generated__/index.generated';
 import MessageList from './MessageList';
 import MessageComposer from './MessageComposer';
-import { MessageFragment } from '../../utils/fragments';
+import { MessageFragment, UserInfoFragment } from '../../utils/fragments';
+import { updateMessagesQuery } from './../../utils/updateMessagesQuery';
 
-const query = gql`
+export const query = gql`
   query DiscussionMessagesQuery($id: ID!, $after: String) {
     discussionById(id: $id) {
       id
@@ -49,6 +52,9 @@ interface Props {
   discussionId: string;
 }
 
+// TODO: When a user navigates away from the discussion, we retrieve from the cache
+// when they return so any new messages won't appear. May need to change the fetch policy
+// for this.
 const Messages = ({ discussionId }: Props) => {
   const {
     data,
@@ -56,10 +62,22 @@ const Messages = ({ discussionId }: Props) => {
     error,
     refetch,
     subscribeToMore,
-    fetchMore,
+    fetchMore
   } = useQuery<DiscussionMessagesQuery>(query, {
     variables: { id: discussionId },
+    // fetchPolicy: 'cache-and-network'
   });
+
+  const { data: meData } = useQuery<MeQuery>(
+    gql`
+      query MeQuery {
+        me {
+          ...UserInfo_user
+        }
+      }
+      ${UserInfoFragment}
+    `
+  );
 
   const handleLoadMore = useCallback(async () => {
     const pageInfo = data?.discussionById.messages?.pageInfo;
@@ -75,7 +93,7 @@ const Messages = ({ discussionId }: Props) => {
   }, [discussionId, data?.discussionById.messages?.pageInfo, fetchMore]);
 
   useEffect(() => {
-    subscribeToMore<
+    const unsubscribe = subscribeToMore<
       OnDiscussionMessageReceived,
       OnDiscussionMessageReceivedVariables
     >({
@@ -83,34 +101,22 @@ const Messages = ({ discussionId }: Props) => {
       variables: { discussionId: discussionId },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) return prev;
+
         const { message } = subscriptionData.data.onDiscussionMessageReceived;
-        const edges = [...(prev.discussionById?.messages?.edges ?? [])];
 
-        // Only insert if this message is not already in the discussion.
-        if (
-          !prev?.discussionById.messages?.edges?.find(
-            ({ node }) => node.id === message.id
-          )
-        ) {
-          edges.unshift({
-            __typename: 'MessageEdge',
-            node: message,
-          });
-        }
+        // We manually update the cache for new messages that are created by the current
+        // user, so they can be ignored here.
+        if (message.createdBy.id === meData?.me?.id) return prev;
 
-        const draft = {
-          ...prev,
-          discussionById: {
-            ...prev.discussionById,
-            messages: { ...prev.discussionById.messages!, edges },
-          },
-        };
-
-        return draft;
+        return updateMessagesQuery(prev, message);
       },
     });
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [discussionId, subscribeToMore]);
+  }, [discussionId, meData, subscribeToMore]);
 
   const messagesToSend = useStore(
     (state) => state.messagesByDiscussionId[discussionId]
@@ -120,23 +126,39 @@ const Messages = ({ discussionId }: Props) => {
     const edges = (data?.discussionById.messages?.edges ?? []).map((edge) => ({
       node: edge.node,
     }));
+
     const messagesToSendEdges = (messagesToSend ?? []).map((message) => ({
       node: message,
     }));
 
+    console.log('Messages to send edges: ', messagesToSendEdges);
+    console.log('Edges: ', edges);
+
     return [...messagesToSendEdges, ...edges];
   }, [data?.discussionById.messages?.edges, messagesToSend]);
 
-  // TODO: Handle error/loading states.
+  // TODO: Handle empty state.
   return (
     <div className="flex flex-col absolute inset-0 border border-transparent sm:shadow-container sm:rounded-md">
-      <MessageList
-        discussionId={discussionId}
-        messages={messages}
-        hasNext={data?.discussionById.messages!.pageInfo.hasNextPage ?? false}
-        next={handleLoadMore}
-      />
-      <MessageComposer discussionId={discussionId} />
+      {loading && !data && <Spinner className="h-5 w-5 text-black" />}
+      {error && (
+        <ErrorFallback
+          icon={<FeelingBlueIllustration className="w-full h-64" />}
+          message="Sorry, we can't load any messages for this discussion right now."
+          action={refetch}
+        />
+      )}
+      {data && (
+        <>
+          <MessageList
+            discussionId={discussionId}
+            messages={messages}
+            hasNext={data?.discussionById.messages?.pageInfo.hasNextPage}
+            next={handleLoadMore}
+          />
+          <MessageComposer discussionId={discussionId} />
+        </>
+      )}
     </div>
   );
 };
