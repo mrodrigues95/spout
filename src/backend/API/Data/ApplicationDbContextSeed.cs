@@ -231,8 +231,9 @@ namespace API.Data {
 
             foreach (Discussion discussion in discussions) {
                 var r = new Random();
+                var messageCount = r.Next(0, 200);
 
-                for (int i = 0; i < 162; ++i) {
+                for (int i = 0; i < messageCount; ++i) {
                     var randomUser = discussion.UserDiscussions
                         .OrderBy(uc => r.NextDouble()).First().User;
 

@@ -22,7 +22,7 @@ const ContainerHeader = ({
           <HamburgerMenuIcon className="w-4 h-4" />
         </Button>
         {title ? (
-          <h1 className="hidden sm:block font-bold truncate sm:text-4xl">
+          <h1 className="hidden sm:block font-bold truncate sm:text-2xl lg:text-3xl xl:text-4xl">
             {title}
           </h1>
         ) : (

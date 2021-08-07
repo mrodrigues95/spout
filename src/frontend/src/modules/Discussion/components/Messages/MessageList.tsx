@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { Virtuoso } from 'react-virtuoso';
-import { differenceInDays, format } from 'date-fns';
 import { Skeleton } from '~/shared/components';
 import MessageDivider from './MessageDivider';
 import Message from './Message';
@@ -41,13 +40,11 @@ const getItemsToPrepend = (
   const messagesToPrepend = newMessages.length;
 
   const oldDatesGrouped = groupMessagesByDate(
-    oldMessages.map(({ node }) => node),
-    false
+    oldMessages.map(({ node }) => node)
   );
 
   const newDatesGrouped = groupMessagesByDate(
-    newMessages.map(({ node }) => node),
-    false
+    newMessages.map(({ node }) => node)
   );
 
   let datesToPrepend = 0;
@@ -55,7 +52,7 @@ const getItemsToPrepend = (
     if (!oldDatesGrouped[newDate]) datesToPrepend++;
   }
 
-  console.log(messagesToPrepend + datesToPrepend);
+  console.log('Items to prepend: ', messagesToPrepend + datesToPrepend);
 
   return messagesToPrepend + datesToPrepend;
 };

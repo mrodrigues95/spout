@@ -23,7 +23,7 @@ const SidebarContainer = ({
   return (
     <div
       className={clsx(
-        'w-full p-3 rounded-3xl text-gray-700 font-medium border-none bg-white lg:mb-8',
+        'w-full p-5 rounded-3xl text-gray-700 font-medium border-none bg-white lg:mb-8',
         className
       )}
     >
@@ -68,8 +68,8 @@ const SidebarItem = ({
 
   const children = (
     <>
-      <p className="mr-0 lg:mr-3">{icon}</p>
-      <p id="spout-sidebar-item-label" className="hidden lg:inline-flex flex-1">
+      <p className="mr-0 xl:mr-3">{icon}</p>
+      <p id="spout-sidebar-item-label" className="hidden xl:inline-flex flex-1">
         {label}
       </p>
     </>
@@ -103,7 +103,7 @@ const Sidebar = () => {
         <SidebarContainer className="mb-10 px-5 pb-5 pt-2 xl:pt-5">
           <ProfileInfo />
         </SidebarContainer>
-        <SidebarContainer className="border lg:p-5">
+        <SidebarContainer className="border lg:p-3">
           <nav className="flex flex-col w-full space-y-3">
             <SidebarItem
               href="/"
@@ -130,7 +130,7 @@ const Sidebar = () => {
             />
           </nav>
         </SidebarContainer>
-        <SidebarContainer className="hidden lg:p-5 xl:block">
+        <SidebarContainer className="hidden lg:p-3 xl:block">
           <ActivityFeed />
         </SidebarContainer>
         <div className="mt-auto">
