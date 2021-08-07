@@ -9,7 +9,7 @@ namespace API.Data.Configurations {
             builder.HasKey(d => d.Id);
 
             builder.Property(d => d.Name)
-                .HasMaxLength(35);
+                .HasMaxLength(50);
 
             builder.Property(d => d.CreatedAt)
                 .HasDefaultValue(DateTime.UtcNow);

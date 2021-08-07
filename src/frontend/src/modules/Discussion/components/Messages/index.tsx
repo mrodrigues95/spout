@@ -65,7 +65,8 @@ const Messages = ({ discussionId }: Props) => {
     fetchMore
   } = useQuery<DiscussionMessagesQuery>(query, {
     variables: { id: discussionId },
-    // fetchPolicy: 'cache-and-network'
+    // fetchPolicy: 'cache-and-network',
+    // nextFetchPolicy: 'cache-first'
   });
 
   const { data: meData } = useQuery<MeQuery>(

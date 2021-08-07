@@ -19,6 +19,8 @@ interface MessagesStore {
   remove: (discussionId: string, optimisticMessageId: number) => void;
 }
 
+// TODO: Maybe we can store optimistic messages and live messages here as a way
+// to reduce renders and update the query cache?
 export const useStore = create<MessagesStore>((set) => ({
   messagesByDiscussionId: {},
   add: (discussionId: string, message: string, createdBy: UserInfo_User) =>

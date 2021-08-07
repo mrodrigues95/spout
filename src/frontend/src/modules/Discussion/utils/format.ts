@@ -73,11 +73,14 @@ export const generateItems = (
   const days = groupMessagesByDate(messages);
   const sortedDays = Object.keys(days)
     .sort((x, y) => {
-      if (x === 'Today') return -1;
-      if (y === 'Yesterday') return 1;
-      return new Date(x).getTime() - new Date(y).getTime();
-    })
-    .reverse();
+      console.log(x.localeCompare(y))
+      return x.localeCompare(y);
+      // if (x === 'Today') return -1;
+      // if (y === 'Yesterday') return 1;
+      // return new Date(x).getTime() - new Date(y).getTime();
+    });
+
+  console.log('Sorted days: ', sortedDays);
 
   const items = sortedDays.reduce((acc: Item[], date) => {
     const sortedMessages = days[date].sort(
@@ -86,6 +89,8 @@ export const generateItems = (
     );
     return [...acc, { type: 'day', date, id: date }, ...sortedMessages];
   }, []);
+
+  console.log('Items: ', items);
 
   return items;
 };

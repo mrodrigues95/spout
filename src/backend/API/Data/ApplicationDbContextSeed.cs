@@ -11,8 +11,6 @@ using API.Common.Utilities;
 
 namespace API.Data {
     public class ApplicationDbContextSeed {
-        // TODO: Fix members not showing in some groups.
-        // TODO: Make discussion messages different days instead of now.
         public static async Task SeedDataAsync(
             ApplicationDbContext context,
             UserManager<User> userManager,
@@ -42,17 +40,17 @@ namespace API.Data {
                 }
 
                 if (!await context.UserClassrooms.AnyAsync()) {
-                    await context.UserClassrooms.AddRangeAsync(GetPreConfiguredUserClassrooms(context));
+                    await context.UserClassrooms.AddRangeAsync(await GetPreConfiguredUserClassrooms(context));
                     await context.SaveChangesAsync();
                 }
 
                 if (!await context.Discussions.AnyAsync()) {
-                    await context.Discussions.AddRangeAsync(GetPreConfiguredDiscussions(context));
+                    await context.Discussions.AddRangeAsync(await GetPreConfiguredDiscussions(context));
                     await context.SaveChangesAsync();
                 }
 
                 if (!await context.UserDiscussions.AnyAsync()) {
-                    await context.UserDiscussions.AddRangeAsync(GetPreConfiguredUserDiscussions(context));
+                    await context.UserDiscussions.AddRangeAsync(await GetPreConfiguredUserDiscussions(context));
                     await context.SaveChangesAsync();
                 }
 
@@ -77,13 +75,13 @@ namespace API.Data {
                     Status = Enums.From.State(Enums.State.Active),
                 },
                 new State {
-                    Status = Enums.From.State(Enums.State.Active),
+                    Status = Enums.From.State(Enums.State.Deleted),
                 },
                 new State {
-                    Status = Enums.From.State(Enums.State.Active),
+                    Status = Enums.From.State(Enums.State.Inactive),
                 },
                 new State {
-                    Status = Enums.From.State(Enums.State.Active)
+                    Status = Enums.From.State(Enums.State.Suspended)
                 },
             };
         }
@@ -150,11 +148,6 @@ namespace API.Data {
                         State = GetState(context)
                     },
                     new Classroom {
-                        Name = "UX Fundamentals - UX302",
-                        CreatedBy = GetUser(context),
-                        State = GetState(context)
-                    },
-                    new Classroom {
                         Name = "Networking Infrastructure - NI21",
                         CreatedBy = GetUser(context, skip: 3),
                         State = GetState(context)
@@ -162,178 +155,95 @@ namespace API.Data {
                 };
         }
 
-        private static IEnumerable<UserClassroom> GetPreConfiguredUserClassrooms(ApplicationDbContext context) {
-            return new List<UserClassroom>() {
-                    new UserClassroom {
-                        User = GetUser(context),
-                        Classroom = GetClassroom(context)
-                    },
-                    new UserClassroom {
-                        User = GetUser(context, skip: 2),
-                        Classroom = GetClassroom(context)
-                    },
-                    new UserClassroom {
-                        User = GetUser(context, skip: 3),
-                        Classroom = GetClassroom(context)
-                    },
-                    new UserClassroom {
-                        User = GetUser(context, skip: 1),
-                        Classroom = GetClassroom(context, skip: 1)
-                    },
-                    new UserClassroom {
-                        User = GetUser(context, skip: 2),
-                        Classroom = GetClassroom(context, skip: 1)
-                    },
-                    new UserClassroom {
-                        User = GetUser(context, skip: 2),
-                        Classroom = GetClassroom(context, skip: 2)
-                    },
-                    new UserClassroom {
-                        User = GetUser(context),
-                        Classroom = GetClassroom(context, skip: 3)
-                    },
-                    new UserClassroom {
-                        User = GetUser(context, skip: 1),
-                        Classroom = GetClassroom(context, skip: 3)
-                    },
-                    new UserClassroom {
-                        User = GetUser(context, skip: 3),
-                        Classroom = GetClassroom(context, skip: 4)
-                    },
-                    new UserClassroom {
-                        User = GetUser(context, skip: 2),
-                        Classroom = GetClassroom(context, skip: 4)
-                    },
-                    new UserClassroom {
-                        User = GetUser(context, skip: 1),
-                        Classroom = GetClassroom(context, skip: 4)
-                    },
-                };
+        private static async Task<IEnumerable<UserClassroom>> GetPreConfiguredUserClassrooms(ApplicationDbContext context) {
+            var users = await context.Users.ToListAsync();
+            var classrooms = await context.Classrooms.ToListAsync();
+            var userClassrooms = new List<UserClassroom>();
+
+            // Every user is in every classroom.
+            foreach (User user in users) {
+                foreach (Classroom classroom in classrooms) {
+                    userClassrooms.Add(new UserClassroom {
+                        User = user,
+                        Classroom = classroom
+                    });
+                }
+            }
+
+            return userClassrooms;
         }
 
-        private static IEnumerable<Discussion> GetPreConfiguredDiscussions(ApplicationDbContext context) {
-            return new List<Discussion>() { 
-                new Discussion {
-                    Name = "Assignment help",
-                    CreatedBy = GetUser(context),
-                    Classroom = GetClassroom(context),
-                    State = GetState(context)
-                },
-                new Discussion {
-                    Name = "Off topic",
-                    CreatedBy = GetUser(context),
-                    Classroom = GetClassroom(context),
-                    State = GetState(context)
-                },
-                new Discussion {
-                    Name = "Exam help",
-                    CreatedBy = GetUser(context),
-                    Classroom = GetClassroom(context),
-                    State = GetState(context)
-                },
-                new Discussion {
-                    Name = "Teacher AMA",
-                    CreatedBy = GetUser(context, skip: 1),
-                    Classroom = GetClassroom(context, skip: 1),
-                    State = GetState(context)
-                },
-                new Discussion {
-                    Name = "Pair programming",
-                    CreatedBy = GetUser(context, skip: 2),
-                    Classroom = GetClassroom(context, skip: 2),
-                    State = GetState(context)
-                },
-                new Discussion {
-                    Name = "Design topics",
-                    CreatedBy = GetUser(context),
-                    Classroom = GetClassroom(context, skip: 3),
-                    State = GetState(context)
-                },
-                new Discussion {
-                    Name = "Frontend",
-                    CreatedBy = GetUser(context, skip: 1),
-                    Classroom = GetClassroom(context, skip: 3),
-                    State = GetState(context)
-                },
-                new Discussion {
-                    Name = "Job help",
-                    CreatedBy = GetUser(context, skip: 3),
-                    Classroom = GetClassroom(context, skip: 4),
-                    State = GetState(context)
-                },
-                new Discussion {
-                    Name = "Course stuff",
-                    CreatedBy = GetUser(context, skip: 2),
-                    Classroom = GetClassroom(context, skip: 4),
-                    State = GetState(context)
-                },
-                new Discussion {
-                    Name = "Reading",
-                    CreatedBy = GetUser(context, skip: 1),
-                    Classroom = GetClassroom(context, skip: 4),
-                    State = GetState(context)
-                },
-            };
+        private static async Task<IEnumerable<Discussion>> GetPreConfiguredDiscussions(ApplicationDbContext context) {
+            var users = await context.Users.ToListAsync();
+            var classrooms = await context.Classrooms.ToListAsync();
+            var discussions = new List<Discussion>();
+
+            foreach (Classroom classroom in classrooms) {
+                var r = new Random();
+
+                // Create a random number of discussions for this classroom.
+                for (int i = 1; i < r.Next(1, 5); i++) {
+                    var random = classroom.UserClassrooms
+                        .OrderBy(uc => r.NextDouble()).First();
+
+                    discussions.Add(new Discussion {
+                        Name = $"{classroom.Name!.Split("-")[1]} - Discussion {i}",
+                        CreatedBy = random.User,
+                        Classroom = classroom,
+                        State = GetState(context)
+                    });
+                }
+            }
+
+            return discussions;
         }
 
-        private static IEnumerable<UserDiscussion> GetPreConfiguredUserDiscussions(ApplicationDbContext context) {
-            return new List<UserDiscussion>() {
-                new UserDiscussion {
-                    User = GetUser(context),
-                    Discussion = GetDiscussion(context)
-                },
-                new UserDiscussion {
-                    User = GetUser(context, skip: 2),
-                    Discussion = GetDiscussion(context)
-                },
-                new UserDiscussion {
-                    User = GetUser(context, skip: 3),
-                    Discussion = GetDiscussion(context)
-                },
-                new UserDiscussion {
-                    User = GetUser(context, skip: 1),
-                    Discussion = GetDiscussion(context, skip: 1)
-                },
-                new UserDiscussion {
-                    User = GetUser(context, skip: 2),
-                    Discussion = GetDiscussion(context, skip: 1)
-                },
-                new UserDiscussion {
-                    User = GetUser(context, skip: 2),
-                    Discussion = GetDiscussion(context, skip: 2)
-                },
-                new UserDiscussion {
-                    User = GetUser(context),
-                    Discussion = GetDiscussion(context, skip: 3)
-                }, 
-                new UserDiscussion {
-                    User = GetUser(context, skip: 1),
-                    Discussion = GetDiscussion(context, skip: 3)
-                },
-                new UserDiscussion {
-                    User = GetUser(context, skip: 3),
-                    Discussion = GetDiscussion(context, skip: 4)
-                },
-                new UserDiscussion {
-                    User = GetUser(context, skip: 2),
-                    Discussion = GetDiscussion(context, skip: 4)
-                },
-                new UserDiscussion {
-                    User = GetUser(context, skip: 1),
-                    Discussion = GetDiscussion(context, skip: 4)
-                },
-            };
+        private static async Task<IEnumerable<UserDiscussion>> GetPreConfiguredUserDiscussions(ApplicationDbContext context) {
+            var users = await context.Users.ToListAsync();
+            var discussions = await context.Discussions.ToListAsync();
+            var userDiscussions = new List<UserDiscussion>();
+
+            foreach (Discussion discussion in discussions) {
+                // The creator of the discussion must be added automatically.
+                userDiscussions.Add(new UserDiscussion {
+                    User = discussion.CreatedBy,
+                    Discussion = discussion
+                });
+
+                var random = new Random();
+                for (int i = 0; i < random.Next(0, users.Count); i++) {
+                    if (userDiscussions.Find(x => x.User == users[i]) is null) {
+                        userDiscussions.Add(new UserDiscussion {
+                            User = users[i],
+                            Discussion = discussion
+                        });
+                    }
+                }
+            }
+
+            return userDiscussions;
         }
 
         private static async Task<IEnumerable<Message>> GetPreconfiguredDiscussionMessages(ApplicationDbContext context) {
+            var users = await context.Users.ToListAsync();
             var discussions = await context.Discussions.ToListAsync();
             var messages = new List<Message>();
 
             foreach (Discussion discussion in discussions) {
-                for (int i = 0; i < 500; ++i) {
+                var r = new Random();
+
+                for (int i = 0; i < 162; ++i) {
+                    var randomUser = discussion.UserDiscussions
+                        .OrderBy(uc => r.NextDouble()).First().User;
+
+                    // A random date in the last three months.
+                    var randomDate = DateTime.UtcNow.AddDays(r.Next(-90, 0));
+
                     messages.Add(new Message {
                         Discussion = discussion,
-                        CreatedBy = discussion.CreatedBy,
+                        CreatedAt = randomDate,
+                        UpdatedAt = randomDate,
+                        CreatedBy = randomUser,
                         Body = RandomMessageGenerator.Generate(1, 1, 5, 1, 20)
                     });
                 }
@@ -346,9 +256,5 @@ namespace API.Data {
             context.States.OrderBy(x => x.Id).Skip(skip).First();
         private static User GetUser(ApplicationDbContext context, int skip = 0) =>
             context.Users.OrderBy(x => x.Id).Skip(skip).First();
-        private static Classroom GetClassroom(ApplicationDbContext context, int skip = 0) =>
-            context.Classrooms.OrderBy(x => x.Id).Skip(skip).First();
-        private static Discussion GetDiscussion(ApplicationDbContext context, int skip = 0) =>
-            context.Discussions.OrderBy(x => x.Id).Skip(skip).First();
     }
 }
