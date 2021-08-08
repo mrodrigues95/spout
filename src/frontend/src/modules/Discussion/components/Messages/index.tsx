@@ -2,7 +2,7 @@ import { gql, useQuery } from '@apollo/client';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Spinner, ErrorFallback } from '~/shared/components';
 import { FeelingBlueIllustration } from '~/shared/assets';
-import { useStore } from '../../utils/messagesStore';
+import { useStore } from './utils/messagesStore';
 import {
   DiscussionMessagesQuery,
   MeQuery,

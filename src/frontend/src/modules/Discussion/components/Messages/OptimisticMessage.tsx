@@ -3,7 +3,7 @@ import { gql, useMutation } from '@apollo/client';
 import {
   OptimisticMessage as OptimisticMessageType,
   useStore,
-} from './../../utils/messagesStore';
+} from './utils/messagesStore';
 import Message from './Message';
 import { query } from './';
 import {

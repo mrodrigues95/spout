@@ -10,26 +10,21 @@ import { Virtuoso } from 'react-virtuoso';
 import { Skeleton } from '~/shared/components';
 import MessageDivider from './MessageDivider';
 import Message from './Message';
-import {
-  generateItems,
-  Item,
-  Day,
-  groupMessagesByDate,
-} from '../../utils/format';
+import { generateItems, Item, Divider, group } from './utils/messages';
 import { DiscussionMessagesQuery } from './__generated__/index.generated';
 import { Message_Message } from '../../utils/__generated__/fragments.generated';
-import { OptimisticMessage as OptimisticMessageType } from './../../utils/messagesStore';
+import { OptimisticMessage as OptimisticMessageType } from './utils/messagesStore';
 import { MeQuery } from './__generated__/MessageComposer.generated';
 import OptimisticMessage from './OptimisticMessage';
-import { useStore } from '../../utils/messagesStore';
+import { useStore } from './utils/messagesStore';
 import { UserInfoFragment } from '../../utils/fragments';
 
 const isOptimistic = (message: Item) =>
   'optimisticId' in message && message.optimisticId < 0;
 
-const isDay = (item: Item) => 'type' in item && item.type === 'day';
+const isDivider = (item: Item) => 'type' in item && item.type === 'divider';
 
-// Items to prepend should always be <= 50 (the page size) but since
+// Items to prepend should always be the page size but since
 // we are not using GroupedVirtuoso, we need to account for the
 // message dividers as well.
 const getItemsToPrepend = (
@@ -39,22 +34,17 @@ const getItemsToPrepend = (
   console.log('Calculating items to prepend...');
   const messagesToPrepend = newMessages.length;
 
-  const oldDatesGrouped = groupMessagesByDate(
-    oldMessages.map(({ node }) => node)
-  );
+  const oldDatesGrouped = group(oldMessages.map(({ node }) => node));
+  const newDatesGrouped = group(newMessages.map(({ node }) => node));
 
-  const newDatesGrouped = groupMessagesByDate(
-    newMessages.map(({ node }) => node)
-  );
-
-  let datesToPrepend = 0;
+  let dividersToPrepend = 0;
   for (const newDate in newDatesGrouped) {
-    if (!oldDatesGrouped[newDate]) datesToPrepend++;
+    if (!oldDatesGrouped[newDate]) dividersToPrepend++;
   }
 
-  console.log('Items to prepend: ', messagesToPrepend + datesToPrepend);
+  console.log('Items to prepend: ', messagesToPrepend + dividersToPrepend);
 
-  return messagesToPrepend + datesToPrepend;
+  return messagesToPrepend + dividersToPrepend;
 };
 
 interface Props {
@@ -138,8 +128,8 @@ const MessageList = ({ discussionId, messages, hasNext, next }: Props) => {
         return isAtBottom ? 'auto' : false;
       }}
       itemContent={(_, item) => {
-        if (isDay(item)) {
-          return <MessageDivider date={(item as Day).date} />;
+        if (isDivider(item)) {
+          return <MessageDivider date={(item as Divider).date} />;
         }
 
         return isOptimistic(item) ? (

@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import clsx from 'clsx';
 import { EmojiHappyIcon, PaperClipIcon, ChevronIcon } from '~/shared/assets';
-import { formatNewMessage } from '../../utils/format';
+import { formatNewMessage } from './utils/format';
 import { TextArea, Button } from '~/shared/components';
-import { useStore } from '../../utils/messagesStore';
+import { useStore } from './utils/messagesStore';
 import { MeQuery } from './__generated__/MessageComposer.generated';
 import { UserInfoFragment } from '../../utils/fragments';
 
