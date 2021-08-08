@@ -118,7 +118,6 @@ export type Discussion = Node & {
   createdBy: User;
   classroom: Classroom;
   messages?: Maybe<MessageConnection>;
-  users: Array<User>;
   guid: Scalars['Uuid'];
   name: Scalars['String'];
   classroomId: Scalars['Int'];
@@ -438,7 +437,6 @@ export type User = Node & {
   state: State;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
-  userDiscussions: Array<UserDiscussion>;
   messages: Array<Message>;
   userName?: Maybe<Scalars['String']>;
   normalizedUserName?: Maybe<Scalars['String']>;
@@ -453,14 +451,6 @@ export type User = Node & {
   lockoutEnd?: Maybe<Scalars['DateTime']>;
   lockoutEnabled: Scalars['Boolean'];
   accessFailedCount: Scalars['Int'];
-};
-
-export type UserDiscussion = {
-  __typename?: 'UserDiscussion';
-  discussionId: Scalars['Int'];
-  discussion?: Maybe<Discussion>;
-  userId: Scalars['Int'];
-  user?: Maybe<User>;
 };
 
 export type UserError = {

@@ -41,7 +41,7 @@ const ContainerHeader = ({
         </div>
       </div>
       {children && (
-        <div className="flex items-center justify-between">{children}</div>
+        <div className="flex items-center justify-end">{children}</div>
       )}
     </section>
   );

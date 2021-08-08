@@ -42,13 +42,6 @@ namespace API.Schema.Entities.Discussion {
                 .ResolveWith<DiscussionResolvers>(x => x.GetMessagesAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .Name("messages");
-
-            descriptor
-                .Field(d => d.UserDiscussions)
-                .Type<NonNullType<ListType<NonNullType<UserType>>>>()
-                .ResolveWith<DiscussionResolvers>(x => x.GetUsersAsync(default!, default!, default!, default!))
-                .UseDbContext<ApplicationDbContext>()
-                .Name("users");
         }
 
         private class DiscussionResolvers {
@@ -80,22 +73,7 @@ namespace API.Schema.Entities.Discussion {
                     .ToArrayAsync(cancellationToken);
 
                 return await messageById.LoadAsync(messageIds, cancellationToken);
-            }
-
-            public async Task<IEnumerable<Entity.User>> GetUsersAsync(
-                Entity.Discussion discussion,
-                [ScopedService] ApplicationDbContext dbContext,
-                UserByIdDataLoader userById,
-                CancellationToken cancellationToken) {
-                int[] userIds = await dbContext.Discussions
-                    .Where(d => d.Id == discussion.Id)
-                    .Include(d => d.UserDiscussions)
-                    .SelectMany(d => d.UserDiscussions.Select(ud => ud.UserId))
-                    .ToArrayAsync(cancellationToken);
-
-                return await userById.LoadAsync(userIds, cancellationToken);
-            }
-                    
+            }                    
         }
     }
 }

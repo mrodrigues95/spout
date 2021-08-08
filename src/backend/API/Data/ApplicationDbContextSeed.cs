@@ -49,11 +49,6 @@ namespace API.Data {
                     await context.SaveChangesAsync();
                 }
 
-                if (!await context.UserDiscussions.AnyAsync()) {
-                    await context.UserDiscussions.AddRangeAsync(await GetPreConfiguredUserDiscussions(context));
-                    await context.SaveChangesAsync();
-                }
-
                 if (!await context.Messages.AnyAsync()) {
                     await context.Messages.AddRangeAsync(await GetPreconfiguredDiscussionMessages(context));
                     await context.SaveChangesAsync();
@@ -198,32 +193,6 @@ namespace API.Data {
             return discussions;
         }
 
-        private static async Task<IEnumerable<UserDiscussion>> GetPreConfiguredUserDiscussions(ApplicationDbContext context) {
-            var users = await context.Users.ToListAsync();
-            var discussions = await context.Discussions.ToListAsync();
-            var userDiscussions = new List<UserDiscussion>();
-
-            foreach (Discussion discussion in discussions) {
-                // The creator of the discussion must be added automatically.
-                userDiscussions.Add(new UserDiscussion {
-                    User = discussion.CreatedBy,
-                    Discussion = discussion
-                });
-
-                var random = new Random();
-                for (int i = 0; i < random.Next(0, users.Count); i++) {
-                    if (userDiscussions.Find(x => x.User == users[i]) is null) {
-                        userDiscussions.Add(new UserDiscussion {
-                            User = users[i],
-                            Discussion = discussion
-                        });
-                    }
-                }
-            }
-
-            return userDiscussions;
-        }
-
         private static async Task<IEnumerable<Message>> GetPreconfiguredDiscussionMessages(ApplicationDbContext context) {
             var users = await context.Users.ToListAsync();
             var discussions = await context.Discussions.ToListAsync();
@@ -234,8 +203,9 @@ namespace API.Data {
                 var messageCount = r.Next(0, 200);
 
                 for (int i = 0; i < messageCount; ++i) {
-                    var randomUser = discussion.UserDiscussions
-                        .OrderBy(uc => r.NextDouble()).First().User;
+                    var randomUser = discussion.Classroom!.UserClassrooms
+                        .OrderBy(uc => r.NextDouble())
+                        .First().User;
 
                     // A random date in the last three months.
                     var randomDate = DateTime.UtcNow.AddDays(r.Next(-90, 0));

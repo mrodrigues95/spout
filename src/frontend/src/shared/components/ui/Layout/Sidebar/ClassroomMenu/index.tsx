@@ -72,7 +72,7 @@ const DiscussionMenuItems = ({ discussions }: { discussions: MenuItems }) => {
         variant="info"
         onClick={() => console.log('Create a discussion clicked!')}
       >
-        Create a discussion
+        Create discussion
       </ClassroomMenuItem>
       <ClassroomMenuItem
         type="button"

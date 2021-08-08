@@ -66,7 +66,6 @@ type Discussion implements Node {
   createdBy: User!
   classroom: Classroom!
   messages(first: Int after: String last: Int before: String order: [MessageSortInput!]): MessageConnection
-  users: [User!]!
   guid: Uuid!
   name: String!
   classroomId: Int!
@@ -213,7 +212,6 @@ type User implements Node {
   state: State!
   createdAt: DateTime!
   updatedAt: DateTime!
-  userDiscussions: [UserDiscussion!]!
   messages: [Message!]!
   userName: String
   normalizedUserName: String
@@ -228,13 +226,6 @@ type User implements Node {
   lockoutEnd: DateTime
   lockoutEnabled: Boolean!
   accessFailedCount: Int!
-}
-
-type UserDiscussion {
-  discussionId: Int!
-  discussion: Discussion
-  userId: Int!
-  user: User
 }
 
 type UserError {

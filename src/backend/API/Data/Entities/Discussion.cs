@@ -29,7 +29,6 @@ namespace API.Data.Entities {
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        public ICollection<UserDiscussion> UserDiscussions { get; set; } = new List<UserDiscussion>();
         public ICollection<Message> Messages { get; set; } = new List<Message>();
     }
 }

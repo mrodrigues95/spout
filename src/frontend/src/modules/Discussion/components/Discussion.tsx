@@ -9,19 +9,14 @@ import {
   Container,
 } from '~/shared/components';
 import DiscussionContainer from './DiscussionContainer';
-import { UserInfoFragment } from '../utils/fragments';
 
 const query = gql`
   query DiscussionQuery($id: ID!) {
     discussionById(id: $id) {
       id
       name
-      users {
-        ...UserInfo_user
-      }
     }
   }
-  ${UserInfoFragment}
 `;
 
 const Discussion = () => {
