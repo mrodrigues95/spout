@@ -16,6 +16,7 @@ export { default as Spinner } from './Spinner';
 export { default as VisuallyHidden } from './VisuallyHidden';
 export { default as InfiniteList } from './InfiniteList';
 export { default as Skeleton } from './Skeleton';
+export { default as Layout } from './Layout';
 export * from './Form';
 
 export type { Props as ButtonOrLinkProps } from './ButtonOrLink';

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { DiscussionQuery } from '../components/__generated__/Discussion.generated';
 import { FeelingBlueIllustration } from '~/shared/assets';
 import {
-  PrimaryLayout,
+  Layout,
   Spinner,
   ErrorFallback,
   Container,
@@ -32,7 +32,7 @@ const Discussion = () => {
 
   return (
     <>
-      <PrimaryLayout title={data?.discussionById.name ?? 'Discussion'}>
+      <Layout title={data?.discussionById.name ?? 'Discussion'}>
         {loading && <Spinner className="h-5 w-5 text-black" />}
         {error && (
           <Container>
@@ -45,7 +45,7 @@ const Discussion = () => {
           </Container>
         )}
         {data && <DiscussionContainer discussion={data.discussionById} />}
-      </PrimaryLayout>
+      </Layout>
     </>
   );
 };

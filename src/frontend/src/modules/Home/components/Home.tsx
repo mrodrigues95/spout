@@ -1,10 +1,10 @@
-import { PrimaryLayout } from '~/shared/components';
+import { Layout } from '~/shared/components';
 
 const Home = () => {
   return (
-    <PrimaryLayout title="Home">
+    <Layout title="Home">
       <h1>HOME</h1>
-    </PrimaryLayout>
+    </Layout>
   );
 };
 

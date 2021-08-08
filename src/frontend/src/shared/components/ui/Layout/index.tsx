@@ -8,7 +8,7 @@ interface Props {
   children: ReactNode;
 }
 
-const PrimaryLayout = ({ title, unauthenticated = false, children }: Props) => {
+const Layout = ({ title, unauthenticated = false, children }: Props) => {
   return (
     <>
       <NextSeo title={title} />
@@ -24,4 +24,4 @@ const PrimaryLayout = ({ title, unauthenticated = false, children }: Props) => {
   );
 };
 
-export default PrimaryLayout;
+export default Layout;

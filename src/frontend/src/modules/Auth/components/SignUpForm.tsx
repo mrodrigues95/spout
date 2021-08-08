@@ -7,7 +7,7 @@ import {
   Input,
   Form,
   useZodForm,
-  PrimaryLayout,
+  Layout,
   useToast,
 } from '~/shared/components';
 import { useAuthRedirect, useInitializeSessionMutation } from '../hooks';
@@ -97,7 +97,7 @@ const SignUpForm = () => {
   };
 
   return (
-    <PrimaryLayout title="Sign Up" unauthenticated>
+    <Layout title="Sign Up" unauthenticated>
       <AuthCard
         title="Create an account"
         action={{
@@ -137,7 +137,7 @@ const SignUpForm = () => {
           <FormSubmitButton>Sign Up</FormSubmitButton>
         </Form>
       </AuthCard>
-    </PrimaryLayout>
+    </Layout>
   );
 };
 
