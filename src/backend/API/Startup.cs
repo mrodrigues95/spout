@@ -43,7 +43,7 @@ namespace API {
                 .UseCors("CorsPolicy")
                 .UseAuthentication()
                 .UseAuthorization()
-                .UseEndpoints(endpoints => endpoints.MapGraphQL());
+                .UseEndpoints(endpoints => endpoints.MapGraphQL("/api/graphql"));
         }
     }
 }

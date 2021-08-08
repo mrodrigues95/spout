@@ -75,7 +75,7 @@ const Tooltip = ({ label, children, placement, delay }: Props) => {
       scale: 1,
       opacity: 1,
       transition: {
-        opacity: { easings: 'easeOut', duration: 0.2 },
+        opacity: { easings: 'easeOut', duration: 0.1 },
         scale: { duration: 0.2, ease: [0.175, 0.885, 0.4, 1.1] },
       },
     },

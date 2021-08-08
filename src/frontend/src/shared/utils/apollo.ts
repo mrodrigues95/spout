@@ -75,8 +75,8 @@ export const createApolloClient = ({
     // to the browser environment outside of Docker for SSR and client requests.
     // See: https://github.com/apollographql/apollo-link/issues/375
     uri: ssrMode
-      ? 'http://backend:5000/graphql'
-      : 'http://spout.localhost/graphql',
+      ? 'http://backend:5000/api/graphql'
+      : 'http://spout.localhost/api/graphql',
     headers: headers,
     credentials: 'include',
   });

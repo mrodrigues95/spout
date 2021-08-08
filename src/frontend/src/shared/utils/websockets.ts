@@ -4,7 +4,7 @@ import { WebSocketLink } from '@apollo/client/link/ws';
 // implements support for graphql-ws.
 export const createWSLink = () => {
   return new WebSocketLink({
-    uri: 'ws://spout.localhost/graphql',
+    uri: 'ws://spout.localhost/api/graphql',
     options: {
       reconnect: true,
       lazy: true,
@@ -54,7 +54,7 @@ export const createWSLink = () => {
 
 // export const createWSLink = () => {
 //   return new WebSocketLink({
-//     url: 'ws://spout.localhost/graphql',
+//     url: 'ws://spout.localhost/api/graphql',
 //     webSocketImpl: typeof window === 'undefined' ? ws.client : WebSocket
 //   });
 // };
