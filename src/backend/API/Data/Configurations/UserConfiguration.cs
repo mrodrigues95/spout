@@ -27,6 +27,10 @@ namespace API.Data.Configurations {
             builder.HasMany(u => u.Messages)
                 .WithOne(m => m.CreatedBy!)
                 .HasForeignKey(m => m.CreatedById);
+            
+            builder.HasMany(u => u.Invites)
+                .WithOne(i => i.Inviter!)
+                .HasForeignKey(i => i.InviterId);
 
             builder.HasOne(u => u.State)
                 .WithMany(s => s!.Users)

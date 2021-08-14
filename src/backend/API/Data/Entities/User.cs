@@ -23,5 +23,6 @@ namespace API.Data.Entities {
         public ICollection<UserClassroom> UserClassrooms { get; set; } = new List<UserClassroom>();
         public ICollection<Session> Sessions { get; set; } = new List<Session>();
         public ICollection<Message> Messages { get; set; } = new List<Message>();
+        public ICollection<Invite> Invites { get; set; } = new List<Invite>();
     }
 }

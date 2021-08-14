@@ -12,7 +12,7 @@ namespace API.Data.Configurations {
                 .HasDefaultValue(DateTime.UtcNow);
 
             builder.Property(s => s.ExpiresAt)
-                .HasDefaultValue(DateTime.UtcNow);
+                .HasDefaultValue((DateTime.UtcNow).AddDays(7));
 
             builder.Property(s => s.UpdatedAt)
                 .HasDefaultValue(DateTime.UtcNow);

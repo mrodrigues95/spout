@@ -14,6 +14,7 @@ import MessageComposer from './MessageComposer';
 import { MessageFragment, UserInfoFragment } from '../../utils/fragments';
 import { updateMessagesQuery } from './../../utils/updateMessagesQuery';
 
+// TODO: Maybe use `before` instead?
 export const query = gql`
   query DiscussionMessagesQuery($id: ID!, $after: String) {
     discussionById(id: $id) {

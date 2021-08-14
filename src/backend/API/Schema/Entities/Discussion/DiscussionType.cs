@@ -59,14 +59,14 @@ namespace API.Schema.Entities.Discussion {
 
             public async Task<IEnumerable<Entity.Message>> GetMessagesAsync(
                 Entity.Discussion discussion,
-                [ScopedService] ApplicationDbContext dbContext,
+                [ScopedService] ApplicationDbContext context,
                 MessageByIdDataLoader messageById,
                 CancellationToken cancellationToken) {
                 // TODO: Paginate this.
                 // This will currently fetch all messages and chop the pages in memory but
                 // instead we should paginate the messages before passing it into the data loader.
                 // See: https://github.com/ChilliCream/graphql-workshop/blob/master/docs/6-adding-complex-filter-capabilities.md
-                int[] messageIds = await dbContext.Discussions
+                int[] messageIds = await context.Discussions
                     .Where(d => d.Id == discussion.Id)
                     .Include(d => d.Messages)
                     .SelectMany(d => d.Messages.Select(m => m.Id))

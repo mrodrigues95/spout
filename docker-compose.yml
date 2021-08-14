@@ -45,8 +45,8 @@ services:
       - 5001:5001
     volumes:
       - ./src/backend:/srv/backend:rw
-      - ${APPDATA}/microsoft/UserSecrets:/root/.microsoft/usersecrets
-      - ${APPDATA}/.aspnet/https:/root/.aspnet/https/
+      - ${APPDATA}\Microsoft\UserSecrets:/root/.microsoft/usersecrets
+      - ${APPDATA}\.aspnet\https:/root/.aspnet/https
     labels:
       - traefik.http.routers.backend-http.rule=Host(`spout.localhost`) && PathPrefix(`/api/graphql`)
       - traefik.http.routers.backend-http.service=backend
