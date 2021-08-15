@@ -8,7 +8,7 @@ namespace API.Data.Configurations {
         public void Configure(EntityTypeBuilder<Message> builder) {
             builder.HasKey(m => m.Id);
 
-            builder.Property(m => m.Body)
+            builder.Property(m => m.Content)
                 .HasMaxLength(2000);
 
             builder.Property(m => m.CreatedAt)

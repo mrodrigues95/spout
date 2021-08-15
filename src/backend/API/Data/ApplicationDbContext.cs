@@ -1,5 +1,4 @@
-﻿using Enums = API.Common.Enums;
-using API.Data.Entities;
+﻿using API.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +15,7 @@ namespace API.Data {
         public DbSet<Discussion> Discussions { get; set; } = default!;
         public DbSet<Message> Messages { get; set; } = default!;
         public DbSet<Invite> Invites { get; set; } = default!;
+        public DbSet<InviteLog> InviteLogs { get; set; } = default!;
         public DbSet<State> States { get; set; } = default!;
         public DbSet<DelLogType> DelLogTypes { get; set; } = default!;
         public DbSet<DelLog> DelLogs { get; set; } = default!;

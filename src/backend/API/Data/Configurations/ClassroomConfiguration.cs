@@ -14,10 +14,13 @@ namespace API.Data.Configurations {
             builder.Property(c => c.CreatedAt)
                 .HasDefaultValue(DateTime.UtcNow);
 
-            builder.Property(c => c.UpdatedAt)
+            builder
+                .Property(c => c.UpdatedAt)
                 .HasDefaultValue(DateTime.UtcNow);
 
-            builder.HasIndex(c => c.CreatedById);
+            builder.HasMany(c => c.UserClassrooms)
+                .WithOne(uc => uc.Classroom!)
+                .HasForeignKey(uc => uc.ClassroomId);
 
             builder.HasMany(c => c.Discussions)
                 .WithOne(c => c.Classroom!)
@@ -29,7 +32,7 @@ namespace API.Data.Configurations {
 
             builder.HasOne(c => c.DelLog)
                 .WithMany(d => d!.DeletedClassrooms)
-                .HasForeignKey(c => c.DelLogId);
+                .HasForeignKey(c => c.DelLogId);           
 
             builder.HasOne(c => c.State)
                 .WithMany(s => s!.Classrooms)

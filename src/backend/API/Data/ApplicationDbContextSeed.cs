@@ -35,12 +35,7 @@ namespace API.Data {
                 }
 
                 if (!await context.Classrooms.AnyAsync()) {
-                    await context.Classrooms.AddRangeAsync(GetPreconfiguredClassrooms(context));
-                    await context.SaveChangesAsync();
-                }
-
-                if (!await context.UserClassrooms.AnyAsync()) {
-                    await context.UserClassrooms.AddRangeAsync(await GetPreConfiguredUserClassrooms(context));
+                    await context.Classrooms.AddRangeAsync(await GetPreconfiguredClassrooms(context));
                     await context.SaveChangesAsync();
                 }
 
@@ -97,75 +92,70 @@ namespace API.Data {
 
         private static IEnumerable<User> GetPreconfiguredUsers(ApplicationDbContext context) {
             return new List<User>() {
-                    new User {
-                        Name = "Marcus Rodrigues",
-                        UserName = "mrodrigues@test.com",
-                        Email = "mrodrigues@test.com",
-                        State = GetState(context)
-                    },
-                    new User {
-                        Name = "John Doe",
-                        UserName = "jdoe@test.com",
-                        Email = "jdoe@test.com",
-                        State = GetState(context)
-                    },
-                    new User {
-                        Name = "Debbie Ray",
-                        UserName = "dray@test.com",
-                        Email = "dray@test.com",
-                        State = GetState(context)
-                    },
-                    new User {
-                        Name = "Heather Dook",
-                        UserName = "hdook@test.com",
-                        Email = "hdook@test.com",
-                        State = GetState(context)
-                    },
-                };
+                new User {
+                    Name = "Marcus Rodrigues",
+                    UserName = "mrodrigues@test.com",
+                    Email = "mrodrigues@test.com",
+                    State = GetState(context)
+                },
+                new User {
+                    Name = "John Doe",
+                    UserName = "jdoe@test.com",
+                    Email = "jdoe@test.com",
+                    State = GetState(context)
+                },
+                new User {
+                    Name = "Debbie Ray",
+                    UserName = "dray@test.com",
+                    Email = "dray@test.com",
+                    State = GetState(context)
+                },
+                new User {
+                    Name = "Heather Dook",
+                    UserName = "hdook@test.com",
+                    Email = "hdook@test.com",
+                    State = GetState(context)
+                },
+            };
         }
 
-        private static IEnumerable<Classroom> GetPreconfiguredClassrooms(ApplicationDbContext context) {
-            return new List<Classroom>() {
-                    new Classroom {
-                        Name = "Introduction to C# - SE42",
-                        CreatedBy = GetUser(context),
-                        StateId = GetState(context).Id,
-                        State = GetState(context)
-                    },
-                    new Classroom {
-                        Name = "Computer Programming - CP425",
-                        CreatedBy = GetUser(context, skip: 1),
-                        State = GetState(context)
-                    },
-                    new Classroom {
-                        Name = "Group Dynamics - GD108",
-                        CreatedBy = GetUser(context, skip: 2),
-                        State = GetState(context)
-                    },
-                    new Classroom {
-                        Name = "Networking Infrastructure - NI21",
-                        CreatedBy = GetUser(context, skip: 3),
-                        State = GetState(context)
-                    },
-                };
-        }
-
-        private static async Task<IEnumerable<UserClassroom>> GetPreConfiguredUserClassrooms(ApplicationDbContext context) {
+        private static async Task<IEnumerable<Classroom>> GetPreconfiguredClassrooms(ApplicationDbContext context) {
             var users = await context.Users.ToListAsync();
-            var classrooms = await context.Classrooms.ToListAsync();
-            var userClassrooms = new List<UserClassroom>();
 
-            // Every user is in every classroom.
-            foreach (User user in users) {
-                foreach (Classroom classroom in classrooms) {
-                    userClassrooms.Add(new UserClassroom {
+            var classrooms = new List<Classroom>() {
+                new Classroom {
+                    Name = "Introduction to C# - SE42",
+                    State = GetState(context),
+                },
+                new Classroom {
+                    Name = "Computer Programming - CP425",
+                    State = GetState(context)
+                },
+                new Classroom {
+                    Name = "Group Dynamics - GD108",
+                    State = GetState(context)
+                },
+                new Classroom {
+                    Name = "Networking Infrastructure - NI21",
+                    State = GetState(context)
+                },
+            };
+
+            foreach (Classroom classroom in classrooms) {
+                // To simplify the seed, the first user will be the creator of all classrooms.
+                var isCreator = true;
+
+                foreach (User user in users) {
+                    classroom.UserClassrooms.Add(new UserClassroom {
                         User = user,
-                        Classroom = classroom
+                        Classroom = classroom,
+                        IsCreator = isCreator,
                     });
+                    isCreator = false;
                 }
             }
 
-            return userClassrooms;
+            return classrooms;
         }
 
         private static async Task<IEnumerable<Discussion>> GetPreConfiguredDiscussions(ApplicationDbContext context) {
@@ -178,12 +168,14 @@ namespace API.Data {
 
                 // Create a random number of discussions for this classroom.
                 for (int i = 1; i < r.Next(1, 5); i++) {
-                    var random = classroom.UserClassrooms
-                        .OrderBy(uc => r.NextDouble()).First();
+                    var randomUser = classroom.UserClassrooms
+                        .OrderBy(uc => r.NextDouble())
+                        .First()
+                        .User;
 
                     discussions.Add(new Discussion {
                         Name = $"{classroom.Name!.Split("-")[1]} - Discussion {i}",
-                        CreatedBy = random.User,
+                        CreatedBy = randomUser,
                         Classroom = classroom,
                         State = GetState(context)
                     });
@@ -205,7 +197,8 @@ namespace API.Data {
                 for (int i = 0; i < messageCount; ++i) {
                     var randomUser = discussion.Classroom!.UserClassrooms
                         .OrderBy(uc => r.NextDouble())
-                        .First().User;
+                        .First()
+                        .User;
 
                     // A random date in the last three months.
                     var randomDate = DateTime.UtcNow.AddDays(r.Next(-90, 0));
@@ -215,7 +208,7 @@ namespace API.Data {
                         CreatedAt = randomDate,
                         UpdatedAt = randomDate,
                         CreatedBy = randomUser,
-                        Body = RandomMessageGenerator.Generate(1, 1, 5, 1, 20)
+                        Content = RandomMessageGenerator.Generate(1, 1, 5, 1, 20)
                     });
                 }
             }
@@ -225,7 +218,5 @@ namespace API.Data {
 
         private static State GetState(ApplicationDbContext context, int skip = 0) =>
             context.States.OrderBy(x => x.Id).Skip(skip).First();
-        private static User GetUser(ApplicationDbContext context, int skip = 0) =>
-            context.Users.OrderBy(x => x.Id).Skip(skip).First();
     }
 }

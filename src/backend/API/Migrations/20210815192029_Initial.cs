@@ -43,8 +43,8 @@ namespace API.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     status = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 14, 16, 42, 39, 193, DateTimeKind.Utc).AddTicks(1712)),
-                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 14, 16, 42, 39, 193, DateTimeKind.Utc).AddTicks(1951))
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 15, 19, 20, 29, 586, DateTimeKind.Utc).AddTicks(3174)),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 15, 19, 20, 29, 586, DateTimeKind.Utc).AddTicks(3418))
                 },
                 constraints: table =>
                 {
@@ -58,8 +58,8 @@ namespace API.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     deleted_for_id = table.Column<int>(type: "integer", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 14, 16, 42, 39, 181, DateTimeKind.Utc).AddTicks(48)),
-                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 14, 16, 42, 39, 181, DateTimeKind.Utc).AddTicks(420))
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 15, 19, 20, 29, 572, DateTimeKind.Utc).AddTicks(4026)),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 15, 19, 20, 29, 572, DateTimeKind.Utc).AddTicks(4305))
                 },
                 constraints: table =>
                 {
@@ -103,8 +103,8 @@ namespace API.Migrations
                     name = table.Column<string>(type: "character varying(70)", maxLength: 70, nullable: false),
                     email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     state_id = table.Column<int>(type: "integer", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 14, 16, 42, 39, 195, DateTimeKind.Utc).AddTicks(8141)),
-                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 14, 16, 42, 39, 195, DateTimeKind.Utc).AddTicks(8403)),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 15, 19, 20, 29, 589, DateTimeKind.Utc).AddTicks(2322)),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 15, 19, 20, 29, 589, DateTimeKind.Utc).AddTicks(2593)),
                     user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalized_user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalized_email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -138,12 +138,11 @@ namespace API.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     guid = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: false),
-                    created_by_id = table.Column<int>(type: "integer", nullable: false),
                     state_id = table.Column<int>(type: "integer", nullable: false),
                     deleted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     del_log_id = table.Column<int>(type: "integer", nullable: true),
-                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 14, 16, 42, 39, 176, DateTimeKind.Utc).AddTicks(8065)),
-                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 14, 16, 42, 39, 177, DateTimeKind.Utc).AddTicks(8924))
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 15, 19, 20, 29, 568, DateTimeKind.Utc).AddTicks(1897)),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 15, 19, 20, 29, 569, DateTimeKind.Utc).AddTicks(2475))
                 },
                 constraints: table =>
                 {
@@ -160,12 +159,6 @@ namespace API.Migrations
                         principalTable: "states",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_classrooms_users_created_by_id",
-                        column: x => x.created_by_id,
-                        principalTable: "users",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -173,10 +166,10 @@ namespace API.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 14, 16, 42, 39, 192, DateTimeKind.Utc).AddTicks(1882)),
-                    expires_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 21, 16, 42, 39, 192, DateTimeKind.Utc).AddTicks(2158)),
-                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 14, 16, 42, 39, 192, DateTimeKind.Utc).AddTicks(2314)),
-                    user_id = table.Column<int>(type: "integer", nullable: false)
+                    user_id = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 15, 19, 20, 29, 585, DateTimeKind.Utc).AddTicks(3723)),
+                    expires_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 22, 19, 20, 29, 585, DateTimeKind.Utc).AddTicks(4013)),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 15, 19, 20, 29, 585, DateTimeKind.Utc).AddTicks(4231))
                 },
                 constraints: table =>
                 {
@@ -287,8 +280,8 @@ namespace API.Migrations
                     state_id = table.Column<int>(type: "integer", nullable: false),
                     deleted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     del_log_id = table.Column<int>(type: "integer", nullable: true),
-                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 14, 16, 42, 39, 183, DateTimeKind.Utc).AddTicks(4087)),
-                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 14, 16, 42, 39, 183, DateTimeKind.Utc).AddTicks(4400))
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 15, 19, 20, 29, 574, DateTimeKind.Utc).AddTicks(6187)),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 15, 19, 20, 29, 574, DateTimeKind.Utc).AddTicks(6478))
                 },
                 constraints: table =>
                 {
@@ -330,11 +323,11 @@ namespace API.Migrations
                     code = table.Column<string>(type: "character varying(22)", maxLength: 22, nullable: false),
                     uses = table.Column<short>(type: "smallint", nullable: false, defaultValue: (short)0),
                     max_uses = table.Column<short>(type: "smallint", nullable: true),
-                    expires_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValue: new DateTime(2021, 8, 21, 16, 42, 39, 187, DateTimeKind.Utc).AddTicks(3690)),
+                    expires_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValue: new DateTime(2021, 8, 22, 19, 20, 29, 578, DateTimeKind.Utc).AddTicks(7451)),
                     expires_after = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: false, defaultValue: "SevenDays"),
                     is_valid = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
-                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 14, 16, 42, 39, 188, DateTimeKind.Utc).AddTicks(5201)),
-                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 14, 16, 42, 39, 188, DateTimeKind.Utc).AddTicks(5483))
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 15, 19, 20, 29, 580, DateTimeKind.Utc).AddTicks(3070)),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 15, 19, 20, 29, 580, DateTimeKind.Utc).AddTicks(3315))
                 },
                 constraints: table =>
                 {
@@ -360,7 +353,8 @@ namespace API.Migrations
                 columns: table => new
                 {
                     classroom_id = table.Column<int>(type: "integer", nullable: false),
-                    user_id = table.Column<int>(type: "integer", nullable: false)
+                    user_id = table.Column<int>(type: "integer", nullable: false),
+                    is_creator = table.Column<bool>(type: "boolean", nullable: true, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -385,13 +379,13 @@ namespace API.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    body = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    content = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
                     discussion_id = table.Column<int>(type: "integer", nullable: false),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     deleted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     del_log_id = table.Column<int>(type: "integer", nullable: true),
-                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 14, 16, 42, 39, 190, DateTimeKind.Utc).AddTicks(9408)),
-                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 14, 16, 42, 39, 190, DateTimeKind.Utc).AddTicks(9685))
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 15, 19, 20, 29, 584, DateTimeKind.Utc).AddTicks(945)),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValue: new DateTime(2021, 8, 15, 19, 20, 29, 584, DateTimeKind.Utc).AddTicks(1293))
                 },
                 constraints: table =>
                 {
@@ -416,10 +410,30 @@ namespace API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "ix_classrooms_created_by_id",
-                table: "classrooms",
-                column: "created_by_id");
+            migrationBuilder.CreateTable(
+                name: "invite_logs",
+                columns: table => new
+                {
+                    invite_id = table.Column<int>(type: "integer", nullable: false),
+                    user_id = table.Column<int>(type: "integer", nullable: false),
+                    is_inviter = table.Column<bool>(type: "boolean", nullable: true, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_invite_logs", x => new { x.invite_id, x.user_id });
+                    table.ForeignKey(
+                        name: "fk_invite_logs_invites_invite_id",
+                        column: x => x.invite_id,
+                        principalTable: "invites",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_invite_logs_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "ix_classrooms_del_log_id",
@@ -455,6 +469,11 @@ namespace API.Migrations
                 name: "ix_discussions_state_id",
                 table: "discussions",
                 column: "state_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_invite_logs_user_id",
+                table: "invite_logs",
+                column: "user_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_invites_classroom_id",
@@ -520,9 +539,9 @@ namespace API.Migrations
                 column: "classroom_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_user_classrooms_user_id_classroom_id",
+                name: "ix_user_classrooms_is_creator",
                 table: "user_classrooms",
-                columns: new[] { "user_id", "classroom_id" });
+                column: "is_creator");
 
             migrationBuilder.CreateIndex(
                 name: "ix_user_logins_user_id",
@@ -554,7 +573,7 @@ namespace API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "invites");
+                name: "invite_logs");
 
             migrationBuilder.DropTable(
                 name: "messages");
@@ -581,6 +600,9 @@ namespace API.Migrations
                 name: "users_tokens");
 
             migrationBuilder.DropTable(
+                name: "invites");
+
+            migrationBuilder.DropTable(
                 name: "discussions");
 
             migrationBuilder.DropTable(
@@ -590,16 +612,16 @@ namespace API.Migrations
                 name: "classrooms");
 
             migrationBuilder.DropTable(
-                name: "del_logs");
-
-            migrationBuilder.DropTable(
                 name: "users");
 
             migrationBuilder.DropTable(
-                name: "del_log_types");
+                name: "del_logs");
 
             migrationBuilder.DropTable(
                 name: "states");
+
+            migrationBuilder.DropTable(
+                name: "del_log_types");
         }
     }
 }

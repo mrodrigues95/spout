@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate.AspNetCore.Authorization;
-using System.Linq;
 
 namespace API.Schema.Entities.Classroom {
     [Authorize]
@@ -34,15 +33,5 @@ namespace API.Schema.Entities.Classroom {
             ClassroomByIdDataLoader classroomById,
             CancellationToken cancellationToken) =>
             await classroomById.LoadAsync(ids, cancellationToken);
-
-        [UseApplicationDbContext]
-        public async Task<IEnumerable<Entity.Classroom>> GetClassroomsByUserAsync(
-            [GlobalState] int userId,
-            [ScopedService] ApplicationDbContext context,
-            CancellationToken cancellationToken) =>
-            await context.UserClassrooms
-                .Where(uc => uc.UserId == userId)
-                .Select(uc => uc.Classroom!)
-                .ToListAsync(cancellationToken);
     }
 }
