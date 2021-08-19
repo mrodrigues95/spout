@@ -39,27 +39,12 @@ namespace API.Data.Configurations {
             builder.Property(i => i.UpdatedAt)
                 .HasDefaultValue(DateTime.UtcNow);
 
-            builder.HasOne(i => i.Inviter)
-                .WithMany(u => u!.Invites)
-                .HasForeignKey(i => i.InviterId);
-
-            builder.HasOne(i => i.Classroom)
-                .WithMany(c => c!.Invites)
-                .HasForeignKey(i => i.ClassroomId);
-
-            builder.HasMany(i => i.InviteLogs)
-                .WithOne(i => i.Invite!)
-                .HasForeignKey(i => i.InviteId);
+            builder.HasMany(i => i.ClassroomInvites)
+                .WithOne(ui => ui.Invite!)
+                .HasForeignKey(ui => ui.InviteId);
 
             builder.HasIndex(i => i.Code)
                 .IsUnique();
-
-            builder.HasIndex(i => new { i.Code, i.InviterId, i.ClassroomId })
-                .IsUnique();
-
-            builder.HasIndex(i => i.InviterId);
-
-            builder.HasIndex(i => i.ClassroomId);
 
             builder.HasCheckConstraint("ck_positive_uses", "uses >= 0");
 

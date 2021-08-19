@@ -38,7 +38,7 @@ export const useStore = create<MessagesStore>((set) => ({
             {
               id: discussionId,
               optimisticId: getOptimisticId(),
-              body: message,
+              content: message,
               createdAt: new Date().toISOString(),
               createdBy: createdBy
             },

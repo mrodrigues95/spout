@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210815192029_Initial")]
+    [Migration("20210819155057_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,7 +32,7 @@ namespace API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 15, 19, 20, 29, 568, DateTimeKind.Utc).AddTicks(1897))
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 193, DateTimeKind.Utc).AddTicks(986))
                         .HasColumnName("created_at");
 
                     b.Property<int?>("DelLogId")
@@ -60,7 +60,7 @@ namespace API.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 15, 19, 20, 29, 569, DateTimeKind.Utc).AddTicks(2475))
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 194, DateTimeKind.Utc).AddTicks(3625))
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
@@ -75,6 +75,88 @@ namespace API.Migrations
                     b.ToTable("classrooms");
                 });
 
+            modelBuilder.Entity("API.Data.Entities.ClassroomInvite", b =>
+                {
+                    b.Property<int>("InviteId")
+                        .HasColumnType("integer")
+                        .HasColumnName("invite_id");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("ClassroomId")
+                        .HasColumnType("integer")
+                        .HasColumnName("classroom_id");
+
+                    b.Property<bool>("IsInvitee")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_invitee");
+
+                    b.Property<bool>("IsInviter")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_inviter");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 198, DateTimeKind.Utc).AddTicks(5115))
+                        .HasColumnName("updated_at");
+
+                    b.Property<DateTime?>("UsedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("used_at");
+
+                    b.HasKey("InviteId", "UserId", "ClassroomId")
+                        .HasName("pk_classroom_invites");
+
+                    b.HasIndex("ClassroomId")
+                        .HasDatabaseName("ix_classroom_invites_classroom_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_classroom_invites_user_id");
+
+                    b.ToTable("classroom_invites");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.ClassroomUser", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("ClassroomId")
+                        .HasColumnType("integer")
+                        .HasColumnName("classroom_id");
+
+                    b.Property<bool?>("IsCreator")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_creator");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 200, DateTimeKind.Utc).AddTicks(2230))
+                        .HasColumnName("joined_at");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 200, DateTimeKind.Utc).AddTicks(2491))
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("UserId", "ClassroomId")
+                        .HasName("pk_classroom_users");
+
+                    b.HasIndex("ClassroomId")
+                        .HasDatabaseName("ix_classroom_users_classroom_id");
+
+                    b.HasIndex("IsCreator")
+                        .HasDatabaseName("ix_classroom_users_is_creator");
+
+                    b.ToTable("classroom_users");
+                });
+
             modelBuilder.Entity("API.Data.Entities.DelLog", b =>
                 {
                     b.Property<int>("Id")
@@ -86,7 +168,7 @@ namespace API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 15, 19, 20, 29, 572, DateTimeKind.Utc).AddTicks(4026))
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 201, DateTimeKind.Utc).AddTicks(2050))
                         .HasColumnName("created_at");
 
                     b.Property<int>("DeletedForId")
@@ -96,7 +178,7 @@ namespace API.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 15, 19, 20, 29, 572, DateTimeKind.Utc).AddTicks(4305))
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 201, DateTimeKind.Utc).AddTicks(2354))
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
@@ -143,7 +225,7 @@ namespace API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 15, 19, 20, 29, 574, DateTimeKind.Utc).AddTicks(6187))
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 203, DateTimeKind.Utc).AddTicks(7491))
                         .HasColumnName("created_at");
 
                     b.Property<int>("CreatedById")
@@ -175,7 +257,7 @@ namespace API.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 15, 19, 20, 29, 574, DateTimeKind.Utc).AddTicks(6478))
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 203, DateTimeKind.Utc).AddTicks(7892))
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
@@ -204,10 +286,6 @@ namespace API.Migrations
                         .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("ClassroomId")
-                        .HasColumnType("integer")
-                        .HasColumnName("classroom_id");
-
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(22)
@@ -217,7 +295,7 @@ namespace API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 15, 19, 20, 29, 580, DateTimeKind.Utc).AddTicks(3070))
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 208, DateTimeKind.Utc).AddTicks(5183))
                         .HasColumnName("created_at");
 
                     b.Property<string>("ExpiresAfter")
@@ -231,12 +309,8 @@ namespace API.Migrations
                     b.Property<DateTime?>("ExpiresAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 22, 19, 20, 29, 578, DateTimeKind.Utc).AddTicks(7451))
+                        .HasDefaultValue(new DateTime(2021, 8, 26, 15, 50, 57, 207, DateTimeKind.Utc).AddTicks(3213))
                         .HasColumnName("expires_at");
-
-                    b.Property<int>("InviterId")
-                        .HasColumnType("integer")
-                        .HasColumnName("inviter_id");
 
                     b.Property<bool?>("IsValid")
                         .IsRequired()
@@ -252,7 +326,7 @@ namespace API.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 15, 19, 20, 29, 580, DateTimeKind.Utc).AddTicks(3315))
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 208, DateTimeKind.Utc).AddTicks(5445))
                         .HasColumnName("updated_at");
 
                     b.Property<short>("Uses")
@@ -264,50 +338,15 @@ namespace API.Migrations
                     b.HasKey("Id")
                         .HasName("pk_invites");
 
-                    b.HasIndex("ClassroomId")
-                        .HasDatabaseName("ix_invites_classroom_id");
-
                     b.HasIndex("Code")
                         .IsUnique()
                         .HasDatabaseName("ix_invites_code");
-
-                    b.HasIndex("InviterId")
-                        .HasDatabaseName("ix_invites_inviter_id");
-
-                    b.HasIndex("Code", "InviterId", "ClassroomId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_invites_code_inviter_id_classroom_id");
 
                     b.ToTable("invites");
 
                     b.HasCheckConstraint("ck_positive_uses", "uses >= 0");
 
                     b.HasCheckConstraint("ck_positive_max_uses", "max_uses >= 0 AND max_uses <= 100");
-                });
-
-            modelBuilder.Entity("API.Data.Entities.InviteLog", b =>
-                {
-                    b.Property<int>("InviteId")
-                        .HasColumnType("integer")
-                        .HasColumnName("invite_id");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("user_id");
-
-                    b.Property<bool?>("IsInviter")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_inviter");
-
-                    b.HasKey("InviteId", "UserId")
-                        .HasName("pk_invite_logs");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_invite_logs_user_id");
-
-                    b.ToTable("invite_logs");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Message", b =>
@@ -327,7 +366,7 @@ namespace API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 15, 19, 20, 29, 584, DateTimeKind.Utc).AddTicks(945))
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 210, DateTimeKind.Utc).AddTicks(7317))
                         .HasColumnName("created_at");
 
                     b.Property<int>("CreatedById")
@@ -349,7 +388,7 @@ namespace API.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 15, 19, 20, 29, 584, DateTimeKind.Utc).AddTicks(1293))
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 210, DateTimeKind.Utc).AddTicks(7617))
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
@@ -377,19 +416,19 @@ namespace API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 15, 19, 20, 29, 585, DateTimeKind.Utc).AddTicks(3723))
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 212, DateTimeKind.Utc).AddTicks(1038))
                         .HasColumnName("created_at");
 
                     b.Property<DateTime>("ExpiresAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 22, 19, 20, 29, 585, DateTimeKind.Utc).AddTicks(4013))
+                        .HasDefaultValue(new DateTime(2021, 8, 26, 15, 50, 57, 212, DateTimeKind.Utc).AddTicks(1317))
                         .HasColumnName("expires_at");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 15, 19, 20, 29, 585, DateTimeKind.Utc).AddTicks(4231))
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 212, DateTimeKind.Utc).AddTicks(1547))
                         .HasColumnName("updated_at");
 
                     b.Property<int>("UserId")
@@ -416,7 +455,7 @@ namespace API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 15, 19, 20, 29, 586, DateTimeKind.Utc).AddTicks(3174))
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 213, DateTimeKind.Utc).AddTicks(3050))
                         .HasColumnName("created_at");
 
                     b.Property<string>("Status")
@@ -428,7 +467,7 @@ namespace API.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 15, 19, 20, 29, 586, DateTimeKind.Utc).AddTicks(3418))
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 213, DateTimeKind.Utc).AddTicks(3364))
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
@@ -457,7 +496,7 @@ namespace API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 15, 19, 20, 29, 589, DateTimeKind.Utc).AddTicks(2322))
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 215, DateTimeKind.Utc).AddTicks(6525))
                         .HasColumnName("created_at");
 
                     b.Property<string>("Email")
@@ -525,7 +564,7 @@ namespace API.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2021, 8, 15, 19, 20, 29, 589, DateTimeKind.Utc).AddTicks(2593))
+                        .HasDefaultValue(new DateTime(2021, 8, 19, 15, 50, 57, 215, DateTimeKind.Utc).AddTicks(6905))
                         .HasColumnName("updated_at");
 
                     b.Property<string>("UserName")
@@ -547,34 +586,6 @@ namespace API.Migrations
                         .HasDatabaseName("ix_users_state_id");
 
                     b.ToTable("users");
-                });
-
-            modelBuilder.Entity("API.Data.Entities.UserClassroom", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("user_id");
-
-                    b.Property<int>("ClassroomId")
-                        .HasColumnType("integer")
-                        .HasColumnName("classroom_id");
-
-                    b.Property<bool?>("IsCreator")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_creator");
-
-                    b.HasKey("UserId", "ClassroomId")
-                        .HasName("pk_user_classrooms");
-
-                    b.HasIndex("ClassroomId")
-                        .HasDatabaseName("ix_user_classrooms_classroom_id");
-
-                    b.HasIndex("IsCreator")
-                        .HasDatabaseName("ix_user_classrooms_is_creator");
-
-                    b.ToTable("user_classrooms");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -761,6 +772,57 @@ namespace API.Migrations
                     b.Navigation("State");
                 });
 
+            modelBuilder.Entity("API.Data.Entities.ClassroomInvite", b =>
+                {
+                    b.HasOne("API.Data.Entities.Classroom", "Classroom")
+                        .WithMany("Invites")
+                        .HasForeignKey("ClassroomId")
+                        .HasConstraintName("fk_classroom_invites_classrooms_classroom_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Data.Entities.Invite", "Invite")
+                        .WithMany("ClassroomInvites")
+                        .HasForeignKey("InviteId")
+                        .HasConstraintName("fk_classroom_invites_invites_invite_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Data.Entities.User", "User")
+                        .WithMany("Invites")
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("fk_classroom_invites_users_user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Classroom");
+
+                    b.Navigation("Invite");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.ClassroomUser", b =>
+                {
+                    b.HasOne("API.Data.Entities.Classroom", "Classroom")
+                        .WithMany("Users")
+                        .HasForeignKey("ClassroomId")
+                        .HasConstraintName("fk_classroom_users_classrooms_classroom_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Data.Entities.User", "User")
+                        .WithMany("Classrooms")
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("fk_classroom_users_users_user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Classroom");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("API.Data.Entities.DelLog", b =>
                 {
                     b.HasOne("API.Data.Entities.DelLogType", "DeletedFor")
@@ -808,48 +870,6 @@ namespace API.Migrations
                     b.Navigation("DelLog");
 
                     b.Navigation("State");
-                });
-
-            modelBuilder.Entity("API.Data.Entities.Invite", b =>
-                {
-                    b.HasOne("API.Data.Entities.Classroom", "Classroom")
-                        .WithMany("Invites")
-                        .HasForeignKey("ClassroomId")
-                        .HasConstraintName("fk_invites_classrooms_classroom_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Data.Entities.User", "Inviter")
-                        .WithMany("Invites")
-                        .HasForeignKey("InviterId")
-                        .HasConstraintName("fk_invites_users_inviter_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Classroom");
-
-                    b.Navigation("Inviter");
-                });
-
-            modelBuilder.Entity("API.Data.Entities.InviteLog", b =>
-                {
-                    b.HasOne("API.Data.Entities.Invite", "Invite")
-                        .WithMany("InviteLogs")
-                        .HasForeignKey("InviteId")
-                        .HasConstraintName("fk_invite_logs_invites_invite_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Data.Entities.User", "User")
-                        .WithMany("InviteLogs")
-                        .HasForeignKey("UserId")
-                        .HasConstraintName("fk_invite_logs_users_user_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Invite");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Message", b =>
@@ -902,27 +922,6 @@ namespace API.Migrations
                         .IsRequired();
 
                     b.Navigation("State");
-                });
-
-            modelBuilder.Entity("API.Data.Entities.UserClassroom", b =>
-                {
-                    b.HasOne("API.Data.Entities.Classroom", "Classroom")
-                        .WithMany("UserClassrooms")
-                        .HasForeignKey("ClassroomId")
-                        .HasConstraintName("fk_user_classrooms_classrooms_classroom_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Data.Entities.User", "User")
-                        .WithMany("UserClassrooms")
-                        .HasForeignKey("UserId")
-                        .HasConstraintName("fk_user_classrooms_users_user_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Classroom");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -988,7 +987,7 @@ namespace API.Migrations
 
                     b.Navigation("Invites");
 
-                    b.Navigation("UserClassrooms");
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("API.Data.Entities.DelLog", b =>
@@ -1012,7 +1011,7 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Data.Entities.Invite", b =>
                 {
-                    b.Navigation("InviteLogs");
+                    b.Navigation("ClassroomInvites");
                 });
 
             modelBuilder.Entity("API.Data.Entities.State", b =>
@@ -1026,15 +1025,13 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Data.Entities.User", b =>
                 {
-                    b.Navigation("InviteLogs");
+                    b.Navigation("Classrooms");
 
                     b.Navigation("Invites");
 
                     b.Navigation("Messages");
 
                     b.Navigation("Sessions");
-
-                    b.Navigation("UserClassrooms");
                 });
 #pragma warning restore 612, 618
         }

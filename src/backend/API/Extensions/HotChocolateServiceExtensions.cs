@@ -40,8 +40,7 @@ namespace API.Extensions {
                     .AddTypeExtension<UserQueries>()
                     .AddTypeExtension<SessionQueries>()
                     .AddTypeExtension<ClassroomQueries>()
-                    .AddTypeExtension<DiscussionQueries>()
-                    .AddTypeExtension<AuthQueries>();
+                    .AddTypeExtension<DiscussionQueries>();
 
             gql
                 .AddMutationType()

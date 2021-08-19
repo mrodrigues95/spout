@@ -11,6 +11,8 @@ export type Scalars = {
   Float: number;
   /** The `DateTime` scalar represents an ISO-8601 compliant date time type. */
   DateTime: string;
+  /** The `Short` scalar type represents non-fractional signed whole 16-bit numeric values. Short can represent values between -(2^15) and 2^15 - 1. */
+  Short: any;
   Uuid: any;
 };
 
@@ -43,8 +45,6 @@ export type Classroom = Node & {
   discussions?: Maybe<Array<Maybe<Discussion>>>;
   guid: Scalars['Uuid'];
   name: Scalars['String'];
-  createdById: Scalars['Int'];
-  createdBy: User;
   stateId: Scalars['Int'];
   state: State;
   deletedAt?: Maybe<Scalars['DateTime']>;
@@ -52,14 +52,27 @@ export type Classroom = Node & {
   delLog?: Maybe<DelLog>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  invites: Array<ClassroomInvite>;
+};
+
+export type ClassroomInvite = {
+  __typename?: 'ClassroomInvite';
+  inviteId: Scalars['Int'];
+  invite?: Maybe<Invite>;
+  userId: Scalars['Int'];
+  user?: Maybe<User>;
+  classroomId: Scalars['Int'];
+  classroom?: Maybe<Classroom>;
+  isInviter: Scalars['Boolean'];
+  isInvitee: Scalars['Boolean'];
+  usedAt?: Maybe<Scalars['DateTime']>;
+  updatedAt: Scalars['DateTime'];
 };
 
 export type ClassroomSortInput = {
   id?: Maybe<SortEnumType>;
   guid?: Maybe<SortEnumType>;
   name?: Maybe<SortEnumType>;
-  createdById?: Maybe<SortEnumType>;
-  createdBy?: Maybe<UserSortInput>;
   stateId?: Maybe<SortEnumType>;
   state?: Maybe<StateSortInput>;
   deletedAt?: Maybe<SortEnumType>;
@@ -84,7 +97,7 @@ export type DelLog = {
   __typename?: 'DelLog';
   id: Scalars['Int'];
   deletedForId: Scalars['Int'];
-  deletedFor: DelLogType;
+  deletedFor?: Maybe<DelLogType>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   deletedClassrooms: Array<Classroom>;
@@ -185,6 +198,30 @@ export type DiscussionSortInput = {
   updatedAt?: Maybe<SortEnumType>;
 };
 
+export enum ExpiresAfter {
+  ThirtyMinutes = 'THIRTY_MINUTES',
+  OneHour = 'ONE_HOUR',
+  SixHours = 'SIX_HOURS',
+  TwelveHours = 'TWELVE_HOURS',
+  OneDay = 'ONE_DAY',
+  SevenDays = 'SEVEN_DAYS',
+  Never = 'NEVER'
+}
+
+export type Invite = Node & {
+  __typename?: 'Invite';
+  id: Scalars['ID'];
+  code: Scalars['String'];
+  uses: Scalars['Short'];
+  maxUses?: Maybe<Scalars['Short']>;
+  expiresAt?: Maybe<Scalars['DateTime']>;
+  expiresAfter: ExpiresAfter;
+  isValid: Scalars['Boolean'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+  classroomInvites: Array<ClassroomInvite>;
+};
+
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -198,9 +235,9 @@ export type Message = Node & {
   __typename?: 'Message';
   id: Scalars['ID'];
   createdBy: User;
-  body: Scalars['String'];
+  content: Scalars['String'];
   discussionId: Scalars['Int'];
-  discussion: Discussion;
+  discussion?: Maybe<Discussion>;
   createdById: Scalars['Int'];
   deletedAt?: Maybe<Scalars['DateTime']>;
   delLogId?: Maybe<Scalars['Int']>;
@@ -231,7 +268,7 @@ export type MessageEdge = {
 
 export type MessageSortInput = {
   id?: Maybe<SortEnumType>;
-  body?: Maybe<SortEnumType>;
+  content?: Maybe<SortEnumType>;
   discussionId?: Maybe<SortEnumType>;
   discussion?: Maybe<DiscussionSortInput>;
   createdById?: Maybe<SortEnumType>;
@@ -304,6 +341,7 @@ export type PageInfo = {
 export type Query = {
   __typename?: 'Query';
   node?: Maybe<Node>;
+  me?: Maybe<User>;
   users: Array<User>;
   userById: User;
   sessions: Array<Session>;
@@ -311,11 +349,9 @@ export type Query = {
   classrooms: Array<Classroom>;
   classroomById: Classroom;
   classroomsById: Array<Classroom>;
-  classroomsByUser: Array<Classroom>;
   discussions?: Maybe<DiscussionConnection>;
   discussionById: Discussion;
   discussionsById: Array<Discussion>;
-  me?: Maybe<User>;
 };
 
 
@@ -367,7 +403,7 @@ export type RefreshSessionInput = {
 
 export type SendDiscussionMessageInput = {
   discussionId: Scalars['ID'];
-  body: Scalars['String'];
+  content: Scalars['String'];
 };
 
 export type SendDiscussionMessagePayload = {
@@ -380,11 +416,12 @@ export type Session = Node & {
   __typename?: 'Session';
   id: Scalars['ID'];
   user?: Maybe<User>;
+  userId: Scalars['Int'];
   createdAt: Scalars['DateTime'];
   expiresAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
-  userId: Scalars['Int'];
 };
+
 
 export type SignUpInput = {
   name: Scalars['String'];
@@ -428,16 +465,17 @@ export type SubscriptionOnDiscussionMessageReceivedArgs = {
 export type User = Node & {
   __typename?: 'User';
   id: Scalars['ID'];
-  classrooms?: Maybe<Array<Maybe<Classroom>>>;
-  sessions?: Maybe<Array<Maybe<Session>>>;
+  classrooms: Array<Classroom>;
+  sessions: Array<Session>;
   guid: Scalars['Uuid'];
   name: Scalars['String'];
   email: Scalars['String'];
   stateId: Scalars['Int'];
-  state: State;
+  state?: Maybe<State>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   messages: Array<Message>;
+  invites: Array<ClassroomInvite>;
   userName?: Maybe<Scalars['String']>;
   normalizedUserName?: Maybe<Scalars['String']>;
   normalizedEmail?: Maybe<Scalars['String']>;

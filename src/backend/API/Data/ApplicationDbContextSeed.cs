@@ -146,7 +146,7 @@ namespace API.Data {
                 var isCreator = true;
 
                 foreach (User user in users) {
-                    classroom.UserClassrooms.Add(new UserClassroom {
+                    classroom.Users.Add(new ClassroomUser {
                         User = user,
                         Classroom = classroom,
                         IsCreator = isCreator,
@@ -168,7 +168,7 @@ namespace API.Data {
 
                 // Create a random number of discussions for this classroom.
                 for (int i = 1; i < r.Next(1, 5); i++) {
-                    var randomUser = classroom.UserClassrooms
+                    var randomUser = classroom.Users
                         .OrderBy(uc => r.NextDouble())
                         .First()
                         .User;
@@ -195,7 +195,7 @@ namespace API.Data {
                 var messageCount = r.Next(0, 200);
 
                 for (int i = 0; i < messageCount; ++i) {
-                    var randomUser = discussion.Classroom!.UserClassrooms
+                    var randomUser = discussion.Classroom!.Users
                         .OrderBy(uc => r.NextDouble())
                         .First()
                         .User;

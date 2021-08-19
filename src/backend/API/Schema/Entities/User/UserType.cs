@@ -22,13 +22,15 @@ namespace API.Schema.Entities.User {
                 .ResolveNode((ctx, id) => ctx.DataLoader<UserByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
             descriptor
-                .Field(x => x.UserClassrooms)
+                .Field(x => x.Classrooms)
+                .Type<NonNullType<ListType<NonNullType<ClassroomType>>>>()
                 .ResolveWith<UserResolvers>(x => x.GetClassroomsAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .Name("classrooms");
 
             descriptor
                 .Field(x => x.Sessions)
+                .Type<NonNullType<ListType<NonNullType<SessionType>>>>()
                 .ResolveWith<UserResolvers>(x => x.GetSessionsAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .Name("sessions");
@@ -42,8 +44,8 @@ namespace API.Schema.Entities.User {
                 CancellationToken cancellationToken) {
                 int[] classroomIds = await dbContext.Users
                     .Where(u => u.Id == user.Id)
-                    .Include(u => u.UserClassrooms)
-                    .SelectMany(u => u.UserClassrooms.Select(uc => uc.ClassroomId))
+                    .Include(u => u.Classrooms)
+                    .SelectMany(u => u.Classrooms.Select(uc => uc.ClassroomId))
                     .ToArrayAsync();
 
                 return await classroomById.LoadAsync(classroomIds, cancellationToken);

@@ -6,10 +6,6 @@ using System.ComponentModel.DataAnnotations;
 namespace API.Data.Entities {
     public class Invite {
         public int Id { get; set; }
-        [Required] public int InviterId { get; set; }
-        [Required] public User? Inviter { get; set; }
-        [Required] public int ClassroomId { get; set; }
-        [Required] public Classroom? Classroom { get; set; }
         [Required] public string? Code { get; set; }
         [Required] public short Uses { get; set; }
         public short? MaxUses { get; set; }
@@ -19,6 +15,6 @@ namespace API.Data.Entities {
         [Required] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         [Required] public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        public ICollection<InviteLog> InviteLogs { get; set; } = new List<InviteLog>();
+        public ICollection<ClassroomInvite> ClassroomInvites { get; set; } = new List<ClassroomInvite>();
     }
 }

@@ -48,7 +48,7 @@ const Message = ({ message, optimisticOpts, isLast }: Props) => {
                 optimisticOpts?.error ? 'text-red-600' : 'text-black'
               )}
             >
-              <p className="font-semibold break-words">{message.body}</p>
+              <p className="font-semibold break-words">{message.content}</p>
               {optimisticOpts?.error && (
                 <button
                   type="button"

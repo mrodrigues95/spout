@@ -16,7 +16,7 @@ namespace API.Data.Entities {
         [Required] public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<Discussion> Discussions { get; set; } = new List<Discussion>();
-        public ICollection<Invite> Invites { get; set; } = new List<Invite>();
-        public ICollection<UserClassroom> UserClassrooms { get; set; } = new List<UserClassroom>();
+        public ICollection<ClassroomUser> Users { get; set; } = new List<ClassroomUser>();
+        public ICollection<ClassroomInvite> Invites { get; set; } = new List<ClassroomInvite>();
     }
 }

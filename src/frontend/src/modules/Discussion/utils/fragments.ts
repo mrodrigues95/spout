@@ -10,7 +10,7 @@ export const UserInfoFragment = gql`
 export const MessageFragment = gql`
   fragment Message_message on Message {
     id
-    body
+    content
     createdAt
     createdBy {
       ...UserInfo_user

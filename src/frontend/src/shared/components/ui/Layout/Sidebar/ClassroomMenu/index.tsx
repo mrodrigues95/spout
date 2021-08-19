@@ -177,19 +177,6 @@ const ClassroomMenuHeader = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const CLASSROOMS_QUERY = gql`
-  query ClassroomsQuery {
-    classroomsByUser {
-      id
-      name
-      discussions {
-        id
-        name
-      }
-    }
-  }
-`;
-
 interface MenuButtonProps {
   active: boolean;
   fullWidth: boolean;
@@ -205,14 +192,29 @@ interface Props {
 // `Popover` component for reuse.
 const ClassroomMenu = ({ menuButtonProps }: Props) => {
   const { data, loading, error, refetch } = useQuery<ClassroomsQuery>(
-    CLASSROOMS_QUERY
+    gql`
+      query ClassroomsQuery {
+        me {
+          classrooms {
+            id
+            name
+            discussions {
+              id
+              name
+            }
+          }
+        }
+      }
+    `
   );
+
   const {
     activeMenu,
     selectedClassroom,
     setActiveMenu,
     setSelectedClassroom,
   } = useContext(ClassroomMenuContext)!;
+
   const [trigger, container] = usePopper({
     placement: 'right-start',
     strategy: 'fixed',
@@ -260,7 +262,7 @@ const ClassroomMenu = ({ menuButtonProps }: Props) => {
                         {/* TODO: Fix ugly type casting... */}
                         <ClassroomMenuItems
                           classrooms={
-                            (data.classroomsByUser as unknown) as Classroom[]
+                            (data.me?.classrooms as unknown) as Classroom[]
                           }
                         />
                       </>

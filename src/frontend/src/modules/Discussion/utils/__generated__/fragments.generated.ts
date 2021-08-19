@@ -7,7 +7,7 @@ export type UserInfo_User = (
 
 export type Message_Message = (
   { __typename?: 'Message' }
-  & Pick<Types.Message, 'id' | 'body' | 'createdAt'>
+  & Pick<Types.Message, 'id' | 'content' | 'createdAt'>
   & { createdBy: (
     { __typename?: 'User' }
     & UserInfo_User

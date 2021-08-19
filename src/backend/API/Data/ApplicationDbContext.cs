@@ -11,11 +11,11 @@ namespace API.Data {
         public override DbSet<User> Users { get; set; } = default!;
         public DbSet<Session> Sessions { get; set; } = default!;
         public DbSet<Classroom> Classrooms { get; set; } = default!;
-        public DbSet<UserClassroom> UserClassrooms { get; set; } = default!;
+        public DbSet<ClassroomUser> ClassroomUsers { get; set; } = default!;
+        public DbSet<ClassroomInvite> ClassroomInvites { get; set; } = default!;
         public DbSet<Discussion> Discussions { get; set; } = default!;
         public DbSet<Message> Messages { get; set; } = default!;
         public DbSet<Invite> Invites { get; set; } = default!;
-        public DbSet<InviteLog> InviteLogs { get; set; } = default!;
         public DbSet<State> States { get; set; } = default!;
         public DbSet<DelLogType> DelLogTypes { get; set; } = default!;
         public DbSet<DelLog> DelLogs { get; set; } = default!;

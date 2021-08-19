@@ -71,7 +71,7 @@ const OptimisticMessage = ({ discussionId, message }: Props) => {
   const send = useCallback(
     () =>
       sendMessage({
-        variables: { input: { discussionId, body: message.body } },
+        variables: { input: { discussionId, content: message.content } },
       }),
     [discussionId, sendMessage, message]
   );

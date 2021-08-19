@@ -20,7 +20,7 @@ namespace API.Data.Configurations {
             builder.Property(u => u.UpdatedAt)
                 .HasDefaultValue(DateTime.UtcNow);
 
-            builder.HasMany(u => u.UserClassrooms)
+            builder.HasMany(u => u.Classrooms)
                 .WithOne(uc => uc.User!)
                 .HasForeignKey(uc => uc.UserId);
 
@@ -33,12 +33,8 @@ namespace API.Data.Configurations {
                 .HasForeignKey(m => m.CreatedById);
             
             builder.HasMany(u => u.Invites)
-                .WithOne(i => i.Inviter!)
-                .HasForeignKey(i => i.InviterId); 
-            
-            builder.HasMany(u => u.InviteLogs)
-                .WithOne(il => il.User!)
-                .HasForeignKey(il => il.UserId);           
+                .WithOne(ui => ui.User!)
+                .HasForeignKey(ui => ui.UserId);          
 
             builder.HasOne(u => u.State)
                 .WithMany(s => s!.Users)

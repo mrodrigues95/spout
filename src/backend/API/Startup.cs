@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace API {
     public class Startup {
@@ -20,6 +21,7 @@ namespace API {
             services.AddPooledDbContextFactory<ApplicationDbContext>(opt => {
                 opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
                 opt.UseSnakeCaseNamingConvention();
+                opt.LogTo(Console.WriteLine);
             });
             services.AddScoped(p =>
                 p.GetRequiredService<IDbContextFactory<ApplicationDbContext>>()

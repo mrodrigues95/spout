@@ -21,7 +21,7 @@ namespace API.Schema.Entities.Classroom {
                 .ResolveNode((ctx, id) => ctx.DataLoader<ClassroomByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
             descriptor
-                .Field(c => c.UserClassrooms)
+                .Field(c => c.Users)
                 .ResolveWith<ClassroomResolvers>(x => x.GetUsersAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .Name("users");
@@ -41,8 +41,8 @@ namespace API.Schema.Entities.Classroom {
                 CancellationToken cancellationToken) {
                 int[] userIds = await dbContext.Classrooms
                     .Where(c => c.Id == classroom.Id)
-                    .Include(c => c.UserClassrooms)
-                    .SelectMany(c => c.UserClassrooms.Select(u => u.UserId))
+                    .Include(c => c.Users)
+                    .SelectMany(c => c.Users.Select(u => u.UserId))
                     .ToArrayAsync(cancellationToken);
 
                 return await userById.LoadAsync(userIds, cancellationToken);

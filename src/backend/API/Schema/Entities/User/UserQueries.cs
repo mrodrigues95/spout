@@ -9,18 +9,28 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate.AspNetCore.Authorization;
+using System.Linq;
 
 namespace API.Schema.Entities.User {
-    [Authorize]
     [ExtendObjectType(OperationTypeNames.Query)]
     public class UserQueries {
+        [UseApplicationDbContext]
+        public async Task<Entity.User?> GetMeAsync(
+            [GlobalState] int? userId,
+            [ScopedService] ApplicationDbContext context,
+            CancellationToken cancellationToken) {
+            if (userId is null) return null;
+            return await context.Users.Where(x => x.Id == userId).SingleOrDefaultAsync(cancellationToken);
+        }
+
+        [Authorize]
         [UseApplicationDbContext]
         public async Task<IEnumerable<Entity.User>> GetUsersAsync(
             [ScopedService] ApplicationDbContext context,
             CancellationToken cancellationToken) =>
             await context.Users.ToListAsync(cancellationToken);
 
-        [UseApplicationDbContext]
+        [Authorize]
         public Task<Entity.User> GetUserByIdAsync(
             [ID(nameof(Entity.User))] int id,
             UserByIdDataLoader userById,

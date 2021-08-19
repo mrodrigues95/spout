@@ -8,9 +8,9 @@ namespace API.Data.Entities {
         [Required] public Guid Guid { get; set; } = Guid.NewGuid();
         [Required] public string? Name { get; set; }
         [Required] public int ClassroomId { get; set; }
-        [Required] public Classroom? Classroom { get; set; }
+        public Classroom? Classroom { get; set; }
         [Required] public int CreatedById { get; set; }
-        [Required] public User? CreatedBy { get; set; }
+        public User? CreatedBy { get; set; }
         [Required] public int StateId { get; set; }
         [Required] public State? State { get; set; }
         public DateTime? DeletedAt { get; set; }

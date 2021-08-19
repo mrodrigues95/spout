@@ -18,17 +18,17 @@ namespace API.Data.Configurations {
                 .Property(c => c.UpdatedAt)
                 .HasDefaultValue(DateTime.UtcNow);
 
-            builder.HasMany(c => c.UserClassrooms)
+            builder.HasMany(c => c.Users)
                 .WithOne(uc => uc.Classroom!)
                 .HasForeignKey(uc => uc.ClassroomId);
 
             builder.HasMany(c => c.Discussions)
-                .WithOne(c => c.Classroom!)
+                .WithOne(d => d.Classroom!)
                 .HasForeignKey(c => c.ClassroomId);
 
             builder.HasMany(c => c.Invites)
-                .WithOne(i => i.Classroom!)
-                .HasForeignKey(i => i.ClassroomId);
+                .WithOne(ui => ui.Classroom!)
+                .HasForeignKey(ui => ui.ClassroomId);
 
             builder.HasOne(c => c.DelLog)
                 .WithMany(d => d!.DeletedClassrooms)
