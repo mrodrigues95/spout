@@ -1,7 +1,6 @@
 ﻿using API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 
 namespace API.Data.Configurations {
     public class DelLogConfiguration : IEntityTypeConfiguration<DelLog> {
@@ -9,10 +8,10 @@ namespace API.Data.Configurations {
             builder.HasKey(d => d.Id);
 
             builder.Property(d => d.CreatedAt)
-                .HasDefaultValue(DateTime.UtcNow);
+                .HasDefaultValueSql("timezone('UTC', now())");
 
             builder.Property(d => d.UpdatedAt)
-                .HasDefaultValue(DateTime.UtcNow);
+                .HasDefaultValueSql("timezone('UTC', now())");
 
             builder.HasOne(d => d.DeletedFor)
                 .WithMany(dlt => dlt!.DelLogs)

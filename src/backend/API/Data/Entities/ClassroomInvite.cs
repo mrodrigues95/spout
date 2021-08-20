@@ -2,7 +2,6 @@
 
 namespace API.Data.Entities {
     public class ClassroomInvite {
-        // TODO: Double check these are unique
         public int InviteId { get; set; }
         public Invite? Invite { get; set; }
 

@@ -1,7 +1,6 @@
 ﻿using API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 
 namespace API.Data.Configurations {
     public class ClassroomUserConfiguration : IEntityTypeConfiguration<ClassroomUser> {
@@ -9,10 +8,10 @@ namespace API.Data.Configurations {
             builder.HasKey(cu => new { cu.UserId, cu.ClassroomId });
 
             builder.Property(i => i.JoinedAt)
-                .HasDefaultValue(DateTime.UtcNow);
+                .HasDefaultValueSql("timezone('UTC', now())");
 
             builder.Property(i => i.UpdatedAt)
-                .HasDefaultValue(DateTime.UtcNow);
+                .HasDefaultValueSql("timezone('UTC', now())");
 
             builder.HasOne(cu => cu.User)
                 .WithMany(u => u!.Classrooms)

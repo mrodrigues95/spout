@@ -1,7 +1,6 @@
 ﻿using API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 
 namespace API.Data.Configurations {
     public class MessageConfiguration : IEntityTypeConfiguration<Message> {
@@ -12,10 +11,10 @@ namespace API.Data.Configurations {
                 .HasMaxLength(2000);
 
             builder.Property(m => m.CreatedAt)
-                .HasDefaultValue(DateTime.UtcNow);
+                .HasDefaultValueSql("timezone('UTC', now())");
 
             builder.Property(m => m.UpdatedAt)
-                .HasDefaultValue(DateTime.UtcNow);
+                .HasDefaultValueSql("timezone('UTC', now())");
 
             builder.HasIndex(m => new { m.CreatedById, m.DiscussionId });
 

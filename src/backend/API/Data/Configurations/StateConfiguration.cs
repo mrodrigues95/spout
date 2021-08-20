@@ -1,7 +1,6 @@
 ﻿using API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 
 namespace API.Data.Configurations {
     public class StateConfiguration : IEntityTypeConfiguration<State> {
@@ -12,10 +11,10 @@ namespace API.Data.Configurations {
                 .HasMaxLength(35);
 
             builder.Property(s => s.CreatedAt)
-                .HasDefaultValue(DateTime.UtcNow);
+                .HasDefaultValueSql("timezone('UTC', now())");
 
             builder.Property(s => s.UpdatedAt)
-                .HasDefaultValue(DateTime.UtcNow);
+                .HasDefaultValueSql("timezone('UTC', now())");
 
             builder.HasMany(s => s.Users)
                 .WithOne(u => u.State!)

@@ -1,7 +1,6 @@
 ﻿using API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 
 namespace API.Data.Configurations {
     public class ClassroomInviteConfiguration : IEntityTypeConfiguration<ClassroomInvite> {
@@ -9,7 +8,7 @@ namespace API.Data.Configurations {
             builder.HasKey(ci => new { ci.InviteId, ci.UserId, ci.ClassroomId });
 
             builder.Property(i => i.UpdatedAt)
-                .HasDefaultValue(DateTime.UtcNow);
+                .HasDefaultValueSql("timezone('UTC', now())");
 
             builder.HasOne(ci => ci.User)
                 .WithMany(u => u!.Invites)

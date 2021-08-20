@@ -1,7 +1,6 @@
 ﻿using API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 
 namespace API.Data.Configurations {
     public class InviteConfiguration : IEntityTypeConfiguration<Invite> {
@@ -20,13 +19,13 @@ namespace API.Data.Configurations {
 
             builder.Property(i => i.ExpiresAt)
                 .IsRequired(false)
-                .HasDefaultValue((DateTime.UtcNow).AddDays(7));
+                .HasDefaultValueSql("timezone('UTC', now() + INTERVAL '7 DAYS')");
 
             builder.Property(i => i.CreatedAt)
-                .HasDefaultValue(DateTime.UtcNow);
+                .HasDefaultValueSql("timezone('UTC', now())");
 
             builder.Property(i => i.UpdatedAt)
-                .HasDefaultValue(DateTime.UtcNow);
+                .HasDefaultValueSql("timezone('UTC', now())");
 
             builder.HasMany(i => i.Logs)
                 .WithOne(ui => ui.Invite!)

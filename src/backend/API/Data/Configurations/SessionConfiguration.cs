@@ -1,7 +1,6 @@
 ﻿using API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 
 namespace API.Data.Configurations {
     public class SessionConfiguration : IEntityTypeConfiguration<Session> {
@@ -9,13 +8,13 @@ namespace API.Data.Configurations {
             builder.HasKey(s => s.Id);
 
             builder.Property(s => s.CreatedAt)
-                .HasDefaultValue(DateTime.UtcNow);
+                .HasDefaultValueSql("timezone('UTC', now())");
 
             builder.Property(s => s.ExpiresAt)
-                .HasDefaultValue((DateTime.UtcNow).AddDays(7));
+                .HasDefaultValueSql("timezone('UTC', now() + INTERVAL '7 DAYS')");
 
             builder.Property(s => s.UpdatedAt)
-                .HasDefaultValue(DateTime.UtcNow);
+                .HasDefaultValueSql("timezone('UTC', now())");
 
             builder.HasIndex(s => s.UserId);
 
