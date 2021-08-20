@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using HotChocolate.AspNetCore.Authorization;
 using System.Linq;
+using HotChocolate.AspNetCore.Authorization;
 
 namespace API.Schema.Entities.User {
     [ExtendObjectType(OperationTypeNames.Query)]
@@ -29,7 +29,7 @@ namespace API.Schema.Entities.User {
             [ScopedService] ApplicationDbContext context,
             CancellationToken cancellationToken) =>
             await context.Users.ToListAsync(cancellationToken);
-
+        
         [Authorize]
         public Task<Entity.User> GetUserByIdAsync(
             [ID(nameof(Entity.User))] int id,

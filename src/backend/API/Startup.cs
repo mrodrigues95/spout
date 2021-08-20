@@ -45,6 +45,8 @@ namespace API {
                 .UseCors("CorsPolicy")
                 .UseAuthentication()
                 .UseAuthorization()
+                // TODO: The schema can be downloaded without authentication.
+                // We should look into securing this endpoint and using `.AllowIntrospection()`.
                 .UseEndpoints(endpoints => endpoints.MapGraphQL("/api/graphql"));
         }
     }

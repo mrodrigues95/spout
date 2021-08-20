@@ -1,5 +1,4 @@
-﻿using API.Common.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,11 +9,9 @@ namespace API.Data.Entities {
         [Required] public short Uses { get; set; }
         public short? MaxUses { get; set; }
         public DateTime? ExpiresAt { get; set; } = (DateTime.UtcNow).AddDays(7);
-        [Required] public ExpiresAfter ExpiresAfter { get; set; } = ExpiresAfter.SevenDays;
-        [Required] public bool? IsValid { get; set; } = true;
         [Required] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         [Required] public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        public ICollection<ClassroomInvite> ClassroomInvites { get; set; } = new List<ClassroomInvite>();
+        public ICollection<ClassroomInvite> Logs { get; set; } = new List<ClassroomInvite>();
     }
 }

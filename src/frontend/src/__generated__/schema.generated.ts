@@ -18,6 +18,7 @@ export type Scalars = {
 
 
 
+
 export enum ApplyPolicy {
   BeforeResolver = 'BEFORE_RESOLVER',
   AfterResolver = 'AFTER_RESOLVER'
@@ -29,13 +30,6 @@ export type AuthPayload = {
   session?: Maybe<Session>;
   isLoggedIn: Scalars['Boolean'];
   userErrors?: Maybe<Array<UserError>>;
-};
-
-export type AuthorizeDirective = {
-  __typename?: 'AuthorizeDirective';
-  policy?: Maybe<Scalars['String']>;
-  roles?: Maybe<Array<Scalars['String']>>;
-  apply: ApplyPolicy;
 };
 
 export type Classroom = Node & {
@@ -84,6 +78,18 @@ export type ClassroomSortInput = {
 
 export type CreateClassroomInput = {
   name: Scalars['String'];
+};
+
+export type CreateClassroomInviteInput = {
+  classroomId: Scalars['ID'];
+  expiresAt?: Maybe<Scalars['DateTime']>;
+  code?: Maybe<Scalars['String']>;
+  maxUses?: Maybe<Scalars['Short']>;
+};
+
+export type CreateClassroomInvitePayload = {
+  __typename?: 'CreateClassroomInvitePayload';
+  invite: Invite;
 };
 
 export type CreateClassroomPayload = {
@@ -198,28 +204,16 @@ export type DiscussionSortInput = {
   updatedAt?: Maybe<SortEnumType>;
 };
 
-export enum ExpiresAfter {
-  ThirtyMinutes = 'THIRTY_MINUTES',
-  OneHour = 'ONE_HOUR',
-  SixHours = 'SIX_HOURS',
-  TwelveHours = 'TWELVE_HOURS',
-  OneDay = 'ONE_DAY',
-  SevenDays = 'SEVEN_DAYS',
-  Never = 'NEVER'
-}
-
-export type Invite = Node & {
+export type Invite = {
   __typename?: 'Invite';
-  id: Scalars['ID'];
+  id: Scalars['Int'];
   code: Scalars['String'];
   uses: Scalars['Short'];
   maxUses?: Maybe<Scalars['Short']>;
   expiresAt?: Maybe<Scalars['DateTime']>;
-  expiresAfter: ExpiresAfter;
-  isValid: Scalars['Boolean'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
-  classroomInvites: Array<ClassroomInvite>;
+  logs: Array<ClassroomInvite>;
 };
 
 export type LoginInput = {
@@ -283,6 +277,7 @@ export type MessageSortInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createClassroom: CreateClassroomPayload;
+  createClassroomInvite: CreateClassroomInvitePayload;
   sendDiscussionMessage: SendDiscussionMessagePayload;
   signUp: AuthPayload;
   login: AuthPayload;
@@ -293,6 +288,11 @@ export type Mutation = {
 
 export type MutationCreateClassroomArgs = {
   input: CreateClassroomInput;
+};
+
+
+export type MutationCreateClassroomInviteArgs = {
+  input: CreateClassroomInviteInput;
 };
 
 

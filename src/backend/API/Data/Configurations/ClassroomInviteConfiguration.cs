@@ -16,7 +16,7 @@ namespace API.Data.Configurations {
                 .HasForeignKey(ci => ci.UserId);
 
             builder.HasOne(ci => ci.Invite)
-                .WithMany(i => i!.ClassroomInvites)
+                .WithMany(i => i!.Logs)
                 .HasForeignKey(ci => ci.InviteId);
             
             builder.HasOne(ci => ci.Classroom)

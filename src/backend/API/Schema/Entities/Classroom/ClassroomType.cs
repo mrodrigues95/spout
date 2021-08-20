@@ -39,7 +39,7 @@ namespace API.Schema.Entities.Classroom {
                 [ScopedService] ApplicationDbContext dbContext,
                 UserByIdDataLoader userById,
                 CancellationToken cancellationToken) {
-                int[] userIds = await dbContext.Classrooms
+                var userIds = await dbContext.Classrooms
                     .Where(c => c.Id == classroom.Id)
                     .Include(c => c.Users)
                     .SelectMany(c => c.Users.Select(u => u.UserId))
@@ -53,7 +53,7 @@ namespace API.Schema.Entities.Classroom {
                 [ScopedService] ApplicationDbContext dbContext,
                 DiscussionByIdDataLoader discussionById,
                 CancellationToken cancellationToken) {
-                int[] discussionIds = await dbContext.Classrooms
+                var discussionIds = await dbContext.Classrooms
                     .Where(c => c.Id == classroom.Id)
                     .Include(c => c.Discussions)
                     .SelectMany(c => c.Discussions.Select(d => d.Id))

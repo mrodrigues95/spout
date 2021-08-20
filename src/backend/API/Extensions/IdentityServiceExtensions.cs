@@ -19,7 +19,7 @@ namespace API.Extensions {
                 opt.Cookie.HttpOnly = true;
                 opt.ExpireTimeSpan = TimeSpan.FromDays(7);
                 opt.Cookie.SameSite = SameSiteMode.Strict;
-                opt.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                opt.Cookie.SecurePolicy = CookieSecurePolicy.None; // TODO: Change this to `Always` once we configure HTTPS.
                 opt.SlidingExpiration = true;
             });
 

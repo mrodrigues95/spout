@@ -11,15 +11,16 @@ using System.Threading.Tasks;
 using HotChocolate.AspNetCore.Authorization;
 
 namespace API.Schema.Entities.Classroom {
-    [Authorize]
     [ExtendObjectType(OperationTypeNames.Query)]
     public class ClassroomQueries {
+        [Authorize]
         [UseApplicationDbContext]
         public async Task<IEnumerable<Entity.Classroom>> GetClassroomsAsync(
             [ScopedService] ApplicationDbContext context,
             CancellationToken cancellationToken) =>
             await context.Classrooms.ToListAsync(cancellationToken);
 
+        [Authorize]
         [UseApplicationDbContext]
         public async Task<Entity.Classroom> GetClassroomByIdAsync(
             [ID(nameof(Entity.Classroom))] int id,
@@ -27,6 +28,7 @@ namespace API.Schema.Entities.Classroom {
             CancellationToken cancellationToken) =>
             await classroomById.LoadAsync(id, cancellationToken);
 
+        [Authorize]
         [UseApplicationDbContext]
         public async Task<IEnumerable<Entity.Classroom>> GetClassroomsByIdAsync(
             [ID(nameof(Entity.Classroom))] int[] ids,

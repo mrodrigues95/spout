@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using AppAny.HotChocolate.FluentValidation;
 using Microsoft.AspNetCore.Http;
-using HotChocolate.AspNetCore.Authorization;
 using API.Schema.Common;
 using API.Schema.Entities.Session.Helpers;
+using HotChocolate.AspNetCore.Authorization;
 
 namespace API.Schema.Services.Auth {
     [ExtendObjectType(OperationTypeNames.Mutation)]

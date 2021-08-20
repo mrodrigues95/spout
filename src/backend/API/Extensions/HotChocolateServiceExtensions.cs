@@ -1,7 +1,6 @@
 ﻿using API.Schema.Entities.Classroom;
 using API.Schema.Entities.Discussion;
 using API.Schema.Entities.Discussion.Subscriptions;
-using API.Schema.Entities.Invite;
 using API.Schema.Entities.Message;
 using API.Schema.Entities.Session;
 using API.Schema.Entities.User;
@@ -24,7 +23,7 @@ namespace API.Extensions {
 
             var gql = services.AddGraphQLServer();
             gql
-                //.AddAuthorization()
+                .AddAuthorization()
                 .AddHttpRequestInterceptor<CustomHttpRequestInterceptor>()
                 .AddFluentValidation()
                 .EnableRelaySupport()
@@ -47,8 +46,7 @@ namespace API.Extensions {
                     .AddTypeExtension<ClassroomMutations>()
                     .AddTypeExtension<DiscussionMutations>()
                     .AddTypeExtension<AuthMutations>()
-                    .AddTypeExtension<SessionMutations>()
-                    .AddTypeExtension<InviteMutations>();
+                    .AddTypeExtension<SessionMutations>();
 
             gql
                 .AddSubscriptionType()
@@ -59,16 +57,14 @@ namespace API.Extensions {
                 .AddType<SessionType>()
                 .AddType<ClassroomType>()
                 .AddType<DiscussionType>()
-                .AddType<MessageType>()
-                .AddType<InviteType>();
+                .AddType<MessageType>();
 
             gql
                 .AddDataLoader<UserByIdDataLoader>()
                 .AddDataLoader<SessionByIdDataLoader>()
                 .AddDataLoader<ClassroomByIdDataLoader>()
                 .AddDataLoader<DiscussionByIdDataLoader>()
-                .AddDataLoader<MessageByIdDataLoader>()
-                .AddDataLoader<InviteByIdDataLoader>();
+                .AddDataLoader<MessageByIdDataLoader>();
 
             return services;
         }
@@ -84,6 +80,8 @@ namespace API.Extensions {
                 int? userId = null;
                 string? userEmail = null;
 
+                // This can also be done by injecting `ClaimsPrincipal` now.
+                // See: https://github.com/ChilliCream/hotchocolate/issues/3824
                 if (context.User.Identity?.IsAuthenticated ?? false) {
                     userId = int.Parse(context.User.FindFirstValue(ClaimTypes.NameIdentifier));
                     userEmail = context.User.FindFirstValue(ClaimTypes.Email);
