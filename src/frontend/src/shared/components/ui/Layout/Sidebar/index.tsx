@@ -11,7 +11,7 @@ import {
 import ProfileInfo from './ProfileInfo';
 import ActivityFeed from './ActivityFeed';
 import Logout from './Logout';
-import ClassroomMenu from './ClassroomMenu';
+import Menu from './Menu';
 
 const SidebarContainer = ({
   className,
@@ -40,7 +40,7 @@ interface SidebarItemProps {
   icon: ReactElement;
   label: string;
   href?: string;
-  isClassroomMenu?: boolean;
+  isMenu?: boolean;
   classroomMenuOptions?: ClassroomMenuOptions;
 }
 
@@ -48,15 +48,15 @@ const SidebarItem = ({
   icon,
   label,
   href,
-  isClassroomMenu = false,
+  isMenu = false,
   classroomMenuOptions,
 }: SidebarItemProps) => {
-  if (isClassroomMenu && !classroomMenuOptions) {
+  if (isMenu && !classroomMenuOptions) {
     throw new Error('Bad implementation!');
   }
 
   const router = useRouter();
-  const selected = isClassroomMenu
+  const selected = isMenu
     ? router.pathname.includes(classroomMenuOptions!.pathname)
     : router.pathname === href;
 
@@ -75,9 +75,9 @@ const SidebarItem = ({
     </>
   );
 
-  if (isClassroomMenu) {
+  if (isMenu) {
     return (
-      <ClassroomMenu
+      <Menu
         menuButtonProps={{
           ...commonProps,
           children,
@@ -105,15 +105,11 @@ const Sidebar = () => {
         </SidebarContainer>
         <SidebarContainer className="border lg:p-3">
           <nav className="flex flex-col w-full space-y-3">
-            <SidebarItem
-              href="/"
-              icon={<HomeIcon />}
-              label="Home"
-            />
+            <SidebarItem href="/" icon={<HomeIcon />} label="Home" />
             <SidebarItem
               icon={<ClassroomIcon />}
               label="Classrooms"
-              isClassroomMenu
+              isMenu
               classroomMenuOptions={{
                 pathname: '/discussion',
               }}

@@ -7,6 +7,7 @@ export type ClassroomsQuery = (
   { __typename?: 'Query' }
   & { me?: Types.Maybe<(
     { __typename?: 'User' }
+    & Pick<Types.User, 'id'>
     & { classrooms: Array<(
       { __typename?: 'Classroom' }
       & Pick<Types.Classroom, 'id' | 'name'>
