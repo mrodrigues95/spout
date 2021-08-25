@@ -14,3 +14,6 @@ export { default as EmojiHappyIcon } from './EmojiHappyIcon';
 export { default as PaperClipIcon } from './PaperClipIcon';
 export { default as SparklesIcon } from './SparklesIcon';
 export { default as RefreshIcon } from './RefreshIcon';
+export { default as CheckIcon } from './CheckIcon';
+export { default as SelectorIcon } from './SelectorIcon';
+export { default as XIcon } from './XIcon';

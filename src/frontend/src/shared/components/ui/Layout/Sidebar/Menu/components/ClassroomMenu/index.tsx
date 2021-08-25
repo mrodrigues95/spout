@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Classroom } from '~/__generated__/schema.generated';
-import { Menu as MenuEnum, MenuContext } from '../../MenuProvider';
+import { Menus, MenuContext } from '../../MenuProvider';
 import Menu from '../..';
 import EmptyFallback from '../../../../../EmptyFallback';
 
@@ -13,20 +13,20 @@ const ClassroomMenu = ({ classrooms }: Props) => {
     MenuContext
   )!;
 
-  if (currentMenu !== MenuEnum.Classrooms) return null;
+  if (currentMenu !== Menus.Classroom) return null;
 
   return (
     <>
       <Menu.Header>Classrooms</Menu.Header>
       <div className="max-h-52 -mb-1 p-1 overflow-auto">
-        {classrooms && classrooms.length ? (
+        {classrooms.length ? (
           classrooms.map((classroom: any) => (
             <Menu.Item
               key={classroom.id}
               type="button"
               variant="default"
               onClick={() => {
-                setCurrentMenu(MenuEnum.Discussions);
+                setCurrentMenu(Menus.Discussion);
                 setSelectedClassroom(classroom);
               }}
             >

@@ -3,7 +3,7 @@ import { Transition } from '@headlessui/react';
 import { Discussion } from '~/__generated__/schema.generated';
 import EmptyFallback from '../../../../../EmptyFallback';
 import Menu from '../..';
-import { Menu as MenuEnum, Modal, MenuContext } from '../../MenuProvider';
+import { Menus, Modals, MenuContext } from '../../MenuProvider';
 
 interface Props {
   discussions: Partial<Discussion>[];
@@ -14,7 +14,7 @@ const DiscussionMenu = ({ discussions }: Props) => {
     MenuContext
   )!;
 
-  if (!selectedClassroom || currentMenu !== MenuEnum.Discussions) return null;
+  if (!selectedClassroom || currentMenu !== Menus.Discussion) return null;
 
   return (
     <Transition.Child
@@ -26,7 +26,7 @@ const DiscussionMenu = ({ discussions }: Props) => {
         {selectedClassroom.name} <span aria-hidden="true">/</span> Discussions
       </Menu.Header>
       <div className="max-h-52 -mb-1 p-1 overflow-auto">
-        {discussions && discussions.length ? (
+        {discussions.length ? (
           discussions.map((discussion: any) => (
             <Menu.Item
               key={discussion.id}
@@ -56,7 +56,7 @@ const DiscussionMenu = ({ discussions }: Props) => {
       <Menu.Item
         type="button"
         variant="info"
-        onClick={() => setCurrentModal(Modal.InviteStudents)}
+        onClick={() => setCurrentModal(Modals.InviteStudents)}
       >
         Invite Students
       </Menu.Item>

@@ -18,14 +18,14 @@ const Modal = ({ isOpen, onClose, children }: Props) => {
   return (
     <ModalContext.Provider value={{ isOpen, onClose }}>
       <Dialog
-        className="z-50 fixed px-2 pb-4 inset-0 flex items-center justify-center sm:px-4"
+        className="z-50 fixed inset-0 flex items-center justify-center"
         open={isOpen}
         onClose={onClose}
       >
         <Dialog.Overlay className="absolute inset-0 bg-black opacity-25" />
-        <div className="relative flex flex-col w-full max-w-lg shadow-xl bg-white rounded-md text-black">
+        <section className="relative flex flex-col max-w-2xl px-3 py-4 space-y-6 shadow-xl bg-white rounded-md text-black">
           {children}
-        </div>
+        </section>
       </Dialog>
     </ModalContext.Provider>
   );

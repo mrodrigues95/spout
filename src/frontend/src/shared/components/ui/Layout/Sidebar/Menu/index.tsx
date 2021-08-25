@@ -3,7 +3,7 @@ import { gql, useQuery } from '@apollo/client';
 import { Popover, Transition, Portal } from '@headlessui/react';
 import { Button, ErrorFallback, Spinner } from '~/shared/components';
 import usePopper from '~/shared/hooks/usePopper';
-import MenuProvider, { MenuContext, Menu as MenuEnum } from './MenuProvider';
+import MenuProvider, { MenuContext, Menus, Modals } from './MenuProvider';
 import { ClassroomsQuery } from './__generated__/index.generated';
 import { Classroom, Discussion } from '~/__generated__/schema.generated';
 import MenuSeperator from './components/MenuSeperator';
@@ -83,7 +83,7 @@ const BaseMenu = ({ menuButtonProps }: Props) => {
   const { children, ...rest } = menuButtonProps;
 
   const resetMenu = () => {
-    setCurrentMenu(MenuEnum.Classrooms);
+    setCurrentMenu(Menus.Classroom);
     setCurrentModal(null);
     setSelectedClassroom(null);
   };
@@ -137,11 +137,7 @@ const BaseMenu = ({ menuButtonProps }: Props) => {
           </>
         )}
       </Popover>
-      {currentModal ? (
-        <>
-          <InviteStudents />
-        </>
-      ) : null}
+      {currentModal === Modals.InviteStudents && <InviteStudents />}
     </>
   );
 };

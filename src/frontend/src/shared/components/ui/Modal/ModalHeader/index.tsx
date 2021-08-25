@@ -1,10 +1,12 @@
 import { Dialog } from '@headlessui/react';
 import { useContext } from 'react';
+import { XIcon } from '~/shared/assets';
 import { ModalContext } from '..';
+import Button from '../../Button';
 
 interface ModalHeaderProps {
   title: string;
-  description?: string;
+  description: string;
   dismiss?: boolean;
 }
 
@@ -17,15 +19,26 @@ const ModalHeader = ({
   if (!onClose) throw new Error('`ModalHeader` must be used within `Modal`');
 
   return (
-    <>
-      <Dialog.Title>{title}</Dialog.Title>
-      {description && <Dialog.Description>{description}</Dialog.Description>}
+    <header className="flex items-center justify-center space-x-8">
+      <div className="flex-1 min-w-0">
+        <Dialog.Title as="h3" className="text-lg uppercase font-bold truncate">
+          {title}
+        </Dialog.Title>
+        <Dialog.Description as="h4" className="font-semibold text-sm text-gray-500">
+          {description}
+        </Dialog.Description>
+      </div>
       {dismiss && (
-        <button type="button" onClick={onClose}>
-          X
-        </button>
+        <Button
+          className="mb-auto p-2 -mt-1"
+          rounded="md"
+          aria-label="Close modal"
+          onClick={onClose}
+        >
+          <XIcon className="w-5 h-5 text-black" />
+        </Button>
       )}
-    </>
+    </header>
   );
 };
 

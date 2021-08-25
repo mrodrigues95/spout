@@ -1,20 +1,20 @@
 import { createContext, ReactNode, useMemo, useState } from 'react';
 import { Classroom } from '~/__generated__/schema.generated';
 
-export enum Menu {
-  Classrooms,
-  Discussions,
+export enum Menus {
+  Classroom,
+  Discussion,
 }
 
-export enum Modal {
+export enum Modals {
   InviteStudents,
 }
 
 interface MenuContextType {
-  currentMenu: Menu;
-  setCurrentMenu: (menu: Menu) => void;
-  currentModal: Modal | null;
-  setCurrentModal: (modal: Modal | null) => void;
+  currentMenu: Menus;
+  setCurrentMenu: (menu: Menus) => void;
+  currentModal: Modals | null;
+  setCurrentModal: (modal: Modals | null) => void;
   selectedClassroom: Partial<Classroom> | null;
   setSelectedClassroom: (classroom: Partial<Classroom> | null) => void;
 }
@@ -22,11 +22,11 @@ interface MenuContextType {
 export const MenuContext = createContext<MenuContextType | null>(null);
 
 const MenuProvider = ({ children }: { children: ReactNode }) => {
-  const [currentMenu, setCurrentMenu] = useState<Menu>(Menu.Classrooms);
+  const [currentMenu, setCurrentMenu] = useState<Menus>(Menus.Classroom);
   const [selectedClassroom, setSelectedClassroom] = useState<Partial<
     Classroom
   > | null>(null);
-  const [currentModal, setCurrentModal] = useState<Modal | null>(null);
+  const [currentModal, setCurrentModal] = useState<Modals | null>(null);
 
   const values = useMemo(
     () => ({

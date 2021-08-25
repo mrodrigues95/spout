@@ -18,6 +18,7 @@ export { default as InfiniteList } from './InfiniteList';
 export { default as Skeleton } from './Skeleton';
 export { default as Layout } from './Layout';
 export { default as Modal } from './Modal';
+export { default as Select } from './Select';
 export * from './Form';
 
 export type { Props as ButtonOrLinkProps } from './ButtonOrLink';
