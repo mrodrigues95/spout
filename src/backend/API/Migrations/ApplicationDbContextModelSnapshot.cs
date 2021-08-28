@@ -297,10 +297,12 @@ namespace API.Migrations
                         .HasDefaultValueSql("timezone('UTC', now())");
 
                     b.Property<DateTime?>("ExpiresAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasColumnName("expires_at")
-                        .HasDefaultValueSql("timezone('UTC', now() + INTERVAL '7 DAYS')");
+                        .HasColumnName("expires_at");
+
+                    b.Property<int?>("MaxAge")
+                        .HasColumnType("integer")
+                        .HasColumnName("max_age");
 
                     b.Property<short?>("MaxUses")
                         .HasColumnType("smallint")

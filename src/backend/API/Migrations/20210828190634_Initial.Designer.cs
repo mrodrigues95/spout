@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210820204836_Initial")]
+    [Migration("20210828190634_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -299,10 +299,12 @@ namespace API.Migrations
                         .HasDefaultValueSql("timezone('UTC', now())");
 
                     b.Property<DateTime?>("ExpiresAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasColumnName("expires_at")
-                        .HasDefaultValueSql("timezone('UTC', now() + INTERVAL '7 DAYS')");
+                        .HasColumnName("expires_at");
+
+                    b.Property<int?>("MaxAge")
+                        .HasColumnType("integer")
+                        .HasColumnName("max_age");
 
                     b.Property<short?>("MaxUses")
                         .HasColumnType("smallint")

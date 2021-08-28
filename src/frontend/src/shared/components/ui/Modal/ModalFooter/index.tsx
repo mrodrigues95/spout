@@ -6,9 +6,9 @@ interface ModalFooterProps {
 
 const ModalFooter = ({ children }: ModalFooterProps) => {
   return (
-    <footer className="flex items-center justify-end border-t border-gray-200 -mx-3 px-3">
+    <div className="flex items-center justify-end px-4 py-3 bg-gray-100 rounded-b-md">
       {children}
-    </footer>
+    </div>
   );
 };
 

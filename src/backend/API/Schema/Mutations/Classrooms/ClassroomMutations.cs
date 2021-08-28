@@ -49,7 +49,7 @@ namespace API.Schema.Mutations.Classrooms {
                     x.IsInviter, cancellationToken);
 
                 if (IsValid(classroomInvite)) return new CreateClassroomInvitePayload(classroomInvite.Invite!);
-            } else if (input.ExpiresAt is null && input.MaxUses is null) {
+            } else if (input.MaxAge is null && input.MaxUses is null) {
                 // Check if the user already has an existing invite created before creating a new one.
                 var classroomInvites = await ctx.ClassroomInvites
                     .Where(x =>
@@ -63,11 +63,23 @@ namespace API.Schema.Mutations.Classrooms {
                 if (classroomInvite != null) return new CreateClassroomInvitePayload(classroomInvite.Invite!);
             }
 
+            // Set defaults (7 days).
+            int? maxAge = 604800;
+            DateTime? expiresAt = DateTime.UtcNow.AddDays(7);
+            if (input.MaxAge == 0 || input.MaxAge is null) {
+                maxAge = null;
+                expiresAt = null;
+            } else if (input.MaxAge > 0) {
+                maxAge = input.MaxAge;
+                expiresAt = DateTime.UtcNow.AddSeconds((double) input.MaxAge);
+            }
+
             var invite = new Invite {
                 Code = new ShortGuid(Guid.NewGuid()),
                 Uses = 0,
                 MaxUses = input.MaxUses,
-                ExpiresAt = input.ExpiresAt
+                MaxAge = maxAge,
+                ExpiresAt = expiresAt
             };
             invite.Logs.Add(new ClassroomInvite {
                 InviteId = invite.Id,

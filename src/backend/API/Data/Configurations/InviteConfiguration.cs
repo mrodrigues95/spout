@@ -17,9 +17,13 @@ namespace API.Data.Configurations {
                 .IsRequired(false)
                 .HasDefaultValue(null);
 
+            builder.Property(i => i.MaxAge)
+                .IsRequired(false)
+                .HasDefaultValue(null);
+
             builder.Property(i => i.ExpiresAt)
                 .IsRequired(false)
-                .HasDefaultValueSql("timezone('UTC', now() + INTERVAL '7 DAYS')");
+                .HasDefaultValueSql(null);
 
             builder.Property(i => i.CreatedAt)
                 .HasDefaultValueSql("timezone('UTC', now())");

@@ -1,5 +1,5 @@
-import { createContext, ReactNode } from 'react';
-import { Dialog } from '@headlessui/react';
+import { createContext, Fragment, ReactNode } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
 import ModalHeader from './ModalHeader';
 import ModalContent from './ModalContent';
 import ModalFooter from './ModalFooter';
@@ -17,16 +17,37 @@ export const ModalContext = createContext<ModalContextType | null>(null);
 const Modal = ({ isOpen, onClose, children }: Props) => {
   return (
     <ModalContext.Provider value={{ isOpen, onClose }}>
-      <Dialog
-        className="z-50 fixed inset-0 flex items-center justify-center"
-        open={isOpen}
-        onClose={onClose}
-      >
-        <Dialog.Overlay className="absolute inset-0 bg-black opacity-25" />
-        <section className="relative flex flex-col max-w-2xl px-3 py-4 space-y-6 shadow-xl bg-white rounded-md text-black">
-          {children}
-        </section>
-      </Dialog>
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog
+          className="z-50 fixed inset-0 flex items-center justify-center"
+          onClose={onClose}
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <Dialog.Overlay className="absolute inset-0 bg-black opacity-25" />
+          </Transition.Child>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0 scale-95"
+            enterTo="opacity-100 scale-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100 scale-100"
+            leaveTo="opacity-0 scale-95"
+          >
+            <section className="relative flex flex-col max-w-2xl shadow-xl bg-white rounded-md text-black">
+              {children}
+            </section>
+          </Transition.Child>
+        </Dialog>
+      </Transition>
     </ModalContext.Provider>
   );
 };

@@ -30,7 +30,8 @@ namespace API.Migrations
                     code = table.Column<string>(type: "character varying(22)", maxLength: 22, nullable: false),
                     uses = table.Column<short>(type: "smallint", nullable: false, defaultValue: (short)0),
                     max_uses = table.Column<short>(type: "smallint", nullable: true),
-                    expires_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValueSql: "timezone('UTC', now() + INTERVAL '7 DAYS')"),
+                    max_age = table.Column<int>(type: "integer", nullable: true),
+                    expires_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
                 },

@@ -24,7 +24,10 @@ const ModalHeader = ({
         <Dialog.Title as="h3" className="text-lg uppercase font-bold truncate">
           {title}
         </Dialog.Title>
-        <Dialog.Description as="h4" className="font-semibold text-sm text-gray-500">
+        <Dialog.Description
+          as="h4"
+          className="font-semibold text-sm text-gray-500"
+        >
           {description}
         </Dialog.Description>
       </div>

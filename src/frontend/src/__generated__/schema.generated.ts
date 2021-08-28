@@ -82,8 +82,8 @@ export type CreateClassroomInput = {
 
 export type CreateClassroomInviteInput = {
   classroomId: Scalars['ID'];
-  expiresAt?: Maybe<Scalars['DateTime']>;
   code?: Maybe<Scalars['String']>;
+  maxAge?: Maybe<Scalars['Int']>;
   maxUses?: Maybe<Scalars['Short']>;
 };
 
@@ -210,6 +210,7 @@ export type Invite = {
   code: Scalars['String'];
   uses: Scalars['Short'];
   maxUses?: Maybe<Scalars['Short']>;
+  maxAge?: Maybe<Scalars['Int']>;
   expiresAt?: Maybe<Scalars['DateTime']>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];

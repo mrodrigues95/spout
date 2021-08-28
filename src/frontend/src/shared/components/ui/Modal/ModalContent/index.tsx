@@ -6,7 +6,7 @@ interface ModalContentProps {
 
 const ModalContent = ({ children }: ModalContentProps) => {
   return (
-    <div className="flex flex-col justify-center">{children}</div>
+    <div className="flex flex-col justify-center px-4 py-5">{children}</div>
   );
 };
 
