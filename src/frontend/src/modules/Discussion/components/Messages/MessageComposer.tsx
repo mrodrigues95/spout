@@ -53,11 +53,14 @@ const MessageComposer = ({ discussionId }: Props) => {
       >
         <div className="flex flex-1 items-center">
           <Button
-            className="focus:outline-none"
             aria-label="View emojis"
-            ignoreStyles
+            size="sm"
+            rounded="full"
+            variant="ghost"
+            scheme="light"
+            active={false}
           >
-            <EmojiHappyIcon className="h-5 w-5 text-gray-600 hover:text-gray-500" />
+            <EmojiHappyIcon className="h-5 w-5 text-gray-400 hover:text-gray-900" />
           </Button>
           <TextArea
             placeholder="Message..."
@@ -69,19 +72,21 @@ const MessageComposer = ({ discussionId }: Props) => {
             onKeyPress={handleKeyPress}
           />
         </div>
-        <div className="flex items-center ml-8">
+        <div className="flex items-center ml-8 space-x-1">
           <Button
-            className="focus:outline-none"
             aria-label="Add attachment"
-            ignoreStyles
+            size="sm"
+            rounded="full"
+            variant="ghost"
+            scheme="light"
+            active={false}
           >
-            <PaperClipIcon className="h-5 w-5 text-gray-600 hover:text-gray-500" />
+            <PaperClipIcon className="h-5 w-5 text-gray-400 hover:text-gray-900" />
           </Button>
           <Button
-            rounded="full"
-            active
-            className="ml-4 p-2 shadow-lg"
             aria-label="Send message"
+            rounded="full"
+            className="!p-2 shadow-lg"
             onClick={handleNewMessage}
           >
             <ChevronIcon className="h-5 w-5 text-white transform rotate-180" />

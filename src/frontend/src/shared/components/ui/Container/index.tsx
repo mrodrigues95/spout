@@ -18,11 +18,17 @@ const ContainerHeader = ({
   return (
     <section className="flex flex-col justify-between border-b border-gray-200 p-3 sm:border-none sm:p-0 sm:mb-3 lg:mb-6">
       <div className="flex items-center justify-between sm:mb-2">
-        <Button className="inline-flex mr-1 sm:hidden" aria-label="Open menu">
+        <Button
+          aria-label="Open menu"
+          size="sm"
+          variant="ghost"
+          scheme="light"
+          className="inline-flex mr-1 sm:hidden"
+        >
           <HamburgerMenuIcon className="w-4 h-4" />
         </Button>
         {title ? (
-          <h1 className="hidden sm:block font-bold truncate sm:text-2xl lg:text-3xl xl:text-4xl">
+          <h1 className="hidden sm:block font-bold text-gray-900 truncate sm:text-2xl lg:text-3xl xl:text-4xl">
             {title}
           </h1>
         ) : (
@@ -32,10 +38,13 @@ const ContainerHeader = ({
           <Search placeholder="Search" />
           <Tooltip label="Notifications">
             <Button
-              className="p-2 sm:p-3 sm:ml-3"
+              size="sm"
               aria-label="View notifications"
+              variant="ghost"
+              scheme="light"
+              className="md:ml-2"
             >
-              <NotificationsIcon className="w-4 h-4 sm:w-6 sm:h-6" />
+              <NotificationsIcon className="w-4 h-4 md:w-8 md:h-8" />
             </Button>
           </Tooltip>
         </div>

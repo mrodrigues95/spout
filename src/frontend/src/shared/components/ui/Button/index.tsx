@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import clsx from 'clsx';
 import ButtonOrLink, {
   Props as ButtonOrLinkProps,
-  variants,
+  classes,
 } from '../ButtonOrLink';
 
 const Button = forwardRef<
@@ -11,33 +11,39 @@ const Button = forwardRef<
 >(
   (
     {
-      ignoreStyles = false,
-      variant = 'default',
-      active = false,
+      type = 'button',
+      size = 'md',
+      rounded = 'md',
+      variant = 'solid',
+      scheme = 'dark',
+      active = true,
       fullWidth = false,
-      rounded = '2xl',
       className,
       ...props
     },
     ref
   ) => {
-    const styles = variants[variant] || variants.default;
-
-    if (ignoreStyles) {
-      return <ButtonOrLink type="button" className={className} {...props} />;
+    if (variant === 'unstyled') {
+      return (
+        <ButtonOrLink ref={ref} type={type} className={className} {...props} />
+      );
     }
 
     return (
       <ButtonOrLink
-        type="button"
+        ref={ref}
+        type={type}
         className={clsx(
-          styles.base,
-          active ? styles.active : styles.inactive,
-          `rounded-${rounded}`,
+          classes.base,
+          classes.disabled,
+          classes.size[size],
+          classes.rounded[rounded],
+          classes.variant[variant],
+          classes.scheme[scheme].inactive,
+          active && classes.scheme[scheme].active,
           fullWidth && 'w-full',
           className
         )}
-        ref={ref}
         {...props}
       />
     );

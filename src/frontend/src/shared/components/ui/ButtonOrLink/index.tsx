@@ -2,31 +2,57 @@ import { ComponentPropsWithRef, forwardRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-export const variants = {
-  default: {
-    base:
-      'flex items-center justify-center p-3 tracking-wide font-bold border-none outline-none transition duration-150 ease-in-out focus:outline-none disabled:opacity-60 disabled:pointer-events-none',
-    active:
-      'text-white bg-black focus:bg-opacity-80 hover:bg-opacity-80 active:bg-gray-800',
-    inactive:
-      'text-black bg-white focus:bg-gray-100 hover:bg-gray-100 active:bg-gray-200',
+export const classes = {
+  base:
+    'flex items-center justify-center tracking-wide font-bold outline-none transition duration-150 ease-in-out focus:outline-none',
+  disabled: 'disabled:opacity-60 disabled:pointer-events-none',
+  size: {
+    xs: 'px-2 py-1 text-xs',
+    sm: 'px-3 py-2 text-sm',
+    md: 'px-4 py-2',
+    lg: 'px-6 py-3 text-lg',
+    xl: 'px-10 py-4 text-xl',
   },
-  purple: {
-    base:
-      'flex items-center justify-center p-3 tracking-wide font-bold border-none outline-none transition duration-150 ease-in-out focus:outline-none disabled:opacity-60 disabled:pointer-events-none',
-    active:
-      'text-white bg-violet-900 focus:bg-opacity-80 hover:bg-opacity-80 active:bg-violet-800',
-    inactive:
-      'text-purple-700 bg-purple-200 hover:bg-purple-300 active:bg-purple-400 active:text-white focus-visible:bg-purple-300 focus-visible:ring focus-visible:ring-purple-600',
+  rounded: {
+    none: 'rounded-none',
+    sm: 'rounded-sm',
+    normal: 'rounded',
+    md: 'rounded-md',
+    lg: 'rounded-lg',
+    xl: 'rounded-xl',
+    xxl: 'rounded-2xl',
+    xxxl: 'rounded-3xl',
+    full: 'rounded-full',
   },
+  variant: {
+    outline: 'border',
+    ghost: 'border-none !bg-transparent',
+    solid: 'border-none',
+    unstyled: '',
+  },
+  scheme: {
+    dark: {
+      inactive: 'text-white bg-gray-900',
+      active: 'hover:!bg-gray-700 focus:ring focus:ring-gray-900 focus:ring-offset-2 focus:ring-offset-white'
+    },
+    light: {
+      inactive: 'text-gray-900 bg-white',
+      active: 'hover:!bg-gray-100 focus:bg-gray-100 active:bg-gray-200'
+    },
+    purple: {
+      inactive: 'text-purple-700 bg-purple-200',
+      active: 'hover:!bg-purple-300 focus:ring focus:ring-purple-600 focus:ring-offset-2 focus:ring-offset-white'
+    }
+  }
 };
 
 interface Styles {
-  ignoreStyles?: boolean;
-  variant?: keyof typeof variants;
+  size?: keyof typeof classes['size'];
+  rounded?: keyof typeof classes['rounded'];
+  variant?: keyof typeof classes['variant'];
+  scheme?: keyof typeof classes['scheme'];
   active?: boolean;
   fullWidth?: boolean;
-  rounded?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
   className?: string;
 }
 

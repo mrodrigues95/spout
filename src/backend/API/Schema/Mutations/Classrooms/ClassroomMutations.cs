@@ -43,19 +43,19 @@ namespace API.Schema.Mutations.Classrooms {
                 var classroomInvite = await ctx.ClassroomInvites
                     .Include(x => x.Invite)
                     .SingleOrDefaultAsync(x =>
-                    x.Invite!.Code == input.Code &&
-                    x.ClassroomId == input.ClassroomId &&
-                    x.UserId == userId &&
-                    x.IsInviter, cancellationToken);
+                        x.Invite!.Code == input.Code
+                        && x.ClassroomId == input.ClassroomId
+                        && x.UserId == userId
+                        && x.IsInviter, cancellationToken);
 
                 if (IsValid(classroomInvite)) return new CreateClassroomInvitePayload(classroomInvite.Invite!);
             } else if (input.MaxAge is null && input.MaxUses is null) {
                 // Check if the user already has an existing invite created before creating a new one.
                 var classroomInvites = await ctx.ClassroomInvites
                     .Where(x =>
-                        x.ClassroomId == input.ClassroomId &&
-                        x.UserId == userId &&
-                        x.IsInviter)
+                        x.ClassroomId == input.ClassroomId
+                        && x.UserId == userId
+                        && x.IsInviter)
                     .Include(x => x.Invite)
                     .ToListAsync(cancellationToken);
 
@@ -66,12 +66,13 @@ namespace API.Schema.Mutations.Classrooms {
             // Set defaults (7 days).
             int? maxAge = 604800;
             DateTime? expiresAt = DateTime.UtcNow.AddDays(7);
-            if (input.MaxAge == 0 || input.MaxAge is null) {
-                maxAge = null;
-                expiresAt = null;
-            } else if (input.MaxAge > 0) {
+
+            if (input.MaxAge != null && input.MaxAge > 0) {
                 maxAge = input.MaxAge;
                 expiresAt = DateTime.UtcNow.AddSeconds((double) input.MaxAge);
+            } else if (input.MaxAge == 0) {
+                maxAge = null;
+                expiresAt = null;
             }
 
             var invite = new Invite {

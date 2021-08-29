@@ -2,14 +2,8 @@ import { createContext, ReactNode, useMemo, useState } from 'react';
 import { Classroom } from '~/__generated__/schema.generated';
 import { CreateClassroomInviteMutation } from './components/Modals/InviteStudents/__generated__/index.generated';
 
-export enum Menus {
-  Classroom,
-  Discussion,
-}
-
-export enum Modals {
-  InviteStudents,
-}
+type Menus = 'classroom' | 'discussion';
+type Modals = 'invite';
 
 export type ClassroomInvite =
   | CreateClassroomInviteMutation['createClassroomInvite']['invite']
@@ -29,7 +23,7 @@ interface MenuContextType {
 export const MenuContext = createContext<MenuContextType | null>(null);
 
 const MenuProvider = ({ children }: { children: ReactNode }) => {
-  const [currentMenu, setCurrentMenu] = useState<Menus>(Menus.Classroom);
+  const [currentMenu, setCurrentMenu] = useState<Menus>('classroom');
   const [selectedClassroom, setSelectedClassroom] = useState<Partial<
     Classroom
   > | null>(null);

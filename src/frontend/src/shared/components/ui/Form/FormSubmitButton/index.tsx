@@ -7,13 +7,7 @@ const FormSubmitButton = ({ children, ...props }: ButtonProps) => {
   const { formState } = useFormContext();
 
   return (
-    <Button
-      type="submit"
-      rounded="md"
-      active
-      disabled={formState.isSubmitting}
-      {...props}
-    >
+    <Button type="submit" disabled={formState.isSubmitting} {...props}>
       {formState.isSubmitting && (
         <Spinner className="h-4 w-4 mr-3 text-white" />
       )}

@@ -13,7 +13,7 @@ const getExpiresMessage = (invite: ClassroomInvite) => {
 
   const { maxAge, maxUses } = invite;
 
-  const after = () => {
+  const date = () => {
     if (!maxAge) return '';
 
     if (secondsToMinutes(maxAge) === 30) {
@@ -29,6 +29,8 @@ const getExpiresMessage = (invite: ClassroomInvite) => {
     } else if (secondsToHours(maxAge) === 168) {
       return '7 days';
     }
+
+    return '';
   };
 
   const uses = maxUses === 1 ? '1 use' : `${maxUses} uses`;
@@ -36,11 +38,11 @@ const getExpiresMessage = (invite: ClassroomInvite) => {
   if (!maxUses && !maxAge) {
     return 'Your invite will never expire.';
   } else if (maxUses && maxAge) {
-    return `Your invite will expire in ${after()}, or after ${uses}.`;
+    return `Your invite will expire in ${date()}, or after ${uses}.`;
   } else if (maxUses && !maxAge) {
     return `Your invite expires after ${uses}.`;
   } else if (!maxUses && maxAge) {
-    return `Your invite will expire in ${after()}.`;
+    return `Your invite will expire in ${date()}.`;
   }
 };
 
@@ -90,20 +92,21 @@ const CopyInvite = ({ invite }: Props) => {
           />
         </div>
         <Button
-          className={clsx(
-            'w-24 px-3 py-2 flex-shrink-0 text-sm',
-            isCopied
-              ? '!bg-green-600 !text-white hover:!bg-green-700 active:!bg-green-800 !ring-transparent'
-              : 'bg-purple-200 text-purple-700'
-          )}
-          variant="purple"
+          size="sm"
           rounded="lg"
+          scheme="purple"
+          className={clsx(
+            isCopied &&
+              '!bg-green-600 !text-white hover:!bg-green-700 active:!bg-green-800 !ring-transparent !transition-colors'
+          )}
           onClick={onCopy}
         >
           {isCopied ? 'Copied' : 'Copy'}
         </Button>
       </div>
-      <p className="mt-1 text-gray-500 font-medium text-sm">{getExpiresMessage(invite)}</p>
+      <p className="mt-1 text-gray-500 font-medium text-sm">
+        {getExpiresMessage(invite)}
+      </p>
     </>
   );
 };

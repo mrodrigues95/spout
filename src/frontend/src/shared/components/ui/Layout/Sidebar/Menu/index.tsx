@@ -1,11 +1,14 @@
 import { Fragment, ReactNode, useContext } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { Popover, Transition, Portal } from '@headlessui/react';
-import { Button, ErrorFallback, Spinner } from '~/shared/components';
-import usePopper from '~/shared/hooks/usePopper';
-import MenuProvider, { MenuContext, Menus, Modals } from './MenuProvider';
 import { ClassroomsQuery } from './__generated__/index.generated';
 import { Classroom, Discussion } from '~/__generated__/schema.generated';
+import { Props as ButtonOrLinkProps } from '../../../ButtonOrLink';
+import Button from '../../../Button';
+import ErrorFallback from '../../../ErrorFallback';
+import Spinner from '../../../Spinner';
+import usePopper from '~/shared/hooks/usePopper';
+import MenuProvider, { MenuContext } from './MenuProvider';
 import MenuSeperator from './components/MenuSeperator';
 import MenuHeader from './components/MenuHeader';
 import MenuItem from './components/MenuItem';
@@ -36,10 +39,7 @@ export const menuVariants = {
   },
 };
 
-interface MenuButtonProps {
-  active: boolean;
-  fullWidth: boolean;
-  'aria-labelledby': string;
+interface MenuButtonProps extends ButtonOrLinkProps {
   children: ReactNode;
 }
 
@@ -83,7 +83,7 @@ const BaseMenu = ({ menuButtonProps }: Props) => {
   const { children, ...rest } = menuButtonProps;
 
   const resetMenu = () => {
-    setCurrentMenu(Menus.Classroom);
+    setCurrentMenu('classroom');
     setCurrentModal(null);
     setSelectedClassroom(null);
   };
@@ -137,7 +137,7 @@ const BaseMenu = ({ menuButtonProps }: Props) => {
           </>
         )}
       </Popover>
-      {currentModal === Modals.InviteStudents && <InviteStudents />}
+      {currentModal === 'invite' && <InviteStudents />}
     </>
   );
 };

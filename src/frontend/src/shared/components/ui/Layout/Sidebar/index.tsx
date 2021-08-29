@@ -1,17 +1,18 @@
 import { ReactElement, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import { Link } from '~/shared/components';
 import {
   HomeIcon,
   MessagesIcon,
   CalendarIcon,
   ClassroomIcon,
 } from '~/shared/assets';
+import { Props as ButtonOrLinkProps } from '../../ButtonOrLink';
 import ProfileInfo from './ProfileInfo';
 import ActivityFeed from './ActivityFeed';
 import Logout from './Logout';
 import Menu from './Menu';
+import Link from '../../Link';
 
 const SidebarContainer = ({
   className,
@@ -60,27 +61,26 @@ const SidebarItem = ({
     ? router.pathname.includes(classroomMenuOptions!.pathname)
     : router.pathname === href;
 
-  const commonProps = {
-    active: selected,
-    fullWidth: true,
-    'aria-labelledby': 'spout-sidebar-item-label',
-  };
-
   const children = (
     <>
       <p className="mr-0 xl:mr-3">{icon}</p>
-      <p id="spout-sidebar-item-label" className="hidden xl:inline-flex flex-1">
-        {label}
-      </p>
+      <p className="hidden xl:inline-flex flex-1">{label}</p>
     </>
   );
+
+  const commonProps: ButtonOrLinkProps = {
+    rounded: 'xl',
+    size: 'sm',
+    variant: selected ? 'solid' : 'ghost',
+    scheme: selected ? 'dark' : 'light',
+  };
 
   if (isMenu) {
     return (
       <Menu
         menuButtonProps={{
-          ...commonProps,
           children,
+          ...commonProps,
         }}
       />
     );

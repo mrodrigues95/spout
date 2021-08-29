@@ -33,8 +33,10 @@ const ModalHeader = ({
       </div>
       {dismiss && (
         <Button
-          className="mb-auto p-2 -mt-1"
-          rounded="md"
+        size="sm"
+          variant="ghost"
+          scheme="light"
+          className="mb-auto -mt-1"
           aria-label="Close modal"
           onClick={onClose}
         >

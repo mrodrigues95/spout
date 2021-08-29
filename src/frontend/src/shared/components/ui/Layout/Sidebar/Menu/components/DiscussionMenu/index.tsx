@@ -3,7 +3,7 @@ import { Transition } from '@headlessui/react';
 import { Discussion } from '~/__generated__/schema.generated';
 import EmptyFallback from '../../../../../EmptyFallback';
 import Menu from '../..';
-import { Menus, Modals, MenuContext } from '../../MenuProvider';
+import { MenuContext } from '../../MenuProvider';
 
 interface Props {
   discussions: Partial<Discussion>[];
@@ -14,7 +14,7 @@ const DiscussionMenu = ({ discussions }: Props) => {
     MenuContext
   )!;
 
-  if (!selectedClassroom || currentMenu !== Menus.Discussion) return null;
+  if (!selectedClassroom || currentMenu !== 'discussion') return null;
 
   return (
     <Transition.Child
@@ -56,7 +56,7 @@ const DiscussionMenu = ({ discussions }: Props) => {
       <Menu.Item
         type="button"
         variant="info"
-        onClick={() => setCurrentModal(Modals.InviteStudents)}
+        onClick={() => setCurrentModal('invite')}
       >
         Invite Students
       </Menu.Item>

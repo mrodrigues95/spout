@@ -31,7 +31,18 @@ const Logout = () => {
     logout({ variables: { input: { sessionId } } });
   };
 
-  return <Button className="text-xl h-16" onClick={removeSession} fullWidth>Logout</Button>;
+  return (
+    <Button
+      size="xl"
+      rounded="xxl"
+      variant="ghost"
+      scheme="light"
+      fullWidth
+      onClick={removeSession}
+    >
+      Logout
+    </Button>
+  );
 };
 
 export default Logout;

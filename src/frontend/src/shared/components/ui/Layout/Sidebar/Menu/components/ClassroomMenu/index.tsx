@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Classroom } from '~/__generated__/schema.generated';
-import { Menus, MenuContext } from '../../MenuProvider';
+import { MenuContext } from '../../MenuProvider';
 import Menu from '../..';
 import EmptyFallback from '../../../../../EmptyFallback';
 
@@ -13,7 +13,7 @@ const ClassroomMenu = ({ classrooms }: Props) => {
     MenuContext
   )!;
 
-  if (currentMenu !== Menus.Classroom) return null;
+  if (currentMenu !== 'classroom') return null;
 
   return (
     <>
@@ -26,7 +26,7 @@ const ClassroomMenu = ({ classrooms }: Props) => {
               type="button"
               variant="default"
               onClick={() => {
-                setCurrentMenu(Menus.Discussion);
+                setCurrentMenu('discussion');
                 setSelectedClassroom(classroom);
               }}
             >

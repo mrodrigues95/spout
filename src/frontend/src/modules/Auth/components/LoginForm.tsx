@@ -54,7 +54,7 @@ const LoginForm = () => {
   const signUpLink = (
     <Link
       href="/auth/signup"
-      ignoreStyles
+      variant="unstyled"
       className="text-green-600 font-semibold focus:outline-none focus:underline hover:underline"
       preserveRedirect
     >
@@ -111,8 +111,10 @@ const LoginForm = () => {
             autoComplete="current-password"
             {...form.register('password')}
           />
-          <p className="font-semibold">Forgot your password?</p>
-          <FormSubmitButton>Login</FormSubmitButton>
+          <div className="space-y-1">
+            <p className="font-semibold">Forgot your password?</p>
+            <FormSubmitButton fullWidth>Login</FormSubmitButton>
+          </div>
         </Form>
       </AuthCard>
     </Layout>

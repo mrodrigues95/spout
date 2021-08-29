@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
-import { MenuContext, Modals } from '../../../MenuProvider';
+import { MenuContext } from '../../../MenuProvider';
 import {
   CreateClassroomInviteMutation,
   CreateClassroomInviteMutationVariables,
@@ -47,7 +47,7 @@ const InviteStudents = () => {
     setClassroomInvite,
   } = useContext(MenuContext)!;
 
-  const isOpen = currentModal === Modals.InviteStudents;
+  const isOpen = currentModal === 'invite';
   const { maxAge, maxUses, reset } = settings;
 
   const [createInvite, { data, loading, error }] = useMutation<
@@ -61,6 +61,7 @@ const InviteStudents = () => {
   });
 
   useEffect(() => {
+    // Create invite on initial mount.
     if (!data && !loading && !error) {
       createInvite({
         variables: {
@@ -102,9 +103,8 @@ const InviteStudents = () => {
       </Modal.Content>
       <Modal.Footer>
         <Button
-          className="text-sm"
-          rounded="md"
           disabled={(!maxAge && !maxUses) || loading}
+          className="font-semibold"
           onClick={() => {
             createInvite({
               variables: {

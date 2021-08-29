@@ -17,7 +17,13 @@ const Search = forwardRef<HTMLInputElement, Props>(({ ...props }, ref) => {
           <SearchIcon className="h-4 w-4 sm:h-5 sm:w-5" />
         </span>
       ) : (
-        <Button className="rounded-full sm:ml-3" aria-label="Search">
+        <Button
+          size="sm"
+          variant="ghost"
+          scheme="light"
+          className="sm:ml-3"
+          aria-label="Search"
+        >
           <SearchIcon className="h-4 w-4 sm:h-5 sm:w-5" />
         </Button>
       )}

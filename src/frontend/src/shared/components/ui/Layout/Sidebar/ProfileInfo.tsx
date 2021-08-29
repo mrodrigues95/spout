@@ -1,5 +1,5 @@
 import { ChevronIcon } from '~/shared/assets';
-import { Link, Avatar } from '~/shared/components';
+import { Avatar, Link } from '~/shared/components';
 import { getRandomAvatar } from '~/shared/utils/getRandomAvatar';
 
 const ProfileInfo = () => {
@@ -17,7 +17,14 @@ const ProfileInfo = () => {
             mrodrigues@spout.com
           </p>
         </div>
-        <Link rounded="full" href="/profile" aria-label="Go to profile">
+        <Link
+          href="/profile"
+          aria-label="Go to profile"
+          rounded="full"
+          variant="ghost"
+          scheme="light"
+          className="!p-3"
+        >
           <ChevronIcon className="transform rotate-180 h-5 w-5" />
         </Link>
       </div>

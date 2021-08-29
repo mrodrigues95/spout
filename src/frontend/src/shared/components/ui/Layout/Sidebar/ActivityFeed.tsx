@@ -8,7 +8,7 @@ interface Props {
 
 const ActivityFeedItem = ({ avatarUrl, message }: Props) => {
   return (
-    <div className="flex items-center font-medium text-black">
+    <div className="flex items-center font-medium text-gray-900">
       <Avatar url={avatarUrl} containerClassName="mr-3" rounded />
       {message}
     </div>
