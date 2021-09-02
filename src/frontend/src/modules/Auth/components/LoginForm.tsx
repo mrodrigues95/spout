@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Zod, { object, string } from 'zod';
 import { gql, useMutation } from '@apollo/client';
 import {
-  FormSubmitButton,
   Link,
   Input,
   Form,
@@ -90,7 +89,7 @@ const LoginForm = () => {
         title="Welcome back!"
         subtitle="Use the form below to login"
         action={{
-          description: "Don't have an account?",
+          description: "Dont have an account?",
           link: signUpLink,
         }}
       >
@@ -113,7 +112,7 @@ const LoginForm = () => {
           />
           <div className="space-y-1">
             <p className="font-semibold">Forgot your password?</p>
-            <FormSubmitButton fullWidth>Login</FormSubmitButton>
+            <Form.SubmitButton fullWidth>Login</Form.SubmitButton>
           </div>
         </Form>
       </AuthCard>

@@ -1,4 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { gql, useMutation } from '@apollo/client';
 import { MenuContext } from '../../../MenuProvider';
 import {
@@ -6,10 +7,17 @@ import {
   CreateClassroomInviteMutationVariables,
 } from './__generated__/index.generated';
 import Modal from '../../../../../../Modal';
-import Button from '../../../../../../Button';
 import Spinner from '../../../../../../Spinner';
 import CopyInvite from './CopyInvite';
-import InviteSettings, { MaxAge, MaxUses } from './InviteSettings';
+import { Form } from '../../../../../../Form';
+import InviteSettings, {
+  InviteSettings as InviteSettingsType,
+} from './InviteSettings';
+
+const defaultValues: InviteSettingsType = {
+  maxAge: null,
+  maxUses: null,
+};
 
 const mutation = gql`
   mutation CreateClassroomInviteMutation($input: CreateClassroomInviteInput!) {
@@ -27,18 +35,7 @@ const mutation = gql`
   }
 `;
 
-export interface InviteSettingsType {
-  maxAge: MaxAge | null;
-  maxUses: MaxUses | null;
-  reset: (() => void) | null;
-}
-
 const InviteStudents = () => {
-  const [settings, setSettings] = useState<InviteSettingsType>({
-    maxAge: null,
-    maxUses: null,
-    reset: null,
-  });
   const {
     selectedClassroom,
     currentModal,
@@ -47,8 +44,9 @@ const InviteStudents = () => {
     setClassroomInvite,
   } = useContext(MenuContext)!;
 
-  const isOpen = currentModal === 'invite';
-  const { maxAge, maxUses, reset } = settings;
+  const form = useForm<Pick<InviteSettingsType, 'maxAge' | 'maxUses'>>({
+    defaultValues,
+  });
 
   const [createInvite, { data, loading, error }] = useMutation<
     CreateClassroomInviteMutation,
@@ -56,7 +54,7 @@ const InviteStudents = () => {
   >(mutation, {
     onCompleted: (data) => {
       setClassroomInvite(data.createClassroomInvite.invite);
-      if (reset) reset();
+      form.reset();
     },
   });
 
@@ -68,58 +66,58 @@ const InviteStudents = () => {
           input: {
             classroomId: selectedClassroom!.id!,
             code: classroomInvite?.code,
-            maxAge: maxAge?.value,
-            maxUses: maxUses?.value,
           },
         },
       });
     }
-  }, [
-    data,
-    loading,
-    error,
-    createInvite,
-    classroomInvite,
-    maxAge,
-    maxUses,
-    selectedClassroom,
-  ]);
+  }, [data, loading, error, createInvite, classroomInvite, selectedClassroom]);
+
+  const onSubmit = useCallback(
+    ({ maxAge, maxUses }: InviteSettingsType) =>
+      createInvite({
+        variables: {
+          input: {
+            classroomId: selectedClassroom!.id!,
+            maxAge: maxAge?.value,
+            maxUses: maxUses?.value,
+          },
+        },
+      }),
+    [createInvite, selectedClassroom]
+  );
+
+  const isOpen = currentModal === 'invite';
 
   return (
     <Modal isOpen={isOpen} onClose={() => setCurrentModal(null)}>
-      <Modal.Content>
-        <Modal.Header
-          title={`Invite students to ${selectedClassroom!.name}`}
-          description="Add students to your classroom by sharing the invite link below"
-          dismiss
-        />
-        <div className="my-6">
-          {loading && (
-            <Spinner className="w-5 h-5 text-black" label="Generating invite" />
-          )}
-          {data && <CopyInvite invite={data.createClassroomInvite.invite} />}
-        </div>
-        <InviteSettings setSettings={setSettings} />
-      </Modal.Content>
-      <Modal.Footer>
-        <Button
-          disabled={(!maxAge && !maxUses) || loading}
-          className="font-semibold"
-          onClick={() => {
-            createInvite({
-              variables: {
-                input: {
-                  classroomId: selectedClassroom!.id!,
-                  maxAge: maxAge?.value,
-                  maxUses: maxUses?.value,
-                },
-              },
-            });
-          }}
-        >
-          Generate Invite
-        </Button>
-      </Modal.Footer>
+      <Form form={form} onSubmit={onSubmit}>
+        <Modal.Content>
+          <Modal.Header
+            title={`Invite students to ${selectedClassroom!.name}`}
+            description="Add students to your classroom by sharing the invite link below"
+            dismiss
+          />
+          <div className="my-6">
+            {loading && (
+              <Spinner
+                className="w-5 h-5 text-black"
+                label="Generating invite"
+              />
+            )}
+            {data && <CopyInvite invite={data.createClassroomInvite.invite} />}
+          </div>
+          <InviteSettings control={form.control} />
+        </Modal.Content>
+        <Modal.Footer>
+          <Form.SubmitButton
+            size="sm"
+            disabled={!form.formState.isDirty || loading}
+            className="font-semibold"
+          >
+            Generate Invite
+          </Form.SubmitButton>
+        </Modal.Footer>
+      </Form>
     </Modal>
   );
 };

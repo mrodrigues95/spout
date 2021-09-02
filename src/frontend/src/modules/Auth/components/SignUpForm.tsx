@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import Zod, { object, string } from 'zod';
 import {
-  FormSubmitButton,
   Link,
   Input,
   Form,
@@ -134,7 +133,7 @@ const SignUpForm = () => {
             type="password"
             {...form.register('confirmPassword')}
           />
-          <FormSubmitButton>Sign Up</FormSubmitButton>
+          <Form.SubmitButton>Sign Up</Form.SubmitButton>
         </Form>
       </AuthCard>
     </Layout>

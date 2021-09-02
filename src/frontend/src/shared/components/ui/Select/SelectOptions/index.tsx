@@ -5,7 +5,7 @@ interface Props {
   children: ReactNode;
 }
 
-const SelectOptions = ({ children }: Props) => {
+const SelectOptions = ({ children, ...props }: Props) => {
   return (
     <Transition
       as={Fragment}
@@ -13,7 +13,10 @@ const SelectOptions = ({ children }: Props) => {
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
-      <Listbox.Options className="z-10 absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 focus:outline-none">
+      <Listbox.Options
+        className="z-10 absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 focus:outline-none"
+        {...props}
+      >
         {children}
       </Listbox.Options>
     </Transition>

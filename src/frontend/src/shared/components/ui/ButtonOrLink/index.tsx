@@ -4,14 +4,14 @@ import { useRouter } from 'next/router';
 
 export const classes = {
   base:
-    'flex items-center justify-center tracking-wide font-bold outline-none transition duration-150 ease-in-out focus:outline-none',
+    'relative inline-flex items-center justify-center tracking-wide select-none font-bold outline-none transition duration-150 ease-in-out focus:outline-none',
   disabled: 'disabled:opacity-60 disabled:pointer-events-none',
   size: {
-    xs: 'px-2 py-1 text-xs',
-    sm: 'px-3 py-2 text-sm',
-    md: 'px-4 py-2',
-    lg: 'px-6 py-3 text-lg',
-    xl: 'px-10 py-4 text-xl',
+    xs: 'py-1 px-2 text-xs',
+    sm: 'py-2 px-4 text-sm',
+    md: 'py-2 px-6 text-md',
+    lg: 'py-3 px-8 text-lg',
+    xl: 'py-4 px-10 text-xl',
   },
   rounded: {
     none: 'rounded-none',
@@ -25,7 +25,7 @@ export const classes = {
     full: 'rounded-full',
   },
   variant: {
-    outline: 'border',
+    outline: 'border border-current !bg-transparent',
     ghost: 'border-none !bg-transparent',
     solid: 'border-none',
     unstyled: '',

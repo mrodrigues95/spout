@@ -10,6 +10,7 @@ import {
   useFormContext,
 } from 'react-hook-form';
 import { ZodSchema, TypeOf } from 'zod';
+import FormSubmitButton from './../FormSubmitButton';
 
 interface UseZodFormProps<T extends ZodSchema<any>>
   extends UseFormProps<TypeOf<T>> {
@@ -40,7 +41,11 @@ export function FieldError({ name }: FieldErrorProps) {
   const error = errors[name];
   if (!error) return null;
 
-  return <span className="text-sm text-red-600 italic">{error.message}</span>;
+  return (
+    <span className="text-sm text-red-600 italic" role="alert">
+      {error.message}
+    </span>
+  );
 }
 
 interface Props<T extends FieldValues = any>
@@ -68,5 +73,7 @@ const Form = <T extends FieldValues>({
     </FormProvider>
   );
 };
+
+Form.SubmitButton = FormSubmitButton;
 
 export default Form;

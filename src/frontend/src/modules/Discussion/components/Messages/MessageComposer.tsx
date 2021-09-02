@@ -53,11 +53,11 @@ const MessageComposer = ({ discussionId }: Props) => {
       >
         <div className="flex flex-1 items-center">
           <Button
+            className="px-0"
             aria-label="View emojis"
             size="sm"
             rounded="full"
             variant="ghost"
-            scheme="light"
             active={false}
           >
             <EmojiHappyIcon className="h-5 w-5 text-gray-400 hover:text-gray-900" />
@@ -78,7 +78,6 @@ const MessageComposer = ({ discussionId }: Props) => {
             size="sm"
             rounded="full"
             variant="ghost"
-            scheme="light"
             active={false}
           >
             <PaperClipIcon className="h-5 w-5 text-gray-400 hover:text-gray-900" />

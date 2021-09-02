@@ -5,6 +5,7 @@ import ButtonOrLink, {
   classes,
 } from '../ButtonOrLink';
 
+// TODO: Just render <Button> here and pass the props.
 const Link = forwardRef<
   HTMLButtonElement & HTMLAnchorElement,
   ButtonOrLinkProps

@@ -1,10 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import { Controller, FieldValues, UseFormReturn } from 'react-hook-form';
 import { hoursToSeconds, minutesToSeconds } from 'date-fns';
 import { CheckIcon, ChevronIcon } from '~/shared/assets';
-import { InviteSettingsType } from '.';
 import Select from '../../../../../../Select';
 
-export type MaxAge = { label: string; value: number };
+type MaxAge = { label: string; value: number };
 const MAX_AGE = {
   never: { label: 'Never', value: 0 },
   thirtyMinutes: {
@@ -18,7 +17,7 @@ const MAX_AGE = {
   sevenDays: { label: '7 days', value: hoursToSeconds(168) },
 } as { [key: string]: MaxAge };
 
-export type MaxUses = { label: string; value: number | null };
+type MaxUses = { label: string; value: number | null };
 const MAX_USES = {
   unlimited: { label: 'Unlimited', value: null },
   one: { label: '1 use', value: 1 },
@@ -29,74 +28,73 @@ const MAX_USES = {
   oneHundred: { label: '100 uses', value: 100 },
 } as { [key: string]: MaxUses };
 
-interface Props {
-  setSettings: (settings: InviteSettingsType) => void;
+export interface InviteSettings {
+  maxAge: MaxAge | null;
+  maxUses: MaxUses | null;
 }
 
-const InviteSettings = ({ setSettings }: Props) => {
-  const [maxAge, setMaxAge] = useState<MaxAge | null>(null);
-  const [maxUses, setMaxUses] = useState<MaxUses | null>(null);
+export interface Props<T extends FieldValues = InviteSettings> {
+  control: UseFormReturn<T>['control'];
+}
 
-  const reset = useCallback(() => {
-    setMaxAge(null);
-    setMaxUses(null);
-  }, []);
-
-  useEffect(() => {
-    setSettings({ maxAge, maxUses, reset });
-  }, [maxAge, maxUses, reset, setSettings]);
-
+// TODO: Maybe wrap this in `IsolateReRender` for better performance?
+// See: https://react-hook-form.com/ts/
+const InviteSettings = ({ control }: Props) => {
   return (
     <>
       <h5 className="font-bold mb-1 uppercase">Settings</h5>
-      <form className="space-y-2">
-        <Select
-          label="Expire after"
-          value={maxAge}
-          onChange={setMaxAge}
-        >
-          <Select.Button
-            label={maxAge ? maxAge.label : 'Select'}
-            variant={maxAge ? 'default' : 'placeholder'}
-            icon={
-              <ChevronIcon className="w-5 h-5 text-black transform -rotate-90" />
-            }
-          />
-          <Select.Options>
-            {Object.entries(MAX_AGE).map(([key, props]) => (
-              <Select.Option
-                key={key}
-                value={props}
-                label={props.label}
-                selectedIcon={<CheckIcon className="w-5 h-5" />}
-              />
-            ))}
-          </Select.Options>
-        </Select>
-        <Select
-          label="Max number of uses"
-          value={maxUses}
-          onChange={setMaxUses}
-        >
-          <Select.Button
-            label={maxUses ? maxUses.label : 'Select'}
-            variant={maxUses ? 'default' : 'placeholder'}
-            icon={
-              <ChevronIcon className="w-5 h-5 text-black transform -rotate-90" />
-            }
-          />
-          <Select.Options>
-            {Object.entries(MAX_USES).map(([key, props]) => (
-              <Select.Option
-                key={key}
-                value={props}
-                label={props.label}
-                selectedIcon={<CheckIcon className="w-5 h-5" />}
-              />
-            ))}
-          </Select.Options>
-        </Select>
-      </form>
+      <Controller
+        control={control}
+        defaultValue={null}
+        name="maxAge"
+        render={({ field: { value, onChange } }) => (
+          <Select label="Expire after" value={value} onChange={onChange}>
+            <Select.Button
+              label={value ? value.label : 'Select'}
+              variant={value ? 'default' : 'placeholder'}
+              icon={
+                <ChevronIcon className="w-5 h-5 text-black transform -rotate-90" />
+              }
+            />
+            <Select.Options>
+              {Object.entries(MAX_AGE).map(([key, props]) => (
+                <Select.Option
+                  key={key}
+                  value={props}
+                  label={props.label}
+                  selectedIcon={<CheckIcon className="w-5 h-5" />}
+                />
+              ))}
+            </Select.Options>
+          </Select>
+        )}
+      />
+      <Controller
+        control={control}
+        defaultValue={null}
+        name="maxUses"
+        render={({ field: { value, onChange } }) => (
+          <Select label="Max number of uses" value={value} onChange={onChange}>
+            <Select.Button
+              label={value ? value.label : 'Select'}
+              variant={value ? 'default' : 'placeholder'}
+              icon={
+                <ChevronIcon className="w-5 h-5 text-black transform -rotate-90" />
+              }
+            />
+            <Select.Options>
+              {Object.entries(MAX_USES).map(([key, props]) => (
+                <Select.Option
+                  key={key}
+                  value={props}
+                  label={props.label}
+                  selectedIcon={<CheckIcon className="w-5 h-5" />}
+                />
+              ))}
+            </Select.Options>
+          </Select>
+        )}
+      />
     </>
   );
 };

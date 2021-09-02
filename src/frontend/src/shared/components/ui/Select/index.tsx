@@ -11,11 +11,13 @@ type Props<T> = {
   children: ReactNode;
 };
 
+// TODO: Use `forwardRef` here for uncontrolled support.
 const Select = <T extends unknown>({
   label,
   value,
   onChange,
   children,
+  ...props
 }: Props<T>) => {
   return (
     <Listbox
@@ -23,6 +25,7 @@ const Select = <T extends unknown>({
       className="relative space-y-1"
       value={value}
       onChange={onChange}
+      {...props}
     >
       {label && (
         <Listbox.Label className="text-sm font-semibold uppercase text-gray-500">

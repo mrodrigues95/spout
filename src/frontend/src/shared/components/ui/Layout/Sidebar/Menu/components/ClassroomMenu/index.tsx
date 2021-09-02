@@ -9,7 +9,7 @@ interface Props {
 }
 
 const ClassroomMenu = ({ classrooms }: Props) => {
-  const { currentMenu, setCurrentMenu, setSelectedClassroom } = useContext(
+  const { currentMenu, setCurrentMenu, setCurrentModal, setSelectedClassroom } = useContext(
     MenuContext
   )!;
 
@@ -49,6 +49,13 @@ const ClassroomMenu = ({ classrooms }: Props) => {
         onClick={() => console.log('Create a classroom clicked!')}
       >
         Create Classroom
+      </Menu.Item>
+      <Menu.Item
+        type="button"
+        variant="info"
+        onClick={() => setCurrentModal('join')}
+      >
+        Join Classroom
       </Menu.Item>
     </>
   );

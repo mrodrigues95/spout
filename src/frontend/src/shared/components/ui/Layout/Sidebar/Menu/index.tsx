@@ -15,6 +15,7 @@ import MenuItem from './components/MenuItem';
 import ClassroomMenu from './components/ClassroomMenu';
 import DiscussionMenu from './components/DiscussionMenu';
 import InviteStudents from './components/Modals/InviteStudents';
+import JoinClassroom from './components/Modals/JoinClassroom';
 
 export const menuVariants = {
   default: {
@@ -138,6 +139,7 @@ const BaseMenu = ({ menuButtonProps }: Props) => {
         )}
       </Popover>
       {currentModal === 'invite' && <InviteStudents />}
+      {currentModal === 'join' && <JoinClassroom />}
     </>
   );
 };

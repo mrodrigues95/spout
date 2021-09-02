@@ -5,6 +5,7 @@ import ButtonOrLink, {
   classes,
 } from '../ButtonOrLink';
 
+// TODO: Add loading
 const Button = forwardRef<
   HTMLButtonElement & HTMLAnchorElement,
   ButtonOrLinkProps
