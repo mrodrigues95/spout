@@ -71,7 +71,6 @@ const SidebarItem = ({
   const commonProps: ButtonOrLinkProps = {
     rounded: 'xl',
     size: 'sm',
-    variant: selected ? 'solid' : 'ghost',
     scheme: selected ? 'dark' : 'light',
   };
 

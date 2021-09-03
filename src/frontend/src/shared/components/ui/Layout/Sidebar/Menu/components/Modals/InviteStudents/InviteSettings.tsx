@@ -41,8 +41,8 @@ export interface Props<T extends FieldValues = InviteSettings> {
 // See: https://react-hook-form.com/ts/
 const InviteSettings = ({ control }: Props) => {
   return (
-    <>
-      <h5 className="font-bold mb-1 uppercase">Settings</h5>
+    <div>
+      <h5 className="font-bold uppercase">Settings</h5>
       <Controller
         control={control}
         defaultValue={null}
@@ -95,7 +95,7 @@ const InviteSettings = ({ control }: Props) => {
           </Select>
         )}
       />
-    </>
+    </div>
   );
 };
 

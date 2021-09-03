@@ -35,7 +35,6 @@ const Logout = () => {
     <Button
       size="xl"
       rounded="xxl"
-      variant="ghost"
       scheme="light"
       fullWidth
       onClick={removeSession}

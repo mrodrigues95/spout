@@ -1,8 +1,8 @@
 ﻿namespace API.Common.Enums {
     public enum State {
-        Active,
-        Inactive,
-        Suspended,
-        Deleted
+        Active = 1,
+        Deleted = 2,
+        Inactive = 3,
+        Suspended = 4,
     }
 }

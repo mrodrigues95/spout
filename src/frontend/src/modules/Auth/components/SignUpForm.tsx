@@ -9,6 +9,7 @@ import {
   Layout,
   useToast,
 } from '~/shared/components';
+import { useIsRedirecting } from '~/shared/hooks/useIsRedirecting';
 import { useAuthRedirect, useInitializeSessionMutation } from '../hooks';
 import AuthError from './AuthError';
 import AuthCard from './AuthCard';
@@ -50,6 +51,7 @@ const signUpSchema = object({
 
 const SignUpForm = () => {
   const authRedirect = useAuthRedirect();
+  const isRedirecting = useIsRedirecting();
   const init = useInitializeSessionMutation();
   const { handleError } = useToast();
   const [signUpError, setSignUpError] = useState<Error | UserError>();
@@ -133,7 +135,9 @@ const SignUpForm = () => {
             type="password"
             {...form.register('confirmPassword')}
           />
-          <Form.SubmitButton>Sign Up</Form.SubmitButton>
+          <Form.SubmitButton disabled={isRedirecting}>
+            Sign Up
+          </Form.SubmitButton>
         </Form>
       </AuthCard>
     </Layout>

@@ -1,10 +1,11 @@
-import { createContext, Fragment, ReactNode } from 'react';
+import { ComponentProps, createContext, Fragment, ReactNode } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
+import clsx from 'clsx';
 import ModalHeader from './ModalHeader';
 import ModalContent from './ModalContent';
 import ModalFooter from './ModalFooter';
 
-export interface Props {
+export interface Props extends ComponentProps<'section'> {
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
@@ -14,7 +15,7 @@ interface ModalContextType extends Omit<Props, 'children'> {}
 
 export const ModalContext = createContext<ModalContextType | null>(null);
 
-const Modal = ({ isOpen, onClose, children }: Props) => {
+const Modal = ({ isOpen, onClose, children, className, ...props }: Props) => {
   return (
     <ModalContext.Provider value={{ isOpen, onClose }}>
       <Transition appear show={isOpen} as={Fragment}>
@@ -42,7 +43,13 @@ const Modal = ({ isOpen, onClose, children }: Props) => {
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <section className="relative flex flex-col max-w-2xl shadow-xl bg-white rounded-md text-black">
+            <section
+              className={clsx(
+                'relative flex flex-col max-w-2xl shadow-xl bg-white rounded-md text-black',
+                className
+              )}
+              {...props}
+            >
               {children}
             </section>
           </Transition.Child>

@@ -4,6 +4,8 @@ export const UserInfoFragment = gql`
   fragment UserInfo_user on User {
     id
     name
+    email
+    createdAt
   }
 `;
 

@@ -16,6 +16,7 @@ import ClassroomMenu from './components/ClassroomMenu';
 import DiscussionMenu from './components/DiscussionMenu';
 import InviteStudents from './components/Modals/InviteStudents';
 import JoinClassroom from './components/Modals/JoinClassroom';
+import { UserInfoFragment } from '~/modules/Discussion/utils/fragments';
 
 export const menuVariants = {
   default: {
@@ -53,7 +54,7 @@ const BaseMenu = ({ menuButtonProps }: Props) => {
     gql`
       query ClassroomsQuery {
         me {
-          id
+          ...UserInfo_user
           classrooms {
             id
             name
@@ -64,6 +65,7 @@ const BaseMenu = ({ menuButtonProps }: Props) => {
           }
         }
       }
+      ${UserInfoFragment}
     `
   );
 

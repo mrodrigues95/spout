@@ -1,12 +1,16 @@
+import clsx from 'clsx';
 import { ReactNode } from 'react';
 
 interface ModalContentProps {
   children: ReactNode;
+  className?: string;
 }
 
-const ModalContent = ({ children }: ModalContentProps) => {
+const ModalContent = ({ children, className }: ModalContentProps) => {
   return (
-    <div className="flex flex-col justify-center px-4 py-5">{children}</div>
+    <div className={clsx('flex flex-col justify-center px-4 py-5 space-y-3', className)}>
+      {children}
+    </div>
   );
 };
 

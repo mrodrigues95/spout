@@ -11,6 +11,8 @@ using CSharpVitamins;
 using HotChocolate.AspNetCore.Authorization;
 using System.Linq;
 using System.Collections.Generic;
+using API.Schema.Common;
+using AppAny.HotChocolate.FluentValidation;
 
 namespace API.Schema.Mutations.Classrooms {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -34,6 +36,55 @@ namespace API.Schema.Mutations.Classrooms {
 
         [Authorize]
         [UseApplicationDbContext]
+        public async Task<JoinClassroomPayload> JoinClassroomAsync(
+            [UseFluentValidation, UseValidator(typeof(JoinClassroomInputValidator))] JoinClassroomInput input,
+            [GlobalState] int userId,
+            [ScopedService] ApplicationDbContext ctx,
+            CancellationToken cancellationToken) {
+            var classroomInvite = await ctx.ClassroomInvites
+                .Include(x => x.Invite)
+                .Include(x => x.Classroom)
+                    .ThenInclude(x => x!.Users)
+                .SingleOrDefaultAsync(x =>
+                    x.Invite!.Code == input.Code
+                    && x.IsInviter, cancellationToken);
+
+            if (!IsValid(classroomInvite?.Invite)) {
+                return new JoinClassroomPayload(new UserError("This invite has expired.", "INVITE_EXPIRED"));
+            }
+
+            var invite = classroomInvite!.Invite!;
+            var classroom = classroomInvite!.Classroom!;
+
+            var isAlreadyInClassroom = classroom.Users.Any(x => x.UserId == userId);
+            if (isAlreadyInClassroom) {
+                return new JoinClassroomPayload(classroom, new UserError("User is already in classroom.", "USER_ALREADY_EXISTS"));
+            }
+
+            invite.Uses++;
+            invite.UpdatedAt = DateTime.UtcNow;
+            invite.Logs.Add(new ClassroomInvite {
+                InviteId = invite.Id,
+                UserId = userId,
+                ClassroomId = classroomInvite.ClassroomId,
+                IsInviter = false,
+                IsInvitee = true,
+                UsedAt = DateTime.UtcNow
+            });
+
+            classroom.Users.Add(new ClassroomUser {
+                ClassroomId = classroom.Id,
+                UserId = userId,
+                IsCreator = false
+            });
+
+            await ctx.SaveChangesAsync(cancellationToken);
+
+            return new JoinClassroomPayload(classroom);
+        }
+
+        [Authorize]
+        [UseApplicationDbContext]
         public async Task<CreateClassroomInvitePayload> CreateClassroomInviteAsync(
             CreateClassroomInviteInput input,
             [GlobalState] int userId,
@@ -48,7 +99,7 @@ namespace API.Schema.Mutations.Classrooms {
                         && x.UserId == userId
                         && x.IsInviter, cancellationToken);
 
-                if (IsValid(classroomInvite)) return new CreateClassroomInvitePayload(classroomInvite.Invite!);
+                if (IsValid(classroomInvite?.Invite)) return new CreateClassroomInvitePayload(classroomInvite!.Invite!);
             } else if (input.MaxAge is null && input.MaxUses is null) {
                 // Check if the user already has an existing invite created before creating a new one.
                 var classroomInvites = await ctx.ClassroomInvites
@@ -102,15 +153,13 @@ namespace API.Schema.Mutations.Classrooms {
         /// </summary>
         private ClassroomInvite? ValidateClassroomInvites(List<ClassroomInvite> classroomInvites) {
             foreach (var classroomInvite in classroomInvites) {
-                if (IsValid(classroomInvite)) return classroomInvite;
+                if (IsValid(classroomInvite.Invite!)) return classroomInvite;
             }
 
             return null;
         }
 
-        private bool IsValid(ClassroomInvite? classroomInvite) {
-            var invite = classroomInvite?.Invite;
-
+        private bool IsValid(Invite? invite) {
             if (invite is null) return false;
             if (invite.MaxUses != null && invite.MaxUses <= invite.Uses) return false;
             if (invite.ExpiresAt != null && invite.ExpiresAt <= DateTime.UtcNow) return false;

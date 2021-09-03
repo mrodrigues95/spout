@@ -7,10 +7,13 @@ namespace API.Data.Configurations {
         public void Configure(EntityTypeBuilder<ClassroomUser> builder) {
             builder.HasKey(cu => new { cu.UserId, cu.ClassroomId });
 
-            builder.Property(i => i.JoinedAt)
+            builder.Property(cu => cu.IsCreator)
+                .HasDefaultValue(false);
+
+            builder.Property(cu => cu.JoinedAt)
                 .HasDefaultValueSql("timezone('UTC', now())");
 
-            builder.Property(i => i.UpdatedAt)
+            builder.Property(cu => cu.UpdatedAt)
                 .HasDefaultValueSql("timezone('UTC', now())");
 
             builder.HasOne(cu => cu.User)

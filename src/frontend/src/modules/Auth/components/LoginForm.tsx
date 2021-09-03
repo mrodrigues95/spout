@@ -9,6 +9,7 @@ import {
   Layout,
   useToast,
 } from '~/shared/components';
+import { useIsRedirecting } from '~/shared/hooks/useIsRedirecting';
 import { useAuthRedirect, useInitializeSessionMutation } from '../hooks';
 import AuthCard from './AuthCard';
 import AuthError from './AuthError';
@@ -39,6 +40,7 @@ const loginSchema = object({
 
 const LoginForm = () => {
   const authRedirect = useAuthRedirect();
+  const isRedirecting = useIsRedirecting();
   const init = useInitializeSessionMutation();
   const [loginError, setLoginError] = useState<Error | UserError>();
   const { handleError } = useToast();
@@ -89,7 +91,7 @@ const LoginForm = () => {
         title="Welcome back!"
         subtitle="Use the form below to login"
         action={{
-          description: "Dont have an account?",
+          description: 'Dont have an account?',
           link: signUpLink,
         }}
       >
@@ -112,7 +114,9 @@ const LoginForm = () => {
           />
           <div className="space-y-1">
             <p className="font-semibold">Forgot your password?</p>
-            <Form.SubmitButton fullWidth>Login</Form.SubmitButton>
+            <Form.SubmitButton disabled={isRedirecting} fullWidth>
+              Login
+            </Form.SubmitButton>
           </div>
         </Form>
       </AuthCard>

@@ -32,7 +32,7 @@ namespace API.Schema.Mutations.Auth {
                 Name = input.Name,
                 UserName = input.Email,
                 Email = input.Email,
-                StateId = (int)Enums.State.Active
+                StateId = (int) Enums.State.Active
             };
 
             var createUser = await userManager.CreateAsync(user, input.Password);

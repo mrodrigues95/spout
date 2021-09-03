@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import nprogress from 'nprogress';
+import { useIsRedirecting } from '../../../hooks/useIsRedirecting';
 
 const NProgress = () => {
-  const router = useRouter();
+  const isRedirecting = useIsRedirecting();
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -18,16 +18,14 @@ const NProgress = () => {
       nprogress.done();
     };
 
-    router.events.on('routeChangeStart', start);
-    router.events.on('routeChangeComplete', done);
-    router.events.on('routeChangeError', done);
-    return () => {
+    if (isRedirecting) {
+      start();
+    } else {
       done();
-      router.events.off('routeChangeStart', start);
-      router.events.off('routeChangeComplete', done);
-      router.events.off('routeChangeError', done);
-    };
-  }, []);
+    }
+
+    return () => done();
+  }, [isRedirecting]);
 
   return null;
 };

@@ -217,6 +217,16 @@ export type Invite = {
   logs: Array<ClassroomInvite>;
 };
 
+export type JoinClassroomInput = {
+  code: Scalars['String'];
+};
+
+export type JoinClassroomPayload = {
+  __typename?: 'JoinClassroomPayload';
+  classroom?: Maybe<Classroom>;
+  userErrors?: Maybe<Array<UserError>>;
+};
+
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -278,6 +288,7 @@ export type MessageSortInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createClassroom: CreateClassroomPayload;
+  joinClassroom: JoinClassroomPayload;
   createClassroomInvite: CreateClassroomInvitePayload;
   sendDiscussionMessage: SendDiscussionMessagePayload;
   signUp: AuthPayload;
@@ -289,6 +300,11 @@ export type Mutation = {
 
 export type MutationCreateClassroomArgs = {
   input: CreateClassroomInput;
+};
+
+
+export type MutationJoinClassroomArgs = {
+  input: JoinClassroomInput;
 };
 
 
