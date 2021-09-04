@@ -8,7 +8,7 @@ namespace API.Data.Configurations {
             builder.HasKey(c => c.Id);
 
             builder.Property(c => c.Name)
-                .HasMaxLength(35);
+                .HasMaxLength(64);
 
             builder.Property(c => c.CreatedAt)
                 .HasDefaultValueSql("timezone('UTC', now())");

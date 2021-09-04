@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.Data.Entities;
+using Enums = API.Common.Enums;
 using API.Extensions;
 using HotChocolate;
 using HotChocolate.Types;
@@ -20,13 +21,20 @@ namespace API.Schema.Mutations.Classrooms {
         [Authorize]
         [UseApplicationDbContext]
         public async Task<CreateClassroomPayload> CreateClassroomAsync(
-            CreateClassroomInput input,
+            [UseFluentValidation, UseValidator(typeof(CreateClassroomInputValidator))] CreateClassroomInput input,
+            [GlobalState] int userId,
             [ScopedService] ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
-            // TODO: Fix this - it should also insert into UserClassroom.
             var classroom = new Classroom {
-                Name = input.Name,
+                Name = input.Name.Trim(),
+                StateId = (int) Enums.State.Active
             };
+
+            classroom.Users.Add(new ClassroomUser {
+                Classroom = classroom,
+                UserId = userId,
+                IsCreator = true
+            });
 
             ctx.Classrooms.Add(classroom);
             await ctx.SaveChangesAsync(cancellationToken);

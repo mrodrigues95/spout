@@ -15,6 +15,7 @@ const ClassroomMenu = ({ classrooms }: Props) => {
 
   if (currentMenu !== 'classroom') return null;
 
+  // TODO: Use shallow routing for navigating between classrooms.
   return (
     <>
       <Menu.Header>Classrooms</Menu.Header>
@@ -46,7 +47,7 @@ const ClassroomMenu = ({ classrooms }: Props) => {
       <Menu.Item
         type="button"
         variant="info"
-        onClick={() => console.log('Create a classroom clicked!')}
+        onClick={() => setCurrentModal('create')}
       >
         Create Classroom
       </Menu.Item>

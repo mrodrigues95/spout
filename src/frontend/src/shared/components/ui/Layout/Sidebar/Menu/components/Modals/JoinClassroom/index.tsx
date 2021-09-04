@@ -45,7 +45,7 @@ const JoinClassroom = () => {
   const isRedirecting = useIsRedirecting();
   const { handleError } = useToast();
 
-  const [joinClassroom, joinClassroomResult] = useMutation<
+  const [joinClassroom, result] = useMutation<
     JoinClassroomMutation,
     JoinClassroomMutationVariables
   >(mutation, {
@@ -68,7 +68,7 @@ const JoinClassroom = () => {
     schema: inviteSchema,
   });
 
-  const isInvalidInvite = !!joinClassroomResult.data?.joinClassroom.userErrors?.find(
+  const isInvalidInvite = !!result.data?.joinClassroom.userErrors?.find(
     (error) => error.code === 'INVITE_EXPIRED'
   );
 
@@ -108,7 +108,7 @@ const JoinClassroom = () => {
         </Modal.Content>
         <Modal.Footer>
           <Form.SubmitButton
-            disabled={joinClassroomResult.loading || isRedirecting}
+            disabled={result.loading || isRedirecting}
             size="sm"
             className="font-semibold"
           >

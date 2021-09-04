@@ -4,6 +4,7 @@ import { Popover, Transition, Portal } from '@headlessui/react';
 import { ClassroomsQuery } from './__generated__/index.generated';
 import { Classroom, Discussion } from '~/__generated__/schema.generated';
 import { Props as ButtonOrLinkProps } from '../../../ButtonOrLink';
+import { UserInfoFragment } from '~/modules/Discussion/utils/fragments';
 import Button from '../../../Button';
 import ErrorFallback from '../../../ErrorFallback';
 import Spinner from '../../../Spinner';
@@ -16,7 +17,7 @@ import ClassroomMenu from './components/ClassroomMenu';
 import DiscussionMenu from './components/DiscussionMenu';
 import InviteStudents from './components/Modals/InviteStudents';
 import JoinClassroom from './components/Modals/JoinClassroom';
-import { UserInfoFragment } from '~/modules/Discussion/utils/fragments';
+import CreateClassroom from './components/Modals/CreateClassroom';
 
 export const menuVariants = {
   default: {
@@ -142,6 +143,7 @@ const BaseMenu = ({ menuButtonProps }: Props) => {
       </Popover>
       {currentModal === 'invite' && <InviteStudents />}
       {currentModal === 'join' && <JoinClassroom />}
+      {currentModal === 'create' && <CreateClassroom />}
     </>
   );
 };

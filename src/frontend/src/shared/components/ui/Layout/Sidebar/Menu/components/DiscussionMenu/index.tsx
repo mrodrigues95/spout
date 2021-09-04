@@ -16,6 +16,7 @@ const DiscussionMenu = ({ discussions }: Props) => {
 
   if (!selectedClassroom || currentMenu !== 'discussion') return null;
 
+  // TODO: Use shallow routing for navigating between discussions.
   return (
     <Transition.Child
       enter="pointer-events-none transform transition ease-in-out duration-150"

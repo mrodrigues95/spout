@@ -94,8 +94,7 @@ export type CreateClassroomInvitePayload = {
 
 export type CreateClassroomPayload = {
   __typename?: 'CreateClassroomPayload';
-  classroom?: Maybe<Classroom>;
-  userErrors?: Maybe<Array<UserError>>;
+  classroom: Classroom;
 };
 
 
