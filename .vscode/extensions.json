@@ -1,8 +1,10 @@
 {
   "recommendations": [
-    "nrwl.angular-console",
+    "mikestead.dotenv",
+    "graphql.vscode-graphql",
     "esbenp.prettier-vscode",
-    "firsttris.vscode-jest-runner",
-    "dbaeumer.vscode-eslint"
+    "ms-dotnettools.csharp",
+    "bradlc.vscode-tailwindcss",
+    "christian-kohler.path-intellisense"
   ]
 }

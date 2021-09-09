@@ -1,0 +1,12 @@
+node_modules
+dist
+tmp
+.vscode
+Dockerfile*
+docker-compose.yml
+**/.next/
+**/cache/
+**/build/
+**/bin/
+**/obj/
+**/*.*proj.user/
