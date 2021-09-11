@@ -1,4 +1,4 @@
-# Add files here to ignore them from prettier formatting
-
+apps/**/__generated__/**
+libs/**/__generated__/**
 /dist
 /coverage

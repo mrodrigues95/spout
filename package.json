@@ -15,11 +15,10 @@
     "url": "https://github.com/mrodrigues95/spout.git"
   },
   "scripts": {
-    "start": "nx serve",
-    "build": "nx build",
-    "test": "nx test",
-    "dev:up": "docker compose up -f .dev/docker-compose.yml",
-    "dev:down": "docker compose down",
+    "preinstall": "npx only-allow pnpm",
+    "rename": "nx g @nrwl/workspace:mv --project $SOURCE --destination $DEST",
+    "dev:up": "docker compose --file .dev/docker-compose.yml up",
+    "dev:down": "docker compose --file .dev/docker-compose.yml down",
     "prepare": "nx g @nx-dotnet/core:restore"
   },
   "private": true,
@@ -28,8 +27,8 @@
     "@headlessui/react": "^1.4.0",
     "@hookform/resolvers": "^2.4.0",
     "@next/bundle-analyzer": "^10.2.0",
-    "@popperjs/core": "^2.9.2",
     "@nrwl/next": "12.8.0",
+    "@popperjs/core": "^2.9.2",
     "clsx": "^1.1.1",
     "core-js": "^3.6.5",
     "date-fns": "^2.22.1",
@@ -39,7 +38,6 @@
     "next-iron-session": "^4.1.13",
     "next-seo": "^4.24.0",
     "nprogress": "^0.2.0",
-    "regenerator-runtime": "0.13.7",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-error-boundary": "^3.1.3",
@@ -47,6 +45,7 @@
     "react-hot-toast": "^1.0.2",
     "react-textarea-autosize": "^8.3.2",
     "react-virtuoso": "^1.10.0",
+    "regenerator-runtime": "0.13.7",
     "subscriptions-transport-ws": "^0.9.19",
     "tslib": "^2.0.0",
     "yarn": "^1.22.10",
@@ -54,6 +53,8 @@
     "zustand": "^3.5.7"
   },
   "devDependencies": {
+    "@babel/core": "7.12.13",
+    "@babel/preset-typescript": "7.12.13",
     "@graphql-codegen/cli": "^1.21.4",
     "@graphql-codegen/near-operation-file-preset": "^1.18.0",
     "@graphql-codegen/typescript": "^1.22.0",
@@ -65,10 +66,14 @@
     "@nrwl/linter": "12.8.0",
     "@nrwl/nx-cloud": "latest",
     "@nrwl/react": "12.8.0",
+    "@nrwl/storybook": "^12.9.0",
     "@nrwl/tao": "12.8.0",
     "@nrwl/web": "12.8.0",
     "@nrwl/workspace": "12.8.0",
     "@nx-dotnet/core": "^1.3.2",
+    "@storybook/addon-essentials": "~6.3.0",
+    "@storybook/react": "~6.3.0",
+    "@svgr/webpack": "^5.4.0",
     "@tailwindcss/aspect-ratio": "^0.2.0",
     "@tailwindcss/forms": "^0.3.2",
     "@tailwindcss/typography": "^0.4.0",
@@ -83,6 +88,7 @@
     "@typescript-eslint/parser": "^4.25.0",
     "autoprefixer": "^10.2.5",
     "babel-jest": "27.0.6",
+    "babel-loader": "8.1.0",
     "cypress": "^8.3.0",
     "eslint": "^7.27.0",
     "eslint-config-next": "11.1.0",
@@ -99,6 +105,7 @@
     "sudo-prompt": "^9.2.1",
     "tailwindcss": "^2.1.2",
     "ts-jest": "27.0.3",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "url-loader": "^3.0.0"
   }
 }

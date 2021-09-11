@@ -17,7 +17,7 @@
         }
       }
     },
-    "serve": {
+    "dev": {
       "executor": "@nx-dotnet/core:serve",
       "options": {
         "configuration": "Debug",

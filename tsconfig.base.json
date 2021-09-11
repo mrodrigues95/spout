@@ -20,7 +20,9 @@
     "noEmit": true,
     "incremental": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@spout/toolkit": ["libs/toolkit/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

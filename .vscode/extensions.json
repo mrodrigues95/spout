@@ -5,6 +5,7 @@
     "esbenp.prettier-vscode",
     "ms-dotnettools.csharp",
     "bradlc.vscode-tailwindcss",
-    "christian-kohler.path-intellisense"
+    "christian-kohler.path-intellisense",
+    "firsttris.vscode-jest-runner"
   ]
 }

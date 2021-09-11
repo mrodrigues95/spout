@@ -38,7 +38,7 @@ services:
   api:
     container_name: api
     restart: unless-stopped
-    command: nx serve api
+    command: pnpm nx run api:dev
     build: .
     working_dir: /workspace
     ports:
@@ -63,13 +63,13 @@ services:
   web:
     container_name: web
     restart: unless-stopped
-    command: nx serve web
+    command: pnpm nx run web:dev
     build: .
     working_dir: /workspace
     ports:
       - 3000:3000
     volumes:
-      - .:/workspace:rw
+      - ../:/workspace:rw
     depends_on:
       - api
     labels:
@@ -80,7 +80,7 @@ services:
   web-compiler:
     container_name: web-compiler
     restart: unless-stopped
-    command: sh -c "sleep 30 && nx run web:codegen-watch"
+    command: sh -c "sleep 30 && pnpm nx run web:codegen-watch"
     build: .
     working_dir: /workspace
     volumes:
@@ -90,6 +90,21 @@ services:
       - api
     labels:
       - traefik.enable=false
+
+  toolkit:
+    container_name: toolkit
+    restart: unless-stopped
+    command: pnpm nx run toolkit:storybook
+    build: .
+    working_dir: /workspace
+    ports:
+      - 4400:4400
+    volumes:
+      - .:/workspace:rw
+    labels:
+      - traefik.http.routers.toolkit-http.rule=Host(`spout.localhost`) && PathPrefix(`/toolkit`)
+      - traefik.http.routers.toolkit-http.service=toolkit
+      - traefik.http.services.toolkit.loadbalancer.server.port=4400
 
 volumes:  
   pgdata: {}

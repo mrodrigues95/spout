@@ -1,7 +1,8 @@
 {
   "version": 2,
   "cli": {
-    "defaultCollection": "@nrwl/next"
+    "defaultCollection": "@nrwl/next",
+    "packageManager": "pnpm"
   },
   "defaultProject": "web",
   "generators": {
@@ -19,6 +20,7 @@
   },
   "projects": {
     "api": "apps/api",
+    "toolkit": "libs/toolkit",
     "web": "apps/web"
   }
 }
