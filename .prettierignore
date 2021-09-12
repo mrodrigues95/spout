@@ -1,0 +1,4 @@
+apps/**/__generated__/**
+libs/**/__generated__/**
+/dist
+/coverage

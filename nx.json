@@ -1,0 +1,32 @@
+{
+  "npmScope": "spout",
+  "affected": {
+    "defaultBase": "master"
+  },
+  "implicitDependencies": {
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    ".eslintrc.json": "*"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/nx-cloud",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test"],
+        "accessToken": "YmM2MTNkMDQtYzVjNS00YTc5LTk3ZDEtYmYwZjQ3MWJkYjVmfHJlYWQtd3JpdGU="
+      }
+    }
+  },
+  "targetDependencies": {
+    "build": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ]
+  },
+  "projects": {},
+  "plugins": ["@nx-dotnet/core"]
+}

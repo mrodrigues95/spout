@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  reverse-proxy:
+    container_name: reverse-proxy
+    restart: unless-stopped
+    image: traefik:latest
+    command:
+      - --api.insecure=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.web-secure.address=:443
+      - --providers.docker=true
+      - --providers.file.filename=/etc/traefik/config.yml
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    volumes:
+      - ./config/traefik.http.yml:/etc/traefik/config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      # See: https://stackoverflow.com/questions/36765138/bind-to-docker-socket-on-windows
+      # - //var/run/docker.sock:/var/run/docker.sock:ro
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: unless-stopped
+    ports:
+      # NOTE: To avoid overlapping with any Postgres database run on the host machine,
+      # we bind Postgres to port "15432" instead.
+      - 15432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: spout
+      POSTGRES_PASSWORD: pgserver
+
+  api:
+    container_name: api
+    restart: unless-stopped
+    command: nx run api:dev
+    build: .
+    working_dir: /workspace
+    ports:
+      - 5000:5000
+      - 5001:5001
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=true
+      - DOTNET_RUNNING_IN_CONTAINER=true
+      - ASPNETCORE_URLS=https://+:5001;http://+:5000
+    volumes:
+      - ../:/workspace:rw
+      - ${APPDATA}\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}\.aspnet\https:/root/.aspnet/https:ro
+    depends_on:
+      - postgres
+    labels:
+      - traefik.http.routers.api-http.rule=Host(`spout.local`) && PathPrefix(`/api/graphql`)
+      - traefik.http.routers.api-http.service=api
+      - traefik.http.services.api.loadbalancer.server.port=5000
+
+  web:
+    container_name: web
+    restart: unless-stopped
+    command: nx run web:dev
+    build: .
+    working_dir: /workspace
+    ports:
+      - 3000:3000
+    volumes:
+      - ../:/workspace:rw
+    depends_on:
+      - api
+    labels:
+      - traefik.http.routers.web-http.rule=Host(`spout.local`)
+      - traefik.http.routers.web-http.service=web
+      - traefik.http.services.web.loadbalancer.server.port=3000
+
+  web-compiler:
+    container_name: web-compiler
+    restart: unless-stopped
+    command: sh -c "sleep 30 && nx run web:codegen-watch"
+    build: .
+    working_dir: /workspace
+    volumes:
+      - ../:/workspace:rw
+    depends_on:
+      - web
+      - api
+    labels:
+      - traefik.enable=false
+
+volumes:  
+  pgdata: {}

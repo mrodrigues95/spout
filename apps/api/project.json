@@ -1,0 +1,36 @@
+{
+  "root": "apps/api",
+  "sourceRoot": "apps/api",
+  "projectType": "application",
+  "generators": {},
+  "targets": {
+    "build": {
+      "executor": "@nx-dotnet/core:build",
+      "outputs": ["{options.output}"],
+      "options": {
+        "output": "dist/apps/api",
+        "configuration": "Debug"
+      },
+      "configurations": {
+        "production": {
+          "configuration": "Release"
+        }
+      }
+    },
+    "dev": {
+      "executor": "@nx-dotnet/core:serve",
+      "options": {
+        "configuration": "Debug",
+        "no-launch-profile": true
+      },
+      "configurations": {
+        "production": {
+          "configuration": "Release"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx-dotnet/core:format"
+    }
+  }
+}

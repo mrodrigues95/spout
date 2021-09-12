@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "cli": {
+    "defaultCollection": "@nrwl/next",
+    "packageManager": "npm"
+  },
+  "defaultProject": "web",
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "babel": true
+      }
+    },
+    "@nrwl/next": {
+      "application": {
+        "style": "css",
+        "linter": "eslint"
+      }
+    }
+  },
+  "projects": {
+    "api": "apps/api",
+    "toolkit": "libs/toolkit",
+    "web": "apps/web"
+  }
+}

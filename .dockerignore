@@ -1,9 +1,12 @@
-.dockerignore
-.gitignore
+node_modules
+dist
+tmp
+.vscode
+Dockerfile*
+docker-compose.yml
 **/.next/
 **/cache/
 **/build/
-**/node_modules/
 **/bin/
 **/obj/
 **/*.*proj.user/

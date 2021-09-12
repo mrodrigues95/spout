@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "mikestead.dotenv",
+    "graphql.vscode-graphql",
+    "esbenp.prettier-vscode",
+    "ms-dotnettools.csharp",
+    "bradlc.vscode-tailwindcss",
+    "christian-kohler.path-intellisense",
+    "firsttris.vscode-jest-runner"
+  ]
+}
