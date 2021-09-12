@@ -2,7 +2,7 @@
   "version": 2,
   "cli": {
     "defaultCollection": "@nrwl/next",
-    "packageManager": "pnpm"
+    "packageManager": "npm"
   },
   "defaultProject": "web",
   "generators": {

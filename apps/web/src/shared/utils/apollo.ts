@@ -40,7 +40,7 @@ export const preloadQuery = async (
         initialClientState: client.cache.extract(),
       },
     };
-  } catch (e) {
+  } catch (e: any) {
     const notFoundError = e.graphQLErrors.find(
       (error: Error) => (error as any)?.extensions.code === 404
     );
@@ -75,8 +75,8 @@ export const createApolloClient = ({
     // to the browser environment outside of Docker for SSR and client requests.
     // See: https://github.com/apollographql/apollo-link/issues/375
     uri: ssrMode
-      ? 'http://backend:5000/api/graphql'
-      : 'http://spout.localhost/api/graphql',
+      ? 'http://api:5000/api/graphql'
+      : 'http://spout.local/api/graphql',
     headers: headers,
     credentials: 'include',
   });

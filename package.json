@@ -15,10 +15,11 @@
     "url": "https://github.com/mrodrigues95/spout.git"
   },
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
-    "rename": "nx g @nrwl/workspace:mv --project $SOURCE --destination $DEST",
+    "preinstall": "npx only-allow npm",
+    "rename": "nx g @nrwl/workspace:mv --project {args.src} --destination {args.dest}",
     "dev:up": "docker compose --file .dev/docker-compose.yml up",
     "dev:down": "docker compose --file .dev/docker-compose.yml down",
+    "dev:setup:localhost": "node .dev/scripts/elevate.js .dev/scripts/setupLocalhost.js",
     "prepare": "nx g @nx-dotnet/core:restore"
   },
   "private": true,
@@ -90,6 +91,7 @@
     "babel-jest": "27.0.6",
     "babel-loader": "8.1.0",
     "cypress": "^8.3.0",
+    "dotenv": "^10.0.0",
     "eslint": "^7.27.0",
     "eslint-config-next": "11.1.0",
     "eslint-config-prettier": "8.1.0",

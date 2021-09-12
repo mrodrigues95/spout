@@ -52,15 +52,22 @@
     "codegen-build": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "commands": ["pnpm exec graphql-codegen -config apps/web/codegen.yml"]
+        "commands": ["npx graphql-codegen"],
+        "cwd": "apps/web"
       }
     },
     "codegen-watch": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "commands": [
-          "pnpm exec graphql-codegen --config apps/web/codegen.yml --watch"
-        ]
+        "commands": ["npx graphql-codegen --watch"],
+        "cwd": "apps/web"
+      }
+    },
+    "codegen-clean": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["trash \"./src/**/__generated__/**\""],
+        "cwd": "apps/web"
       }
     }
   }

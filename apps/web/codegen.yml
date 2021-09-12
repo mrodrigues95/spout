@@ -1,6 +1,6 @@
 overwrite: true
-schema: http://backend:5000/api/graphql
-documents: 'src/**/!(*.d).{ts,tsx}'
+schema: http://api:5000/api/graphql
+documents: './src/**/!(*.d).{ts,tsx}'
 watchConfig:
   usePolling: true
   interval: 1000

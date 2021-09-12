@@ -5,9 +5,8 @@ ARG NODE_VERSION=16
 ENV NODE_VERSION=${NODE_VERSION}
 ENV NVM_DIR=/usr/local/share/nvm
 
-# Install node, pnpm and nx
+# Install node and nx
 RUN su -c "umask 0002 && source ${NVM_DIR}/nvm.sh && nvm install ${NODE_VERSION} 2>&1";
-RUN su -c "source ${NVM_DIR}/nvm.sh && npm install -g pnpm 2>&1";
 RUN su -c "source ${NVM_DIR}/nvm.sh && npm install -g nx 2>&1";
 
 ARG USER_UID=1000

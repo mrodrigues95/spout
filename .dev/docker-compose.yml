@@ -38,7 +38,7 @@ services:
   api:
     container_name: api
     restart: unless-stopped
-    command: pnpm nx run api:dev
+    command: nx run api:dev
     build: .
     working_dir: /workspace
     ports:
@@ -50,20 +50,20 @@ services:
       - DOTNET_RUNNING_IN_CONTAINER=true
       - ASPNETCORE_URLS=https://+:5001;http://+:5000
     volumes:
-      - .:/workspace:rw
+      - ../:/workspace:rw
       - ${APPDATA}\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}\.aspnet\https:/root/.aspnet/https:ro
     depends_on:
       - postgres
     labels:
-      - traefik.http.routers.api-http.rule=Host(`spout.localhost`) && PathPrefix(`/api/graphql`)
+      - traefik.http.routers.api-http.rule=Host(`spout.local`) && PathPrefix(`/api/graphql`)
       - traefik.http.routers.api-http.service=api
       - traefik.http.services.api.loadbalancer.server.port=5000
 
   web:
     container_name: web
     restart: unless-stopped
-    command: pnpm nx run web:dev
+    command: nx run web:dev
     build: .
     working_dir: /workspace
     ports:
@@ -73,38 +73,23 @@ services:
     depends_on:
       - api
     labels:
-      - traefik.http.routers.web-http.rule=Host(`spout.localhost`)
+      - traefik.http.routers.web-http.rule=Host(`spout.local`)
       - traefik.http.routers.web-http.service=web
       - traefik.http.services.web.loadbalancer.server.port=3000
 
   web-compiler:
     container_name: web-compiler
     restart: unless-stopped
-    command: sh -c "sleep 30 && pnpm nx run web:codegen-watch"
+    command: sh -c "sleep 30 && nx run web:codegen-watch"
     build: .
     working_dir: /workspace
     volumes:
-      - .:/workspace:rw
+      - ../:/workspace:rw
     depends_on:
       - web
       - api
     labels:
       - traefik.enable=false
-
-  toolkit:
-    container_name: toolkit
-    restart: unless-stopped
-    command: pnpm nx run toolkit:storybook
-    build: .
-    working_dir: /workspace
-    ports:
-      - 4400:4400
-    volumes:
-      - .:/workspace:rw
-    labels:
-      - traefik.http.routers.toolkit-http.rule=Host(`spout.localhost`) && PathPrefix(`/toolkit`)
-      - traefik.http.routers.toolkit-http.service=toolkit
-      - traefik.http.services.toolkit.loadbalancer.server.port=4400
 
 volumes:  
   pgdata: {}

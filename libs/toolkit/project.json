@@ -53,8 +53,8 @@
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          "pnpm nx g @nrwl/react:component {args.component} --project=toolkit --export --style=css",
-          "pnpm nx g @nrwl/react:stories --project=toolkit"
+          "nx g @nrwl/react:component {args.component} --project=toolkit --export --style=css",
+          "nx g @nrwl/react:stories --project=toolkit"
         ],
         "parallel": false
       }
