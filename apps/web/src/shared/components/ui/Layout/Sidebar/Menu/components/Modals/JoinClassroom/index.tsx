@@ -16,7 +16,7 @@ import useToast from '../../../../../../Toast';
 // TODO: Update these at some point for prod.
 const codeReg = new RegExp(/^([A-Za-z0-9-_]{22})$/);
 const linkReg = new RegExp(
-  /^(https?:\/\/)?(www.)?(spout.localhost)\/+([A-Za-z0-9-_]{22})$/
+  /^(https?:\/\/)?(www.)?(spout.local)\/+([A-Za-z0-9-_]{22})$/
 );
 
 const inviteSchema = object({

@@ -9,6 +9,10 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
     "esModuleInterop": true,
     "importHelpers": true,
     "resolveJsonModule": true,
@@ -21,6 +25,7 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
+      "@spout/shared/utils": ["libs/shared/utils/src/index.ts"],
       "@spout/toolkit": ["libs/toolkit/src/index.ts"]
     }
   },

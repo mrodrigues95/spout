@@ -20,6 +20,7 @@
   },
   "projects": {
     "api": "apps/api",
+    "shared-utils": "libs/shared/utils",
     "toolkit": "libs/toolkit",
     "web": "apps/web"
   }

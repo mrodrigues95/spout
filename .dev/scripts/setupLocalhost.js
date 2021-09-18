@@ -1,4 +1,3 @@
-require('dotenv').config();
 const hostile = require('hostile');
 
 const domainName = `spout.local`;

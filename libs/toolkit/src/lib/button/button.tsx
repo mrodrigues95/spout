@@ -1,12 +1,48 @@
-/* eslint-disable-next-line */
-export interface ButtonProps {}
+import { forwardRef } from 'react';
+import clsx from 'clsx';
+import { styles, ButtonOrLink, ButtonOrLinkProps } from './buttonOrLink';
 
-export function Button(props: ButtonProps) {
-  return (
-    <div className="text-red-500 hover:text-red-200 hover:shadow-md">
-      <h1>Welcome to Button!</h1>
-    </div>
-  );
-}
+export const Button = forwardRef<
+  HTMLButtonElement & HTMLAnchorElement,
+  ButtonOrLinkProps
+>(
+  (
+    {
+      type = 'button',
+      size = 'md',
+      rounded = 'normal',
+      variant = 'solid',
+      scheme = 'dark',
+      active = true,
+      fullWidth = false,
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    if (variant === 'unstyled') {
+      return (
+        <ButtonOrLink ref={ref} type={type} className={className} {...props} />
+      );
+    }
 
-export default Button;
+    return (
+      <ButtonOrLink
+        ref={ref}
+        type={type}
+        className={clsx(
+          styles.base,
+          styles.disabled,
+          styles.size[size],
+          styles.rounded[rounded],
+          styles.variant[variant],
+          styles.scheme[scheme].inactive,
+          active && styles.scheme[scheme].active,
+          fullWidth && 'w-full',
+          className
+        )}
+        {...props}
+      />
+    );
+  }
+);

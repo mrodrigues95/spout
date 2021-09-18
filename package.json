@@ -16,7 +16,9 @@
   },
   "scripts": {
     "preinstall": "npx only-allow npm",
+    "add": "nx g @nrwl/workspace:library",
     "rename": "nx g @nrwl/workspace:mv --project {args.src} --destination {args.dest}",
+    "remove": "nx g @nrwl/workspace:remove {args.name}",
     "dev:up": "docker compose --file .dev/docker-compose.yml up",
     "dev:down": "docker compose --file .dev/docker-compose.yml down",
     "dev:setup:localhost": "node .dev/scripts/elevate.js .dev/scripts/setupLocalhost.js",
