@@ -10,15 +10,14 @@ export default {
   title: 'Skeleton',
 } as Meta;
 
-const Template: Story<SkeletonProps> = (args) => {
+export const Single: Story<SkeletonProps> = (args) => <Skeleton {...args} />;
+
+export const Stack: Story<SkeletonProps> = (args) => {
   return (
     <Skeleton.Stack>
-      <Skeleton {...args} />
-      <Skeleton {...args} />
-      <Skeleton {...args} />
+      <Skeleton {...args} w="w-1/2" />
+      <Skeleton {...args} w="w-2/3" />
+      <Skeleton {...args} w="w-5/6" />
     </Skeleton.Stack>
   );
 };
-
-export const Primary = Template.bind({});
-Primary.args = {};

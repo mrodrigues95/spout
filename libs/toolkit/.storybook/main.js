@@ -1,3 +1,4 @@
+const path = require('path');
 const rootMain = require('../../../.storybook/main');
 
 module.exports = {
@@ -13,7 +14,7 @@ module.exports = {
     if (rootMain.webpackFinal) {
       config = await rootMain.webpackFinal(config, { configType });
     }
-
+    
     return config;
   },
 };
