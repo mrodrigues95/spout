@@ -25,15 +25,14 @@ export const ModalHeader = ({
   dismiss = false,
 }: ModalHeaderProps) => {
   const { onClose } = useContext(ModalContext)!;
-  if (!onClose) throw new Error('`ModalHeader` must be used within `Modal`');
 
   return (
-    <header className="flex items-center justify-center space-x-8">
+    <header className="flex items-center justify-center px-6 py-4 space-x-8">
       <div className="flex-1 min-w-0">
         <Dialog.Title
           as="h3"
           className={clsx(
-            'text-lg uppercase font-bold truncate',
+            'text-lg text-gray-900 uppercase font-bold truncate',
             titleProps?.className
           )}
         >
@@ -42,7 +41,7 @@ export const ModalHeader = ({
         <Dialog.Description
           as="h4"
           className={clsx(
-            'font-semibold text-sm text-gray-500',
+            'font-semibold text-gray-500',
             descriptionProps?.className
           )}
         >
@@ -51,7 +50,8 @@ export const ModalHeader = ({
       </div>
       {dismiss && (
         <Button
-          scheme="dark"
+          scheme="gray"
+          variant="ghost"
           className="mb-auto -mt-1 !p-2"
           aria-label="Close modal"
           onClick={onClose}

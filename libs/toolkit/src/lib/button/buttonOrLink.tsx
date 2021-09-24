@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 
 export const styles = {
   base:
-    'relative inline-flex items-center justify-center tracking-wide select-none font-semibold outline-none transition duration-150 ease-in-out focus:outline-none focus:ring-offset-2 focus:ring-offset-white',
+    'relative inline-flex items-center justify-center tracking-wide select-none font-semibold outline-none transition duration-150 ease-in-out focus:outline-none focus:ring focus:ring-offset-2 focus:ring-offset-white',
   disabled: 'disabled:opacity-60 disabled:pointer-events-none',
   size: {
     xs: 'py-1 px-2 text-xs',
@@ -26,34 +26,35 @@ export const styles = {
   },
   variant: {
     solid: 'border-none',
-    outline: 'border border-current bg-transparent',
-    ghost: 'border-none bg-transparent',
+    outline: 'border border-current !bg-transparent',
+    ghost: 'border-none !bg-transparent',
     unstyled: '',
   },
   scheme: {
     dark: {
-      inactive: 'text-white bg-gray-900',
-      active: 'hover:bg-gray-700 focus:ring focus:ring-gray-900',
+      default: 'text-white bg-gray-900 focus:ring-gray-900',
+      primary: 'hover:bg-gray-700',
+      secondary: 'text-gray-900 hover:!bg-gray-100',
     },
     gray: {
-      inactive: 'text-gray-900 bg-gray-100',
-      active: 'hover:bg-gray-200 focus:ring focus:ring-gray-900',
+      default: 'text-gray-900 bg-gray-100 focus:ring-gray-900',
+      primary: 'hover:!bg-gray-200',
+      secondary: 'hover:!bg-gray-100',
     },
     purple: {
-      inactive: 'text-purple-600 bg-purple-100',
-      active: 'hover:bg-purple-200 focus:ring focus:ring-purple-600',
+      default: 'text-purple-600 bg-purple-100 focus:ring-purple-600',
+      primary: 'hover:!bg-purple-200',
+      secondary: 'hover:!bg-purple-100',
     },
   },
-};
+} as const;
 
 export interface Styles {
   size?: keyof typeof styles['size'];
   rounded?: keyof typeof styles['rounded'];
   variant?: keyof typeof styles['variant'];
   scheme?: keyof typeof styles['scheme'];
-  active?: boolean;
   fullWidth?: boolean;
-  className?: string;
 }
 
 export type ButtonOrLinkProps = ComponentPropsWithRef<'button'> &

@@ -1,3 +1,4 @@
+export * from './lib/select';
 export * from './lib/empty-state';
 export * from './lib/modal';
 export * from './lib/form';

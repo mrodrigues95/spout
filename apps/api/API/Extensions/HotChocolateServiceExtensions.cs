@@ -1,4 +1,4 @@
-﻿using API.Schema.Mutations.Auth;
+using API.Schema.Mutations.Auth;
 using API.Schema.Mutations.Classrooms;
 using API.Schema.Mutations.Discussions;
 using API.Schema.Mutations.Sessions;

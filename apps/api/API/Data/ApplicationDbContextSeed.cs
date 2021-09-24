@@ -1,4 +1,4 @@
-﻿using API.Data.Entities;
+using API.Data.Entities;
 using Enums = API.Common.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -151,6 +151,7 @@ namespace API.Data {
                         Classroom = classroom,
                         IsCreator = isCreator,
                     });
+
                     isCreator = false;
                 }
             }
@@ -169,7 +170,7 @@ namespace API.Data {
                 // Create a random number of discussions for this classroom.
                 for (int i = 1; i < r.Next(1, 5); i++) {
                     var randomUser = classroom.Users
-                        .OrderBy(uc => r.NextDouble())
+                        .OrderBy(cu => r.NextDouble())
                         .First()
                         .User;
 
@@ -194,6 +195,7 @@ namespace API.Data {
                 var r = new Random();
                 var messageCount = r.Next(0, 200);
 
+                // Generate a random range of messages for this discussion.
                 for (int i = 0; i < messageCount; ++i) {
                     var randomUser = discussion.Classroom!.Users
                         .OrderBy(uc => r.NextDouble())

@@ -13,7 +13,6 @@ export const Button = forwardRef<
       rounded = 'normal',
       variant = 'solid',
       scheme = 'dark',
-      active = true,
       fullWidth = false,
       className,
       ...props
@@ -36,8 +35,10 @@ export const Button = forwardRef<
           styles.size[size],
           styles.rounded[rounded],
           styles.variant[variant],
-          styles.scheme[scheme].inactive,
-          active && styles.scheme[scheme].active,
+          styles.scheme[scheme].default,
+          variant === 'ghost' || variant === 'outline'
+            ? styles.scheme[scheme].secondary
+            : styles.scheme[scheme].primary,
           fullWidth && 'w-full',
           className
         )}

@@ -9,14 +9,6 @@ const LoadingIcon = ({ ...props }: SVGProps<SVGSVGElement>) => (
     focusable="false"
     {...props}
   >
-    <circle
-      className="opacity-25"
-      cx="12"
-      cy="12"
-      r="10"
-      stroke="currentColor"
-      strokeWidth="4"
-    ></circle>
     <path
       className="opacity-75"
       fill="currentColor"

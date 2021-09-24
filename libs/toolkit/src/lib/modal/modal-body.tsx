@@ -1,19 +1,19 @@
-import clsx from 'clsx';
 import { ComponentProps, ReactNode } from 'react';
+import clsx from 'clsx';
 
-interface ModalFooterProps extends ComponentProps<'div'> {
+interface ModalBodyProps extends ComponentProps<'div'> {
   children: ReactNode;
 }
 
-export const ModalFooter = ({
+export const ModalBody = ({
   children,
   className,
   ...props
-}: ModalFooterProps) => {
+}: ModalBodyProps) => {
   return (
     <div
       className={clsx(
-        'flex items-center justify-end px-6 py-4 bg-gray-100 rounded-b-md',
+        'flex flex-col justify-center px-6 pt-2 pb-4 space-y-3',
         className
       )}
       {...props}
