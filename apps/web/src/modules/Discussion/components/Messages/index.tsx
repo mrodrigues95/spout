@@ -1,7 +1,8 @@
 import { gql, useQuery } from '@apollo/client';
 import { useCallback, useEffect, useMemo } from 'react';
 import { FeelingBlueIllustration } from '@spout/shared/assets';
-import { Spinner, ErrorFallback } from '../../../../shared/components';
+import { Spinner } from '@spout/toolkit';
+import { ErrorFallback } from '../../../../shared/components';
 import { useStore } from './utils/messagesStore';
 import {
   DiscussionMessagesQuery,
@@ -142,11 +143,11 @@ const Messages = ({ discussionId }: Props) => {
   // TODO: Handle empty state.
   return (
     <div className="flex flex-col absolute inset-0 border border-transparent sm:shadow-container sm:rounded-md">
-      {loading && !data && <Spinner className="h-5 w-5 text-black" />}
+      {loading && !data && <Spinner size="sm" />}
       {error && (
         <ErrorFallback
           icon={<FeelingBlueIllustration className="w-full h-64" />}
-          message="Sorry, we can't load any messages for this discussion right now."
+          heading="Sorry, we can't load any messages for this discussion right now."
           action={refetch}
         />
       )}

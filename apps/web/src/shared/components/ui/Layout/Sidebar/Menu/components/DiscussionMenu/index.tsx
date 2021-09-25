@@ -40,8 +40,8 @@ const DiscussionMenu = ({ discussions }: Props) => {
         ) : (
           <div className="my-4">
             <EmptyFallback
-              message="There's nothing here, yet."
-              submessage="Use the button below to create your first discussion."
+              heading="There's nothing here, yet."
+              body="Use the button below to create your first discussion."
             />
           </div>
         )}

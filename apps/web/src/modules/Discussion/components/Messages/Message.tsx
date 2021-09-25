@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
+import { Button } from '@spout/toolkit';
 import clsx from 'clsx';
 import Avatar from '../../../../shared/components/ui/Avatar';
 import { getRandomAvatar } from '../../../../shared/utils/getRandomAvatar';
@@ -37,7 +38,9 @@ const Message = ({ message, optimisticOpts, isLast }: Props) => {
           <Avatar url={avatar} containerClassName="h-5 w-5" rounded />
           <div className="flex flex-col w-full ml-2">
             <div>
-              <span className="font-bold text-gray-900">{message.createdBy.name}</span>
+              <span className="font-bold text-gray-900">
+                {message.createdBy.name}
+              </span>
               <span className="ml-2 text-xs text-gray-400 font-medium">
                 {formattedDate}
               </span>
@@ -48,15 +51,18 @@ const Message = ({ message, optimisticOpts, isLast }: Props) => {
                 optimisticOpts?.error ? 'text-red-600' : 'text-black'
               )}
             >
-              <p className="text-gray-900 font-semibold break-words">{message.content}</p>
+              <p className="text-gray-900 font-semibold break-words">
+                {message.content}
+              </p>
               {optimisticOpts?.error && (
-                <button
+                <Button
                   type="button"
+                  variant="unstyled"
                   className="font-medium focus:outline-none"
                   onClick={optimisticOpts.retry}
                 >
                   Failed to send message. Click to try again.
-                </button>
+                </Button>
               )}
             </div>
           </div>

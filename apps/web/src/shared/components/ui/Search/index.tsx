@@ -1,8 +1,8 @@
 import { ComponentPropsWithRef, forwardRef, useState } from 'react';
 import clsx from 'clsx';
 import { SearchIcon } from '@spout/shared/assets';
+import { Button } from '@spout/toolkit';
 import { useMediaQuery, MEDIA_QUERIES } from '../../../../shared/hooks';
-import Button from '../Button';
 
 type Props = ComponentPropsWithRef<'input'>;
 
@@ -20,7 +20,7 @@ const Search = forwardRef<HTMLInputElement, Props>(({ ...props }, ref) => {
         <Button
           size="sm"
           variant="ghost"
-          scheme="light"
+          scheme="gray"
           className="sm:ml-3"
           aria-label="Search"
         >

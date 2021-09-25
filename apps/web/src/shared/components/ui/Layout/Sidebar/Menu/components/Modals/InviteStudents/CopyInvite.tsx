@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { secondsToMinutes, secondsToHours } from 'date-fns';
 import clsx from 'clsx';
-import Button from '../../../../../../Button';
+import { Button } from '@spout/toolkit';
 import { ClassroomInvite } from '../../../MenuProvider';
 
 interface Props {
@@ -43,11 +43,14 @@ const getExpiresMessage = (invite: ClassroomInvite) => {
     return `Your invite expires after ${uses}.`;
   } else if (!maxUses && maxAge) {
     return `Your invite will expire in ${date()}.`;
+  } else {
+    return '';
   }
 };
 
 const CopyInvite = ({ invite }: Props) => {
   const timeoutRef = useRef(0);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
@@ -56,13 +59,25 @@ const CopyInvite = ({ invite }: Props) => {
   if (!invite) return null;
 
   const onCopy = () => {
-    navigator.clipboard.writeText(invite.code).then(() => {
+    const { clipboard } = navigator;
+
+    const triggerTimeout = () => {
       setIsCopied(true);
       clearTimeout(timeoutRef.current);
       timeoutRef.current = window.setTimeout(() => {
         setIsCopied(false);
       }, 1000);
-    });
+    };
+    
+    // TODO: Remove this once dev env uses https.
+    // Clipboard is only available in a secure context (https).
+    if (typeof clipboard !== 'undefined') {
+      navigator.clipboard.writeText(invite.code).then(triggerTimeout);
+    } else {
+      inputRef.current?.select();
+      const success = document.execCommand('copy');
+      if (success) triggerTimeout();
+    }
   };
 
   return (
@@ -80,6 +95,7 @@ const CopyInvite = ({ invite }: Props) => {
       >
         <div className="flex-1">
           <input
+            ref={inputRef}
             type="text"
             className="pl-0 py-0 w-full text-black font-semibold border-none truncate focus:outline-none focus:ring-0"
             value={`${process.env.NEXT_PUBLIC_APP_URL}/${invite.code}`}

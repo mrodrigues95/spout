@@ -1,14 +1,15 @@
 import { Fragment, ReactNode, useContext } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { Popover, Transition, Portal } from '@headlessui/react';
+import { Spinner, Button, ButtonOrLinkProps } from '@spout/toolkit';
+import { usePopper } from '@spout/shared/utils';
 import { ClassroomsQuery } from './__generated__/index.generated';
-import { Classroom, Discussion } from '../../../../../../__generated__/schema.generated';
-import { Props as ButtonOrLinkProps } from '../../../ButtonOrLink';
-import { UserInfoFragment } from '../../../../../../modules/Discussion/utils/fragments';
-import Button from '../../../Button';
+import {
+  Classroom,
+  Discussion,
+} from '../../../../../../__generated__/schema.generated';
+import { UserInfoFragment } from '../../../../../../modules/Discussion/utils/fragments';;
 import ErrorFallback from '../../../ErrorFallback';
-import Spinner from '../../../Spinner';
-import usePopper from '../../../../../hooks/usePopper';
 import MenuProvider, { MenuContext } from './MenuProvider';
 import MenuSeperator from './components/MenuSeperator';
 import MenuHeader from './components/MenuHeader';
@@ -120,10 +121,10 @@ const BaseMenu = ({ menuButtonProps }: Props) => {
                       aria-labelledby="spout-popover-header"
                       style={{ minWidth: '20rem' }}
                     >
-                      {loading && <Spinner className="h-5 w-5 text-black" />}
+                      {loading && <Spinner size="sm" />}
                       {error && (
                         <ErrorFallback
-                          message={error.message}
+                          heading={error.message}
                           action={refetch}
                         />
                       )}

@@ -2,15 +2,13 @@ import { useContext } from 'react';
 import { useRouter } from 'next/router';
 import { gql, useMutation } from '@apollo/client';
 import { object, string } from 'zod';
+import { Form, useZodForm, Modal } from '@spout/toolkit';
 import {
   JoinClassroomMutation,
   JoinClassroomMutationVariables,
 } from './__generated__/index.generated';
 import { MenuContext } from '../../../MenuProvider';
-import { Form, useZodForm } from '../../../../../../Form';
 import { useIsRedirecting } from '../../../../../../../../hooks/useIsRedirecting';
-import Modal from '../../../../../../Modal';
-import Input from '../../../../../../Input';
 import useToast from '../../../../../../Toast';
 
 // TODO: Update these at some point for prod.
@@ -73,16 +71,19 @@ const JoinClassroom = () => {
   );
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={() => setCurrentModal(null)}
-      style={{ width: '32rem' }}
-    >
+    <Modal isOpen={isOpen} onClose={() => setCurrentModal(null)}>
+      <Modal.Overlay />
       <Form
         form={form}
-        onSubmit={({ code }) =>
-          joinClassroom({ variables: { input: { code } } })
-        }
+        onSubmit={({ code }) => {
+          joinClassroom({
+            variables: {
+              input: {
+                code: code.replace(/(https?:\/\/)?(www.)?(spout.local)\//, ''),
+              },
+            },
+          });
+        }}
       >
         <Modal.Content>
           {isInvalidInvite ? (
@@ -99,22 +100,24 @@ const JoinClassroom = () => {
               dismiss
             />
           )}
-          <Input
-            label="Invite Link"
-            placeholder={`${process.env.NEXT_PUBLIC_APP_URL}/${exampleInvite}`}
-            autoFocus
-            {...form.register('code')}
-          />
+          <Modal.Body>
+            <Form.Input
+              label="Invite Link"
+              placeholder={`${process.env.NEXT_PUBLIC_APP_URL}/${exampleInvite}`}
+              autoFocus
+              {...form.register('code')}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <Form.SubmitButton
+              disabled={result.loading || isRedirecting}
+              size="sm"
+              className="font-semibold"
+            >
+              Join Classroom
+            </Form.SubmitButton>
+          </Modal.Footer>
         </Modal.Content>
-        <Modal.Footer>
-          <Form.SubmitButton
-            disabled={result.loading || isRedirecting}
-            size="sm"
-            className="font-semibold"
-          >
-            Join Classroom
-          </Form.SubmitButton>
-        </Modal.Footer>
       </Form>
     </Modal>
   );

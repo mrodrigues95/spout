@@ -1,26 +1,23 @@
 import { ReactElement } from 'react';
 import { SparklesIcon } from '@spout/shared/assets';
-import Button from '../Button';
+import { EmptyState, EmptyStateProps, Button } from '@spout/toolkit';
 
-interface Props {
+interface Props extends Omit<EmptyStateProps, 'heading' | 'icon'> {
   action(): void;
-  message?: string;
+  heading?: string;
   icon?: ReactElement;
 }
 
-const ErrorFallback = ({ action, icon, message }: Props) => {
-  if (!message) return null;
-
+const ErrorFallback = ({ icon, heading, action }: Props) => {
   return (
-    <div className="flex flex-1 flex-col justify-center items-center space-y-4 my-12">
-      {icon ? icon : <SparklesIcon className="h-12 w-12 text-gray-500" />}
-      <p className="font-bold text-gray-400">
-        {message ? message : 'Something went wrong.'}
-      </p>
-      <Button className="text-sm" rounded="md" active onClick={action}>
+    <EmptyState
+      heading={heading ? heading : 'Something went wrong.'}
+      icon={icon ? icon : <SparklesIcon className="h-12 w-12 text-gray-500" />}
+    >
+      <Button className="text-sm" rounded="md" onClick={action}>
         Try again
       </Button>
-    </div>
+    </EmptyState>
   );
 };
 

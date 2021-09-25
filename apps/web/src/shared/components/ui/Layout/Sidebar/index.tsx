@@ -7,12 +7,11 @@ import {
   CalendarIcon,
   ClassroomIcon,
 } from '@spout/shared/assets';
-import { Props as ButtonOrLinkProps } from '../../ButtonOrLink';
+import { Link, ButtonOrLinkProps } from '@spout/toolkit';
 import ProfileInfo from './ProfileInfo';
 import ActivityFeed from './ActivityFeed';
 import Logout from './Logout';
 import Menu from './Menu';
-import Link from '../../Link';
 
 const SidebarContainer = ({
   className,
@@ -71,7 +70,8 @@ const SidebarItem = ({
   const commonProps: ButtonOrLinkProps = {
     rounded: 'xl',
     size: 'sm',
-    scheme: selected ? 'dark' : 'light',
+    variant: selected ? 'solid' : 'ghost',
+    scheme: selected ? 'dark' : 'gray',
   };
 
   if (isMenu) {
@@ -86,7 +86,7 @@ const SidebarItem = ({
   }
 
   return (
-    <Link href={href} {...commonProps}>
+    <Link href={href!} {...commonProps}>
       {children}
     </Link>
   );

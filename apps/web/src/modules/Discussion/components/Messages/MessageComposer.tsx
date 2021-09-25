@@ -1,9 +1,14 @@
 import { useState } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import clsx from 'clsx';
-import { EmojiHappyIcon, PaperClipIcon, ChevronIcon } from '@spout/shared/assets';
+import {
+  EmojiHappyIcon,
+  PaperClipIcon,
+  ChevronIcon,
+} from '@spout/shared/assets';
+import { Button } from '@spout/toolkit';
 import { formatNewMessage } from './utils/format';
-import { TextArea, Button } from '../../../../shared/components';
+import { TextArea } from '../../../../shared/components';
 import { useStore } from './utils/messagesStore';
 import { MeQuery } from './__generated__/MessageComposer.generated';
 import { UserInfoFragment } from '../../utils/fragments';
@@ -52,16 +57,9 @@ const MessageComposer = ({ discussionId }: Props) => {
         )}
       >
         <div className="flex flex-1 items-center">
-          <Button
-            className="px-0"
-            aria-label="View emojis"
-            size="sm"
-            rounded="full"
-            variant="ghost"
-            active={false}
-          >
+          <button type="button">
             <EmojiHappyIcon className="h-5 w-5 text-gray-400 hover:text-gray-900" />
-          </Button>
+          </button>
           <TextArea
             placeholder="Message..."
             value={message}
@@ -72,16 +70,10 @@ const MessageComposer = ({ discussionId }: Props) => {
             onKeyPress={handleKeyPress}
           />
         </div>
-        <div className="flex items-center ml-8 space-x-1">
-          <Button
-            aria-label="Add attachment"
-            size="sm"
-            rounded="full"
-            variant="ghost"
-            active={false}
-          >
+        <div className="flex items-center ml-8 space-x-3">
+          <button type="button">
             <PaperClipIcon className="h-5 w-5 text-gray-400 hover:text-gray-900" />
-          </Button>
+          </button>
           <Button
             aria-label="Send message"
             rounded="full"

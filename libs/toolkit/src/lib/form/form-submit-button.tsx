@@ -1,12 +1,12 @@
 import { useFormContext } from 'react-hook-form';
-import { Button, Props as ButtonProps } from '../button';
+import { Button, ButtonOrLinkProps } from '../button';
 import { Spinner } from '../spinner';
 
 export const FormSubmitButton = ({
   children,
   disabled,
   ...props
-}: ButtonProps) => {
+}: ButtonOrLinkProps) => {
   const { formState } = useFormContext();
 
   return (
@@ -15,7 +15,9 @@ export const FormSubmitButton = ({
       disabled={formState.isSubmitting || disabled}
       {...props}
     >
-      {formState.isSubmitting && <Spinner size="xs" scheme="white" />}
+      {formState.isSubmitting && (
+        <Spinner size="xs" scheme="white" className="mr-2" />
+      )}
       {children}
     </Button>
   );

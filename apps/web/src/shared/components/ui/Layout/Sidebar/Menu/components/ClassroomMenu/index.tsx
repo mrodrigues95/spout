@@ -9,9 +9,12 @@ interface Props {
 }
 
 const ClassroomMenu = ({ classrooms }: Props) => {
-  const { currentMenu, setCurrentMenu, setCurrentModal, setSelectedClassroom } = useContext(
-    MenuContext
-  )!;
+  const {
+    currentMenu,
+    setCurrentMenu,
+    setCurrentModal,
+    setSelectedClassroom,
+  } = useContext(MenuContext)!;
 
   if (currentMenu !== 'classroom') return null;
 
@@ -37,8 +40,8 @@ const ClassroomMenu = ({ classrooms }: Props) => {
         ) : (
           <div className="my-4">
             <EmptyFallback
-              message="There's nothing here, yet."
-              submessage="Use the button below to create your first classroom."
+              heading="There's nothing here, yet."
+              body="Use the button below to create your first classroom."
             />
           </div>
         )}

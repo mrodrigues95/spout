@@ -1,14 +1,8 @@
 import { useState } from 'react';
 import Zod, { object, string } from 'zod';
 import { gql, useMutation } from '@apollo/client';
-import {
-  Link,
-  Input,
-  Form,
-  useZodForm,
-  Layout,
-  useToast,
-} from '../../../shared/components';
+import { Form, useZodForm, Link } from '@spout/toolkit';
+import { Layout, useToast } from '../../../shared/components';
 import { useIsRedirecting } from '../../../shared/hooks/useIsRedirecting';
 import { useAuthRedirect, useInitializeSessionMutation } from '../hooks';
 import AuthCard from './AuthCard';
@@ -97,7 +91,7 @@ const LoginForm = () => {
       >
         <Form form={form} onSubmit={onSubmit} className="flex flex-col w-full">
           <AuthError title="Login failed." error={loginError} />
-          <Input
+          <Form.Input
             label="Email"
             placeholder="Email"
             type="email"
@@ -105,7 +99,7 @@ const LoginForm = () => {
             autoFocus
             {...form.register('email')}
           />
-          <Input
+          <Form.Input
             label="Password"
             placeholder="Password"
             type="password"

@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { Virtuoso } from 'react-virtuoso';
-import { Skeleton } from '../../../../shared/components';
+import { Skeleton } from '@spout/toolkit';
 import MessageDivider from './MessageDivider';
 import Message from './Message';
 import { generateItems, Item, Divider, group } from './utils/messages';
@@ -149,7 +149,11 @@ const MessageList = ({ discussionId, messages, hasNext, next }: Props) => {
         Header: () =>
           isFetching ? (
             <div className="px-4 py-1">
-              <Skeleton h="h-3" />
+              <Skeleton.Stack>
+                <Skeleton h="h-3" w="w-1/2" />
+                <Skeleton h="h-3" w="w-2/3" />
+                <Skeleton h="h-3" w="w-5/6" />
+              </Skeleton.Stack>
             </div>
           ) : null,
       }}

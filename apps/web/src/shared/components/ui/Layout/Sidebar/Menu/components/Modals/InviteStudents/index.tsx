@@ -1,15 +1,13 @@
 import { useCallback, useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { gql, useMutation } from '@apollo/client';
+import { Spinner, Form, Modal } from '@spout/toolkit';
 import { MenuContext } from '../../../MenuProvider';
 import {
   CreateClassroomInviteMutation,
   CreateClassroomInviteMutationVariables,
 } from './__generated__/index.generated';
-import Modal from '../../../../../../Modal';
-import Spinner from '../../../../../../Spinner';
 import CopyInvite from './CopyInvite';
-import { Form } from '../../../../../../Form';
 import InviteSettings, {
   InviteSettings as InviteSettingsType,
 } from './InviteSettings';
@@ -90,6 +88,7 @@ const InviteStudents = () => {
 
   return (
     <Modal isOpen={isOpen} onClose={() => setCurrentModal(null)}>
+      <Modal.Overlay />
       <Form form={form} onSubmit={onSubmit}>
         <Modal.Content>
           <Modal.Header
@@ -97,26 +96,25 @@ const InviteStudents = () => {
             description="Add students to your classroom by sharing the invite link below"
             dismiss
           />
-          <div className="my-6">
-            {loading && (
-              <Spinner
-                className="w-5 h-5 text-black"
-                label="Generating invite"
-              />
-            )}
-            {data && <CopyInvite invite={data.createClassroomInvite.invite} />}
-          </div>
-          <InviteSettings control={form.control} />
+          <Modal.Body>
+            <div>
+              {loading && <Spinner size="sm" srLabel="Generating invite" />}
+              {data && (
+                <CopyInvite invite={data.createClassroomInvite.invite} />
+              )}
+            </div>
+            <InviteSettings control={form.control} />
+          </Modal.Body>
+          <Modal.Footer>
+            <Form.SubmitButton
+              size="sm"
+              disabled={!form.formState.isDirty || loading}
+              className="font-semibold"
+            >
+              Generate Invite
+            </Form.SubmitButton>
+          </Modal.Footer>
         </Modal.Content>
-        <Modal.Footer>
-          <Form.SubmitButton
-            size="sm"
-            disabled={!form.formState.isDirty || loading}
-            className="font-semibold"
-          >
-            Generate Invite
-          </Form.SubmitButton>
-        </Modal.Footer>
       </Form>
     </Modal>
   );

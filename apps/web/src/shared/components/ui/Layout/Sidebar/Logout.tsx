@@ -1,6 +1,6 @@
 import { gql, useMutation } from '@apollo/client';
+import { Button } from '@spout/toolkit';
 import { useAuthRedirect } from '../../../../../modules';
-import Button from '../../Button';
 import {
   LogoutMutation,
   LogoutMutationVariables,
@@ -35,7 +35,8 @@ const Logout = () => {
     <Button
       size="xl"
       rounded="xxl"
-      scheme="light"
+      scheme="gray"
+      variant="ghost"
       fullWidth
       onClick={removeSession}
     >

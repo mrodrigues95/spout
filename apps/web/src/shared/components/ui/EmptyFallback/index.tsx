@@ -1,21 +1,19 @@
 import { ReactElement } from 'react';
 import { SparklesIcon } from '@spout/shared/assets';
+import { EmptyState, EmptyStateProps } from '@spout/toolkit';
 
-interface Props {
-  message?: string;
-  submessage?: string;
+interface Props extends Omit<EmptyStateProps, 'heading' | 'icon'> {
+  heading?: string;
   icon?: ReactElement;
 }
 
-const EmptyFallback = ({ icon, message, submessage }: Props) => {
+const EmptyFallback = ({ icon, heading, body }: Props) => {
   return (
-    <div className="flex flex-col justify-center items-center space-y-2">
-      {icon ? icon : <SparklesIcon className="h-12 w-12 text-black" />}
-      <p className="font-bold text-black">
-        {message ? message : "There's nothing here, yet."}
-      </p>
-      {submessage && <p className="font-bold text-black text-sm">{submessage}</p>}
-    </div>
+    <EmptyState
+      heading={heading ? heading : "There's nothing here, yet."}
+      body={body}
+      icon={icon ? icon : <SparklesIcon className="h-12 w-12 text-black" />}
+    />
   );
 };
 

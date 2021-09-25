@@ -1,8 +1,7 @@
 import { ReactNode } from 'react';
-import { NotificationsIcon, HamburgerMenuIcon } from '@spout/shared/assets'
-import Button from '../Button';
+import { NotificationsIcon, HamburgerMenuIcon } from '@spout/shared/assets';
+import { Button, Tooltip } from '@spout/toolkit';
 import Search from '../Search';
-import Tooltip from '../Tooltip';
 
 const ContainerBody = ({ children }: { children: ReactNode }) => {
   return <section className="relative flex-1">{children}</section>;
@@ -22,7 +21,7 @@ const ContainerHeader = ({
           aria-label="Open menu"
           size="sm"
           variant="ghost"
-          scheme="light"
+          scheme="gray"
           className="inline-flex mr-1 sm:hidden"
         >
           <HamburgerMenuIcon className="w-4 h-4" />
@@ -41,7 +40,7 @@ const ContainerHeader = ({
               size="sm"
               aria-label="View notifications"
               variant="ghost"
-              scheme="light"
+              scheme="gray"
               className="md:ml-2"
             >
               <NotificationsIcon className="w-4 h-4 md:w-8 md:h-8" />

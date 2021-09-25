@@ -1,17 +1,21 @@
-import { AttachmentsIcon, CalendarIcon, SettingsIcon } from '@spout/shared/assets';
-import { Tooltip, Button } from '../../../shared/components';
+import {
+  AttachmentsIcon,
+  CalendarIcon,
+  SettingsIcon,
+} from '@spout/shared/assets';
+import { Tooltip, Button } from '@spout/toolkit';
 
 const ActionsMenu = () => {
   return (
     <div className="hidden sm:block">
       <div className="flex items-center space-x-2">
         <Tooltip label="Calendar">
-          <Button aria-label="View calendar" variant="ghost" scheme="light">
+          <Button aria-label="View calendar" variant="ghost" scheme="gray">
             <CalendarIcon className="h-8 w-8" />
           </Button>
         </Tooltip>
         <Tooltip label="Attachments">
-          <Button aria-label="View attachments" variant="ghost" scheme="light">
+          <Button aria-label="View attachments" variant="ghost" scheme="gray">
             <AttachmentsIcon className="h-8 w-8" />
           </Button>
         </Tooltip>
@@ -20,7 +24,7 @@ const ActionsMenu = () => {
             aria-label="View settings"
             variant="ghost"
             rounded="lg"
-            scheme="light"
+            scheme="gray"
           >
             <SettingsIcon className="h-8 w-8" />
           </Button>

@@ -1,7 +1,7 @@
 import { Controller, FieldValues, UseFormReturn } from 'react-hook-form';
 import { hoursToSeconds, minutesToSeconds } from 'date-fns';
 import { CheckIcon, ChevronIcon } from '@spout/shared/assets';
-import Select from '../../../../../../Select';
+import { Select } from '@spout/toolkit';
 
 type MaxAge = { label: string; value: number };
 const MAX_AGE = {
@@ -41,7 +41,7 @@ export interface Props<T extends FieldValues = InviteSettings> {
 // See: https://react-hook-form.com/ts/
 const InviteSettings = ({ control }: Props) => {
   return (
-    <div>
+    <div className="space-y-1">
       <h5 className="font-bold uppercase">Settings</h5>
       <Controller
         control={control}

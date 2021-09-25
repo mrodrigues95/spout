@@ -13,7 +13,7 @@ export const ModalBody = ({
   return (
     <div
       className={clsx(
-        'flex flex-col justify-center px-6 pt-2 pb-4 space-y-3',
+        'flex flex-col justify-center px-6 pb-4 space-y-3',
         className
       )}
       {...props}

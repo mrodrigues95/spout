@@ -1,8 +1,8 @@
 import { gql, useQuery } from '@apollo/client';
 import { UserInfoFragment } from '../../../../../modules/Discussion/utils/fragments';
 import { ChevronIcon } from '@spout/shared/assets';
+import { Link } from '@spout/toolkit';
 import Avatar from '../../Avatar';
-import Link from '../../Link';
 import { getRandomAvatar } from '../../../../../shared/utils/getRandomAvatar';
 import { MeQuery } from './__generated__/ProfileInfo.generated';
 
@@ -36,7 +36,8 @@ const ProfileInfo = () => {
           href="/profile"
           aria-label="Go to profile"
           rounded="full"
-          scheme="light"
+          scheme="gray"
+          variant="ghost"
           className="!p-3"
         >
           <ChevronIcon className="transform rotate-180 h-5 w-5" />

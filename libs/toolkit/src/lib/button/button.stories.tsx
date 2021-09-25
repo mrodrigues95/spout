@@ -1,13 +1,15 @@
 import { Story, Meta } from '@storybook/react';
 import { Button } from './button';
-import { Props } from './buttonOrLink';
+import { ButtonOrLinkProps } from './buttonOrLink';
 
 export default {
   component: Button,
   title: 'Button',
 } as Meta;
 
-const Template: Story<Props> = (args) => <Button {...args}>Click me!</Button>;
+const Template: Story<ButtonOrLinkProps> = (args) => (
+  <Button {...args}>Click me!</Button>
+);
 
 export const Solid = Template.bind({});
 Solid.args = {

@@ -2,15 +2,13 @@ import { useContext } from 'react';
 import { useRouter } from 'next/router';
 import { gql, useMutation } from '@apollo/client';
 import { object, string } from 'zod';
+import { Form, useZodForm, Modal } from '@spout/toolkit';
 import {
   CreateClassroomMutation,
   CreateClassroomMutationVariables,
 } from './__generated__/index.generated';
 import { MenuContext } from '../../../MenuProvider';
-import { Form, useZodForm } from '../../../../../../Form';
 import { useIsRedirecting } from '../../../../../../../../hooks/useIsRedirecting';
-import Modal from '../../../../../../Modal';
-import Input from '../../../../../../Input';
 import useToast from '../../../../../../Toast';
 
 const schema = object({
@@ -50,11 +48,8 @@ const CreateClassroom = () => {
   });
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={() => setCurrentModal(null)}
-      style={{ width: '32rem' }}
-    >
+    <Modal isOpen={isOpen} onClose={() => setCurrentModal(null)}>
+      <Modal.Overlay />
       <Form
         form={form}
         onSubmit={({ name }) =>
@@ -67,21 +62,23 @@ const CreateClassroom = () => {
             description="Classrooms help you better manage your discussions"
             dismiss
           />
-          <Input
-            label="Classroom Name"
-            placeholder="PROG3120 - Programming Fundamentals"
-            {...form.register('name')}
-          />
+          <Modal.Body>
+            <Form.Input
+              label="Classroom Name"
+              placeholder="PROG3120 - Programming Fundamentals"
+              {...form.register('name')}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <Form.SubmitButton
+              disabled={result.loading || isRedirecting}
+              size="sm"
+              className="font-semibold"
+            >
+              Create Classroom
+            </Form.SubmitButton>
+          </Modal.Footer>
         </Modal.Content>
-        <Modal.Footer>
-          <Form.SubmitButton
-            disabled={result.loading || isRedirecting}
-            size="sm"
-            className="font-semibold"
-          >
-            Create Classroom
-          </Form.SubmitButton>
-        </Modal.Footer>
       </Form>
     </Modal>
   );

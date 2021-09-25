@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import ButtonOrLink, { Props as ButtonOrLinkProps } from '../../../../ButtonOrLink';
+import { Button, ButtonOrLinkProps } from '@spout/toolkit';
 import { menuVariants } from '..';
 
 interface MenuItemProps extends Omit<ButtonOrLinkProps, 'variant'> {
@@ -9,7 +9,7 @@ interface MenuItemProps extends Omit<ButtonOrLinkProps, 'variant'> {
 const MenuItem = ({ variant, ...props }: MenuItemProps) => {
   const styles = menuVariants[variant];
 
-  const Item = ButtonOrLink;
+  const Item = Button;
   return (
     <Item
       className={clsx(
@@ -17,6 +17,7 @@ const MenuItem = ({ variant, ...props }: MenuItemProps) => {
         styles.base,
         styles.active
       )}
+      variant="unstyled"
       {...props}
     />
   );

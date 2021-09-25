@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { ReactElement, ReactNode } from 'react';
 
 interface Props {
   title: string;
   subtitle?: string;
-  action: { description: string; link: ReactNode };
+  action: { description: string; link: ReactElement };
   children: ReactNode;
 }
 

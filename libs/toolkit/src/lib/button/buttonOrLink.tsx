@@ -1,8 +1,10 @@
 import { ComponentPropsWithRef, forwardRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import clsx from 'clsx';
 
-export const styles = {
+// TODO: Make a link variant.
+const styles = {
   base:
     'relative inline-flex items-center justify-center tracking-wide select-none font-semibold outline-none transition duration-150 ease-in-out focus:outline-none',
   disabled: 'disabled:opacity-60 disabled:pointer-events-none',
@@ -33,19 +35,22 @@ export const styles = {
   scheme: {
     dark: {
       default: 'text-white bg-gray-900',
-      primary: 'hover:bg-gray-700 focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-gray-900',
+      primary:
+        'hover:!bg-gray-700 focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-gray-900',
       secondary: 'text-gray-900 focus:!bg-gray-100 hover:!bg-gray-100',
     },
     gray: {
       default: 'text-gray-900 bg-gray-100',
-      primary: 'hover:bg-gray-200 focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-gray-900',
+      primary:
+        'hover:bg-gray-200 focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-gray-900',
       secondary: 'hover:!bg-gray-100 focus:!bg-gray-100',
     },
     purple: {
       default: 'text-purple-600 bg-purple-100',
-      primary: 'hover:bg-purple-200 focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-purple-600',
+      primary:
+        'hover:bg-purple-200 focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-purple-600',
       secondary: 'hover:!bg-purple-100 focus:!bg-purple-100',
-    },
+    }
   },
 } as const;
 
@@ -57,34 +62,64 @@ export interface Styles {
   fullWidth?: boolean;
 }
 
-export type ButtonOrLinkProps = ComponentPropsWithRef<'button'> &
+export type ButtonOrLinkProps = {
+  preserveRedirect?: boolean;
+} & ComponentPropsWithRef<'button'> &
   ComponentPropsWithRef<'a'> &
   Styles;
 
-export interface Props extends ButtonOrLinkProps {
-  preserveRedirect?: boolean;
-}
-
 export const ButtonOrLink = forwardRef<
   HTMLButtonElement & HTMLAnchorElement,
-  Props
->(({ href, preserveRedirect, ...props }, ref) => {
-  const router = useRouter();
-  const isLink = typeof href !== 'undefined';
-  const ButtonOrLink = isLink ? 'a' : 'button';
+  ButtonOrLinkProps
+>(
+  (
+    {
+      href,
+      preserveRedirect,
+      size = 'md',
+      rounded = 'md',
+      variant = 'solid',
+      scheme = 'dark',
+      fullWidth = false,
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const router = useRouter();
+    const isLink = typeof href !== 'undefined';
+    const ButtonOrLink = isLink ? 'a' : 'button';
 
-  const content = <ButtonOrLink ref={ref} {...props} />;
+    const classes =
+      variant === 'unstyled'
+        ? className
+        : clsx(
+            styles.base,
+            styles.disabled,
+            styles.size[size],
+            styles.rounded[rounded],
+            styles.variant[variant],
+            styles.scheme[scheme].default,
+            variant === 'ghost' || variant === 'outline'
+              ? styles.scheme[scheme].secondary
+              : styles.scheme[scheme].primary,
+            fullWidth && 'w-full',
+            className
+          );
 
-  if (isLink) {
-    const finalHref =
-      preserveRedirect && router.query.redirect
-        ? `${href!}?redirect=${encodeURIComponent(
-            router.query.redirect as string
-          )}`
-        : href!;
+    const content = <ButtonOrLink ref={ref} className={classes} {...props} />;
 
-    return <Link href={finalHref}>{content}</Link>;
+    if (isLink) {
+      const finalHref =
+        preserveRedirect && router.query.redirect
+          ? `${href!}?redirect=${encodeURIComponent(
+              router.query.redirect as string
+            )}`
+          : href!;
+
+      return <Link href={finalHref}>{content}</Link>;
+    }
+
+    return content;
   }
-
-  return content;
-});
+);

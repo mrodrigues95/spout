@@ -16,8 +16,6 @@ const styles = {
   },
 };
 
-// TODO: Remove all components from `web` that have been converted to storybook.
-// TODO: Update `web` .env to use tailwind watch
 export interface SpinnerProps extends ComponentProps<'div'> {
   size?: keyof typeof styles['size'];
   scheme?: keyof typeof styles['scheme'];

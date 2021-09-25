@@ -18,7 +18,9 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      accessibility: ['hover', 'active'],
+    },
   },
   plugins: [
     require('@tailwindcss/typography'),
