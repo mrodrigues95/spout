@@ -6,7 +6,7 @@ import {
   RefObject,
   useCallback,
 } from 'react';
-import { useObserver } from '~/shared/hooks/useObserver';
+import { useObserver } from '../../../hooks/useObserver';
 
 export interface Props {
   children: ReactNode;

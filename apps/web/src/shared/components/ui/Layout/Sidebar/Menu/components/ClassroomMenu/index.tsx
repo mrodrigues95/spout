@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Classroom } from '~/__generated__/schema.generated';
+import { Classroom } from '../../../../../../../../__generated__/schema.generated';
 import { MenuContext } from '../../MenuProvider';
 import Menu from '../..';
 import EmptyFallback from '../../../../../EmptyFallback';

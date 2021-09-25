@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
-import { authenticatedRoute } from '~/modules/Auth/utils';
+import { authenticatedRoute } from '../../modules';
 
 export const getServerSideProps: GetServerSideProps = authenticatedRoute;
 
-export { Discussion as default } from '~/modules'
+export { Discussion as default } from '../../modules'

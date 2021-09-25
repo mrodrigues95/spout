@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
 import clsx from 'clsx';
 import Avatar from '../../../../shared/components/ui/Avatar';
-import { getRandomAvatar } from '~/shared/utils/getRandomAvatar';
+import { getRandomAvatar } from '../../../../shared/utils/getRandomAvatar';
 import { Message_Message } from '../../utils/__generated__/fragments.generated';
 import { formatMessageDate } from './utils/format';
 

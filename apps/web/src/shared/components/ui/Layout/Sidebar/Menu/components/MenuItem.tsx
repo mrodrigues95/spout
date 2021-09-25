@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { ButtonOrLink, ButtonOrLinkProps } from '~/shared/components';
+import ButtonOrLink, { Props as ButtonOrLinkProps } from '../../../../ButtonOrLink';
 import { menuVariants } from '..';
 
 interface MenuItemProps extends Omit<ButtonOrLinkProps, 'variant'> {

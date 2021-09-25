@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { applySession } from 'next-iron-session';
-import { createClientSession, sessionOptions } from '~/modules';
+import { createClientSession, sessionOptions } from '../../../modules';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   await applySession(req, res, sessionOptions);

@@ -1,5 +1,5 @@
-import { Avatar } from '~/shared/components';
-import { getRandomAvatar } from '~/shared/utils/getRandomAvatar';
+import Avatar from '../../Avatar';
+import { getRandomAvatar } from '../../../../utils/getRandomAvatar';
 
 interface Props {
   avatarUrl: string;

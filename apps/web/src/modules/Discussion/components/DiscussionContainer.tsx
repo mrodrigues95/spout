@@ -1,4 +1,4 @@
-import { Container } from '~/shared/components';
+import { Container } from '../../../shared/components';
 import { DiscussionQuery } from './__generated__/Discussion.generated';
 import ActionsMenu from './ActionsMenu';
 import Messages from './Messages';

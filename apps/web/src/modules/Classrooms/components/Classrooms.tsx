@@ -1,4 +1,4 @@
-import { Layout } from '~/shared/components';
+import { Layout } from '../../../shared/components';
 
 const Classrooms = () => {
   return <Layout title={'Classroom'}>Classroom here</Layout>;

@@ -1,4 +1,4 @@
-import { Layout } from '~/shared/components';
+import { Layout } from '../../../shared/components';
 
 const Home = () => {
   return (

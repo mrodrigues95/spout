@@ -11,7 +11,7 @@ import {
 import { Portal } from '@headlessui/react';
 import { Placement } from '@popperjs/core';
 import { AnimatePresence, motion, Variants } from 'framer-motion';
-import usePopper from '~/shared/hooks/usePopper';
+import usePopper from '../../../hooks/usePopper';
 
 interface Props {
   label: string;

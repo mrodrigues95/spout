@@ -1,8 +1,9 @@
 import { gql, useQuery } from '@apollo/client';
-import { UserInfoFragment } from '~/modules/Discussion/utils/fragments';
-import { ChevronIcon } from '~/shared/assets';
-import { Avatar, Link } from '~/shared/components';
-import { getRandomAvatar } from '~/shared/utils/getRandomAvatar';
+import { UserInfoFragment } from '../../../../../modules/Discussion/utils/fragments';
+import { ChevronIcon } from '@spout/shared/assets';
+import Avatar from '../../Avatar';
+import Link from '../../Link';
+import { getRandomAvatar } from '../../../../../shared/utils/getRandomAvatar';
 import { MeQuery } from './__generated__/ProfileInfo.generated';
 
 const ProfileInfo = () => {

@@ -8,12 +8,12 @@ import {
   useZodForm,
   Layout,
   useToast,
-} from '~/shared/components';
-import { useIsRedirecting } from '~/shared/hooks/useIsRedirecting';
+} from '../../../shared/components';
+import { useIsRedirecting } from '../../../shared/hooks/useIsRedirecting';
 import { useAuthRedirect, useInitializeSessionMutation } from '../hooks';
 import AuthCard from './AuthCard';
 import AuthError from './AuthError';
-import { UserError } from '~/__generated__/schema.generated';
+import { UserError } from '../../../__generated__/schema.generated';
 import {
   LoginMutation,
   LoginMutationVariables,

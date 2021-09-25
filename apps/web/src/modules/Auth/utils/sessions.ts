@@ -4,7 +4,7 @@ import { GetServerSidePropsContext } from 'next';
 import { applySession, SessionOptions } from 'next-iron-session';
 import { differenceInSeconds } from 'date-fns';
 import { createApolloClient } from '../../../shared/utils/apollo';
-import { Session } from '~/__generated__/schema.generated';
+import { Session } from '../../../__generated__/schema.generated';
 import {
   RefreshSessionMutation,
   RefreshSessionMutationVariables,

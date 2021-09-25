@@ -1,5 +1,5 @@
-import { AttachmentsIcon, CalendarIcon, SettingsIcon } from '~/shared/assets';
-import { Tooltip, Button } from '~/shared/components';
+import { AttachmentsIcon, CalendarIcon, SettingsIcon } from '@spout/shared/assets';
+import { Tooltip, Button } from '../../../shared/components';
 
 const ActionsMenu = () => {
   return (

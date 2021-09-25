@@ -2,8 +2,8 @@ import { AppProps } from 'next/app';
 import { DefaultSeo } from 'next-seo';
 import { ApolloProvider } from '@apollo/client';
 import { Toaster } from 'react-hot-toast';
-import { useApollo } from '~/shared/utils/apollo';
-import { NProgress } from '~/shared/components';
+import { useApollo } from '../shared/utils/apollo';
+import { NProgress } from '../shared/components';
 import '../styles.css';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {

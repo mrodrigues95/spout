@@ -1,4 +1,4 @@
-import { LoadingIcon } from '~/shared/assets';
+import { LoadingIcon } from '@spout/shared/assets';
 import clsx from 'clsx';
 import VisuallyHidden from '../VisuallyHidden';
 

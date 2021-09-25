@@ -1,7 +1,7 @@
 import { ComponentPropsWithRef, forwardRef, useState } from 'react';
 import clsx from 'clsx';
-import { SearchIcon } from '~/shared/assets';
-import { useMediaQuery, MEDIA_QUERIES } from '~/shared/hooks';
+import { SearchIcon } from '@spout/shared/assets';
+import { useMediaQuery, MEDIA_QUERIES } from '../../../../shared/hooks';
 import Button from '../Button';
 
 type Props = ComponentPropsWithRef<'input'>;

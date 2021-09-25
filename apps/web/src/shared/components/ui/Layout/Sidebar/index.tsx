@@ -6,7 +6,7 @@ import {
   MessagesIcon,
   CalendarIcon,
   ClassroomIcon,
-} from '~/shared/assets';
+} from '@spout/shared/assets';
 import { Props as ButtonOrLinkProps } from '../../ButtonOrLink';
 import ProfileInfo from './ProfileInfo';
 import ActivityFeed from './ActivityFeed';

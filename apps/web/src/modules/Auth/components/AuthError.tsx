@@ -1,4 +1,4 @@
-import { UserError } from '~/__generated__/schema.generated';
+import { UserError } from '../../../__generated__/schema.generated';
 
 interface Props {
   title: string;

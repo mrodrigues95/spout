@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { SparklesIcon } from '~/shared/assets/icons';
+import { SparklesIcon } from '@spout/shared/assets';
 import Button from '../Button';
 
 interface Props {

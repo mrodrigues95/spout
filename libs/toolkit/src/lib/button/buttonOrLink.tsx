@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 
 export const styles = {
   base:
-    'relative inline-flex items-center justify-center tracking-wide select-none font-semibold outline-none transition duration-150 ease-in-out focus:outline-none focus:ring focus:ring-offset-2 focus:ring-offset-white',
+    'relative inline-flex items-center justify-center tracking-wide select-none font-semibold outline-none transition duration-150 ease-in-out focus:outline-none',
   disabled: 'disabled:opacity-60 disabled:pointer-events-none',
   size: {
     xs: 'py-1 px-2 text-xs',
@@ -32,19 +32,19 @@ export const styles = {
   },
   scheme: {
     dark: {
-      default: 'text-white bg-gray-900 focus:ring-gray-900',
-      primary: 'hover:bg-gray-700',
-      secondary: 'text-gray-900 hover:!bg-gray-100',
+      default: 'text-white bg-gray-900',
+      primary: 'hover:bg-gray-700 focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-gray-900',
+      secondary: 'text-gray-900 focus:!bg-gray-100 hover:!bg-gray-100',
     },
     gray: {
-      default: 'text-gray-900 bg-gray-100 focus:ring-gray-900',
-      primary: 'hover:!bg-gray-200',
-      secondary: 'hover:!bg-gray-100',
+      default: 'text-gray-900 bg-gray-100',
+      primary: 'hover:bg-gray-200 focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-gray-900',
+      secondary: 'hover:!bg-gray-100 focus:!bg-gray-100',
     },
     purple: {
-      default: 'text-purple-600 bg-purple-100 focus:ring-purple-600',
-      primary: 'hover:!bg-purple-200',
-      secondary: 'hover:!bg-purple-100',
+      default: 'text-purple-600 bg-purple-100',
+      primary: 'hover:bg-purple-200 focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-purple-600',
+      secondary: 'hover:!bg-purple-100 focus:!bg-purple-100',
     },
   },
 } as const;

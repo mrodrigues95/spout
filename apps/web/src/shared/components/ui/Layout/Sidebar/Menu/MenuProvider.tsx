@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useMemo, useState } from 'react';
-import { Classroom } from '~/__generated__/schema.generated';
+import { Classroom } from '../../../../../../__generated__/schema.generated';
 import { CreateClassroomInviteMutation } from './components/Modals/InviteStudents/__generated__/index.generated';
 
 type Menus = 'classroom' | 'discussion';

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { NotificationsIcon, HamburgerMenuIcon } from '~/shared/assets';
+import { NotificationsIcon, HamburgerMenuIcon } from '@spout/shared/assets'
 import Button from '../Button';
 import Search from '../Search';
 import Tooltip from '../Tooltip';

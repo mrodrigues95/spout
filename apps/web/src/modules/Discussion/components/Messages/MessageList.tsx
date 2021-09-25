@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { Virtuoso } from 'react-virtuoso';
-import { Skeleton } from '~/shared/components';
+import { Skeleton } from '../../../../shared/components';
 import MessageDivider from './MessageDivider';
 import Message from './Message';
 import { generateItems, Item, Divider, group } from './utils/messages';

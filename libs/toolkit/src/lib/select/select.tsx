@@ -4,14 +4,14 @@ import { SelectButton } from './select-button';
 import { SelectOption } from './select-option';
 import { SelectOptions } from './select-options';
 
-export interface SelectProps<T> {
+export interface SelectProps<T extends unknown = string> {
   label?: string;
   value: T;
   onChange: (value: T) => void;
   children: ReactNode;
 }
 
-export const Select = <T extends unknown>({
+export const Select = <T extends unknown = string>({
   label,
   value,
   onChange,

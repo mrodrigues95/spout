@@ -17,7 +17,7 @@ const people = [
   { name: 'Hellen Schmidt' },
 ];
 
-const Template: Story<SelectProps<unknown>> = () => {
+const Template: Story<SelectProps> = () => {
   const [value, setValue] = useState(people[0]);
 
   return (

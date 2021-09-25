@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Transition } from '@headlessui/react';
-import { Discussion } from '~/__generated__/schema.generated';
+import { Discussion } from '../../../../../../../../__generated__/schema.generated';
 import EmptyFallback from '../../../../../EmptyFallback';
 import Menu from '../..';
 import { MenuContext } from '../../MenuProvider';
