@@ -23,7 +23,7 @@ services:
 
   postgres:
     container_name: postgres
-    image: postgres:latest
+    image: postgres:13
     restart: unless-stopped
     ports:
       # NOTE: To avoid overlapping with any Postgres database run on the host machine,

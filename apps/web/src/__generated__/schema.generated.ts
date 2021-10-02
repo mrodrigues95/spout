@@ -13,7 +13,7 @@ export type Scalars = {
   DateTime: string;
   /** The `Short` scalar type represents non-fractional signed whole 16-bit numeric values. Short can represent values between -(2^15) and 2^15 - 1. */
   Short: any;
-  Uuid: any;
+  UUID: any;
 };
 
 
@@ -30,14 +30,15 @@ export type AuthPayload = {
   session?: Maybe<Session>;
   isLoggedIn: Scalars['Boolean'];
   userErrors?: Maybe<Array<UserError>>;
+  query: Query;
 };
 
 export type Classroom = Node & {
   __typename?: 'Classroom';
   id: Scalars['ID'];
-  users?: Maybe<Array<Maybe<User>>>;
-  discussions?: Maybe<Array<Maybe<Discussion>>>;
-  guid: Scalars['Uuid'];
+  users: Array<User>;
+  discussions: Array<Discussion>;
+  guid: Scalars['UUID'];
   name: Scalars['String'];
   stateId: Scalars['Int'];
   state: State;
@@ -90,11 +91,13 @@ export type CreateClassroomInviteInput = {
 export type CreateClassroomInvitePayload = {
   __typename?: 'CreateClassroomInvitePayload';
   invite: Invite;
+  query: Query;
 };
 
 export type CreateClassroomPayload = {
   __typename?: 'CreateClassroomPayload';
   classroom: Classroom;
+  query: Query;
 };
 
 
@@ -135,8 +138,8 @@ export type Discussion = Node & {
   id: Scalars['ID'];
   createdBy: User;
   classroom: Classroom;
-  messages?: Maybe<MessageConnection>;
-  guid: Scalars['Uuid'];
+  messages?: Maybe<MessagesConnection>;
+  guid: Scalars['UUID'];
   name: Scalars['String'];
   classroomId: Scalars['Int'];
   createdById: Scalars['Int'];
@@ -156,26 +159,6 @@ export type DiscussionMessagesArgs = {
   last?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['String']>;
   order?: Maybe<Array<MessageSortInput>>;
-};
-
-/** A connection to a list of items. */
-export type DiscussionConnection = {
-  __typename?: 'DiscussionConnection';
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** A list of edges. */
-  edges?: Maybe<Array<DiscussionEdge>>;
-  /** A flattened list of the nodes. */
-  nodes?: Maybe<Array<Discussion>>;
-};
-
-/** An edge in a connection. */
-export type DiscussionEdge = {
-  __typename?: 'DiscussionEdge';
-  /** A cursor for use in pagination. */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge. */
-  node: Discussion;
 };
 
 export type DiscussionMessageSubscriptionPayload = {
@@ -203,6 +186,26 @@ export type DiscussionSortInput = {
   updatedAt?: Maybe<SortEnumType>;
 };
 
+/** A connection to a list of items. */
+export type DiscussionsConnection = {
+  __typename?: 'DiscussionsConnection';
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** A list of edges. */
+  edges?: Maybe<Array<DiscussionsEdge>>;
+  /** A flattened list of the nodes. */
+  nodes?: Maybe<Array<Discussion>>;
+};
+
+/** An edge in a connection. */
+export type DiscussionsEdge = {
+  __typename?: 'DiscussionsEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node: Discussion;
+};
+
 export type Invite = {
   __typename?: 'Invite';
   id: Scalars['Int'];
@@ -224,6 +227,7 @@ export type JoinClassroomPayload = {
   __typename?: 'JoinClassroomPayload';
   classroom?: Maybe<Classroom>;
   userErrors?: Maybe<Array<UserError>>;
+  query: Query;
 };
 
 export type LoginInput = {
@@ -250,26 +254,6 @@ export type Message = Node & {
   updatedAt: Scalars['DateTime'];
 };
 
-/** A connection to a list of items. */
-export type MessageConnection = {
-  __typename?: 'MessageConnection';
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** A list of edges. */
-  edges?: Maybe<Array<MessageEdge>>;
-  /** A flattened list of the nodes. */
-  nodes?: Maybe<Array<Message>>;
-};
-
-/** An edge in a connection. */
-export type MessageEdge = {
-  __typename?: 'MessageEdge';
-  /** A cursor for use in pagination. */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge. */
-  node: Message;
-};
-
 export type MessageSortInput = {
   id?: Maybe<SortEnumType>;
   content?: Maybe<SortEnumType>;
@@ -284,8 +268,29 @@ export type MessageSortInput = {
   updatedAt?: Maybe<SortEnumType>;
 };
 
+/** A connection to a list of items. */
+export type MessagesConnection = {
+  __typename?: 'MessagesConnection';
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** A list of edges. */
+  edges?: Maybe<Array<MessagesEdge>>;
+  /** A flattened list of the nodes. */
+  nodes?: Maybe<Array<Message>>;
+};
+
+/** An edge in a connection. */
+export type MessagesEdge = {
+  __typename?: 'MessagesEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node: Message;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  refreshSession: AuthPayload;
   createClassroom: CreateClassroomPayload;
   joinClassroom: JoinClassroomPayload;
   createClassroomInvite: CreateClassroomInvitePayload;
@@ -293,7 +298,11 @@ export type Mutation = {
   signUp: AuthPayload;
   login: AuthPayload;
   logout: AuthPayload;
-  refreshSession: AuthPayload;
+};
+
+
+export type MutationRefreshSessionArgs = {
+  input: RefreshSessionInput;
 };
 
 
@@ -331,11 +340,6 @@ export type MutationLogoutArgs = {
   input: LogoutInput;
 };
 
-
-export type MutationRefreshSessionArgs = {
-  input: RefreshSessionInput;
-};
-
 /** The node interface is implemented by entities that have a global unique identifier. */
 export type Node = {
   id: Scalars['ID'];
@@ -356,7 +360,10 @@ export type PageInfo = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Fetches an object given its ID. */
   node?: Maybe<Node>;
+  /** Lookup nodes by a list of IDs. */
+  nodes: Array<Maybe<Node>>;
   me?: Maybe<User>;
   users: Array<User>;
   userById: User;
@@ -365,7 +372,7 @@ export type Query = {
   classrooms: Array<Classroom>;
   classroomById: Classroom;
   classroomsById: Array<Classroom>;
-  discussions?: Maybe<DiscussionConnection>;
+  discussions?: Maybe<DiscussionsConnection>;
   discussionById: Discussion;
   discussionsById: Array<Discussion>;
 };
@@ -373,6 +380,11 @@ export type Query = {
 
 export type QueryNodeArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryNodesArgs = {
+  ids: Array<Scalars['ID']>;
 };
 
 
@@ -426,6 +438,7 @@ export type SendDiscussionMessagePayload = {
   __typename?: 'SendDiscussionMessagePayload';
   message?: Maybe<Message>;
   userErrors?: Maybe<Array<UserError>>;
+  query: Query;
 };
 
 export type Session = Node & {
@@ -478,12 +491,13 @@ export type SubscriptionOnDiscussionMessageReceivedArgs = {
   discussionId: Scalars['ID'];
 };
 
+
 export type User = Node & {
   __typename?: 'User';
   id: Scalars['ID'];
   classrooms: Array<Classroom>;
   sessions: Array<Session>;
-  guid: Scalars['Uuid'];
+  guid: Scalars['UUID'];
   name: Scalars['String'];
   email: Scalars['String'];
   stateId: Scalars['Int'];
@@ -536,4 +550,3 @@ export type UserSortInput = {
   lockoutEnabled?: Maybe<SortEnumType>;
   accessFailedCount?: Maybe<SortEnumType>;
 };
-

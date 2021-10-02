@@ -10,22 +10,22 @@
     <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AppAny.HotChocolate.FluentValidation" Version="0.2.7" />
     <PackageReference Include="CSharpVitamins.ShortGuid" Version="2.0.0" />
     <PackageReference Include="EFCore.NamingConventions" Version="5.0.2" />
-    <PackageReference Include="FluentValidation" Version="10.0.4" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="10.0.4" />
-    <PackageReference Include="HotChocolate.AspNetCore" Version="11.1.0" />
-    <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="11.2.2" />
-    <PackageReference Include="HotChocolate.Data" Version="11.2.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.5">
+    <PackageReference Include="FairyBread" Version="8.0.0-preview.1" />
+    <PackageReference Include="FluentValidation" Version="10.3.3" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.3" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="12.0.1" />
+    <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="12.0.1" />
+    <PackageReference Include="HotChocolate.Data" Version="12.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.5" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.10" />
   </ItemGroup>
 </Project>

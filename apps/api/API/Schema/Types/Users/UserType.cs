@@ -1,8 +1,7 @@
-﻿using API.Data;
+using API.Data;
 using API.Data.Entities;
 using API.Extensions;
 using HotChocolate;
-using HotChocolate.Resolvers;
 using HotChocolate.Types;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -41,7 +40,7 @@ namespace API.Schema.Types.Users {
 
         private class UserResolvers {
             public async Task<IEnumerable<Classroom>> GetClassroomsAsync(
-                User user,
+                [Parent] User user,
                 [ScopedService] ApplicationDbContext dbContext,
                 ClassroomByIdDataLoader classroomById,
                 CancellationToken cancellationToken) {
@@ -55,7 +54,7 @@ namespace API.Schema.Types.Users {
             }
 
             public async Task<IEnumerable<Session>> GetSessionsAsync(
-                User user,
+                [Parent] User user,
                 [ScopedService] ApplicationDbContext dbContext,
                 SessionByIdDataLoader sessionById,
                 CancellationToken cancellationToken) {

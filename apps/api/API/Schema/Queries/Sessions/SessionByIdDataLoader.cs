@@ -1,5 +1,4 @@
-﻿using API.Data.Entities;
-using HotChocolate.DataLoader;
+using API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,9 +13,10 @@ namespace API.Schema.Queries.Sessions {
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
         public SessionByIdDataLoader(
+            IDbContextFactory<ApplicationDbContext> dbContextFactory,
             IBatchScheduler batchScheduler,
-            IDbContextFactory<ApplicationDbContext> dbContextFactory)
-            : base(batchScheduler) {
+            DataLoaderOptions options)
+            : base(batchScheduler, options) {
             _dbContextFactory = dbContextFactory ??
                 throw new ArgumentNullException(nameof(dbContextFactory));
         }

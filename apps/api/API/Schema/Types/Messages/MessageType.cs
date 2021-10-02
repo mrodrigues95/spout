@@ -1,11 +1,11 @@
-﻿using API.Data.Entities;
+using API.Data.Entities;
 using HotChocolate.Types;
-using HotChocolate.Resolvers;
 using System.Threading.Tasks;
 using System.Threading;
 using API.Schema.Queries.Messages;
 using API.Schema.Queries.Users;
 using API.Schema.Types.Users;
+using HotChocolate;
 
 namespace API.Schema.Types.Messages {
     public class MessageType : ObjectType<Message> {
@@ -24,7 +24,7 @@ namespace API.Schema.Types.Messages {
 
         private class MessageResolvers {
             public async Task<User> GetCreatedByAsync(
-            Message message,
+            [Parent] Message message,
             UserByIdDataLoader userById,
             CancellationToken cancellationToken) =>
             await userById.LoadAsync(message.CreatedById, cancellationToken);

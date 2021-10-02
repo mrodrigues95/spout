@@ -13,9 +13,9 @@ export type DiscussionMessagesQuery = (
     { __typename?: 'Discussion' }
     & Pick<Types.Discussion, 'id' | 'name'>
     & { messages?: Types.Maybe<(
-      { __typename?: 'MessageConnection' }
+      { __typename?: 'MessagesConnection' }
       & { edges?: Types.Maybe<Array<(
-        { __typename?: 'MessageEdge' }
+        { __typename?: 'MessagesEdge' }
         & { node: (
           { __typename?: 'Message' }
           & Message_Message

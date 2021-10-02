@@ -8,7 +8,7 @@ import {
   Classroom,
   Discussion,
 } from '../../../../../../__generated__/schema.generated';
-import { UserInfoFragment } from '../../../../../../modules/Discussion/utils/fragments';;
+import { UserInfoFragment } from '../../../../../../modules/Discussion/utils/fragments';
 import ErrorFallback from '../../../ErrorFallback';
 import MenuProvider, { MenuContext } from './MenuProvider';
 import MenuSeperator from './components/MenuSeperator';
@@ -51,25 +51,25 @@ interface Props {
   menuButtonProps: MenuButtonProps;
 }
 
-const BaseMenu = ({ menuButtonProps }: Props) => {
-  const { data, loading, error, refetch } = useQuery<ClassroomsQuery>(
-    gql`
-      query ClassroomsQuery {
-        me {
-          ...UserInfo_user
-          classrooms {
-            id
-            name
-            discussions {
-              id
-              name
-            }
-          }
+export const query = gql`
+  query ClassroomsQuery {
+    me {
+      ...UserInfo_user
+      classrooms {
+        id
+        name
+        discussions {
+          id
+          name
         }
       }
-      ${UserInfoFragment}
-    `
-  );
+    }
+  }
+  ${UserInfoFragment}
+`;
+
+const BaseMenu = ({ menuButtonProps }: Props) => {
+  const { data, loading, error, refetch } = useQuery<ClassroomsQuery>(query);
 
   const {
     currentModal,

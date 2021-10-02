@@ -12,10 +12,12 @@ import { useIsRedirecting } from '../../../../../../../../hooks/useIsRedirecting
 import useToast from '../../../../../../Toast';
 
 // TODO: Update these at some point for prod.
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 const codeReg = new RegExp(/^([A-Za-z0-9-_]{22})$/);
-const linkReg = new RegExp(
-  /^(https?:\/\/)?(www.)?(spout.local)\/+([A-Za-z0-9-_]{22})$/
-);
+const linkReg = new RegExp(`/^(${APP_URL}\/)+([A-Za-z0-9-_]{22})$/`);
+// const linkReg = new RegExp(
+//   /^(https?:\/\/)?(www.)?(spout.local)\/+([A-Za-z0-9-_]{22})$/
+// );
 
 const inviteSchema = object({
   code: string(),
@@ -79,7 +81,7 @@ const JoinClassroom = () => {
           joinClassroom({
             variables: {
               input: {
-                code: code.replace(/(https?:\/\/)?(www.)?(spout.local)\//, ''),
+                code: code.replace(`${APP_URL}/`, ''),
               },
             },
           });
@@ -103,7 +105,7 @@ const JoinClassroom = () => {
           <Modal.Body>
             <Form.Input
               label="Invite Link"
-              placeholder={`${process.env.NEXT_PUBLIC_APP_URL}/${exampleInvite}`}
+              placeholder={`${APP_URL}/${exampleInvite}`}
               autoFocus
               {...form.register('code')}
             />

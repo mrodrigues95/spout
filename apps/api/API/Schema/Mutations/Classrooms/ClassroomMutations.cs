@@ -1,4 +1,4 @@
-﻿using API.Data;
+using API.Data;
 using API.Data.Entities;
 using Enums = API.Common.Enums;
 using API.Extensions;
@@ -13,7 +13,6 @@ using HotChocolate.AspNetCore.Authorization;
 using System.Linq;
 using System.Collections.Generic;
 using API.Schema.Common;
-using AppAny.HotChocolate.FluentValidation;
 
 namespace API.Schema.Mutations.Classrooms {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -21,7 +20,7 @@ namespace API.Schema.Mutations.Classrooms {
         [Authorize]
         [UseApplicationDbContext]
         public async Task<CreateClassroomPayload> CreateClassroomAsync(
-            [UseFluentValidation, UseValidator(typeof(CreateClassroomInputValidator))] CreateClassroomInput input,
+            CreateClassroomInput input,
             [GlobalState] int userId,
             [ScopedService] ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
@@ -45,7 +44,7 @@ namespace API.Schema.Mutations.Classrooms {
         [Authorize]
         [UseApplicationDbContext]
         public async Task<JoinClassroomPayload> JoinClassroomAsync(
-            [UseFluentValidation, UseValidator(typeof(JoinClassroomInputValidator))] JoinClassroomInput input,
+            JoinClassroomInput input,
             [GlobalState] int userId,
             [ScopedService] ApplicationDbContext ctx,
             CancellationToken cancellationToken) {

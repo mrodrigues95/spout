@@ -1,6 +1,5 @@
-﻿using API.Data.Entities;
+using API.Data.Entities;
 using HotChocolate.Types;
-using HotChocolate.Resolvers;
 using System.Threading.Tasks;
 using System.Threading;
 using HotChocolate;
@@ -50,19 +49,19 @@ namespace API.Schema.Types.Discussions {
 
         private class DiscussionResolvers {
             public async Task<Classroom> GetClassroomAsync(
-                Discussion discussion,
+                [Parent] Discussion discussion,
                 ClassroomByIdDataLoader classroomById,
                 CancellationToken cancellationToken) =>
                 await classroomById.LoadAsync(discussion.ClassroomId, cancellationToken);
 
             public async Task<User> GetCreatedByAsync(
-                Discussion discussion,
+                [Parent] Discussion discussion,
                 UserByIdDataLoader userById,
                 CancellationToken cancellationToken) =>
                 await userById.LoadAsync(discussion.CreatedById, cancellationToken);
 
             public async Task<IEnumerable<Message>> GetMessagesAsync(
-                Discussion discussion,
+                [Parent] Discussion discussion,
                 [ScopedService] ApplicationDbContext context,
                 MessageByIdDataLoader messageById,
                 CancellationToken cancellationToken) {

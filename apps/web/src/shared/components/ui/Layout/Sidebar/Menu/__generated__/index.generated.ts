@@ -11,10 +11,10 @@ export type ClassroomsQuery = (
     & { classrooms: Array<(
       { __typename?: 'Classroom' }
       & Pick<Types.Classroom, 'id' | 'name'>
-      & { discussions?: Types.Maybe<Array<Types.Maybe<(
+      & { discussions: Array<(
         { __typename?: 'Discussion' }
         & Pick<Types.Discussion, 'id' | 'name'>
-      )>>> }
+      )> }
     )> }
     & UserInfo_User
   )> }

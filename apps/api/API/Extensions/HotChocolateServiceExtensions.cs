@@ -4,22 +4,22 @@ using API.Schema.Mutations.Discussions;
 using API.Schema.Mutations.Sessions;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Discussions;
-using API.Schema.Queries.Messages;
 using API.Schema.Queries.Sessions;
 using API.Schema.Queries.Users;
 using API.Schema.Subscriptions.Discussions;
 using API.Schema.Types.Classrooms;
 using API.Schema.Types.Discussions;
-using API.Schema.Types.Messages;
 using API.Schema.Types.Sessions;
 using API.Schema.Types.Users;
-using AppAny.HotChocolate.FluentValidation;
+using FluentValidation;
+using HotChocolate;
 using HotChocolate.AspNetCore;
 using HotChocolate.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,52 +29,76 @@ namespace API.Extensions {
         public static IServiceCollection AddHotChocolateServices(this IServiceCollection services) {
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
+            // Add FluentValidation validators.
+            services
+                .AddValidatorsFromAssemblyContaining<CreateClassroomInputValidator>();
+
+            // Add GraphQL core services.
             var gql = services.AddGraphQLServer();
-            gql
-                .AddAuthorization()
-                .AddHttpRequestInterceptor<CustomHttpRequestInterceptor>()
-                .AddFluentValidation()
-                .EnableRelaySupport()
-                .AddInMemorySubscriptions()
-                .AddFiltering()
-                .AddSorting()
-                .ModifyRequestOptions(opt => {
-                    opt.IncludeExceptionDetails = env == Environments.Development;
-                });
 
             gql
                 .AddQueryType()
-                    .AddTypeExtension<UserQueries>()
-                    .AddTypeExtension<SessionQueries>()
-                    .AddTypeExtension<ClassroomQueries>()
-                    .AddTypeExtension<DiscussionQueries>();
-
-            gql
                 .AddMutationType()
-                    .AddTypeExtension<ClassroomMutations>()
-                    .AddTypeExtension<DiscussionMutations>()
-                    .AddTypeExtension<AuthMutations>()
-                    .AddTypeExtension<SessionMutations>();
+                .AddSubscriptionType();
 
             gql
-                .AddSubscriptionType()
-                    .AddTypeExtension<DiscussionSubscriptions>();
-
-            gql
-                .AddType<UserType>()
-                .AddType<SessionType>()
-                .AddType<ClassroomType>()
-                .AddType<DiscussionType>()
-                .AddType<MessageType>();
-
-            gql
+                .AddTypeExtension<UserQueries>()
                 .AddDataLoader<UserByIdDataLoader>()
+                .AddType<UserType>();
+
+            gql
+                .AddTypeExtension<SessionQueries>()
+                .AddTypeExtension<SessionMutations>()
                 .AddDataLoader<SessionByIdDataLoader>()
+                .AddType<SessionType>();
+
+            gql
+                .AddTypeExtension<ClassroomQueries>()
+                .AddTypeExtension<ClassroomMutations>()
                 .AddDataLoader<ClassroomByIdDataLoader>()
+                .AddType<ClassroomType>();
+
+            gql
+                .AddTypeExtension<DiscussionQueries>()
+                .AddTypeExtension<DiscussionMutations>()
+                .AddTypeExtension<DiscussionSubscriptions>()
                 .AddDataLoader<DiscussionByIdDataLoader>()
-                .AddDataLoader<MessageByIdDataLoader>();
+                .AddType<DiscussionType>();
+
+            gql
+                .AddTypeExtension<AuthMutations>();
+
+            gql
+                .AddAuthorization()
+                .AddErrorFilter<CustomErrorFilter>()
+                .AddHttpRequestInterceptor<CustomHttpRequestInterceptor>()
+                .AddFairyBread()
+                .AddInMemorySubscriptions()
+                .AddFiltering()
+                .AddSorting()
+                .AddGlobalObjectIdentification()
+                .AddQueryFieldToMutationPayloads()
+                .ModifyRequestOptions(opts => {
+                  opts.IncludeExceptionDetails = env == Environments.Development;
+                });
 
             return services;
+        }
+
+        private class CustomErrorFilter : IErrorFilter {
+            public IError OnError(IError error) {
+              if (error.Exception is AggregateException ex) {
+                var errors = new List<IError>();
+
+                foreach (Exception innerException in ex.InnerExceptions) {
+                    errors.Add(error.WithMessage(innerException.Message).WithException(innerException));
+                }
+
+                return new AggregateError(errors);
+              }
+
+              return error;
+            }
         }
 
         private class CustomHttpRequestInterceptor : DefaultHttpRequestInterceptor {

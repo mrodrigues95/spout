@@ -9,6 +9,7 @@ import {
 } from './__generated__/index.generated';
 import { MenuContext } from '../../../MenuProvider';
 import { useIsRedirecting } from '../../../../../../../../hooks/useIsRedirecting';
+import { query as ClassroomsQuery } from '../../../../Menu'
 import useToast from '../../../../../../Toast';
 
 const schema = object({
@@ -38,6 +39,8 @@ const CreateClassroom = () => {
     onCompleted: ({ createClassroom }) => {
       router.push(`/classrooms/${createClassroom.classroom.id}`);
     },
+    refetchQueries: [ClassroomsQuery],
+    awaitRefetchQueries: true
   });
 
   const { currentModal, setCurrentModal } = useContext(MenuContext)!;

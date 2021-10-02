@@ -1,10 +1,10 @@
-﻿using API.Data.Entities;
+using API.Data.Entities;
 using HotChocolate.Types;
-using HotChocolate.Resolvers;
 using System.Threading.Tasks;
 using System.Threading;
 using API.Schema.Queries.Users;
 using API.Schema.Queries.Sessions;
+using HotChocolate;
 
 namespace API.Schema.Types.Sessions {
     public class SessionType : ObjectType<Session> {
@@ -22,7 +22,7 @@ namespace API.Schema.Types.Sessions {
 
         private class SessionResolvers {
             public async Task<User?> GetUserAsync(
-                Session session,
+                [Parent] Session session,
                 UserByIdDataLoader userById,
                 CancellationToken cancellationToken) =>
                 await userById.LoadAsync(session.UserId, cancellationToken);

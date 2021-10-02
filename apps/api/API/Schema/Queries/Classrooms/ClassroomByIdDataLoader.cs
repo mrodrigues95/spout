@@ -1,7 +1,6 @@
-﻿using API.Data;
+using API.Data;
 using API.Data.Entities;
 using GreenDonut;
-using HotChocolate.DataLoader;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,9 +13,10 @@ namespace API.Schema.Queries.Classrooms {
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
         public ClassroomByIdDataLoader(
+            IDbContextFactory<ApplicationDbContext> dbContextFactory,
             IBatchScheduler batchScheduler,
-            IDbContextFactory<ApplicationDbContext> dbContextFactory)
-            : base(batchScheduler) {
+            DataLoaderOptions options)
+            : base(batchScheduler, options) {
             _dbContextFactory = dbContextFactory ??
                 throw new ArgumentNullException(nameof(dbContextFactory));
         }

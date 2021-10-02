@@ -1,4 +1,4 @@
-﻿using API.Data;
+using API.Data;
 using API.Extensions;
 using API.Data.Entities;
 using Enums = API.Common.Enums;
@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using AppAny.HotChocolate.FluentValidation;
 using Microsoft.AspNetCore.Http;
 using API.Schema.Common;
 using HotChocolate.AspNetCore.Authorization;
@@ -19,7 +18,7 @@ namespace API.Schema.Mutations.Auth {
     public class AuthMutations {
         [UseApplicationDbContext]
         public async Task<AuthPayload> SignUpAsync(
-            [UseFluentValidation, UseValidator(typeof(SignUpInputValidator))] SignUpInput input,
+            SignUpInput input,
             [ScopedService] ApplicationDbContext context,
             [Service] UserManager<User> userManager,
             [Service] SignInManager<User> signInManager,
@@ -49,7 +48,7 @@ namespace API.Schema.Mutations.Auth {
 
         [UseApplicationDbContext]
         public async Task<AuthPayload> LoginAsync(
-            [UseFluentValidation, UseValidator(typeof(LoginInputValidator))] LoginInput input,
+            LoginInput input,
             [ScopedService] ApplicationDbContext context,
             [Service] UserManager<User> userManager,
             [Service] SignInManager<User> signInManager,
