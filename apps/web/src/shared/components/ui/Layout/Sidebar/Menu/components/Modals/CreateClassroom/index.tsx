@@ -62,7 +62,7 @@ const CreateClassroom = () => {
         <Modal.Content>
           <Modal.Header
             title="Create Your Classroom"
-            description="Classrooms help you better manage your discussions"
+            description="Classrooms help you better manage your discussions."
             dismiss
           />
           <Modal.Body>
