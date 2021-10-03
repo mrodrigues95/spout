@@ -19,6 +19,7 @@ import DiscussionMenu from './components/DiscussionMenu';
 import InviteStudents from './components/Modals/InviteStudents';
 import JoinClassroom from './components/Modals/JoinClassroom';
 import CreateClassroom from './components/Modals/CreateClassroom';
+import CreateDiscussion from './components/Modals/CreateDiscussion';
 
 export const menuVariants = {
   default: {
@@ -144,7 +145,8 @@ const BaseMenu = ({ menuButtonProps }: Props) => {
       </Popover>
       {currentModal === 'invite' && <InviteStudents />}
       {currentModal === 'join' && <JoinClassroom />}
-      {currentModal === 'create' && <CreateClassroom />}
+      {currentModal === 'create-classroom' && <CreateClassroom />}
+      {currentModal === 'create-discussion' && <CreateDiscussion />}
     </>
   );
 };

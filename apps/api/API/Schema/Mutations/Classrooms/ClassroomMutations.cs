@@ -25,7 +25,7 @@ namespace API.Schema.Mutations.Classrooms {
             [ScopedService] ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
             var classroom = new Classroom {
-                Name = input.Name.Trim(),
+                Name = input.Name,
                 StateId = (int) Enums.State.Active
             };
 
@@ -34,8 +34,6 @@ namespace API.Schema.Mutations.Classrooms {
                 UserId = userId,
                 IsCreator = true
             });
-
-            ctx.Classrooms.Add(classroom);
             await ctx.SaveChangesAsync(cancellationToken);
 
             return new CreateClassroomPayload(classroom);

@@ -10,7 +10,7 @@ interface Props extends Omit<EmptyStateProps, 'heading' | 'icon'> {
 const EmptyFallback = ({ icon, heading, body }: Props) => {
   return (
     <EmptyState
-      heading={heading ? heading : "There's nothing here, yet."}
+      heading={heading ? heading : "There's nothing here, yet"}
       body={body}
       icon={icon ? icon : <SparklesIcon className="h-12 w-12 text-black" />}
     />

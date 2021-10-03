@@ -7,17 +7,19 @@ import React, {
 } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { Virtuoso } from 'react-virtuoso';
+import { VoidIllustration } from '@spout/shared/assets';
 import { Skeleton } from '@spout/toolkit';
-import MessageDivider from './MessageDivider';
-import Message from './Message';
 import { generateItems, Item, Divider, group } from './utils/messages';
 import { DiscussionMessagesQuery } from './__generated__/index.generated';
 import { Message_Message } from '../../utils/__generated__/fragments.generated';
 import { OptimisticMessage as OptimisticMessageType } from './utils/messagesStore';
 import { MeQuery } from './__generated__/MessageComposer.generated';
-import OptimisticMessage from './OptimisticMessage';
 import { useStore } from './utils/messagesStore';
 import { UserInfoFragment } from '../../utils/fragments';
+import { EmptyFallback } from '../../../../shared/components';
+import OptimisticMessage from './OptimisticMessage';
+import MessageDivider from './MessageDivider';
+import Message from './Message';
 
 const isOptimistic = (message: Item) =>
   'optimisticId' in message && message.optimisticId < 0;
@@ -107,8 +109,19 @@ const MessageList = ({ discussionId, messages, hasNext, next }: Props) => {
 
   useEffect(() => () => clearTimeout(timeoutRef.current), []);
 
+  if (!items.length) {
+    return (
+      <EmptyFallback
+        heading="No messages"
+        body="Be the first to start the discussion by typing a message below."
+        icon={<VoidIllustration className="w-full h-64 mb-4 ml-10" />}
+      />
+    );
+  }
+
   // TODO: Create a 'Jump to Present' footer.
   // TODO: Look into using ScrollSeekPlaceholder for performance improvement.
+  // TODO: Look into using React Virtual.
   return (
     <Virtuoso
       data={items}

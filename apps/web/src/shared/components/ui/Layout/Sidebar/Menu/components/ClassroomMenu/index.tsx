@@ -50,7 +50,7 @@ const ClassroomMenu = ({ classrooms }: Props) => {
       <Menu.Item
         type="button"
         variant="info"
-        onClick={() => setCurrentModal('create')}
+        onClick={() => setCurrentModal('create-classroom')}
       >
         Create Classroom
       </Menu.Item>

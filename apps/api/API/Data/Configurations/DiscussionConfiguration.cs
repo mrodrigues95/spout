@@ -1,4 +1,4 @@
-﻿using API.Data.Entities;
+using API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,7 +8,7 @@ namespace API.Data.Configurations {
             builder.HasKey(d => d.Id);
 
             builder.Property(d => d.Name)
-                .HasMaxLength(50);
+                .HasMaxLength(64);
 
             builder.Property(d => d.CreatedAt)
                 .HasDefaultValueSql("timezone('UTC', now())");

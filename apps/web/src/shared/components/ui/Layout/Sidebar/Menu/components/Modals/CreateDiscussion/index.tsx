@@ -7,8 +7,8 @@ import { MenuContext } from '../../../MenuProvider';
 import { useIsRedirecting } from '../../../../../../../../hooks/useIsRedirecting';
 import { query as ClassroomsQuery } from '../../../../Menu';
 import {
-  CreateClassroomMutation,
-  CreateClassroomMutationVariables,
+  CreateDiscussionMutation,
+  CreateDiscussionMutationVariables,
 } from './__generated__/index.generated';
 import useToast from '../../../../../../Toast';
 
@@ -17,34 +17,40 @@ const schema = object({
 });
 
 const mutation = gql`
-  mutation CreateClassroomMutation($input: CreateClassroomInput!) {
-    createClassroom(input: $input) {
-      classroom {
+  mutation CreateDiscussionMutation($input: CreateDiscussionInput!) {
+    createDiscussion(input: $input) {
+      discussion {
         id
+      }
+      userErrors {
+        message
+        code
       }
     }
   }
 `;
 
-const CreateClassroom = () => {
+const CreateDiscussion = () => {
   const router = useRouter();
   const isRedirecting = useIsRedirecting();
   const { handleError } = useToast();
 
-  const [createClassroom, result] = useMutation<
-    CreateClassroomMutation,
-    CreateClassroomMutationVariables
+  const [createDiscussion, result] = useMutation<
+    CreateDiscussionMutation,
+    CreateDiscussionMutationVariables
   >(mutation, {
     onError: (error) => handleError(error),
-    onCompleted: ({ createClassroom }) => {
-      router.push(`/classrooms/${createClassroom.classroom.id}`);
+    onCompleted: ({ createDiscussion }) => {
+      router.push(`/discussion/${createDiscussion.discussion?.id}`);
     },
     refetchQueries: [ClassroomsQuery],
-    awaitRefetchQueries: true
+    awaitRefetchQueries: true,
   });
 
-  const { currentModal, setCurrentModal } = useContext(MenuContext)!;
-  const isOpen = currentModal === 'create-classroom';
+  const { currentModal, setCurrentModal, selectedClassroom } = useContext(
+    MenuContext
+  )!;
+  const isOpen = currentModal === 'create-discussion';
 
   const form = useZodForm({
     schema,
@@ -56,19 +62,21 @@ const CreateClassroom = () => {
       <Form
         form={form}
         onSubmit={({ name }) =>
-          createClassroom({ variables: { input: { name } } })
+          createDiscussion({
+            variables: { input: { name, classroomId: selectedClassroom!.id! } },
+          })
         }
       >
         <Modal.Content>
           <Modal.Header
-            title="Create Your Classroom"
-            description="Classrooms help you better manage your discussions."
+            title="Create Discussion"
+            description="Discussions encourage collaboration between classroom participants."
             dismiss
           />
           <Modal.Body>
             <Form.Input
-              label="Classroom Name"
-              placeholder="PROG3120 - Programming Fundamentals"
+              label="Discussion Name"
+              placeholder="Exam Help"
               {...form.register('name')}
             />
           </Modal.Body>
@@ -78,7 +86,7 @@ const CreateClassroom = () => {
               size="sm"
               className="font-semibold"
             >
-              Create Classroom
+              Create Discussion
             </Form.SubmitButton>
           </Modal.Footer>
         </Modal.Content>
@@ -87,4 +95,4 @@ const CreateClassroom = () => {
   );
 };
 
-export default CreateClassroom;
+export default CreateDiscussion;

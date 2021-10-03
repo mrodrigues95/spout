@@ -1,12 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace API.Data.Entities {
     public class Classroom {
+        private string? _name;
+
         public int Id { get; set; }
         [Required] public Guid Guid { get; set; } = Guid.NewGuid();
-        [Required] public string? Name { get; set; }
+        [Required] public string? Name {
+            get => _name;
+            set { _name = value?.Trim(); }
+        }
         [Required] public int StateId { get; set; }
         [Required] public State? State { get; set; }
         public DateTime? DeletedAt { get; set; }

@@ -30,8 +30,7 @@ namespace API.Extensions {
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
             // Add FluentValidation validators.
-            services
-                .AddValidatorsFromAssemblyContaining<CreateClassroomInputValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateClassroomInputValidator>();
 
             // Add GraphQL core services.
             var gql = services.AddGraphQLServer();

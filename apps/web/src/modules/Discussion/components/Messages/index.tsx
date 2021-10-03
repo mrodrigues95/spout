@@ -1,9 +1,11 @@
-import { gql, useQuery } from '@apollo/client';
 import { useCallback, useEffect, useMemo } from 'react';
+import { gql, useQuery } from '@apollo/client';
 import { FeelingBlueIllustration } from '@spout/shared/assets';
 import { Spinner } from '@spout/toolkit';
 import { ErrorFallback } from '../../../../shared/components';
 import { useStore } from './utils/messagesStore';
+import { MessageFragment, UserInfoFragment } from '../../utils/fragments';
+import { updateMessagesQuery } from './../../utils/updateMessagesQuery';
 import {
   DiscussionMessagesQuery,
   MeQuery,
@@ -12,8 +14,6 @@ import {
 } from './__generated__/index.generated';
 import MessageList from './MessageList';
 import MessageComposer from './MessageComposer';
-import { MessageFragment, UserInfoFragment } from '../../utils/fragments';
-import { updateMessagesQuery } from './../../utils/updateMessagesQuery';
 
 // TODO: Maybe use `before` instead?
 export const query = gql`
@@ -140,7 +140,6 @@ const Messages = ({ discussionId }: Props) => {
     return [...messagesToSendEdges, ...edges];
   }, [data?.discussionById.messages?.edges, messagesToSend]);
 
-  // TODO: Handle empty state.
   return (
     <div className="flex flex-col absolute inset-0 border border-transparent sm:shadow-container sm:rounded-md">
       {loading && !data && <Spinner size="sm" />}

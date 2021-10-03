@@ -50,7 +50,7 @@ const DiscussionMenu = ({ discussions }: Props) => {
       <Menu.Item
         type="button"
         variant="info"
-        onClick={() => console.log('Create a discussion clicked!')}
+        onClick={() => setCurrentModal('create-discussion')}
       >
         Create Discussion
       </Menu.Item>

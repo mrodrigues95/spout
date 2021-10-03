@@ -100,6 +100,18 @@ export type CreateClassroomPayload = {
   query: Query;
 };
 
+export type CreateDiscussionInput = {
+  classroomId: Scalars['ID'];
+  name: Scalars['String'];
+};
+
+export type CreateDiscussionPayload = {
+  __typename?: 'CreateDiscussionPayload';
+  discussion?: Maybe<Discussion>;
+  userErrors?: Maybe<Array<UserError>>;
+  query: Query;
+};
+
 
 export type DelLog = {
   __typename?: 'DelLog';
@@ -295,6 +307,7 @@ export type Mutation = {
   joinClassroom: JoinClassroomPayload;
   createClassroomInvite: CreateClassroomInvitePayload;
   sendDiscussionMessage: SendDiscussionMessagePayload;
+  createDiscussion: CreateDiscussionPayload;
   signUp: AuthPayload;
   login: AuthPayload;
   logout: AuthPayload;
@@ -323,6 +336,11 @@ export type MutationCreateClassroomInviteArgs = {
 
 export type MutationSendDiscussionMessageArgs = {
   input: SendDiscussionMessageInput;
+};
+
+
+export type MutationCreateDiscussionArgs = {
+  input: CreateDiscussionInput;
 };
 
 

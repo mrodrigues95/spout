@@ -1,4 +1,4 @@
-﻿using API.Data;
+using API.Data;
 using API.Data.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
