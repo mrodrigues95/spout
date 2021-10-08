@@ -3,10 +3,10 @@ import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import {
   HomeIcon,
-  MessagesIcon,
+  ChatAlt2Icon,
   CalendarIcon,
-  ClassroomIcon,
-} from '@spout/shared/assets';
+  CollectionIcon,
+} from '@spout/assets/icons/solid';
 import { Link, ButtonOrLinkProps } from '@spout/toolkit';
 import ProfileInfo from './ProfileInfo';
 import ActivityFeed from './ActivityFeed';
@@ -20,16 +20,7 @@ const SidebarContainer = ({
   className?: string;
   children: ReactNode;
 }) => {
-  return (
-    <div
-      className={clsx(
-        'w-full p-5 rounded-3xl text-gray-700 font-medium border-none bg-white lg:mb-8',
-        className
-      )}
-    >
-      {children}
-    </div>
-  );
+  return <div className={clsx('w-full', className)}>{children}</div>;
 };
 
 interface ClassroomMenuOptions {
@@ -97,37 +88,40 @@ const Sidebar = () => {
     <aside className="md:mr-4 lg:mr-0">
       <div
         className="hidden sticky top-0 max-h-screen h-full flex-col sm:py-3 sm:pl-3 md:flex lg:py-10 lg:pl-10"
-        style={{ maxWidth: '21.5rem' }}
+        style={{ maxWidth: '16rem' }}
       >
-        <SidebarContainer className="mb-10 px-5 pb-5 pt-2 xl:pt-5">
-          <ProfileInfo />
-        </SidebarContainer>
-        <SidebarContainer className="border lg:p-3">
-          <nav className="flex flex-col w-full space-y-3">
-            <SidebarItem href="/" icon={<HomeIcon />} label="Home" />
-            <SidebarItem
-              icon={<ClassroomIcon />}
-              label="Classrooms"
-              isMenu
-              classroomMenuOptions={{
-                pathname: '/discussion',
-              }}
-            />
-            <SidebarItem
-              href="/messages"
-              icon={<MessagesIcon />}
-              label="Messages"
-            />
-            <SidebarItem
-              href="/calendar"
-              icon={<CalendarIcon />}
-              label="Calendar"
-            />
-          </nav>
-        </SidebarContainer>
-        <SidebarContainer className="hidden lg:p-3 xl:block">
-          <ActivityFeed />
-        </SidebarContainer>
+        <div className="space-y-12">
+          <SidebarContainer>
+            <ProfileInfo />
+          </SidebarContainer>
+          <SidebarContainer>
+            <nav className="flex flex-col w-full space-y-3">
+              <SidebarItem
+                href="/"
+                icon={<HomeIcon className="w-6 h-6" />}
+                label="Home"
+              />
+              <SidebarItem
+                icon={<CollectionIcon className="w-6 h-6" />}
+                label="Classrooms"
+                isMenu
+                classroomMenuOptions={{
+                  pathname: '/discussion',
+                }}
+              />
+              <SidebarItem
+                href="/messages"
+                icon={<ChatAlt2Icon className="w-6 h-6" />}
+                label="Messages"
+              />
+              <SidebarItem
+                href="/calendar"
+                icon={<CalendarIcon className="w-6 h-6" />}
+                label="Calendar"
+              />
+            </nav>
+          </SidebarContainer>
+        </div>
         <div className="mt-auto">
           <Logout />
         </div>

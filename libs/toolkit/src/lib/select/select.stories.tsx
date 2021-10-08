@@ -1,6 +1,6 @@
 import { Story, Meta } from '@storybook/react';
 import { useState } from 'react';
-import { CheckIcon, ChevronIcon } from '@spout/shared/assets';
+import { CheckIcon, ChevronIcon } from '@spout/assets/icons/outline';
 import { Select, SelectProps } from './select';
 
 export default {

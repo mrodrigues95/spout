@@ -5,7 +5,7 @@ import {
   EmojiHappyIcon,
   PaperClipIcon,
   ChevronIcon,
-} from '@spout/shared/assets';
+} from '@spout/assets/icons/outline';
 import { Button } from '@spout/toolkit';
 import { formatNewMessage } from './utils/format';
 import { TextArea } from '../../../../shared/components';

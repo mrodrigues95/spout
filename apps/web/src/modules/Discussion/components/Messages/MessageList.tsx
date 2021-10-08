@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { Virtuoso } from 'react-virtuoso';
-import { VoidIllustration } from '@spout/shared/assets';
+import { VoidIllustration } from '@spout/assets/illustrations';
 import { Skeleton } from '@spout/toolkit';
 import { generateItems, Item, Divider, group } from './utils/messages';
 import { DiscussionMessagesQuery } from './__generated__/index.generated';

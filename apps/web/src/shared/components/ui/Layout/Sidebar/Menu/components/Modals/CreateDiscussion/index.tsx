@@ -22,10 +22,6 @@ const mutation = gql`
       discussion {
         id
       }
-      userErrors {
-        message
-        code
-      }
     }
   }
 `;
@@ -41,7 +37,7 @@ const CreateDiscussion = () => {
   >(mutation, {
     onError: (error) => handleError(error),
     onCompleted: ({ createDiscussion }) => {
-      router.push(`/discussion/${createDiscussion.discussion?.id}`);
+      router.push(`/discussion/${createDiscussion.discussion.id}`);
     },
     refetchQueries: [ClassroomsQuery],
     awaitRefetchQueries: true,

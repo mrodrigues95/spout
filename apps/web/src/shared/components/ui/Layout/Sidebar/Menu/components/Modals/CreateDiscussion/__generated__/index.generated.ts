@@ -9,12 +9,9 @@ export type CreateDiscussionMutation = (
   { __typename?: 'Mutation' }
   & { createDiscussion: (
     { __typename?: 'CreateDiscussionPayload' }
-    & { discussion?: Types.Maybe<(
+    & { discussion: (
       { __typename?: 'Discussion' }
       & Pick<Types.Discussion, 'id'>
-    )>, userErrors?: Types.Maybe<Array<(
-      { __typename?: 'UserError' }
-      & Pick<Types.UserError, 'message' | 'code'>
-    )>> }
+    ) }
   ) }
 );

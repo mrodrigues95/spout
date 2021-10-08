@@ -1,6 +1,6 @@
 import { ComponentPropsWithRef, forwardRef, useState } from 'react';
 import clsx from 'clsx';
-import { SearchIcon } from '@spout/shared/assets';
+import { SearchIcon } from '@spout/assets/icons/outline';
 import { Button } from '@spout/toolkit';
 import { useMediaQuery, MEDIA_QUERIES } from '../../../../shared/hooks';
 

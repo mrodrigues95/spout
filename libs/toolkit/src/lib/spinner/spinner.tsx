@@ -1,5 +1,5 @@
 import { ComponentProps } from 'react';
-import { LoadingIcon } from '@spout/shared/assets';
+import { LoadingIcon } from '@spout/assets/icons/outline';
 import clsx from 'clsx';
 
 const styles = {

@@ -107,8 +107,7 @@ export type CreateDiscussionInput = {
 
 export type CreateDiscussionPayload = {
   __typename?: 'CreateDiscussionPayload';
-  discussion?: Maybe<Discussion>;
-  userErrors?: Maybe<Array<UserError>>;
+  discussion: Discussion;
   query: Query;
 };
 

@@ -8,7 +8,7 @@ import {
   useState,
   useEffect,
 } from 'react';
-import { usePopper } from '@spout/shared/utils';
+import { usePopper } from '@spout/utils';
 import { Portal } from '@headlessui/react';
 import { Placement } from '@popperjs/core';
 import { AnimatePresence, motion, Variants } from 'framer-motion';

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { NotificationsIcon, HamburgerMenuIcon } from '@spout/shared/assets';
+import { NotificationsIcon, HamburgerMenuIcon } from '@spout/assets/icons/outline';
 import { Button, Tooltip } from '@spout/toolkit';
 import Search from '../Search';
 
@@ -43,7 +43,7 @@ const ContainerHeader = ({
               scheme="gray"
               className="md:ml-2"
             >
-              <NotificationsIcon className="w-4 h-4 md:w-8 md:h-8" />
+              <NotificationsIcon className="w-4 h-4 md:w-6 md:h-6" />
             </Button>
           </Tooltip>
         </div>

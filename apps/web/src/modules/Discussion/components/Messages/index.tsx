@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { gql, useQuery } from '@apollo/client';
-import { FeelingBlueIllustration } from '@spout/shared/assets';
+import { FeelingBlueIllustration } from '@spout/assets/illustrations';
 import { Spinner } from '@spout/toolkit';
 import { ErrorFallback } from '../../../../shared/components';
 import { useStore } from './utils/messagesStore';

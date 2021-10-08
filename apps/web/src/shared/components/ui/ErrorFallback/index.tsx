@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { SparklesIcon } from '@spout/shared/assets';
+import { SparklesIcon } from '@spout/assets/icons/outline';
 import { EmptyState, EmptyStateProps, Button } from '@spout/toolkit';
 
 interface Props extends Omit<EmptyStateProps, 'heading' | 'icon'> {

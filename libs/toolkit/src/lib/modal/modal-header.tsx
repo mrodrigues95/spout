@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Dialog } from '@headlessui/react';
-import { XIcon } from '@spout/shared/assets';
+import { XIcon } from '@spout/assets/icons/outline';
 import clsx from 'clsx';
 import { ModalContext } from './modal';
 import { Button } from '../button';

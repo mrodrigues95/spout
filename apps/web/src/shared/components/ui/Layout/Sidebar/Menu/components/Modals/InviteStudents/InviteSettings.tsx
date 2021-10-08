@@ -1,6 +1,6 @@
 import { Controller, FieldValues, UseFormReturn } from 'react-hook-form';
 import { hoursToSeconds, minutesToSeconds } from 'date-fns';
-import { CheckIcon, ChevronIcon } from '@spout/shared/assets';
+import { CheckIcon, ChevronIcon } from '@spout/assets/icons/outline';
 import { Select } from '@spout/toolkit';
 
 type MaxAge = { label: string; value: number };

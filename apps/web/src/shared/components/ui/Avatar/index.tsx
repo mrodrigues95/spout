@@ -15,13 +15,13 @@ const Avatar = ({
 }: Props) => {
   return (
     <div
-      className={clsx('flex-shrink-0 relative w-10 h-10', containerClassName)}
+      className={clsx('relative flex-shrink-0 w-10 h-10', containerClassName)}
     >
       <Image
         src={url}
         alt="Picture of user"
         role="img"
-        objectFit="cover"
+        objectFit="contain"
         layout="fill"
         className={clsx(rounded && 'rounded-full')}
         {...props}

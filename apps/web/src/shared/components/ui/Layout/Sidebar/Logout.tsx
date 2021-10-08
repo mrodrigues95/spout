@@ -33,6 +33,7 @@ const Logout = () => {
 
   return (
     <Button
+      className="!font-bold"
       size="xl"
       rounded="xxl"
       scheme="gray"

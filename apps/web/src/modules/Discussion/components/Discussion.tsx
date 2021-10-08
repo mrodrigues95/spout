@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { DiscussionQuery } from '../components/__generated__/Discussion.generated';
-import { FeelingBlueIllustration } from '@spout/shared/assets';
+import { FeelingBlueIllustration } from '@spout/assets/illustrations';
 import { Spinner } from '@spout/toolkit';
 import { Layout, ErrorFallback, Container } from '../../../shared/components';
 import DiscussionContainer from './DiscussionContainer';

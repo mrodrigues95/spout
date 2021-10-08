@@ -2,7 +2,7 @@ import { Fragment, ReactNode, useContext } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { Popover, Transition, Portal } from '@headlessui/react';
 import { Spinner, Button, ButtonOrLinkProps } from '@spout/toolkit';
-import { usePopper } from '@spout/shared/utils';
+import { usePopper } from '@spout/utils';
 import { ClassroomsQuery } from './__generated__/index.generated';
 import {
   Classroom,

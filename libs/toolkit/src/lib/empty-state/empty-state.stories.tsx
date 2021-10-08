@@ -1,5 +1,5 @@
 import { Story, Meta } from '@storybook/react';
-import { FeelingBlueIllustration } from '@spout/shared/assets';
+import { FeelingBlueIllustration } from '@spout/assets/illustrations';
 import { EmptyState, EmptyStateProps } from './empty-state';
 import { Button } from '../button';
 
