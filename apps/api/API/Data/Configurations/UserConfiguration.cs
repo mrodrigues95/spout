@@ -1,4 +1,4 @@
-﻿using API.Data.Entities;
+using API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -33,7 +33,11 @@ namespace API.Data.Configurations {
             
             builder.HasMany(u => u.Invites)
                 .WithOne(ui => ui.User!)
-                .HasForeignKey(ui => ui.UserId);          
+                .HasForeignKey(ui => ui.UserId);
+
+            builder.HasMany(u => u.FileUploads)
+                .WithOne(f => f.UploadedBy!)
+                .HasForeignKey(f => f.UploadedById);          
 
             builder.HasOne(u => u.State)
                 .WithMany(s => s!.Users)

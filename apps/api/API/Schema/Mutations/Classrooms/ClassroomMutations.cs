@@ -55,7 +55,8 @@ namespace API.Schema.Mutations.Classrooms {
                     && x.IsInviter, cancellationToken);
 
             if (!IsValid(classroomInvite?.Invite)) {
-                return new JoinClassroomPayload(new UserError("This invite has expired.", "INVITE_EXPIRED"));
+                return new JoinClassroomPayload(
+                    new UserError("This invite has expired.", "INVITE_EXPIRED"));
             }
 
             var invite = classroomInvite!.Invite!;
@@ -63,7 +64,8 @@ namespace API.Schema.Mutations.Classrooms {
 
             var isAlreadyInClassroom = classroom.Users.Any(x => x.UserId == userId);
             if (isAlreadyInClassroom) {
-                return new JoinClassroomPayload(classroom, new UserError("User is already in classroom.", "USER_ALREADY_EXISTS"));
+                return new JoinClassroomPayload(classroom,
+                    new UserError("User is already in classroom.", "USER_ALREADY_EXISTS"));
             }
 
             invite.Uses++;

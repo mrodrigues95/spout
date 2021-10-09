@@ -158,7 +158,7 @@ namespace API.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     guid = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: false),
+                    name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     state_id = table.Column<int>(type: "integer", nullable: false),
                     deleted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     del_log_id = table.Column<int>(type: "integer", nullable: true),
@@ -178,6 +178,29 @@ namespace API.Migrations
                         name: "fk_classrooms_states_state_id",
                         column: x => x.state_id,
                         principalTable: "states",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "file_uploads",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    uploaded_by_id = table.Column<int>(type: "integer", nullable: false),
+                    url = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: false),
+                    location = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: false),
+                    uploaded_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_file_uploads", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_file_uploads_users_uploaded_by_id",
+                        column: x => x.uploaded_by_id,
+                        principalTable: "users",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -329,7 +352,7 @@ namespace API.Migrations
                 {
                     classroom_id = table.Column<int>(type: "integer", nullable: false),
                     user_id = table.Column<int>(type: "integer", nullable: false),
-                    is_creator = table.Column<bool>(type: "boolean", nullable: true),
+                    is_creator = table.Column<bool>(type: "boolean", nullable: true, defaultValue: false),
                     joined_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
                 },
@@ -357,7 +380,7 @@ namespace API.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     guid = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     classroom_id = table.Column<int>(type: "integer", nullable: false),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     state_id = table.Column<int>(type: "integer", nullable: false),
@@ -488,6 +511,11 @@ namespace API.Migrations
                 column: "state_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_file_uploads_uploaded_by_id",
+                table: "file_uploads",
+                column: "uploaded_by_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_invites_code",
                 table: "invites",
                 column: "code",
@@ -563,6 +591,9 @@ namespace API.Migrations
 
             migrationBuilder.DropTable(
                 name: "classroom_users");
+
+            migrationBuilder.DropTable(
+                name: "file_uploads");
 
             migrationBuilder.DropTable(
                 name: "messages");

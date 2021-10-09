@@ -16,3 +16,7 @@ export { default as RefreshIcon } from './RefreshIcon';
 export { default as CheckIcon } from './CheckIcon';
 export { default as SelectorIcon } from './SelectorIcon';
 export { default as XIcon } from './XIcon';
+export { default as LogoutIcon } from './LogoutIcon';
+export { default as LockIcon } from './LockIcon';
+export { default as ColorSwatchIcon } from './ColorSwatchIcon';
+export { default as ProfileIcon } from './ProfileIcon';

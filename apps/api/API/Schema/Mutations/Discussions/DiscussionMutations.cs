@@ -8,10 +8,12 @@ using API.Extensions;
 using API.Data;
 using API.Schema.Common;
 using System.Threading;
+using HotChocolate.AspNetCore.Authorization;
 
 namespace API.Schema.Mutations.Discussions {
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class DiscussionMutations {
+        [Authorize]
         [UseApplicationDbContext]
         public async Task<SendDiscussionMessagePayload> SendDiscussionMessageAsync(
             SendDiscussionMessageInput input,
@@ -45,6 +47,7 @@ namespace API.Schema.Mutations.Discussions {
             return new SendDiscussionMessagePayload(message);
         }
 
+        [Authorize]
         [UseApplicationDbContext]
         public async Task<CreateDiscussionPayload> CreateDiscussionAsync(
             CreateDiscussionInput input,

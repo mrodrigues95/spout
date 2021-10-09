@@ -33,7 +33,11 @@ export const Spinner = ({
 }: SpinnerProps) => {
   return (
     <div
-      className={clsx('flex items-center', center && 'justify-center')}
+      className={clsx(
+        'flex items-center',
+        center && 'justify-center',
+        className
+      )}
       role="status"
       {...props}
     >
@@ -41,8 +45,7 @@ export const Spinner = ({
         className={clsx(
           'animate-spin',
           styles.size[size],
-          styles.scheme[scheme],
-          className
+          styles.scheme[scheme]
         )}
       />
       <span className="sr-only">{srLabel}</span>

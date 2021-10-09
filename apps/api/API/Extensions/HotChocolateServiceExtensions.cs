@@ -1,6 +1,7 @@
 using API.Schema.Mutations.Auth;
 using API.Schema.Mutations.Classrooms;
 using API.Schema.Mutations.Discussions;
+using API.Schema.Mutations.FileUploads;
 using API.Schema.Mutations.Sessions;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Discussions;
@@ -15,6 +16,7 @@ using FluentValidation;
 using HotChocolate;
 using HotChocolate.AspNetCore;
 using HotChocolate.Execution;
+using HotChocolate.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -66,6 +68,10 @@ namespace API.Extensions {
 
             gql
                 .AddTypeExtension<AuthMutations>();
+
+            gql
+                .AddTypeExtension<FileUploadMutations>()
+                .AddType<UploadType>();
 
             gql
                 .AddAuthorization()

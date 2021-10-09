@@ -1,6 +1,8 @@
 import { gql, useMutation } from '@apollo/client';
 import { Button } from '@spout/toolkit';
+import { LogoutIcon } from '@spout/assets/icons/outline';
 import { useAuthRedirect } from '../../../../../modules';
+import { useMediaQuery, MEDIA_QUERIES } from '../../../../hooks';
 import {
   LogoutMutation,
   LogoutMutationVariables,
@@ -16,6 +18,7 @@ const LOGOUT_MUTATION = gql`
 
 const Logout = () => {
   const authRedirect = useAuthRedirect();
+  const isXL = useMediaQuery(MEDIA_QUERIES.XL);
   const [logout] = useMutation<LogoutMutation, LogoutMutationVariables>(
     LOGOUT_MUTATION,
     {
@@ -34,14 +37,14 @@ const Logout = () => {
   return (
     <Button
       className="!font-bold"
-      size="xl"
-      rounded="xxl"
+      size={isXL ? 'xl' : 'sm'}
+      rounded="xl"
       scheme="gray"
       variant="ghost"
       fullWidth
       onClick={removeSession}
     >
-      Logout
+      {isXL ? 'Logout' : <LogoutIcon className="w-8 h-8" />}
     </Button>
   );
 };

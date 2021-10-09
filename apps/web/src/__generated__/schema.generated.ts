@@ -217,6 +217,17 @@ export type DiscussionsEdge = {
   node: Discussion;
 };
 
+export type FileUpload = {
+  __typename?: 'FileUpload';
+  id: Scalars['Int'];
+  uploadedById: Scalars['Int'];
+  uploadedBy: User;
+  url: Scalars['String'];
+  location: Scalars['String'];
+  uploadedAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
+
 export type Invite = {
   __typename?: 'Invite';
   id: Scalars['Int'];
@@ -523,6 +534,7 @@ export type User = Node & {
   updatedAt: Scalars['DateTime'];
   messages: Array<Message>;
   invites: Array<ClassroomInvite>;
+  fileUploads: Array<FileUpload>;
   userName?: Maybe<Scalars['String']>;
   normalizedUserName?: Maybe<Scalars['String']>;
   normalizedEmail?: Maybe<Scalars['String']>;

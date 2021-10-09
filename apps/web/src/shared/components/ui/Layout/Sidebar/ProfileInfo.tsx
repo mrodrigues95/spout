@@ -20,10 +20,15 @@ const ProfileInfo = () => {
 
   return (
     <div className="flex items-center justify-center">
-      <Avatar url={getRandomAvatar()} containerClassName="xl:mr-3" rounded />
-      <div className="hidden w-full xl:flex items-center justify-between">
-        <div className="flex flex-col min-w-0 mr-3">
-          <p className="font-bold text-black truncate">{data?.me?.name}</p>
+      <Avatar
+        src={getRandomAvatar()}
+        name={data?.me?.name ?? 'My avatar'}
+        size="lg"
+        className="xl:mr-3"
+      />
+      <div className="hidden w-full min-w-0 items-center justify-between xl:flex">
+        <div className="flex flex-col min-w-0 mr-6">
+          <p className="font-bold text-sm text-black truncate">{data?.me?.name}</p>
           <p className="text-xs text-gray-400 font-medium truncate">
             {data?.me?.email}
           </p>

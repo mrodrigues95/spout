@@ -16,7 +16,7 @@ namespace API.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.5")
+                .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             modelBuilder.Entity("API.Data.Entities.Classroom", b =>
@@ -47,8 +47,8 @@ namespace API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(35)
-                        .HasColumnType("character varying(35)")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
                         .HasColumnName("name");
 
                     b.Property<int>("StateId")
@@ -128,7 +128,9 @@ namespace API.Migrations
                         .HasColumnName("classroom_id");
 
                     b.Property<bool?>("IsCreator")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
+                        .HasDefaultValue(false)
                         .HasColumnName("is_creator");
 
                     b.Property<DateTime>("JoinedAt")
@@ -244,8 +246,8 @@ namespace API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
                         .HasColumnName("name");
 
                     b.Property<int>("StateId")
@@ -274,6 +276,51 @@ namespace API.Migrations
                         .HasDatabaseName("ix_discussions_created_by_id_classroom_id");
 
                     b.ToTable("discussions");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.FileUpload", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
+                        .HasColumnName("location");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("timezone('UTC', now())");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("uploaded_at")
+                        .HasDefaultValueSql("timezone('UTC', now())");
+
+                    b.Property<int>("UploadedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("uploaded_by_id");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
+                        .HasColumnName("url");
+
+                    b.HasKey("Id")
+                        .HasName("pk_file_uploads");
+
+                    b.HasIndex("UploadedById")
+                        .HasDatabaseName("ix_file_uploads_uploaded_by_id");
+
+                    b.ToTable("file_uploads");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Invite", b =>
@@ -857,6 +904,18 @@ namespace API.Migrations
                     b.Navigation("State");
                 });
 
+            modelBuilder.Entity("API.Data.Entities.FileUpload", b =>
+                {
+                    b.HasOne("API.Data.Entities.User", "UploadedBy")
+                        .WithMany("FileUploads")
+                        .HasForeignKey("UploadedById")
+                        .HasConstraintName("fk_file_uploads_users_uploaded_by_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UploadedBy");
+                });
+
             modelBuilder.Entity("API.Data.Entities.Message", b =>
                 {
                     b.HasOne("API.Data.Entities.User", "CreatedBy")
@@ -1011,6 +1070,8 @@ namespace API.Migrations
             modelBuilder.Entity("API.Data.Entities.User", b =>
                 {
                     b.Navigation("Classrooms");
+
+                    b.Navigation("FileUploads");
 
                     b.Navigation("Invites");
 

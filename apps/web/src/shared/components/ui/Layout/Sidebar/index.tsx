@@ -8,8 +8,8 @@ import {
   CollectionIcon,
 } from '@spout/assets/icons/solid';
 import { Link, ButtonOrLinkProps } from '@spout/toolkit';
+import { useMediaQuery, MEDIA_QUERIES } from '../../../../hooks';
 import ProfileInfo from './ProfileInfo';
-import ActivityFeed from './ActivityFeed';
 import Logout from './Logout';
 import Menu from './Menu';
 
@@ -84,11 +84,13 @@ const SidebarItem = ({
 };
 
 const Sidebar = () => {
+  const isXL = useMediaQuery(MEDIA_QUERIES.XL);
+
   return (
-    <aside className="md:mr-4 lg:mr-0">
+    <aside className="hidden md:block md:p-4 xl:py-10 xl:pl-10 xl:pr-0">
       <div
-        className="hidden sticky top-0 max-h-screen h-full flex-col sm:py-3 sm:pl-3 md:flex lg:py-10 lg:pl-10"
-        style={{ maxWidth: '16rem' }}
+        className="sticky top-0 max-h-screen h-full flex flex-col"
+        style={{ maxWidth: isXL ? '14rem' : '4rem' }}
       >
         <div className="space-y-12">
           <SidebarContainer>

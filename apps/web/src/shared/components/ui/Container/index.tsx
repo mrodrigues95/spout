@@ -1,19 +1,32 @@
-import { ReactNode } from 'react';
-import { NotificationsIcon, HamburgerMenuIcon } from '@spout/assets/icons/outline';
+import { ComponentProps, ReactNode } from 'react';
+import clsx from 'clsx';
+import {
+  NotificationsIcon,
+  HamburgerMenuIcon,
+} from '@spout/assets/icons/outline';
 import { Button, Tooltip } from '@spout/toolkit';
 import Search from '../Search';
 
-const ContainerBody = ({ children }: { children: ReactNode }) => {
-  return <section className="relative flex-1">{children}</section>;
+interface ContainerBodyProps extends ComponentProps<'section'> {}
+
+const ContainerBody = ({
+  children,
+  className,
+  ...props
+}: ContainerBodyProps) => {
+  return (
+    <section className={clsx('relative flex-1', className)} {...props}>
+      {children}
+    </section>
+  );
 };
 
-const ContainerHeader = ({
-  title,
-  children,
-}: {
+interface ContainerHeaderProps {
   title?: string;
   children?: ReactNode;
-}) => {
+}
+
+const ContainerHeader = ({ title, children }: ContainerHeaderProps) => {
   return (
     <section className="flex flex-col justify-between border-b border-gray-200 p-3 sm:border-none sm:p-0 sm:mb-3 lg:mb-6">
       <div className="flex items-center justify-between sm:mb-2">
@@ -55,9 +68,14 @@ const ContainerHeader = ({
   );
 };
 
-const Container = ({ children }: { children: ReactNode }) => {
+interface ContainerProps extends ComponentProps<'main'> {}
+
+const Container = ({ children, className, ...props }: ContainerProps) => {
   return (
-    <main className="flex flex-col flex-1 w-full sm:p-3 lg:p-10">
+    <main
+      className={clsx('flex flex-col flex-1 w-full sm:p-4 xl:p-10', className)}
+      {...props}
+    >
       {children}
     </main>
   );

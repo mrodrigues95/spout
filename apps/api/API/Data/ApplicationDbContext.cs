@@ -1,4 +1,4 @@
-﻿using API.Data.Entities;
+using API.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +19,7 @@ namespace API.Data {
         public DbSet<State> States { get; set; } = default!;
         public DbSet<DelLogType> DelLogTypes { get; set; } = default!;
         public DbSet<DelLog> DelLogs { get; set; } = default!;
+        public DbSet<FileUpload> FileUploads { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);

@@ -34,8 +34,8 @@ const Message = ({ message, optimisticOpts, isLast }: Props) => {
           optimisticOpts?.loading ? 'opacity-50' : 'opacity-100'
         )}
       >
-        <div className="flex flex-1">
-          <Avatar url={avatar} containerClassName="h-5 w-5" rounded />
+        <div className="relative flex flex-1">
+          <Avatar src={avatar} aria-hidden="true" />
           <div className="flex flex-col w-full ml-2">
             <div>
               <span className="font-bold text-gray-900">

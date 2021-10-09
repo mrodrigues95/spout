@@ -31,6 +31,16 @@
     },
     "lint": {
       "executor": "@nx-dotnet/core:format"
+    },
+    "migrations-add": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "dotnet ef migrations add {args.name} --project=API",
+          "dotnet ef database update --project=API"
+        ],
+        "cwd": "apps/api"
+      }
     }
   }
 }
