@@ -18,7 +18,7 @@ namespace API.Infrastructure {
             _cloudinary = new Cloudinary(account);
         }
 
-        public async Task<FileUploadResult?> UploadFile(
+        public async Task<FileUploadResult> UploadFile(
             IFile file,
             CancellationToken cancellationToken) {
             if (file.Length > 0) {
@@ -32,7 +32,7 @@ namespace API.Infrastructure {
 
                 if (uploadResult.Error != null) {
                     return new FileUploadResult {
-                        Error = uploadResult.Error.Message,
+                        Error = uploadResult.Error,
                         HasError = true
                     };
                 }
@@ -44,7 +44,10 @@ namespace API.Infrastructure {
                 };
             }
 
-            return null;
+            return new FileUploadResult {
+                Error = new Error { Message = "Invalid file length." },
+                HasError = true
+            };
         }
     }
 
@@ -57,7 +60,7 @@ namespace API.Infrastructure {
     public class FileUploadResult {
         public string? PublicId { get; set; }
         public string? Url { get; set; }
-        public string? Error { get; set; }
+        public Error? Error { get; set; }
         public bool HasError { get; set; }
     }
 }

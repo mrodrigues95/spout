@@ -1,3 +1,5 @@
+export * from './lib/file-picker';
+export * from './lib/photo-cropper';
 export * from './lib/select';
 export * from './lib/empty-state';
 export * from './lib/modal';

@@ -1,18 +1,18 @@
+import { useMemo } from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import {
   ApolloClient,
   from,
-  HttpLink,
   InMemoryCache,
   QueryOptions,
   split,
 } from '@apollo/client';
-import { onError } from '@apollo/client/link/error';
 import {
   getMainDefinition,
   relayStylePagination,
 } from '@apollo/client/utilities';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { useMemo } from 'react';
+import { createUploadLink } from 'apollo-upload-client';
+import { onError } from '@apollo/client/link/error';
 import { createWSLink } from './websockets';
 
 let apolloClient: ApolloClient<any>;
@@ -70,7 +70,9 @@ export const createApolloClient = ({
   const ssrMode = typeof window === 'undefined';
   let nextClient = apolloClient;
 
-  const httpLink = new HttpLink({
+  // NOTE: With `apollo-upload-client`, only one terminating link can be registered
+  // which means we need to use `createUploadLink` instead of `httpLink`.
+  const uploadLink = createUploadLink({
     // When running in Docker, we need to expose the graphql endpoint
     // to the browser environment outside of Docker for SSR and client requests.
     // See: https://github.com/apollographql/apollo-link/issues/375
@@ -83,7 +85,7 @@ export const createApolloClient = ({
 
   // Websocket link can only be instantiated on the client side.
   const splitLink = ssrMode
-    ? httpLink
+    ? uploadLink
     : split(
         ({ query }) => {
           const definition = getMainDefinition(query);
@@ -93,7 +95,7 @@ export const createApolloClient = ({
           );
         },
         createWSLink(),
-        httpLink
+        uploadLink
       );
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {

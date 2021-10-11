@@ -13,6 +13,10 @@ namespace API.Data.Configurations {
             builder.Property(u => u.Email)
                 .HasMaxLength(256);
 
+            builder.Property(u => u.AvatarUrl)
+                .HasMaxLength(2048)
+                .IsRequired(false);
+
             builder.Property(u => u.CreatedAt)
                 .HasDefaultValueSql("timezone('UTC', now())");
 

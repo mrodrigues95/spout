@@ -64,7 +64,7 @@ const Messages = ({ discussionId }: Props) => {
     error,
     refetch,
     subscribeToMore,
-    fetchMore
+    fetchMore,
   } = useQuery<DiscussionMessagesQuery>(query, {
     variables: { id: discussionId },
     // fetchPolicy: 'cache-and-network',

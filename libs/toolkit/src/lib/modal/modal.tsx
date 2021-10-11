@@ -1,4 +1,10 @@
-import { ComponentProps, createContext, Fragment, ReactNode } from 'react';
+import {
+  ComponentProps,
+  createContext,
+  Fragment,
+  MutableRefObject,
+  ReactNode,
+} from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { ModalHeader } from './modal-header';
 import { ModalFooter } from './modal-footer';
@@ -33,6 +39,7 @@ export interface ModalProps extends ComponentProps<'div'> {
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
+  initialFocus?: MutableRefObject<HTMLElement | null>;
   transition?: keyof typeof transitions;
 }
 
@@ -46,6 +53,7 @@ export const Modal = ({
   children,
   className,
   transition = 'scale',
+  initialFocus,
   ...props
 }: ModalProps) => {
   return (
@@ -55,6 +63,7 @@ export const Modal = ({
           as="div"
           className="z-50 fixed inset-0 flex items-center justify-center"
           onClose={onClose}
+          initialFocus={initialFocus}
           {...props}
         >
           {children}

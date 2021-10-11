@@ -10,24 +10,73 @@ using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
 
 namespace API.Schema.Mutations.FileUploads {
+    // TODO: Move uploading files to a REST api.
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class FileUploadMutations {
         [Authorize]
         [UseApplicationDbContext]
-        public async Task<FileUploadPayload> UploadAsync(
-        FileUploadInput input,
-        [GlobalState] int userId,
-        [Service] IFileManager fmgr,
-        [ScopedService] ApplicationDbContext ctx,
-        CancellationToken cancellationToken) {
-            var result = await fmgr.UploadFile(input.File, cancellationToken);
+        public async Task<UploadPayload> UploadAsync(
+            UploadInput input,
+            [GlobalState] int userId,
+            [Service] IFileManager fmgr,
+            [ScopedService] ApplicationDbContext ctx,
+            CancellationToken cancellationToken) {
+            var result = await UploadToCloudindaryAndSaveChangesAsync(
+                input.File,
+                userId,
+                ctx,
+                fmgr,
+                cancellationToken);
 
-            if (result is null) {
-                return new FileUploadPayload(
-                    new UserError("Invalid file length.", "INVALID_FILE_LENGTH"));
-            } else if (result.HasError) {
-                return new FileUploadPayload(
-                    new UserError(result.Error!, "CLOUDINARY_ERROR"));
+            if (result.UserError != null) {
+                return new UploadPayload(result.UserError);
+            }           
+
+            return new UploadPayload(result.FileUpload!);
+        }
+
+        [Authorize]
+        [UseApplicationDbContext]
+        public async Task<UpdateAvatarPayload> UpdateAvatarAsync(
+            UpdateAvatarInput input,
+            [GlobalState] int userId,
+            [Service] IFileManager fmgr,
+            [ScopedService] ApplicationDbContext ctx,
+            CancellationToken cancellationToken) {
+            var user = await ctx.Users.FindAsync(
+                new object[] { userId },
+                cancellationToken);
+
+            var result = await UploadToCloudindaryAndSaveChangesAsync(
+                input.File,
+                userId,
+                ctx,
+                fmgr,
+                cancellationToken);
+
+            if (result.UserError != null) {
+                return new UpdateAvatarPayload(result.UserError);
+            }
+
+            user.AvatarUrl = result.FileUpload!.Url;
+            await ctx.SaveChangesAsync(cancellationToken);
+
+            return new UpdateAvatarPayload(user);
+        }
+
+        private async Task<Result> UploadToCloudindaryAndSaveChangesAsync(
+            IFile file,
+            int userId,
+            ApplicationDbContext ctx,
+            IFileManager fmgr,
+            CancellationToken cancellationToken) {
+            var result = await fmgr.UploadFile(file, cancellationToken);
+
+            if (result.HasError) {
+                return new Result {
+                    UserError = new UserError(
+                        result.Error!.Message, "ERROR_UPLOADING_FILE")
+                };
             }
 
             var upload = new FileUpload {
@@ -39,7 +88,12 @@ namespace API.Schema.Mutations.FileUploads {
             ctx.FileUploads.Add(upload);
             await ctx.SaveChangesAsync(cancellationToken);
 
-            return new FileUploadPayload(upload);
+            return new Result { FileUpload = upload };
+        }
+
+        private class Result {
+            public FileUpload? FileUpload { get; set; }
+            public UserError? UserError { get; set; }
         }
     }
 }

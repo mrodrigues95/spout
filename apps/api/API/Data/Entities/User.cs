@@ -8,6 +8,7 @@ namespace API.Data.Entities {
         [Required] public Guid Guid { get; set; } = Guid.NewGuid();
         [Required] public string? Name { get; set; }
         [Required] public override string? Email { get; set; }
+        public string? AvatarUrl { get; set; }
         [Required] public int StateId { get; set; }
         public State? State { get; set; }
         [Required] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

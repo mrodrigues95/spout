@@ -20,3 +20,4 @@ export { default as LogoutIcon } from './LogoutIcon';
 export { default as LockIcon } from './LockIcon';
 export { default as ColorSwatchIcon } from './ColorSwatchIcon';
 export { default as ProfileIcon } from './ProfileIcon';
+export { default as PlusCircleIcon } from './PlusCircleIcon';

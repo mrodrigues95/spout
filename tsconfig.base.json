@@ -25,17 +25,17 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@spout/assets/illustrations": [
-        "libs/shared/assets/src/lib/illustrations/index.ts"
+      "@spout/assets/icons/outline": [
+        "libs/shared/assets/src/lib/icons/outline/index.ts"
       ],
       "@spout/assets/icons/solid": [
         "libs/shared/assets/src/lib/icons/solid/index.ts"
       ],
-      "@spout/assets/icons/outline": [
-        "libs/shared/assets/src/lib/icons/outline/index.ts"
+      "@spout/assets/illustrations": [
+        "libs/shared/assets/src/lib/illustrations/index.ts"
       ],
-      "@spout/utils": ["libs/shared/utils/src/index.ts"],
-      "@spout/toolkit": ["libs/toolkit/src/index.ts"]
+      "@spout/toolkit": ["libs/toolkit/src/index.ts"],
+      "@spout/utils": ["libs/shared/utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

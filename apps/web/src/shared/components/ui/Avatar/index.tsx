@@ -23,7 +23,7 @@ const Avatar = ({ src, name, size = 'md', className, ...props }: Props) => {
   return (
     <span
       className={clsx(
-        'relative inline-flex justify-center items-center flex-shrink-0 border-none rounded-full',
+        'relative inline-flex justify-center items-center flex-shrink-0 border-none',
         sizes[size],
         className
       )}
@@ -31,6 +31,7 @@ const Avatar = ({ src, name, size = 'md', className, ...props }: Props) => {
     >
       <Image
         src={src}
+        className="rounded-full"
         alt={name ?? ''}
         role="img"
         objectFit="contain"

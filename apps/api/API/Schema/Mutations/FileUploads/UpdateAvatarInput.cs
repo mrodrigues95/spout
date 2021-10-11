@@ -1,5 +1,5 @@
 using HotChocolate.Types;
 
 namespace API.Schema.Mutations.FileUploads {
-    public record FileUploadInput(IFile File);
+    public record UpdateAvatarInput(IFile File);
 }

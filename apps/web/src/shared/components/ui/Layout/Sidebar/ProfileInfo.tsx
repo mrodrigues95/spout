@@ -21,7 +21,7 @@ const ProfileInfo = () => {
   return (
     <div className="flex items-center justify-center">
       <Avatar
-        src={getRandomAvatar()}
+        src={data?.me?.avatarUrl ?? getRandomAvatar()}
         name={data?.me?.name ?? 'My avatar'}
         size="lg"
         className="xl:mr-3"

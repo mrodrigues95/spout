@@ -14,6 +14,8 @@ export type Scalars = {
   /** The `Short` scalar type represents non-fractional signed whole 16-bit numeric values. Short can represent values between -(2^15) and 2^15 - 1. */
   Short: any;
   UUID: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 
@@ -321,6 +323,8 @@ export type Mutation = {
   signUp: AuthPayload;
   login: AuthPayload;
   logout: AuthPayload;
+  upload: UploadPayload;
+  updateAvatar: UpdateAvatarPayload;
 };
 
 
@@ -366,6 +370,16 @@ export type MutationLoginArgs = {
 
 export type MutationLogoutArgs = {
   input: LogoutInput;
+};
+
+
+export type MutationUploadArgs = {
+  input: UploadInput;
+};
+
+
+export type MutationUpdateAvatarArgs = {
+  input: UpdateAvatarInput;
 };
 
 /** The node interface is implemented by entities that have a global unique identifier. */
@@ -520,6 +534,29 @@ export type SubscriptionOnDiscussionMessageReceivedArgs = {
 };
 
 
+export type UpdateAvatarInput = {
+  file: Scalars['Upload'];
+};
+
+export type UpdateAvatarPayload = {
+  __typename?: 'UpdateAvatarPayload';
+  user?: Maybe<User>;
+  userErrors?: Maybe<Array<UserError>>;
+  query: Query;
+};
+
+
+export type UploadInput = {
+  file: Scalars['Upload'];
+};
+
+export type UploadPayload = {
+  __typename?: 'UploadPayload';
+  fileUpload?: Maybe<FileUpload>;
+  userErrors?: Maybe<Array<UserError>>;
+  query: Query;
+};
+
 export type User = Node & {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -528,6 +565,7 @@ export type User = Node & {
   guid: Scalars['UUID'];
   name: Scalars['String'];
   email: Scalars['String'];
+  avatarUrl?: Maybe<Scalars['String']>;
   stateId: Scalars['Int'];
   state?: Maybe<State>;
   createdAt: Scalars['DateTime'];
@@ -560,6 +598,7 @@ export type UserSortInput = {
   guid?: Maybe<SortEnumType>;
   name?: Maybe<SortEnumType>;
   email?: Maybe<SortEnumType>;
+  avatarUrl?: Maybe<SortEnumType>;
   stateId?: Maybe<SortEnumType>;
   state?: Maybe<StateSortInput>;
   createdAt?: Maybe<SortEnumType>;

@@ -24,7 +24,10 @@ const Message = ({ message, optimisticOpts, isLast }: Props) => {
     message,
   ]);
 
-  const avatar = useMemo(() => getRandomAvatar(), []);
+  const avatar = useMemo(
+    () => message.createdBy.avatarUrl ?? getRandomAvatar(),
+    [message]
+  );
 
   return (
     <div className={clsx(isLast ? 'pt-1 pb-4' : 'py-1')}>

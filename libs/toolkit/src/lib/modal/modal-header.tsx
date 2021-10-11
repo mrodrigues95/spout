@@ -22,7 +22,7 @@ export const ModalHeader = ({
   titleProps,
   description,
   descriptionProps,
-  dismiss = false,
+  dismiss = true,
 }: ModalHeaderProps) => {
   const { onClose } = useContext(ModalContext)!;
 
