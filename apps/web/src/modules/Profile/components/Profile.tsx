@@ -48,14 +48,14 @@ const Profile = () => {
                   </h2>
                   <ProfileItems>
                     <ProfileItems.Item
-                      href="about"
+                      to="about"
                       icon={<ProfileIcon className="w-6 h-6 text-white" />}
                       colour="salmon"
                       title="About"
                       description="Let others know a little bit about yourself."
                     />
                     <ProfileItems.Item
-                      href="notifications"
+                      to="notifications"
                       icon={
                         <NotificationsIcon className="w-6 h-6 text-white" />
                       }
@@ -64,14 +64,14 @@ const Profile = () => {
                       description="Manage the way we send you all of the notifications and alerts."
                     />
                     <ProfileItems.Item
-                      href="privacy"
+                      to="privacy"
                       icon={<LockIcon className="w-6 h-6" />}
                       colour="yellow"
                       title="Privacy"
                       description="Control who can view your information."
                     />
                     <ProfileItems.Item
-                      href="appearance"
+                      to="appearance"
                       icon={<ColorSwatchIcon className="w-6 h-6 text-white" />}
                       colour="black"
                       title="Appearance"

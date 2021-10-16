@@ -11,15 +11,16 @@ const variants = {
 };
 
 interface ProfileItemProps {
-  href: string;
+  to: string;
   icon: ReactElement;
   colour: keyof typeof variants;
   title: string;
   description: string;
 }
 
+// TODO: Rename this to `ProfileNavigation`.
 const ProfileItem = ({
-  href,
+  to,
   icon,
   title,
   colour,
@@ -31,7 +32,7 @@ const ProfileItem = ({
   return (
     <li>
       <Link
-        href={href}
+        href={to}
         scheme="gray"
         variant="ghost"
         rounded="xxl"

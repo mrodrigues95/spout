@@ -118,14 +118,14 @@ const SignUpForm = () => {
           <Form.Input
             label="Password"
             placeholder="Password"
+            autoComplete="new-password"
             type="password"
-            autoComplete="password"
             {...form.register('password')}
           />
           <Form.Input
             label="Confirm password"
             placeholder="Confirm password"
-            autoComplete="password"
+            autoComplete="new-password"
             type="password"
             {...form.register('confirmPassword')}
           />

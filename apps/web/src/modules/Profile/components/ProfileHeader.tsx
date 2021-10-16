@@ -93,7 +93,7 @@ const ProfileHeader = ({ me }: Props) => {
               description="Use the cropper below to edit your new profile photo."
             />
             <Modal.Body>
-              {files.length > 0 && (
+              {files.length && (
                 <PhotoCropper
                   image={files[0].preview!}
                   setCropper={setCropper}

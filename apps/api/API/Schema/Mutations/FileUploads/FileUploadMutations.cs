@@ -47,6 +47,8 @@ namespace API.Schema.Mutations.FileUploads {
                 new object[] { userId },
                 cancellationToken);
 
+            // TODO: We should also remove the previous avatar from Cloudinary
+            // using the `PublicId`.
             var result = await UploadToCloudindaryAndSaveChangesAsync(
                 input.File,
                 userId,
