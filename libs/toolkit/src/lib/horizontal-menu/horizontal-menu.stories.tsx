@@ -23,13 +23,13 @@ const Template: Story<HorizontalMenuProps & { arrows: boolean }> = ({
   const [items] = useState(getItems);
 
   const LeftArrow = (
-    <HorizontalMenu.LeftArrow>
+    <HorizontalMenu.LeftArrow aria-label="Next">
       <ChevronIcon className="w-4 h-4 text-black" />
     </HorizontalMenu.LeftArrow>
   );
 
   const RightArrow = (
-    <HorizontalMenu.RightArrow>
+    <HorizontalMenu.RightArrow aria-label="Previous">
       <ChevronIcon className="w-4 h-4 text-black transform rotate-180" />
     </HorizontalMenu.RightArrow>
   );

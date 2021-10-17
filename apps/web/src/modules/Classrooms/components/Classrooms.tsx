@@ -1,7 +1,10 @@
-import { Layout } from '../../../shared/components';
+import { useRouter } from 'next/router';
+import ViewClassroom from './ViewClassroom';
 
 const Classrooms = () => {
-  return <Layout title={'Classroom'}>Classroom here</Layout>;
+  const router = useRouter();
+  
+  return <ViewClassroom classroomId={router.query.classroomId as string} />;
 };
 
 export default Classrooms;

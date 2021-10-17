@@ -25,7 +25,7 @@
       "files": ["*.ts", "*.tsx"],
       "extends": ["plugin:@nrwl/nx/typescript"],
       "rules": {
-        "@typescript-eslint/no-non-null-assertion": false
+        "@typescript-eslint/no-non-null-assertion": "off"
       }
     },
     {

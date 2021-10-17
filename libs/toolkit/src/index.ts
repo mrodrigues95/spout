@@ -1,3 +1,4 @@
+export * from './lib/card';
 export * from './lib/horizontal-menu';
 export * from './lib/file-picker';
 export * from './lib/photo-cropper';

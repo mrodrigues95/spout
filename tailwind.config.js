@@ -20,6 +20,7 @@ module.exports = {
   variants: {
     extend: {
       accessibility: ['hover', 'active'],
+      margin: ['hover', 'focus'],
     },
   },
   plugins: [

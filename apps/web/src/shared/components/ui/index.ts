@@ -8,5 +8,6 @@ export { default as ErrorFallback } from './ErrorFallback';
 export { default as EmptyFallback } from './EmptyFallback';
 export { default as InfiniteList } from './InfiniteList';
 export { default as Layout } from './Layout';
+export { default as Card } from './Card';
 
 export type { Props as InfiniteListProps } from './InfiniteList';

@@ -1,8 +1,8 @@
 import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { DiscussionQuery } from '../components/__generated__/Discussion.generated';
 import { FeelingBlueIllustration } from '@spout/assets/illustrations';
 import { Spinner } from '@spout/toolkit';
+import { DiscussionQuery } from '../components/__generated__/Discussion.generated';
 import { Layout, ErrorFallback, Container } from '../../../shared/components';
 import DiscussionContainer from './DiscussionContainer';
 
@@ -22,22 +22,20 @@ const Discussion = () => {
   });
 
   return (
-    <>
-      <Layout title={data?.discussionById.name ?? 'Discussion'}>
-        {loading && <Spinner size="sm" />}
-        {error && (
-          <Container>
-            <Container.Header />
-            <ErrorFallback
-              icon={<FeelingBlueIllustration className="w-full h-64" />}
-              heading="Sorry, we can't load this discussion right now."
-              action={refetch}
-            />
-          </Container>
-        )}
-        {data && <DiscussionContainer discussion={data.discussionById} />}
-      </Layout>
-    </>
+    <Layout title={data?.discussionById.name ?? 'Discussion'}>
+      {loading && <Spinner size="sm" />}
+      {error && (
+        <Container>
+          <Container.Header />
+          <ErrorFallback
+            icon={<FeelingBlueIllustration className="w-full h-64" />}
+            heading="Sorry, we can't load this discussion right now."
+            action={refetch}
+          />
+        </Container>
+      )}
+      {data && <DiscussionContainer discussion={data.discussionById} />}
+    </Layout>
   );
 };
 
