@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Story, Meta } from '@storybook/react';
-import { HorizontalMenu, HorizontalMenuProps } from './horizontal-menu';
 import { ChevronIcon } from '@spout/assets/icons/outline';
+import clsx from 'clsx';
+import { HorizontalMenu, HorizontalMenuProps } from './horizontal-menu';
 
 export default {
   component: HorizontalMenu,
@@ -18,6 +19,7 @@ const getItems = () =>
 
 const Template: Story<HorizontalMenuProps & { arrows: boolean }> = ({
   arrows,
+  showSeparatorsForIndexes = [],
   ...args
 }) => {
   const [items] = useState(getItems);
@@ -38,14 +40,19 @@ const Template: Story<HorizontalMenuProps & { arrows: boolean }> = ({
     <HorizontalMenu
       LeftArrow={arrows && LeftArrow}
       RightArrow={arrows && RightArrow}
+      itemClassName="flex"
       scrollContainerClassName="space-x-2"
+      separatorClassName={clsx(
+        showSeparatorsForIndexes.length && 'h-full ml-2 -mr-2 border border-black'
+      )}
+      showSeparatorsForIndexes={showSeparatorsForIndexes}
       {...args}
     >
       {items.map(({ id }) => (
         <button
           key={id}
           type="button"
-          className="p-4 bg-indigo-400 text-white rounded"
+          className={clsx('relative p-4 bg-indigo-400 text-white rounded')}
         >
           {id}
         </button>
@@ -58,4 +65,11 @@ export const Primary = Template.bind({});
 Primary.args = {
   arrows: true,
   hideScroll: true,
+};
+
+export const WithSeparators = Template.bind({});
+WithSeparators.args = {
+  arrows: true,
+  hideScroll: true,
+  showSeparatorsForIndexes: [0, 4],
 };

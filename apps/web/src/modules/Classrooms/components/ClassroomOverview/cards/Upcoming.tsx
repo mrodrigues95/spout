@@ -1,8 +1,8 @@
-import { ContentCard } from './cards';
+import { ClassroomContentCard } from './ClassroomCard';
 
 const Upcoming = () => {
   return (
-    <ContentCard
+    <ClassroomContentCard
       title="📅 Upcoming"
       description="You have an upcoming assignment due at 5:00pm"
     />

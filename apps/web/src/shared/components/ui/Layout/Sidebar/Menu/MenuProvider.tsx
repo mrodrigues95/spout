@@ -3,7 +3,7 @@ import { Classroom } from '../../../../../../__generated__/schema.generated';
 import { CreateClassroomInviteMutation } from './components/Modals/InviteStudents/__generated__/index.generated';
 
 type Menus = 'classroom' | 'discussion';
-type Modals = 'invite' | 'join' | 'create-classroom' | 'create-discussion';
+type Modals = 'join' | 'create-classroom';
 
 export type ClassroomInvite =
   | CreateClassroomInviteMutation['createClassroomInvite']['invite']

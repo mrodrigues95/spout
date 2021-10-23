@@ -4,7 +4,7 @@ interface Props<T extends ElementType> {
   as?: T;
 }
 
-export type CardProps<T extends ElementType = 'div'> = Props<T> &
+export type CardProps<T extends ElementType = any> = Props<T> &
   Omit<ComponentProps<T>, keyof Props<T>>;
 
 export const Card = <T extends ElementType = 'div'>({

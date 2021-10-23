@@ -1,6 +1,6 @@
 import { generateId } from '../../../../../shared/utils/generateId';
-import { ActionCard } from './cards';
-import { Props as OverviewProps } from '../';
+import { ClassroomActionCard } from './ClassroomCard';
+import { Props as OverviewProps } from '..';
 
 interface Props extends Pick<OverviewProps, 'classroom'> {}
 
@@ -9,7 +9,7 @@ const Invite = ({ classroom }: Props) => {
   const descId = `spout-classroom-invite-desc-${generateId()}`;
 
   return (
-    <ActionCard
+    <ClassroomActionCard
       aria-labelledby={labelId}
       aria-describedby={descId}
       title="✉️ Invite"

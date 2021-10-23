@@ -50,7 +50,7 @@ const ViewClassroom = ({ classroomId }: Props) => {
       {data && (
         <Container>
           <Container.Header title={data.classroomById.name} />
-          <Container.Body className="!flex-initial p-2 sm:p-0">
+          <Container.Body className="!flex-initial p-2 space-y-12 sm:p-0">
             <ClassroomOverview classroom={data.classroomById} />
           </Container.Body>
         </Container>

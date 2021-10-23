@@ -9,5 +9,6 @@ export { default as EmptyFallback } from './EmptyFallback';
 export { default as InfiniteList } from './InfiniteList';
 export { default as Layout } from './Layout';
 export { default as Card } from './Card';
+export { default as HorizontalNavigation } from './HorizontalNavigation';
 
 export type { Props as InfiniteListProps } from './InfiniteList';

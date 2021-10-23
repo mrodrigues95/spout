@@ -1,8 +1,8 @@
-import { ContentCard } from './cards';
+import { ClassroomContentCard } from './ClassroomCard';
 
 const Announcements = () => {
   return (
-    <ContentCard
+    <ClassroomContentCard
       title="📢 Announcements"
       description="TODO"
       className="col-span-2"

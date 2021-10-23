@@ -1,12 +1,12 @@
 import { generateId } from '../../../../../shared/utils/generateId';
-import { ActionCard } from './cards';
+import { ClassroomActionCard } from './ClassroomCard';
 
 const Settings = () => {
   const labelId = `spout-classroom-settings-label-${generateId()}`;
   const descId = `spout-classroom-settings-desc-${generateId()}`;
 
   return (
-    <ActionCard
+    <ClassroomActionCard
       href="/profile"
       aria-labelledby={labelId}
       aria-describedby={descId}

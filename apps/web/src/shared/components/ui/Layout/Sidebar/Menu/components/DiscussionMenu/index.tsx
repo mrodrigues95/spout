@@ -10,7 +10,7 @@ interface Props {
 }
 
 const DiscussionMenu = ({ discussions }: Props) => {
-  const { currentMenu, selectedClassroom, setCurrentModal } = useContext(
+  const { currentMenu, selectedClassroom } = useContext(
     MenuContext
   )!;
 
@@ -48,26 +48,11 @@ const DiscussionMenu = ({ discussions }: Props) => {
       </div>
       <Menu.Seperator />
       <Menu.Item
-        type="button"
+        href={`/classrooms/${selectedClassroom.id}`}
+        target="_blank"
         variant="info"
-        onClick={() => setCurrentModal('create-discussion')}
       >
-        Create Discussion
-      </Menu.Item>
-      <Menu.Item
-        type="button"
-        variant="info"
-        onClick={() => setCurrentModal('invite')}
-      >
-        Invite Students
-      </Menu.Item>
-      <Menu.Seperator />
-      <Menu.Item
-        type="button"
-        variant="danger"
-        onClick={() => console.log('Delete classroom clicked!')}
-      >
-        Delete Classroom
+        View Classroom
       </Menu.Item>
     </Transition.Child>
   );

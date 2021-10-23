@@ -31,13 +31,18 @@ const onWheel = (api: visibilityType, ev: WheelEvent) => {
   }
 };
 
-export interface HorizontalMenuProps extends ScrollingMenuProps {
+export interface HorizontalMenuProps
+  extends Omit<ScrollingMenuProps, 'separatorClassName'> {
   hideScroll?: boolean;
+  separatorClassName?: string;
+  showSeparatorsForIndexes?: number[];
 }
 
 export const HorizontalMenu = ({
-  hideScroll = true,
   scrollContainerClassName,
+  separatorClassName,
+  hideScroll = true,
+  showSeparatorsForIndexes = [],
   children,
   ...props
 }: HorizontalMenuProps) => {
@@ -53,9 +58,23 @@ export const HorizontalMenu = ({
     });
   };
 
-  // `itemId` is required in order to properly track items.
-  const childrenWithItemId = Children.map(children, (child) => {
-    return cloneElement(child, { itemId: child.key as string });
+  // This library doesn't support conditionally rendering certain separators
+  // so we handle that ourselves with a bit of a hacky
+  // solution using `showSeparatorsForIndexes`.
+  const childrenWithItemId = Children.map(children, (child, idx) => {
+    // `itemId` is required in order to properly track items.
+    return cloneElement(
+      <>
+        {child}
+        {showSeparatorsForIndexes.includes(idx) && (
+          <span
+            className={separatorClassName}
+            aria-hidden="true"
+          />
+        )}
+      </>,
+      { itemId: child.key as string }
+    );
   });
 
   return (
@@ -65,6 +84,7 @@ export const HorizontalMenu = ({
         onMouseDown={() => dragStart}
         onMouseUp={() => dragStop}
         onMouseMove={handleDrag}
+        wrapperClassName="relative"
         scrollContainerClassName={clsx(
           hideScroll && 'overflow-hidden',
           scrollContainerClassName

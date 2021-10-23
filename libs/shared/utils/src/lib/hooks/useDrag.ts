@@ -22,7 +22,7 @@ export const useDrag = () => {
   const dragMove = (ev: MouseEvent, cb: (posDif: number) => void) => {
     const newDiff = position.current - ev.clientX;
     const movedEnough = Math.abs(newDiff) > 5;
-
+    
     if (clicked && movedEnough) setDragging(true);
 
     if (dragging && movedEnough) {

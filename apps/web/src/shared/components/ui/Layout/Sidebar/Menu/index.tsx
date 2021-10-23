@@ -143,10 +143,8 @@ const BaseMenu = ({ menuButtonProps }: Props) => {
           </>
         )}
       </Popover>
-      {currentModal === 'invite' && <InviteStudents />}
       {currentModal === 'join' && <JoinClassroom />}
       {currentModal === 'create-classroom' && <CreateClassroom />}
-      {currentModal === 'create-discussion' && <CreateDiscussion />}
     </>
   );
 };

@@ -46,7 +46,7 @@ const BaseArrow = ({
       arrow === 'left' ? scrollPrev() : scrollNext();
       if (btnOnClick) btnOnClick(e);
     },
-    [arrow, scrollPrev, scrollNext]
+    [arrow, scrollPrev, scrollNext, btnOnClick]
   );
 
   const disabled = shouldDisable || btnDisabled;
@@ -56,7 +56,7 @@ const BaseArrow = ({
       disabled={disabled}
       onClick={onClick}
       className={clsx(
-        'relative inline-flex items-center justify-center disabled:opacity-0 disabled:pointer-events-none',
+        'inline-flex items-center justify-center disabled:opacity-0 disabled:pointer-events-none',
         className
       )}
       {...props}
