@@ -1,7 +1,6 @@
 import { ComponentProps, ReactElement } from 'react';
 import clsx from 'clsx';
-import { Link } from '@spout/toolkit';
-import { generateId } from './../../../shared/utils/generateId';
+import { Link, generateId } from '@spout/toolkit';
 
 const variants = {
   yellow: 'bg-yellow-400',

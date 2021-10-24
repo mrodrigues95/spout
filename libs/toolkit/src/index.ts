@@ -1,5 +1,5 @@
 export * from './lib/card';
-export * from './lib/horizontal-menu';
+export * from './lib/horizontal-navigation';
 export * from './lib/file-picker';
 export * from './lib/photo-cropper';
 export * from './lib/select';
@@ -11,3 +11,5 @@ export * from './lib/spinner';
 export * from './lib/skeleton';
 export * from './lib/badge';
 export * from './lib/button';
+
+export * from './utils';

@@ -1,4 +1,3 @@
-import { PlusCircleIcon } from '@spout/assets/icons/outline';
 import { Classroom_Classroom } from '../__generated__/ViewClassroom.generated';
 import {
   Settings,
@@ -8,7 +7,7 @@ import {
   Instructor,
   Participants,
 } from './cards';
-import { HorizontalNavigation } from '../../../../shared/components';
+import DiscussionsNavigation from './DiscussionsNavigation';
 
 export interface Props {
   classroom: Classroom_Classroom;
@@ -17,26 +16,7 @@ export interface Props {
 const ClassroomOverview = ({ classroom }: Props) => {
   return (
     <>
-      <HorizontalNavigation arrows showSeparatorsForIndexes={[0]}>
-        <>
-          {/* <button
-            key="create-discussion-button"
-            type="button"
-            className="h-full w-10 p-4 bg-indigo-400 text-white rounded-full transition duration-150 ease-in-out hover:rounded-xl"
-          >
-            <PlusCircleIcon className="w-4 h-4 text-black" />
-          </button> */}
-          {classroom.discussions.map((discussion) => (
-            <button
-              key={discussion.id}
-              type="button"
-              className="p-4 bg-indigo-400 text-white rounded-full transition duration-150 ease-in-out hover:rounded-xl"
-            >
-              test
-            </button>
-          ))}
-        </>
-      </HorizontalNavigation>
+      <DiscussionsNavigation classroom={classroom} />
       <div className="flex flex-col grid-rows-3 grid-flow-col gap-4 h-full md:grid">
         <Settings />
         <Invite classroom={classroom} />

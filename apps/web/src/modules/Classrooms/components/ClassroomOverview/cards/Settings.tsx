@@ -1,4 +1,4 @@
-import { generateId } from '../../../../../shared/utils/generateId';
+import { generateId } from '@spout/toolkit';
 import { ClassroomActionCard } from './ClassroomCard';
 
 const Settings = () => {

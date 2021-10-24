@@ -15,6 +15,9 @@ module.exports = {
       boxShadow: {
         container: '0px 4px 30px 0px rgba(0,0,0,0.06)',
       },
+      borderRadius: {
+        '100': '100%'
+      },
     },
   },
   variants: {

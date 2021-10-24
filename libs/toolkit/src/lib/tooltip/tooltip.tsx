@@ -7,11 +7,13 @@ import {
   useRef,
   useState,
   useEffect,
+  useMemo,
 } from 'react';
 import { usePopper } from '@spout/utils';
 import { Portal } from '@headlessui/react';
 import { Placement } from '@popperjs/core';
 import { AnimatePresence, motion, Variants } from 'framer-motion';
+import { generateId } from '../../utils';
 
 export interface TooltipProps {
   label: string;
@@ -47,13 +49,15 @@ export const Tooltip = ({
     setIsShowing(false);
   };
 
+  const id = useMemo(() => `spout-tooltip-${generateId()}`, []);
+
   const withProps = {
     onMouseEnter: showTooltip,
     onMouseLeave: hideTooltip,
     onFocus: showTooltip,
     onBlur: hideTooltip,
     ref: trigger,
-    'aria-describedby': isShowing ? 'spout-tooltip' : undefined,
+    'aria-describedby': isShowing ? id : undefined,
   };
 
   // Check if `children` is a valid ReactElement before cloning.
@@ -93,17 +97,18 @@ export const Tooltip = ({
         {isShowing && (
           <Portal>
             <div ref={container}>
-              <motion.p
-                id="spout-tooltip"
+              <motion.span
+                id={id}
                 role="tooltip"
                 className="flex items-center justify-center px-2 py-1 tracking-wider font-semibold whitespace-nowrap bg-black text-white text-xs rounded-md"
                 variants={variants}
                 initial="exit"
                 animate="enter"
                 exit="exit"
+                tabIndex={0}
               >
                 {label}
-              </motion.p>
+              </motion.span>
             </div>
           </Portal>
         )}

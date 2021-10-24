@@ -10,33 +10,17 @@ const ActionsMenu = () => {
     <div className="hidden sm:block">
       <div className="flex items-center">
         <Tooltip label="Calendar">
-          <Button
-            aria-label="View calendar"
-            variant="ghost"
-            scheme="gray"
-            size="sm"
-          >
+          <Button variant="ghost" scheme="gray" size="sm">
             <CalendarIcon className="h-6 w-6" />
           </Button>
         </Tooltip>
         <Tooltip label="Attachments">
-          <Button
-            aria-label="View attachments"
-            variant="ghost"
-            scheme="gray"
-            size="sm"
-          >
+          <Button variant="ghost" scheme="gray" size="sm">
             <AttachmentsIcon className="h-6 w-6" />
           </Button>
         </Tooltip>
         <Tooltip label="Settings">
-          <Button
-            aria-label="View settings"
-            variant="ghost"
-            rounded="lg"
-            scheme="gray"
-            size="sm"
-          >
+          <Button variant="ghost" rounded="lg" scheme="gray" size="sm">
             <SettingsIcon className="h-6 w-6" />
           </Button>
         </Tooltip>
