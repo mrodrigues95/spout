@@ -8,6 +8,7 @@ import {
   Participants,
 } from './cards';
 import DiscussionsNavigation from './DiscussionsNavigation';
+import ClassroomOverviewProvider from './ClassroomOverviewProvider';
 
 export interface Props {
   classroom: Classroom_Classroom;
@@ -15,7 +16,7 @@ export interface Props {
 
 const ClassroomOverview = ({ classroom }: Props) => {
   return (
-    <>
+    <ClassroomOverviewProvider>
       <DiscussionsNavigation classroom={classroom} />
       <div className="flex flex-col grid-rows-3 grid-flow-col gap-4 h-full md:grid">
         <Settings />
@@ -25,7 +26,7 @@ const ClassroomOverview = ({ classroom }: Props) => {
         <Instructor classroom={classroom} />
         <Participants />
       </div>
-    </>
+    </ClassroomOverviewProvider>
   );
 };
 

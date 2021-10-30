@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { secondsToMinutes, secondsToHours } from 'date-fns';
 import clsx from 'clsx';
 import { Button } from '@spout/toolkit';
-import { ClassroomInvite } from '../../../MenuProvider';
+import { ClassroomInvite } from '../../ClassroomOverviewProvider';
 
 interface Props {
   invite: ClassroomInvite;

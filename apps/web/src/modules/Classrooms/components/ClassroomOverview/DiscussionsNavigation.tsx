@@ -46,7 +46,7 @@ const DiscussionsNavigation = ({ classroom }: Props) => {
           <HorizontalNavigationSeparator />
         </HorziontalNavigationItem>
         {classroom.discussions.map((discussion) => (
-          <HorziontalNavigationItem>
+          <HorziontalNavigationItem key={discussion.id}>
             <Tooltip label={discussion.name}>
               <Link
                 key={discussion.id}

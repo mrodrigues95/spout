@@ -1,4 +1,4 @@
-import { ClassroomContentCard } from './ClassroomCard';
+import { ClassroomContentCard } from '../ClassroomCard';
 
 const Upcoming = () => {
   return (

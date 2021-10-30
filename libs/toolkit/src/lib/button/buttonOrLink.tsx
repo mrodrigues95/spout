@@ -50,6 +50,11 @@ const styles = {
       primary: 'hover:bg-purple-200',
       secondary: 'hover:!bg-purple-100 focus:!bg-purple-100',
     },
+    red: {
+      default: 'text-red-600 bg-red-100 focus:ring-red-600',
+      primary: 'hover:bg-red-200',
+      secondary: 'hover:!bg-red-100 focus:!bg-red-100',
+    },
   },
 } as const;
 

@@ -1,5 +1,5 @@
-import { Props as OverviewProps } from '..';
-import { ClassroomContentCard } from './ClassroomCard';
+import { Props as OverviewProps } from '../../../ClassroomOverview';
+import { ClassroomContentCard } from '../ClassroomCard';
 
 interface Props extends Pick<OverviewProps, 'classroom'> {}
 

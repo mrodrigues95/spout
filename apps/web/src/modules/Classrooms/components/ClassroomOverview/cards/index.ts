@@ -1,6 +1,6 @@
-export { default as Settings } from './Settings';
-export { default as Invite } from './Invite';
-export { default as Announcements } from './Announcements';
-export { default as Upcoming } from './Upcoming';
-export { default as Instructor } from './Instructor';
-export { default as Participants } from './Participants';
+export * from './Invite';
+export * from './Settings';
+export * from './Announcements';
+export * from './Upcoming';
+export * from './Instructor';
+export * from './Participants';
