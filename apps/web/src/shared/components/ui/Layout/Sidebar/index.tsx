@@ -62,7 +62,7 @@ const SidebarItem = ({
     rounded: 'xl',
     size: 'sm',
     variant: selected ? 'solid' : 'ghost',
-    scheme: selected ? 'dark' : 'gray',
+    scheme: 'dark',
   };
 
   if (isMenu) {

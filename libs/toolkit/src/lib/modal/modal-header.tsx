@@ -50,7 +50,6 @@ export const ModalHeader = ({
       </div>
       {dismiss && (
         <Button
-          scheme="gray"
           variant="ghost"
           className="mb-auto -mt-1 !p-2"
           aria-label="Close modal"

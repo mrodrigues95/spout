@@ -37,7 +37,6 @@ const ProfileInfo = () => {
           href="/profile"
           aria-label="Go to profile"
           rounded="full"
-          scheme="gray"
           variant="ghost"
           className="!p-2"
         >

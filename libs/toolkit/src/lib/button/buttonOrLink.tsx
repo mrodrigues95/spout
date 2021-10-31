@@ -3,8 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 
-// TODO: Make a link variant.
-const styles = {
+const STYLES = {
   base:
     'relative inline-flex items-center justify-center tracking-wide select-none font-semibold outline-none transition duration-150 ease-in-out',
   active:
@@ -30,39 +29,42 @@ const styles = {
   },
   variant: {
     solid: 'border-none',
-    outline: 'border border-current !bg-white',
-    ghost: 'border-none !bg-transparent',
+    light: 'border-none',
+    outline: 'border-2 border-current bg-white',
+    ghost: 'border-none bg-transparent',
+    link: 'border-none !p-0 hover:underline',
     unstyled: '',
   },
   scheme: {
     dark: {
-      default: 'text-white bg-gray-900 focus:ring-gray-900',
-      primary: 'hover:!bg-gray-700',
-      secondary: '!text-gray-900 focus:!bg-gray-100 hover:!bg-gray-100',
-    },
-    gray: {
-      default: 'text-gray-900 bg-gray-100 focus:ring-gray-900',
-      primary: 'hover:bg-gray-200',
-      secondary: 'hover:!bg-gray-100 focus:!bg-gray-100',
+      solid: 'text-white bg-gray-900 focus:ring-gray-900 hover:bg-gray-700',
+      light: 'text-gray-900 bg-gray-100 focus:ring-gray-900 hover:bg-gray-200',
+      ghost: 'text-gray-900 focus:bg-gray-100 focus:ring-gray-900 hover:bg-gray-100',
+      outline: 'text-gray-900 focus:bg-gray-100 focus:ring-gray-900 hover:bg-gray-100',
+      link: 'text-gray-900 bg-white focus:ring-gray-900'
     },
     purple: {
-      default: 'text-purple-600 bg-purple-100 focus:ring-purple-600',
-      primary: 'hover:bg-purple-200',
-      secondary: 'hover:!bg-purple-100 focus:!bg-purple-100',
+      solid: 'text-white bg-purple-600 focus:ring-purple-600 hover:bg-purple-700',
+      light: 'text-purple-600 bg-purple-100 focus:ring-purple-600 hover:bg-purple-200',
+      ghost: 'text-purple-600 focus:bg-purple-100 focus:ring-purple-600 hover:bg-purple-100',
+      outline: 'text-purple-600 focus:bg-purple-100 focus:ring-purple-600 hover:bg-purple-100',
+      link: 'text-purple-600 bg-white focus:ring-purple-600'
     },
     red: {
-      default: 'text-red-600 bg-red-100 focus:ring-red-600',
-      primary: 'hover:bg-red-200',
-      secondary: 'hover:!bg-red-100 focus:!bg-red-100',
+      solid: 'text-white bg-red-600 focus:ring-red-600 hover:bg-red-700',
+      light: 'text-red-600 bg-red-100 focus:ring-red-600 hover:bg-red-200',
+      ghost: 'text-red-600 focus:bg-red-100 focus:ring-red-600 hover:bg-red-100',
+      outline: 'text-red-600 focus:bg-red-100 focus:ring-red-600 hover:bg-red-100',
+      link: 'text-red-600 bg-white focus:ring-red-600'
     },
   },
 } as const;
 
 export interface Styles {
-  size?: keyof typeof styles['size'];
-  rounded?: keyof typeof styles['rounded'];
-  variant?: keyof typeof styles['variant'];
-  scheme?: keyof typeof styles['scheme'];
+  size?: keyof typeof STYLES['size'];
+  rounded?: keyof typeof STYLES['rounded'];
+  variant?: keyof typeof STYLES['variant'];
+  scheme?: keyof typeof STYLES['scheme'];
   fullWidth?: boolean;
 }
 
@@ -98,16 +100,13 @@ export const ButtonOrLink = forwardRef<
       variant === 'unstyled'
         ? className
         : clsx(
-            styles.base,
-            styles.disabled,
-            styles.active,
-            styles.size[size],
-            styles.rounded[rounded],
-            styles.variant[variant],
-            styles.scheme[scheme].default,
-            variant === 'ghost' || variant === 'outline'
-              ? styles.scheme[scheme].secondary
-              : styles.scheme[scheme].primary,
+            STYLES.base,
+            STYLES.disabled,
+            STYLES.active,
+            STYLES.size[size],
+            STYLES.rounded[rounded],
+            STYLES.variant[variant],
+            STYLES.scheme[scheme][variant],
             fullWidth && 'w-full',
             className
           );

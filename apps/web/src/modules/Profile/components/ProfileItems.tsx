@@ -32,7 +32,6 @@ const ProfileItem = ({
     <li>
       <Link
         href={to}
-        scheme="gray"
         variant="ghost"
         rounded="xxl"
         className="!p-4"

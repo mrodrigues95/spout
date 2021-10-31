@@ -39,7 +39,6 @@ const Logout = () => {
       className="!font-bold"
       size={isXL ? 'xl' : 'sm'}
       rounded="xl"
-      scheme="gray"
       variant="ghost"
       fullWidth
       onClick={removeSession}

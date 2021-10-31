@@ -8,29 +8,32 @@ export default {
 } as Meta;
 
 const Template: Story<ButtonOrLinkProps> = (args) => (
-  <Button {...args}>Click me!</Button>
+  <Button size="md" scheme="dark" rounded="normal" {...args}>
+    Click me!
+  </Button>
 );
 
 export const Solid = Template.bind({});
 Solid.args = {
-  size: 'md',
   variant: 'solid',
-  scheme: 'dark',
-  rounded: 'normal',
+};
+
+export const Light = Template.bind({});
+Light.args = {
+  variant: 'light',
 };
 
 export const Ghost = Template.bind({});
 Ghost.args = {
-  size: 'md',
   variant: 'ghost',
-  scheme: 'gray',
-  rounded: 'normal',
 };
 
 export const Outline = Template.bind({});
 Outline.args = {
-  size: 'md',
   variant: 'outline',
-  scheme: 'gray',
-  rounded: 'normal',
+};
+
+export const Link = Template.bind({});
+Link.args = {
+  variant: 'link',
 };

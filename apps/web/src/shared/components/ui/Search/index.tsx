@@ -20,7 +20,6 @@ const Search = forwardRef<HTMLInputElement, Props>(({ ...props }, ref) => {
         <Button
           size="sm"
           variant="ghost"
-          scheme="gray"
           className="sm:ml-3"
           aria-label="Search"
         >

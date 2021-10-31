@@ -10,17 +10,17 @@ const ActionsMenu = () => {
     <div className="hidden sm:block">
       <div className="flex items-center">
         <Tooltip label="Calendar">
-          <Button variant="ghost" scheme="gray" size="sm">
+          <Button variant="ghost" size="sm">
             <CalendarIcon className="h-6 w-6" />
           </Button>
         </Tooltip>
         <Tooltip label="Attachments">
-          <Button variant="ghost" scheme="gray" size="sm">
+          <Button variant="ghost" size="sm">
             <AttachmentsIcon className="h-6 w-6" />
           </Button>
         </Tooltip>
         <Tooltip label="Settings">
-          <Button variant="ghost" rounded="lg" scheme="gray" size="sm">
+          <Button variant="ghost" rounded="lg" size="sm">
             <SettingsIcon className="h-6 w-6" />
           </Button>
         </Tooltip>

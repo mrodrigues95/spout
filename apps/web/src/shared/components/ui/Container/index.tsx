@@ -34,7 +34,6 @@ const ContainerHeader = ({ title, children }: ContainerHeaderProps) => {
           aria-label="Open menu"
           size="sm"
           variant="ghost"
-          scheme="gray"
           className="inline-flex mr-1 sm:hidden"
         >
           <HamburgerMenuIcon className="w-4 h-4" />
@@ -49,7 +48,7 @@ const ContainerHeader = ({ title, children }: ContainerHeaderProps) => {
         <div className="flex justify-end items-center w-3/5">
           <Search placeholder="Search" />
           <Tooltip label="Notifications">
-            <Button size="sm" variant="ghost" scheme="gray" className="md:ml-2">
+            <Button size="sm" variant="ghost" className="md:ml-2">
               <NotificationsIcon className="w-4 h-4 md:w-6 md:h-6" />
             </Button>
           </Tooltip>
