@@ -14,7 +14,7 @@ interface HomeButtonProps extends Pick<ButtonOrLinkProps, 'onClick'> {
 
 const HomeButton = ({ label, illustration, onClick }: HomeButtonProps) => {
   return (
-    <Button variant="outline" className="!border-gray-400" onClick={onClick}>
+    <Button variant="outline" onClick={onClick}>
       <div className="flex flex-1 items-center space-x-2">
         {illustration}
         <span>{label}</span>

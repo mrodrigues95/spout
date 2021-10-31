@@ -31,7 +31,10 @@ const Settings = () => {
         aria-describedby={descId}
         title="⚙️ Settings"
         description="Manage your classroom"
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setModal(modals['home']);
+          setIsOpen(true);
+        }}
       />
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <Modal.Overlay />
