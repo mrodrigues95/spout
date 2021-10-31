@@ -45,7 +45,7 @@ export const HorizontalNavigation = <T extends ElementType = 'div'>({
         scrollRef.current.scrollLeft -= 100;
       }
     },
-    []
+    [],
   );
 
   const handleDrag = useCallback(
@@ -56,7 +56,7 @@ export const HorizontalNavigation = <T extends ElementType = 'div'>({
         }
       });
     },
-    [dragMove]
+    [dragMove],
   );
 
   const Component = as || 'div';
@@ -72,7 +72,7 @@ export const HorizontalNavigation = <T extends ElementType = 'div'>({
       className={clsx(
         'relative flex overflow-y-hidden',
         hideScroll && 'overflow-x-hidden',
-        className
+        className,
       )}
       {...props}
     >

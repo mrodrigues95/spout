@@ -39,7 +39,7 @@ export const ClassroomActionCard = ({
       variant="unstyled"
       className={clsx(
         'bg-white select-none transition duration-150 ease-in-out hover:transform hover:-translate-y-0.5 active:translate-y-0.5 focus:outline-none focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-gray-900',
-        className
+        className,
       )}
       {...props}
     >

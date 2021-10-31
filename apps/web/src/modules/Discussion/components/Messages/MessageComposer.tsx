@@ -26,7 +26,7 @@ const MessageComposer = ({ discussionId }: Props) => {
         }
       }
       ${UserInfoFragment}
-    `
+    `,
   );
   const add = useStore((state) => state.add);
   const [message, setMessage] = useState('');
@@ -53,7 +53,7 @@ const MessageComposer = ({ discussionId }: Props) => {
       <div
         className={clsx(
           'flex items-center justify-between h-full p-3 pointer-events-auto bg-white border-2 rounded-md transition ease-in-out duration-150',
-          focused ? 'border-transparent ring-2 ring-black' : 'border-gray-200'
+          focused ? 'border-transparent ring-2 ring-black' : 'border-gray-200',
         )}
       >
         <div className="flex flex-1 items-center">

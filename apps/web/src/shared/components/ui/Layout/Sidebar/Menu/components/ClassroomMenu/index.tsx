@@ -9,12 +9,8 @@ interface Props {
 }
 
 const ClassroomMenu = ({ classrooms }: Props) => {
-  const {
-    currentMenu,
-    setCurrentMenu,
-    setCurrentModal,
-    setSelectedClassroom,
-  } = useContext(MenuContext)!;
+  const { currentMenu, setCurrentMenu, setCurrentModal, setSelectedClassroom } =
+    useContext(MenuContext)!;
 
   if (currentMenu !== 'classroom') return null;
 

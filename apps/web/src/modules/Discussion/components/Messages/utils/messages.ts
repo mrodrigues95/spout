@@ -36,7 +36,7 @@ const sort = (groups: GroupedMessages) => {
   Object.entries(days).forEach(([_, messages]) =>
     messages
       .sort((x, y) => getTime(x.createdAt) - getTime(y.createdAt))
-      .reverse()
+      .reverse(),
   );
 
   const sortedDays = Object.keys(days)
@@ -44,7 +44,7 @@ const sort = (groups: GroupedMessages) => {
     .reverse()
     .reduce(
       (acc: GroupedMessages, day) => ({ ...acc, [day]: [...days[day]] }),
-      {}
+      {},
     );
 
   // Returning a map gurantees sort order is respected when being iterated on.
@@ -73,10 +73,10 @@ export type Item = Message | Divider;
 /**
  * Normalizes the messages by calling `normalize()` and then flattens the map
  * and inserts a message divier between each date.
- * 
+ *
  * This is only required for the time being because `GroupedVirtuoso` doesn't
  * support prepending items.
- * 
+ *
  * @param messages The array of messages that require normalization.
  * @returns An array of items.
  */

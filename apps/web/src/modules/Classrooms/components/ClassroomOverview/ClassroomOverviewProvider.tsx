@@ -10,9 +10,8 @@ interface ClassroomOverviewContextType {
   setClassroomInvite: (invite: ClassroomInvite) => void;
 }
 
-export const ClassroomOverviewContext = createContext<ClassroomOverviewContextType | null>(
-  null
-);
+export const ClassroomOverviewContext =
+  createContext<ClassroomOverviewContextType | null>(null);
 
 const ClassroomOverviewProvider = ({ children }: { children: ReactNode }) => {
   const [classroomInvite, setClassroomInvite] = useState<ClassroomInvite>(null);
@@ -22,7 +21,7 @@ const ClassroomOverviewProvider = ({ children }: { children: ReactNode }) => {
       classroomInvite,
       setClassroomInvite,
     }),
-    [classroomInvite]
+    [classroomInvite],
   );
 
   return (

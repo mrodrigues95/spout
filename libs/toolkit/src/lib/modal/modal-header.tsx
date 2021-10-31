@@ -33,7 +33,7 @@ export const ModalHeader = ({
           as="h3"
           className={clsx(
             'text-lg text-gray-900 uppercase font-bold truncate',
-            titleProps?.className
+            titleProps?.className,
           )}
         >
           {title}
@@ -42,7 +42,7 @@ export const ModalHeader = ({
           as="h4"
           className={clsx(
             'font-semibold text-gray-500',
-            descriptionProps?.className
+            descriptionProps?.className,
           )}
         >
           {description}

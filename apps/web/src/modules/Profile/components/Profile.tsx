@@ -22,7 +22,7 @@ const Profile = () => {
         }
       }
       ${UserInfoFragment}
-    `
+    `,
   );
 
   return (

@@ -40,7 +40,7 @@ export const Tooltip = ({
     clearTimeout(timeoutRef.current);
     timeoutRef.current = window.setTimeout(
       () => setIsShowing(true),
-      delay || 0
+      delay || 0,
     );
   };
 

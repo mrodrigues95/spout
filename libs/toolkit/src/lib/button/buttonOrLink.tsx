@@ -4,8 +4,7 @@ import { useRouter } from 'next/router';
 import clsx from 'clsx';
 
 const STYLES = {
-  base:
-    'relative inline-flex items-center justify-center tracking-wide select-none font-semibold outline-none transition duration-150 ease-in-out',
+  base: 'relative inline-flex items-center justify-center tracking-wide select-none font-semibold outline-none transition duration-150 ease-in-out',
   active:
     'focus:outline-none focus:ring focus:ring-offset-2 focus:ring-offset-white',
   disabled: 'disabled:opacity-60 disabled:pointer-events-none',
@@ -39,23 +38,31 @@ const STYLES = {
     dark: {
       solid: 'text-white bg-gray-900 focus:ring-gray-900 hover:bg-gray-700',
       light: 'text-gray-900 bg-gray-100 focus:ring-gray-900 hover:bg-gray-200',
-      ghost: 'text-gray-900 focus:bg-gray-100 focus:ring-gray-900 hover:bg-gray-100',
-      outline: 'text-gray-900 focus:bg-gray-100 focus:ring-gray-900 hover:bg-gray-100',
-      link: 'text-gray-900 bg-white focus:ring-gray-900'
+      ghost:
+        'text-gray-900 focus:bg-gray-100 focus:ring-gray-900 hover:bg-gray-100',
+      outline:
+        'text-gray-900 focus:bg-gray-100 focus:ring-gray-900 hover:bg-gray-100',
+      link: 'text-gray-900 bg-white focus:ring-gray-900',
     },
     purple: {
-      solid: 'text-white bg-purple-600 focus:ring-purple-600 hover:bg-purple-700',
-      light: 'text-purple-600 bg-purple-100 focus:ring-purple-600 hover:bg-purple-200',
-      ghost: 'text-purple-600 focus:bg-purple-100 focus:ring-purple-600 hover:bg-purple-100',
-      outline: 'text-purple-600 focus:bg-purple-100 focus:ring-purple-600 hover:bg-purple-100',
-      link: 'text-purple-600 bg-white focus:ring-purple-600'
+      solid:
+        'text-white bg-purple-600 focus:ring-purple-600 hover:bg-purple-700',
+      light:
+        'text-purple-600 bg-purple-100 focus:ring-purple-600 hover:bg-purple-200',
+      ghost:
+        'text-purple-600 focus:bg-purple-100 focus:ring-purple-600 hover:bg-purple-100',
+      outline:
+        'text-purple-600 focus:bg-purple-100 focus:ring-purple-600 hover:bg-purple-100',
+      link: 'text-purple-600 bg-white focus:ring-purple-600',
     },
     red: {
       solid: 'text-white bg-red-600 focus:ring-red-600 hover:bg-red-700',
       light: 'text-red-600 bg-red-100 focus:ring-red-600 hover:bg-red-200',
-      ghost: 'text-red-600 focus:bg-red-100 focus:ring-red-600 hover:bg-red-100',
-      outline: 'text-red-600 focus:bg-red-100 focus:ring-red-600 hover:bg-red-100',
-      link: 'text-red-600 bg-white focus:ring-red-600'
+      ghost:
+        'text-red-600 focus:bg-red-100 focus:ring-red-600 hover:bg-red-100',
+      outline:
+        'text-red-600 focus:bg-red-100 focus:ring-red-600 hover:bg-red-100',
+      link: 'text-red-600 bg-white focus:ring-red-600',
     },
   },
 } as const;
@@ -90,7 +97,7 @@ export const ButtonOrLink = forwardRef<
       className,
       ...props
     },
-    ref
+    ref,
   ) => {
     const router = useRouter();
     const isLink = typeof href !== 'undefined';
@@ -108,7 +115,7 @@ export const ButtonOrLink = forwardRef<
             STYLES.variant[variant],
             STYLES.scheme[scheme][variant],
             fullWidth && 'w-full',
-            className
+            className,
           );
 
     const content = <ButtonOrLink ref={ref} className={classes} {...props} />;
@@ -117,7 +124,7 @@ export const ButtonOrLink = forwardRef<
       const finalHref =
         preserveRedirect && router.query.redirect
           ? `${href!}?redirect=${encodeURIComponent(
-              router.query.redirect as string
+              router.query.redirect as string,
             )}`
           : href!;
 
@@ -125,5 +132,5 @@ export const ButtonOrLink = forwardRef<
     }
 
     return content;
-  }
+  },
 );

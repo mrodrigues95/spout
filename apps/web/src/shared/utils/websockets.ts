@@ -8,7 +8,7 @@ export const createWSLink = () => {
     options: {
       reconnect: true,
       lazy: true,
-    }
+    },
   });
 };
 

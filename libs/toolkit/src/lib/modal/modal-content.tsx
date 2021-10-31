@@ -20,7 +20,7 @@ export const ModalContent = ({
       <section
         className={clsx(
           'relative flex flex-col max-w-2xl shadow-xl bg-white rounded-md text-black',
-          className
+          className,
         )}
         {...props}
       >

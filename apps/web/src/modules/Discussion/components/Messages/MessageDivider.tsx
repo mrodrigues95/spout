@@ -2,7 +2,7 @@ import { isToday, isYesterday } from 'date-fns';
 
 const MessageDivider = ({ date }: { date: string }) => {
   const d = new Date(date);
-  
+
   return (
     <div className="relative">
       <div className="absolute inset-0 flex items-center px-4">

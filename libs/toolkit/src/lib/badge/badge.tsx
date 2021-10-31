@@ -35,7 +35,7 @@ export const Badge = ({
         styles.scheme[scheme],
         styles.size[size],
         pill ? 'rounded-full' : 'rounded',
-        className
+        className,
       )}
       {...props}
     >

@@ -17,13 +17,13 @@ const TextArea = forwardRef<HTMLTextAreaElement, Props>(
         style={{ border: 'none' }}
         className={clsx(
           'w-full resize-none font-semibold placeholder-semibold placeholder-gray-300 ring-0 focus-within:ring-0',
-          className
+          className,
         )}
         ref={ref}
         {...props}
       />
     );
-  }
+  },
 );
 
 export default TextArea;

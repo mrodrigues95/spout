@@ -14,7 +14,12 @@ import useToast from '../../../../../../Toast';
 // TODO: Update these at some point for prod.
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 const codeReg = new RegExp(/^([A-Za-z0-9-_]{22})$/);
-const linkReg = new RegExp(`(${APP_URL!.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})+(\/[A-Za-z0-9-_]{22})`);
+const linkReg = new RegExp(
+  `(${APP_URL!.replace(
+    /[-\/\\^$*+?.()|[\]{}]/g,
+    '\\$&',
+  )})+(\/[A-Za-z0-9-_]{22})`,
+);
 
 const inviteSchema = object({
   code: string(),
@@ -66,7 +71,7 @@ const JoinClassroom = () => {
   });
 
   const isInvalidInvite = !!result.data?.joinClassroom.userErrors?.find(
-    (error) => error.code === 'INVITE_EXPIRED'
+    (error) => error.code === 'INVITE_EXPIRED',
   );
 
   return (

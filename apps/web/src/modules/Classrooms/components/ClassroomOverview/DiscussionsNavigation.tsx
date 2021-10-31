@@ -18,7 +18,7 @@ const HorziontalNavigationItem = ({
     <li
       className={clsx(
         'inline-flex items-center justify-center h-full w-16',
-        className
+        className,
       )}
     >
       {children}

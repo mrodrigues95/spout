@@ -27,6 +27,23 @@
       }
     ]
   },
-  "projects": {},
-  "plugins": ["@nx-dotnet/core"]
+  "plugins": ["@nx-dotnet/core"],
+  "cli": {
+    "defaultCollection": "@nrwl/next",
+    "packageManager": "npm"
+  },
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "babel": true
+      }
+    },
+    "@nrwl/next": {
+      "application": {
+        "style": "css",
+        "linter": "eslint"
+      }
+    }
+  },
+  "defaultProject": "web"
 }

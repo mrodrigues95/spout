@@ -24,9 +24,8 @@ export const MenuContext = createContext<MenuContextType | null>(null);
 
 const MenuProvider = ({ children }: { children: ReactNode }) => {
   const [currentMenu, setCurrentMenu] = useState<Menus>('classroom');
-  const [selectedClassroom, setSelectedClassroom] = useState<Partial<
-    Classroom
-  > | null>(null);
+  const [selectedClassroom, setSelectedClassroom] =
+    useState<Partial<Classroom> | null>(null);
   const [currentModal, setCurrentModal] = useState<Modals | null>(null);
   const [classroomInvite, setClassroomInvite] = useState<ClassroomInvite>(null);
 
@@ -41,7 +40,7 @@ const MenuProvider = ({ children }: { children: ReactNode }) => {
       classroomInvite,
       setClassroomInvite,
     }),
-    [currentMenu, currentModal, selectedClassroom, classroomInvite]
+    [currentMenu, currentModal, selectedClassroom, classroomInvite],
   );
 
   return <MenuContext.Provider value={values}>{children}</MenuContext.Provider>;

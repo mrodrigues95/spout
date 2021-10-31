@@ -36,7 +36,7 @@ export const Skeleton = ({
         'bg-gray-500 bg-opacity-25 rounded-lg animate-pulse',
         h,
         w,
-        className
+        className,
       )}
       {...props}
     />

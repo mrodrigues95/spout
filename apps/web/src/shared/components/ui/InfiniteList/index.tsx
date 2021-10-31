@@ -47,14 +47,14 @@ const InfiniteList = ({
         oldHeight +
         container.current.scrollTop;
     },
-    [container]
+    [container],
   );
 
   useEffect(() => {
     // Avoid immediately fetching on render for reversed lists.
     if (container.current) {
       console.log('SETTING SCROLLTOP');
-      container.current.scrollTop = container.current.scrollHeight
+      container.current.scrollTop = container.current.scrollHeight;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReverse]);

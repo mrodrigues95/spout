@@ -14,7 +14,7 @@ interface MessagesStore {
   add: (
     discussionId: string,
     message: string,
-    createdBy: UserInfo_User
+    createdBy: UserInfo_User,
   ) => void;
   remove: (discussionId: string, optimisticMessageId: number) => void;
 }
@@ -40,7 +40,7 @@ export const useStore = create<MessagesStore>((set) => ({
               optimisticId: getOptimisticId(),
               content: message,
               createdAt: new Date().toISOString(),
-              createdBy: createdBy
+              createdBy: createdBy,
             },
           ],
         },
@@ -48,7 +48,7 @@ export const useStore = create<MessagesStore>((set) => ({
     }),
   remove: (discussionId: string, optimisticMessageId: number) =>
     set((state) => {
-      console.log('Attempting to remove message from store...')
+      console.log('Attempting to remove message from store...');
       if (!state.messagesByDiscussionId[discussionId]) {
         return { messagesByDiscussionId: { ...state.messagesByDiscussionId } };
       }
@@ -56,19 +56,19 @@ export const useStore = create<MessagesStore>((set) => ({
       // If a message at this index is found, remove it.
       const messageIndex = state.messagesByDiscussionId[discussionId].findIndex(
         (message: OptimisticMessage) =>
-          message.optimisticId === optimisticMessageId
+          message.optimisticId === optimisticMessageId,
       );
 
       if (messageIndex === -1) {
-        console.log('No index found for this message.')
+        console.log('No index found for this message.');
         return { messagesByDiscussionId: { ...state.messagesByDiscussionId } };
       }
 
       const messages = state.messagesByDiscussionId[discussionId].filter(
-        (_, i) => i !== messageIndex
+        (_, i) => i !== messageIndex,
       );
 
-      console.log('Removed message from store.')
+      console.log('Removed message from store.');
 
       return {
         messagesByDiscussionId: {

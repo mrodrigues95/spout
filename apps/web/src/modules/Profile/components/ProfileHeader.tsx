@@ -62,7 +62,7 @@ const ProfileHeader = ({ me }: Props) => {
       cropper?.getCroppedCanvas().toBlob((blob) => {
         updateAvatar({ variables: { input: { file: blob } } });
       }),
-    [cropper, updateAvatar]
+    [cropper, updateAvatar],
   );
 
   const onFileSelected = useCallback((acceptedFiles: File[]) => {
@@ -70,7 +70,7 @@ const ProfileHeader = ({ me }: Props) => {
       acceptedFiles.map((file) => ({
         ...file,
         preview: URL.createObjectURL(file),
-      }))
+      })),
     );
     setIsOpen(true);
   }, []);

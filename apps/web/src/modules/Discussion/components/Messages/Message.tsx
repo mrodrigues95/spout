@@ -20,13 +20,14 @@ interface Props {
 }
 
 const Message = ({ message, optimisticOpts, isLast }: Props) => {
-  const formattedDate = useMemo(() => formatMessageDate(message.createdAt), [
-    message,
-  ]);
+  const formattedDate = useMemo(
+    () => formatMessageDate(message.createdAt),
+    [message],
+  );
 
   const avatar = useMemo(
     () => message.createdBy.avatarUrl ?? getRandomAvatar(),
-    [message]
+    [message],
   );
 
   return (
@@ -34,7 +35,7 @@ const Message = ({ message, optimisticOpts, isLast }: Props) => {
       <div
         className={clsx(
           'flex items-center justify-center px-4 hover:bg-gray-100',
-          optimisticOpts?.loading ? 'opacity-50' : 'opacity-100'
+          optimisticOpts?.loading ? 'opacity-50' : 'opacity-100',
         )}
       >
         <div className="relative flex flex-1">
@@ -51,7 +52,7 @@ const Message = ({ message, optimisticOpts, isLast }: Props) => {
             <div
               className={clsx(
                 'text-sm w-full',
-                optimisticOpts?.error ? 'text-red-600' : 'text-black'
+                optimisticOpts?.error ? 'text-red-600' : 'text-black',
               )}
             >
               <p className="text-gray-900 font-semibold break-words">

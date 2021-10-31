@@ -8,5 +8,5 @@ interface Props extends Omit<ButtonOrLinkProps, 'href'> {
 export const Link = forwardRef<HTMLButtonElement & HTMLAnchorElement, Props>(
   ({ href, ...props }, ref) => {
     return <ButtonOrLink ref={ref} href={href} {...props} />;
-  }
+  },
 );

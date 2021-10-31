@@ -92,8 +92,8 @@ const BaseMenu = ({ menuButtonProps }: Props) => {
     setSelectedClassroom(null);
   };
 
-  const classrooms = (data?.me?.classrooms as unknown) as Classroom[];
-  const discussions = (selectedClassroom?.discussions as unknown) as Discussion[];
+  const classrooms = data?.me?.classrooms as unknown as Classroom[];
+  const discussions = selectedClassroom?.discussions as unknown as Discussion[];
 
   return (
     <>

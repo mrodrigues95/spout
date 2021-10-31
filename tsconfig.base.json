@@ -16,7 +16,7 @@
     "esModuleInterop": true,
     "importHelpers": true,
     "resolveJsonModule": true,
-    "module": "commonjs",
+    "module": "esnext",
     "skipLibCheck": true,
     "strict": true,
     "skipDefaultLibCheck": true,

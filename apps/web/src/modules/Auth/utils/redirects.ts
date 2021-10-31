@@ -3,7 +3,7 @@ import { resolveClientSession } from './sessions';
 
 export const unauthenticatedRoute = async (
   ctx: GetServerSidePropsContext,
-  redirect: string = '/'
+  redirect: string = '/',
 ) => {
   const session = await resolveClientSession(ctx);
 
@@ -23,7 +23,7 @@ export const unauthenticatedRoute = async (
 
 export const authenticatedRoute = async (
   ctx: GetServerSidePropsContext,
-  redirect = '/auth/signup'
+  redirect = '/auth/signup',
 ): Promise<GetServerSidePropsResult<{}>> => {
   const session = await resolveClientSession(ctx);
 
@@ -31,7 +31,7 @@ export const authenticatedRoute = async (
     return {
       redirect: {
         destination: `${redirect}?redirect=${encodeURIComponent(
-          ctx.resolvedUrl
+          ctx.resolvedUrl,
         )}`,
         permanent: false,
       },

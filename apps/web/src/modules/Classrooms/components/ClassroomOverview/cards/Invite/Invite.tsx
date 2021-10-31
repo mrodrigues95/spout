@@ -41,7 +41,7 @@ const Invite = ({ classroom }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const { classroomInvite, setClassroomInvite } = useContext(
-    ClassroomOverviewContext
+    ClassroomOverviewContext,
   )!;
 
   const [createInvite, { data, loading, error }] = useMutation<
@@ -83,7 +83,7 @@ const Invite = ({ classroom }: Props) => {
           },
         },
       }),
-    [createInvite, classroom]
+    [createInvite, classroom],
   );
 
   const labelId = `spout-classroom-invite-label-${generateId()}`;

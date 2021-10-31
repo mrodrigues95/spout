@@ -16,7 +16,7 @@ export const FormInput = forwardRef<HTMLInputElement, InputProps>(
         <input
           className={clsx(
             'w-full border-none outline-none bg-gray-100 text-black rounded-md font-semibold placeholder-medium placeholder-gray-400 transition ease-in-out duration-200 focus:ring-2 focus:ring-black',
-            className
+            className,
           )}
           type={type}
           ref={ref}
@@ -24,5 +24,5 @@ export const FormInput = forwardRef<HTMLInputElement, InputProps>(
         />
       </label>
     );
-  }
+  },
 );

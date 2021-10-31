@@ -58,18 +58,12 @@ interface Props {
 // when they return so any new messages won't appear. May need to change the fetch policy
 // for this.
 const Messages = ({ discussionId }: Props) => {
-  const {
-    data,
-    loading,
-    error,
-    refetch,
-    subscribeToMore,
-    fetchMore,
-  } = useQuery<DiscussionMessagesQuery>(query, {
-    variables: { id: discussionId },
-    // fetchPolicy: 'cache-and-network',
-    // nextFetchPolicy: 'cache-first'
-  });
+  const { data, loading, error, refetch, subscribeToMore, fetchMore } =
+    useQuery<DiscussionMessagesQuery>(query, {
+      variables: { id: discussionId },
+      // fetchPolicy: 'cache-and-network',
+      // nextFetchPolicy: 'cache-first'
+    });
 
   const { data: meData } = useQuery<MeQuery>(
     gql`
@@ -79,7 +73,7 @@ const Messages = ({ discussionId }: Props) => {
         }
       }
       ${UserInfoFragment}
-    `
+    `,
   );
 
   const handleLoadMore = useCallback(async () => {
@@ -122,7 +116,7 @@ const Messages = ({ discussionId }: Props) => {
   }, [discussionId, meData, subscribeToMore]);
 
   const messagesToSend = useStore(
-    (state) => state.messagesByDiscussionId[discussionId]
+    (state) => state.messagesByDiscussionId[discussionId],
   );
 
   const messages = useMemo(() => {

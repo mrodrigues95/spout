@@ -43,9 +43,8 @@ const CreateDiscussion = () => {
     awaitRefetchQueries: true,
   });
 
-  const { currentModal, setCurrentModal, selectedClassroom } = useContext(
-    MenuContext
-  )!;
+  const { currentModal, setCurrentModal, selectedClassroom } =
+    useContext(MenuContext)!;
   const isOpen = currentModal === 'create-discussion';
 
   const form = useZodForm({

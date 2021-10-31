@@ -1,8 +1,6 @@
 import { SVGProps } from 'react';
 
-const FeelingBlueIllustration = ({
-  ...props
-}: SVGProps<SVGSVGElement>) => {
+const FeelingBlueIllustration = ({ ...props }: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       data-name="Layer 1"

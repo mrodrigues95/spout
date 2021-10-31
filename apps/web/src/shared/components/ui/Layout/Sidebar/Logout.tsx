@@ -23,7 +23,7 @@ const Logout = () => {
     LOGOUT_MUTATION,
     {
       onCompleted: authRedirect,
-    }
+    },
   );
 
   const removeSession = async () => {

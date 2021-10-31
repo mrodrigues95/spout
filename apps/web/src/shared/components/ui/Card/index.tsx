@@ -10,7 +10,7 @@ const Card = <T extends ElementType = 'div'>({
     <SCard
       className={clsx(
         'flex flex-col p-4 shadow-container rounded-md',
-        className
+        className,
       )}
       {...props}
     />

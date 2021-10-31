@@ -7,12 +7,12 @@ export default {
   title: 'Form',
 } as Meta;
 
-export const Primary: Story<FormProps> = () => {
-  const loginSchema = object({
-    email: string().email({ message: '- Invalid email' }),
-    password: string().min(6, { message: '- Invalid password' }),
-  });
+const loginSchema = object({
+  email: string().email({ message: '- Invalid email' }),
+  password: string().min(6, { message: '- Invalid password' }),
+});
 
+export const Primary: Story<FormProps> = () => {
   const form = useZodForm({
     schema: loginSchema,
   });
@@ -21,7 +21,7 @@ export const Primary: Story<FormProps> = () => {
     <Form
       className="flex flex-col w-full"
       form={form}
-      onSubmit={() => {}}
+      onSubmit={() => console.log('Submitted!')}
     >
       <Form.Input
         label="Email"

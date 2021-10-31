@@ -1,4 +1,4 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { zodResolver } from '@hookform/resolvers/zod/dist/zod.umd';
 import { ComponentProps } from 'react';
 import {
   useForm,

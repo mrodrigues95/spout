@@ -43,7 +43,7 @@ const ProfileItem = ({
           <div
             className={clsx(
               'relative w-12 h-12 rounded-full',
-              variants[colour]
+              variants[colour],
             )}
           >
             <span className="absolute inset-0 inline-flex items-center justify-center">

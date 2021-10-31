@@ -40,7 +40,7 @@ const CreateClassroom = () => {
       router.push(`/classrooms/${createClassroom.classroom.id}`);
     },
     refetchQueries: [ClassroomsQuery],
-    awaitRefetchQueries: true
+    awaitRefetchQueries: true,
   });
 
   const { currentModal, setCurrentModal } = useContext(MenuContext)!;

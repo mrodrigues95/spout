@@ -32,7 +32,7 @@ export const preloadQuery = async (
 
   try {
     await Promise.all(
-      queries.map((queryOptions) => client.query(queryOptions))
+      queries.map((queryOptions) => client.query(queryOptions)),
     );
 
     return {
@@ -42,7 +42,7 @@ export const preloadQuery = async (
     };
   } catch (e: any) {
     const notFoundError = e.graphQLErrors.find(
-      (error: Error) => (error as any)?.extensions.code === 404
+      (error: Error) => (error as any)?.extensions.code === 404,
     );
 
     if (notFoundError) {
@@ -56,9 +56,10 @@ export const preloadQuery = async (
 };
 
 export const useApollo = (initialState?: Record<string, any>) => {
-  const client = useMemo(() => createApolloClient({ initialState }), [
-    initialState,
-  ]);
+  const client = useMemo(
+    () => createApolloClient({ initialState }),
+    [initialState],
+  );
 
   return client;
 };
@@ -95,15 +96,15 @@ export const createApolloClient = ({
           );
         },
         createWSLink(),
-        uploadLink
+        uploadLink,
       );
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
       graphQLErrors.forEach(({ message, locations, path }) =>
         console.log(
-          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-        )
+          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+        ),
       );
     }
 
@@ -118,7 +119,7 @@ export const createApolloClient = ({
         typePolicies: {
           Discussion: {
             fields: {
-              messages: relayStylePagination()
+              messages: relayStylePagination(),
             },
           },
         },

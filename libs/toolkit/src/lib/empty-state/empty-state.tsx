@@ -20,13 +20,15 @@ export const EmptyState = ({
     <div
       className={clsx(
         'flex flex-1 flex-col justify-center items-center space-y-4',
-        className
+        className,
       )}
       {...props}
     >
       {icon}
       <div>
-        <p className="font-bold text-gray-900 uppercase text-center">{heading}</p>
+        <p className="font-bold text-gray-900 uppercase text-center">
+          {heading}
+        </p>
         {body && <p className="font-semibold text-gray-500">{body}</p>}
       </div>
       {children}

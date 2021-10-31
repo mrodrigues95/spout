@@ -10,9 +10,7 @@ interface Props {
 }
 
 const DiscussionMenu = ({ discussions }: Props) => {
-  const { currentMenu, selectedClassroom } = useContext(
-    MenuContext
-  )!;
+  const { currentMenu, selectedClassroom } = useContext(MenuContext)!;
 
   if (!selectedClassroom || currentMenu !== 'discussion') return null;
 

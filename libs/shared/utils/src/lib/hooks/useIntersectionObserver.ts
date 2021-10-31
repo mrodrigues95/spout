@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, RefObject } from 'react';
 
 export const useIntersectionObserver = (
   ref: RefObject<Element>,
-  opts: IntersectionObserverInit
+  opts: IntersectionObserverInit,
 ) => {
   const [entry, setEntry] = useState<IntersectionObserverEntry | null>(null);
   const observerRef = useRef<IntersectionObserver>();
@@ -12,7 +12,7 @@ export const useIntersectionObserver = (
       ([entry]) => {
         setEntry(entry);
       },
-      { ...opts }
+      { ...opts },
     );
   }
 

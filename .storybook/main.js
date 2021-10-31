@@ -1,4 +1,7 @@
 module.exports = {
+  core: {
+    builder: 'webpack5',
+  },
   stories: [],
   addons: ['@storybook/addon-essentials', '@storybook/addon-a11y'],
   // uncomment the property below if you want to apply some webpack config globally

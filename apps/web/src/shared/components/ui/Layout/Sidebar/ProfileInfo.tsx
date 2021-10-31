@@ -15,7 +15,7 @@ const ProfileInfo = () => {
         }
       }
       ${UserInfoFragment}
-    `
+    `,
   );
 
   return (
@@ -28,7 +28,9 @@ const ProfileInfo = () => {
       />
       <div className="hidden w-full min-w-0 items-center justify-between xl:flex">
         <div className="flex flex-col min-w-0 mr-6">
-          <p className="font-bold text-sm text-black truncate">{data?.me?.name}</p>
+          <p className="font-bold text-sm text-black truncate">
+            {data?.me?.name}
+          </p>
           <p className="text-xs text-gray-400 font-medium truncate">
             {data?.me?.email}
           </p>

@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { Story, Meta } from '@storybook/react';
 import clsx from 'clsx';
-import { HorizontalNavigation, HorizontalNavigationProps } from './horizontal-navigation';
+import {
+  HorizontalNavigation,
+  HorizontalNavigationProps,
+} from './horizontal-navigation';
 
 export default {
   component: HorizontalNavigation,

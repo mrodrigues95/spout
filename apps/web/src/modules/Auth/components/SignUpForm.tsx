@@ -50,7 +50,7 @@ const SignUpForm = () => {
   const { handleError } = useToast();
   const [signUpError, setSignUpError] = useState<Error | UserError>();
   const [signup] = useMutation<SignUpMutation, SignUpMutationVariables>(
-    SIGN_UP_MUTATION
+    SIGN_UP_MUTATION,
   );
 
   const form = useZodForm({

@@ -39,7 +39,7 @@ const LoginForm = () => {
   const [loginError, setLoginError] = useState<Error | UserError>();
   const { handleError } = useToast();
   const [login] = useMutation<LoginMutation, LoginMutationVariables>(
-    LOGIN_MUTATION
+    LOGIN_MUTATION,
   );
 
   const form = useZodForm({

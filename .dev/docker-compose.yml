@@ -91,5 +91,5 @@ services:
     labels:
       - traefik.enable=false
 
-volumes:  
+volumes:
   pgdata: {}

@@ -31,7 +31,7 @@ const isDivider = (item: Item) => 'type' in item && item.type === 'divider';
 // message dividers as well.
 const getItemsToPrepend = (
   oldMessages: Props['messages'],
-  newMessages: Props['messages']
+  newMessages: Props['messages'],
 ) => {
   console.log('Calculating items to prepend...');
   const messagesToPrepend = newMessages.length;
@@ -69,7 +69,7 @@ const MessageList = ({ discussionId, messages, hasNext, next }: Props) => {
       }
       ${UserInfoFragment}
     `,
-    { fetchPolicy: 'cache-only' }
+    { fetchPolicy: 'cache-only' },
   );
 
   const [firstItemIndex, setFirstItemIndex] = useState(1000000); //  (total of items to be loaded - the one we have already loaded).
@@ -81,7 +81,7 @@ const MessageList = ({ discussionId, messages, hasNext, next }: Props) => {
   // Ideally, when GroupedVirtuoso supports prepended items, it will clean up a lot of this code.
   const items = useMemo(
     () => generateItems(messages.map((edge) => edge.node)),
-    [messages]
+    [messages],
   );
 
   const prependItems = useCallback(() => {
@@ -94,7 +94,7 @@ const MessageList = ({ discussionId, messages, hasNext, next }: Props) => {
       const data = await next();
       const itemsToPrepend = getItemsToPrepend(
         oldMessages,
-        data?.discussionById.messages?.edges ?? []
+        data?.discussionById.messages?.edges ?? [],
       );
       setFirstItemIndex((firstItemIndex) => firstItemIndex - itemsToPrepend);
       setIsFetching(false);
@@ -131,7 +131,7 @@ const MessageList = ({ discussionId, messages, hasNext, next }: Props) => {
       startReached={hasNext ? prependItems : undefined}
       followOutput={(isAtBottom) => {
         const myMessages = optimisticMessages.some(
-          (message) => message.createdBy.id === data!.me!.id
+          (message) => message.createdBy.id === data!.me!.id,
         );
 
         // If the user is scrolled away and sends a message - bring them to the bottom.

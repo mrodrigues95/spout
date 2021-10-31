@@ -16,7 +16,7 @@ export const WithFilePicker: Story<PhotoCropperProps> = () => {
       acceptedFiles.map((file) => ({
         ...file,
         preview: URL.createObjectURL(file),
-      }))
+      })),
     );
   }, []);
 

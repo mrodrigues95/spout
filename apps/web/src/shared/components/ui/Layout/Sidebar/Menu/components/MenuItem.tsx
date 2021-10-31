@@ -15,7 +15,7 @@ const MenuItem = ({ variant, ...props }: MenuItemProps) => {
       className={clsx(
         'block w-full rounded-md p-2 text-left font-bold tracking-wide text-sm truncate focus:outline-none focus-visible:ring',
         styles.base,
-        styles.active
+        styles.active,
       )}
       variant="unstyled"
       {...props}

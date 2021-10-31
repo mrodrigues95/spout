@@ -25,7 +25,7 @@ const Avatar = ({ src, name, size = 'md', className, ...props }: Props) => {
       className={clsx(
         'relative inline-flex justify-center items-center flex-shrink-0 border-none',
         sizes[size],
-        className
+        className,
       )}
       {...props}
     >

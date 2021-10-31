@@ -68,7 +68,7 @@ const CopyInvite = ({ invite }: Props) => {
         setIsCopied(false);
       }, 1000);
     };
-    
+
     // TODO: Remove this once dev env uses https.
     // Clipboard is only available in a secure context (https).
     if (typeof clipboard !== 'undefined') {
@@ -90,7 +90,7 @@ const CopyInvite = ({ invite }: Props) => {
             : 'ring-black ring-opacity-5',
           isCopied
             ? 'ring-green-600 ring-opacity-100'
-            : 'ring-black ring-opacity-5'
+            : 'ring-black ring-opacity-5',
         )}
       >
         <div className="flex-1">
@@ -113,7 +113,7 @@ const CopyInvite = ({ invite }: Props) => {
           scheme="purple"
           className={clsx(
             isCopied &&
-              '!bg-green-600 !text-white hover:!bg-green-700 active:!bg-green-800 !ring-transparent !transition-colors'
+              '!bg-green-600 !text-white hover:!bg-green-700 active:!bg-green-800 !ring-transparent !transition-colors',
           )}
           onClick={onCopy}
         >

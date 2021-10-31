@@ -17,7 +17,7 @@ const Template: Story<FilePickerProps> = (args) => {
       acceptedFiles.map((file) => ({
         ...file,
         preview: URL.createObjectURL(file),
-      }))
+      })),
     );
   }, []);
 

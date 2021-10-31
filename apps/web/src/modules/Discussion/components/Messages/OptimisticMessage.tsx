@@ -73,7 +73,7 @@ const OptimisticMessage = ({ discussionId, message }: Props) => {
       sendMessage({
         variables: { input: { discussionId, content: message.content } },
       }),
-    [discussionId, sendMessage, message]
+    [discussionId, sendMessage, message],
   );
 
   useEffect(() => {
