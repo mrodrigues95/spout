@@ -5,7 +5,7 @@
     "types": ["node"]
   },
   "include": [],
-  "exclude": [],
+  "files": [],
   "references": [
     {
       "path": "./tsconfig.app.json"

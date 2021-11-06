@@ -4,10 +4,5 @@
     "outDir": "../../../dist/out-tsc",
     "types": []
   },
-  "files": [
-    "../../../node_modules/@nrwl/react/typings/cssmodule.d.ts",
-    "../../../node_modules/@nrwl/react/typings/image.d.ts"
-  ],
-  "exclude": ["node_modules", "**/*.spec.ts", "**/*.spec.tsx"],
-  "include": ["next-env.d.ts", "**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
 }

@@ -36,6 +36,7 @@ const Avatar = ({ src, name, size = 'md', className, ...props }: Props) => {
         role="img"
         objectFit="contain"
         layout="fill"
+        sizes="50vw"
       />
     </span>
   );
