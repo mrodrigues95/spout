@@ -8,7 +8,7 @@ export default {
 } as Meta;
 
 const Template: Story<ButtonOrLinkProps> = (args) => (
-  <Button size="md" scheme="dark" rounded="normal" {...args}>
+  <Button size="md" scheme="gray" {...args}>
     Click me!
   </Button>
 );

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { FeelingBlueIllustration } from '@spout/assets/illustrations';
 import { Spinner } from '@spout/toolkit';
-import { ErrorFallback } from '../../../../shared/components';
+import { ErrorFallback, Card } from '../../../../shared/components';
 import { useStore } from './utils/messagesStore';
 import { MessageFragment, UserInfoFragment } from '../../utils/fragments';
 import { updateMessagesQuery } from './../../utils/updateMessagesQuery';
@@ -135,7 +135,7 @@ const Messages = ({ discussionId }: Props) => {
   }, [data?.discussionById.messages?.edges, messagesToSend]);
 
   return (
-    <div className="flex flex-col absolute inset-0 border border-transparent sm:shadow-container sm:rounded-md">
+    <Card className="flex flex-col flex-1">
       {loading && !data && <Spinner size="sm" />}
       {error && (
         <ErrorFallback
@@ -155,7 +155,7 @@ const Messages = ({ discussionId }: Props) => {
           <MessageComposer discussionId={discussionId} />
         </>
       )}
-    </div>
+    </Card>
   );
 };
 

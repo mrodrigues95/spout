@@ -1,12 +1,14 @@
 import { ComponentPropsWithRef, forwardRef } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { twMerge } from 'tailwind-merge';
+import Link from 'next/link';
 import clsx from 'clsx';
 
 const STYLES = {
-  base: 'relative inline-flex items-center justify-center tracking-wide select-none font-semibold outline-none transition duration-150 ease-in-out',
+  base:
+    'relative inline-flex items-center justify-center tracking-wide select-none font-semibold outline-none rounded-md transition duration-150 ease-in-out',
   active:
-    'focus:outline-none focus:ring focus:ring-offset-2 focus:ring-offset-white',
+    'focus:outline-none focus:ring focus:ring-offset-white',
   disabled: 'disabled:opacity-60 disabled:pointer-events-none',
   size: {
     xs: 'py-1 px-2 text-xs',
@@ -14,17 +16,6 @@ const STYLES = {
     md: 'py-2 px-6 text-md',
     lg: 'py-3 px-8 text-lg',
     xl: 'py-4 px-10 text-xl',
-  },
-  rounded: {
-    none: 'rounded-none',
-    sm: 'rounded-sm',
-    normal: 'rounded',
-    md: 'rounded-md',
-    lg: 'rounded-lg',
-    xl: 'rounded-xl',
-    xxl: 'rounded-2xl',
-    xxxl: 'rounded-3xl',
-    full: 'rounded-full',
   },
   variant: {
     solid: 'border-none',
@@ -35,14 +26,16 @@ const STYLES = {
     unstyled: '',
   },
   scheme: {
-    dark: {
-      solid: 'text-white bg-gray-900 focus:ring-gray-900 hover:bg-gray-700',
-      light: 'text-gray-900 bg-gray-100 focus:ring-gray-900 hover:bg-gray-200',
+    gray: {
+      solid:
+        'text-white bg-blueGray-900 focus:ring-gray-900 hover:bg-blueGray-700',
+      light:
+        'text-blueGray-900 bg-blueGray-100 focus:bg-blueGray-200 focus:ring-gray-900 hover:bg-blueGray-200',
       ghost:
-        'text-gray-900 focus:bg-gray-100 focus:ring-gray-900 hover:bg-gray-100',
+        'text-blueGray-900 focus:bg-blueGray-100 focus:ring-gray-900 hover:bg-blueGray-100',
       outline:
-        'text-gray-900 focus:bg-gray-100 focus:ring-gray-900 hover:bg-gray-100',
-      link: 'text-gray-900 bg-white focus:ring-gray-900',
+        'text-blueGray-900 focus:bg-blueGray-200 focus:ring-gray-900 hover:bg-blueGray-100',
+      link: 'text-blueGray-900 bg-white focus:ring-gray-900',
     },
     purple: {
       solid:
@@ -64,12 +57,20 @@ const STYLES = {
         'text-red-600 focus:bg-red-100 focus:ring-red-600 hover:bg-red-100',
       link: 'text-red-600 bg-white focus:ring-red-600',
     },
+    orange: {
+      solid: 'text-white bg-orange-600 focus:ring-orange-600 hover:bg-orange-700',
+      light: 'text-orange-600 bg-orange-100 focus:ring-orange-600 hover:bg-orange-200',
+      ghost:
+        'text-orange-600 focus:bg-orange-100 focus:ring-orange-600 hover:bg-orange-100',
+      outline:
+        'text-orange-600 focus:bg-orange-100 focus:ring-orange-600 hover:bg-orange-100',
+      link: 'text-orange-600 bg-white focus:ring-orange-600',
+    },
   },
 } as const;
 
 export interface Styles {
   size?: keyof typeof STYLES['size'];
-  rounded?: keyof typeof STYLES['rounded'];
   variant?: keyof typeof STYLES['variant'];
   scheme?: keyof typeof STYLES['scheme'];
   fullWidth?: boolean;
@@ -90,14 +91,13 @@ export const ButtonOrLink = forwardRef<
       href,
       preserveRedirect,
       size = 'md',
-      rounded = 'md',
       variant = 'solid',
-      scheme = 'dark',
+      scheme = 'gray',
       fullWidth = false,
       className,
       ...props
     },
-    ref,
+    ref
   ) => {
     const router = useRouter();
     const isLink = typeof href !== 'undefined';
@@ -111,20 +111,24 @@ export const ButtonOrLink = forwardRef<
             STYLES.disabled,
             STYLES.active,
             STYLES.size[size],
-            STYLES.rounded[rounded],
             STYLES.variant[variant],
             STYLES.scheme[scheme][variant],
-            fullWidth && 'w-full',
-            className,
+            fullWidth && 'w-full'
           );
 
-    const content = <ButtonOrLink ref={ref} className={classes} {...props} />;
+    const content = (
+      <ButtonOrLink
+        ref={ref}
+        className={twMerge(classes, className)}
+        {...props}
+      />
+    );
 
     if (isLink) {
       const finalHref =
         preserveRedirect && router.query.redirect
           ? `${href!}?redirect=${encodeURIComponent(
-              router.query.redirect as string,
+              router.query.redirect as string
             )}`
           : href!;
 
@@ -132,5 +136,5 @@ export const ButtonOrLink = forwardRef<
     }
 
     return content;
-  },
+  }
 );

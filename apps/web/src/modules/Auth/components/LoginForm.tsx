@@ -80,7 +80,7 @@ const LoginForm = () => {
   };
 
   return (
-    <Layout title="Login" unauthenticated>
+    <Layout title="Login" authenticated={false}>
       <AuthCard
         title="Welcome back!"
         subtitle="Use the form below to login"

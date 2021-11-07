@@ -5,6 +5,8 @@ import { Spinner } from '@spout/toolkit';
 import { DiscussionQuery } from '../components/__generated__/Discussion.generated';
 import { Layout, ErrorFallback, Container } from '../../../shared/components';
 import DiscussionContainer from './DiscussionContainer';
+import { Card } from '../../../shared/components';
+import Messages from './Messages';
 
 const query = gql`
   query DiscussionQuery($id: ID!) {
@@ -15,6 +17,7 @@ const query = gql`
   }
 `;
 
+// TODO: Handle loading and error states in `Layout`.
 const Discussion = () => {
   const router = useRouter();
   const { data, loading, error, refetch } = useQuery<DiscussionQuery>(query, {
@@ -23,7 +26,30 @@ const Discussion = () => {
 
   return (
     <Layout title={data?.discussionById.name ?? 'Discussion'}>
-      {loading && <Spinner size="sm" />}
+      {data && (
+        <>
+          <Layout.Column main>
+            <Messages discussionId={data?.discussionById.id} />
+          </Layout.Column>
+          <Layout.Column>
+            <Card className="inline-flex flex-col space-y-2">
+              <div>
+                <p className="text-gray-500 font-medium text-sm">
+                  Classroom <span className="text-gray-300 mx-1">/</span>{' '}
+                  Discussion
+                </p>
+              </div>
+              <h1 className="text-orange-600 text-3xl font-semibold">
+                {data.discussionById.name}
+              </h1>
+            </Card>
+            <Card className="w-96 h-96">asd</Card>
+            <Card className="w-96 h-full">asd</Card>
+          </Layout.Column>
+        </>
+      )}
+      {/* <Messages discussionId={discussion.id} /> */}
+      {/* {loading && <Spinner size="sm" />}
       {error && (
         <Container>
           <Container.Header />
@@ -34,7 +60,7 @@ const Discussion = () => {
           />
         </Container>
       )}
-      {data && <DiscussionContainer discussion={data.discussionById} />}
+      {data && <DiscussionContainer discussion={data.discussionById} />} */}
     </Layout>
   );
 };

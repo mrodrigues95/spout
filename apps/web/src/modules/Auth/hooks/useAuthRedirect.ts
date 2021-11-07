@@ -10,6 +10,6 @@ export const useAuthRedirect = () => {
     // is likely no longer relevant, so we reset the entire store.
     client.stop();
     client.resetStore();
-    router.push((router.query.redirect as string) ?? '/');
+    router.push((router.query.redirect as string) ?? '/home');
   };
 };

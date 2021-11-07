@@ -6,15 +6,7 @@ const Card = <T extends ElementType = 'div'>({
   className,
   ...props
 }: CardProps<T>) => {
-  return (
-    <SCard
-      className={clsx(
-        'flex flex-col p-4 shadow-container rounded-md',
-        className,
-      )}
-      {...props}
-    />
-  );
+  return <SCard className={clsx('p-4 bg-white rounded-md', className)} {...props} />;
 };
 
 export default Card;

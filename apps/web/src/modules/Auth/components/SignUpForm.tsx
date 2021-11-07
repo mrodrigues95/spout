@@ -92,7 +92,7 @@ const SignUpForm = () => {
   };
 
   return (
-    <Layout title="Sign Up" unauthenticated>
+    <Layout title="Sign Up" authenticated={false}>
       <AuthCard
         title="Create an account"
         action={{

@@ -1,5 +1,4 @@
 export { default as LoadingIcon } from './LoadingIcon';
-export { default as MessagesIcon } from './MessagesIcon';
 export { default as CalendarIcon } from './CalendarIcon';
 export { default as ChevronIcon } from './ChevronIcon';
 export { default as ClassroomIcon } from './ClassroomIcon';
