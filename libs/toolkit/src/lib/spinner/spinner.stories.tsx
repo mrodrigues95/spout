@@ -16,4 +16,5 @@ export const Primary = Template.bind({});
 Primary.args = {
   size: 'md',
   scheme: 'black',
+  variant: 'bricks'
 };

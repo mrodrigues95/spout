@@ -2,10 +2,10 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { FeelingBlueIllustration } from '@spout/assets/illustrations';
 import { Spinner } from '@spout/toolkit';
-import { ErrorFallback, Card } from '../../../../shared/components';
+import { ErrorFallback, Card } from '../../../../../shared/components';
 import { useStore } from './utils/messagesStore';
 import { MessageFragment, UserInfoFragment } from '../../utils/fragments';
-import { updateMessagesQuery } from './../../utils/updateMessagesQuery';
+import { updateMessagesQuery } from '../../utils/updateMessagesQuery';
 import {
   DiscussionMessagesQuery,
   MeQuery,
@@ -136,7 +136,7 @@ const Messages = ({ discussionId }: Props) => {
 
   return (
     <Card className="flex flex-col flex-1">
-      {loading && !data && <Spinner size="sm" />}
+      {loading && !data && <Spinner />}
       {error && (
         <ErrorFallback
           icon={<FeelingBlueIllustration className="w-full h-64" />}

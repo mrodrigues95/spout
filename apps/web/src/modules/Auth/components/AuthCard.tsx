@@ -9,7 +9,7 @@ interface Props {
 
 const AuthCard = ({ title, subtitle, action, children }: Props) => {
   return (
-    <main className="flex items-center justify-center mx-auto w-full max-w-xl">
+    <section className="flex flex-1 items-center justify-center mx-auto w-full max-w-xl">
       <div className="flex flex-col items-center justify-center h-96 p-4 rounded-xl w-full space-y-2">
         <div className="inline-flex flex-col items-center justify-center mb-5 space-y-2">
           <h1 className="font-bold text-2xl">{title}</h1>
@@ -25,7 +25,7 @@ const AuthCard = ({ title, subtitle, action, children }: Props) => {
           {action.link}
         </div>
       </div>
-    </main>
+    </section>
   );
 };
 

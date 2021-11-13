@@ -3,7 +3,7 @@ import { resolveClientSession } from './sessions';
 
 export const unauthenticatedRoute = async (
   ctx: GetServerSidePropsContext,
-  redirect: string = '/',
+  redirect: string = '/home',
 ) => {
   const session = await resolveClientSession(ctx);
 

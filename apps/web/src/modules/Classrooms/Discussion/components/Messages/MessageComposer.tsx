@@ -8,7 +8,7 @@ import {
 } from '@spout/assets/icons/outline';
 import { Button } from '@spout/toolkit';
 import { formatNewMessage } from './utils/format';
-import { TextArea } from '../../../../shared/components';
+import { TextArea } from '../../../../../shared/components';
 import { useStore } from './utils/messagesStore';
 import { MeQuery } from './__generated__/MessageComposer.generated';
 import { UserInfoFragment } from '../../utils/fragments';

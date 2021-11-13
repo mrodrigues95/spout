@@ -5,13 +5,13 @@ import {
   useStore,
 } from './utils/messagesStore';
 import Message from './Message';
-import { query } from './';
+import { query } from '.';
 import {
   SendDiscussionMessageMutation,
   SendDiscussionMessageMutationVariables,
 } from './__generated__/OptimisticMessage.generated';
 import { DiscussionMessagesQuery } from './__generated__/index.generated';
-import { updateMessagesQuery } from './../../utils/updateMessagesQuery';
+import { updateMessagesQuery } from '../../utils/updateMessagesQuery';
 import { MessageFragment } from '../../utils/fragments';
 
 const mutation = gql`
@@ -78,6 +78,7 @@ const OptimisticMessage = ({ discussionId, message }: Props) => {
 
   useEffect(() => {
     // Fire mutation as soon as this component is rendered.
+    // TODO: Can use an IIFE here.
     if (!data && !loading && !error) send();
   }, [data, loading, error, send]);
 

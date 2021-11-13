@@ -16,7 +16,7 @@ import { OptimisticMessage as OptimisticMessageType } from './utils/messagesStor
 import { MeQuery } from './__generated__/MessageComposer.generated';
 import { useStore } from './utils/messagesStore';
 import { UserInfoFragment } from '../../utils/fragments';
-import { EmptyFallback } from '../../../../shared/components';
+import { EmptyFallback } from '../../../../../shared/components';
 import OptimisticMessage from './OptimisticMessage';
 import MessageDivider from './MessageDivider';
 import Message from './Message';

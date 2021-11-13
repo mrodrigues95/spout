@@ -10,8 +10,8 @@ import {
   PhotoCropper,
 } from '@spout/toolkit';
 import { PlusCircleIcon } from '@spout/assets/icons/outline';
-import { UserInfo_User } from '../../Discussion/utils/__generated__/fragments.generated';
-import { UserInfoFragment } from '../../Discussion/utils/fragments';
+import { UserInfo_User } from '../../Classrooms/Discussion/utils/__generated__/fragments.generated';
+import { UserInfoFragment } from '../../Classrooms/Discussion/utils/fragments';
 import { Avatar, useToast } from '../../../shared/components';
 import { getRandomAvatar } from '../../../shared/utils/getRandomAvatar';
 import {

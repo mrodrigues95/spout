@@ -1,4 +1,4 @@
-import * as Types from '../../../../../__generated__/schema.generated';
+import * as Types from '../../../../../../__generated__/schema.generated';
 
 import { Message_Message, UserInfo_User } from '../../../utils/__generated__/fragments.generated';
 export type SendDiscussionMessageMutationVariables = Types.Exact<{

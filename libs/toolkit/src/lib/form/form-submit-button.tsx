@@ -21,7 +21,7 @@ export const FormSubmitButton = forwardRef<
       ref={ref}
     >
       {(formState.isSubmitting || isSubmitting) && (
-        <Spinner size="xs" scheme="white" className="mr-2" />
+        <Spinner size="sm" scheme="white" variant="circle" className="mr-2" />
       )}
       {children}
     </Button>
