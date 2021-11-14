@@ -1,3 +1,4 @@
+export * from './lib/tabs';
 export * from './lib/card';
 export * from './lib/horizontal-navigation';
 export * from './lib/file-picker';

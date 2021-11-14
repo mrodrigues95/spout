@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import {
   FilePicker,
   FileType,
@@ -10,14 +10,14 @@ import {
   PhotoCropper,
 } from '@spout/toolkit';
 import { PlusCircleIcon } from '@spout/assets/icons/outline';
-import { UserInfo_User } from '../../Classrooms/Discussion/utils/__generated__/fragments.generated';
-import { UserInfoFragment } from '../../Classrooms/Discussion/utils/fragments';
-import { Avatar, useToast } from '../../../shared/components';
-import { getRandomAvatar } from '../../../shared/utils/getRandomAvatar';
+import { UserInfoFragment } from '../../../Classrooms/Discussion/utils/fragments';
+import { Avatar, useToast } from '../../../../shared/components';
+import { getRandomAvatar } from '../../../../shared/utils/getRandomAvatar';
 import {
+  MeQuery,
   UpdateAvatar,
   UpdateAvatarVariables,
-} from './__generated__/ProfileHeader.generated';
+} from './__generated__/ChangeAvatar.generated';
 
 const mutation = gql`
   mutation UpdateAvatar($input: UpdateAvatarInput!) {
@@ -34,15 +34,22 @@ const mutation = gql`
   ${UserInfoFragment}
 `;
 
-interface Props {
-  me: UserInfo_User;
-}
+// TODO: Move this to a common place, we use this query in a lot of areas.
+const query = gql`
+  query MeQuery {
+    me {
+      ...UserInfo_user
+    }
+  }
+  ${UserInfoFragment}
+`;
 
-const ProfileHeader = ({ me }: Props) => {
+const ChangeAvatar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [files, setFiles] = useState<FileType[]>([]);
   const [cropper, setCropper] = useState<Cropper>();
   const { handleError } = useToast();
+  const { data } = useQuery<MeQuery>(query, { fetchPolicy: 'cache-only' });
   const [updateAvatar, updateAvatarResult] = useMutation<
     UpdateAvatar,
     UpdateAvatarVariables
@@ -62,7 +69,7 @@ const ProfileHeader = ({ me }: Props) => {
       cropper?.getCroppedCanvas().toBlob((blob) => {
         updateAvatar({ variables: { input: { file: blob } } });
       }),
-    [cropper, updateAvatar],
+    [cropper, updateAvatar]
   );
 
   const onFileSelected = useCallback((acceptedFiles: File[]) => {
@@ -70,7 +77,7 @@ const ProfileHeader = ({ me }: Props) => {
       acceptedFiles.map((file) => ({
         ...file,
         preview: URL.createObjectURL(file),
-      })),
+      }))
     );
     setIsOpen(true);
   }, []);
@@ -121,11 +128,11 @@ const ProfileHeader = ({ me }: Props) => {
           </Modal.Content>
         </Form>
       </Modal>
-      <figure className="flex flex-col items-center justify-center">
+      <figure className="flex flex-col flex-1 items-center justify-center">
         <div className="relative">
           <Avatar
-            src={me.avatarUrl ?? getRandomAvatar()}
-            name={me.name}
+            src={data!.me!.avatarUrl ?? getRandomAvatar()}
+            name={data!.me!.name}
             className="h-16 w-16 sm:h-20 sm:w-20 md:w-32 md:h-32 lg:h-48 lg:w-48"
           />
           <FilePicker onFileSelected={onFileSelected}>
@@ -138,12 +145,12 @@ const ProfileHeader = ({ me }: Props) => {
           </FilePicker>
         </div>
         <figcaption className="mt-5 font-bold text-xl sm:text-2xl">
-          {me.name} 😀
+          {data!.me!.name} 😀
         </figcaption>
-        <span className="text-gray-500 font-semibold">{me.email}</span>
+        <span className="text-gray-500 font-semibold">{data!.me!.email}</span>
       </figure>
     </>
   );
 };
 
-export default ProfileHeader;
+export default ChangeAvatar;

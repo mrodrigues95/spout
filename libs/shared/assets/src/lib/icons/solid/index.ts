@@ -6,3 +6,4 @@ export { default as MessagesIcon } from './MessagesIcon';
 export { default as SettingsIcon } from './SettingsIcon';
 export { default as ExclamationCircle } from './ExclamationCircle';
 export { default as LogoutIcon } from './LogoutIcon';
+export { default as IdentificationIcon } from './IdentificationIcon';

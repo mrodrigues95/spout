@@ -3,4 +3,4 @@ import { authenticatedRoute } from '../../modules';
 
 export const getServerSideProps: GetServerSideProps = authenticatedRoute;
 
-export { Profile as default } from '../../modules';
+export { Settings as default } from '../../modules';

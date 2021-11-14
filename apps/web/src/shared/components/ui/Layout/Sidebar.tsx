@@ -1,17 +1,116 @@
+import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { gql, useQuery } from '@apollo/client';
-import { Link, Button, Skeleton } from '@spout/toolkit';
+import { object, string } from 'zod';
+import { gql, useMutation, useQuery } from '@apollo/client';
+import {
+  Link,
+  Button,
+  Skeleton,
+  Modal,
+  Form,
+  useZodForm,
+} from '@spout/toolkit';
 import { getRandomAvatar } from '../../../utils/getRandomAvatar';
 import { UserInfoFragment } from '../../../../modules/Classrooms/Discussion/utils/fragments';
-import { ClassroomsQuery } from './__generated__/Sidebar.generated';
 import { Classroom } from '../../../../__generated__/schema.generated';
-import { useIsCurrentRoute } from '../../../hooks';
-import { ErrorFallback } from '../../../../shared/components';
+import { useIsCurrentRoute, useIsRedirecting } from '../../../hooks';
+import { ErrorFallback, useToast } from '../../../../shared/components';
+import {
+  ClassroomsQuery,
+  CreateClassroomMutation,
+  CreateClassroomMutationVariables,
+} from './__generated__/Sidebar.generated';
 import Search from '../Search';
 import Avatar from '../Avatar';
 
+const schema = object({
+  name: string().min(1, '- Invalid name').max(64, '- Invalid name'),
+});
+
+const mutation = gql`
+  mutation CreateClassroomMutation($input: CreateClassroomInput!) {
+    createClassroom(input: $input) {
+      classroom {
+        id
+        name
+      }
+    }
+  }
+`;
+
+const CreateClassroom = () => {
+  const router = useRouter();
+  const isRedirecting = useIsRedirecting();
+  const { handleError } = useToast();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [createClassroom, result] = useMutation<
+    CreateClassroomMutation,
+    CreateClassroomMutationVariables
+  >(mutation, {
+    onError: (error) => handleError(error),
+    onCompleted: ({ createClassroom }) => {
+      setIsOpen(false);
+      router.push(`/classrooms/${createClassroom.classroom.id}`);
+    },
+    refetchQueries: [CLASSROOMS_QUERY],
+    awaitRefetchQueries: true,
+  });
+
+  const form = useZodForm({
+    schema,
+  });
+
+  return (
+    <>
+      <Button
+        size="xs"
+        variant="light"
+        scheme="orange"
+        className="uppercase rounded"
+        onClick={() => setIsOpen(true)}
+      >
+        Create
+      </Button>
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <Modal.Overlay />
+        <Form
+          form={form}
+          onSubmit={({ name }) =>
+            createClassroom({ variables: { input: { name } } })
+          }
+        >
+          <Modal.Content>
+            <Modal.Header
+              title="Create Your Classroom"
+              description="Classrooms help you better manage your discussions."
+              dismiss
+            />
+            <Modal.Body>
+              <Form.Input
+                label="Classroom Name"
+                placeholder="PROG3120 - Programming Fundamentals"
+                {...form.register('name')}
+              />
+            </Modal.Body>
+            <Modal.Footer>
+              <Form.SubmitButton
+                disabled={result.loading || isRedirecting}
+                size="sm"
+                className="font-semibold"
+              >
+                Create Classroom
+              </Form.SubmitButton>
+            </Modal.Footer>
+          </Modal.Content>
+        </Form>
+      </Modal>
+    </>
+  );
+};
+
 const SidebarSkeleton = () => {
-  const Component = (
+  const stack = (
     <Skeleton.Stack>
       <Skeleton h="h-3" w="w-1/2" />
       <Skeleton h="h-3" w="w-2/3" />
@@ -20,7 +119,11 @@ const SidebarSkeleton = () => {
   );
 
   return (
-    <>{Array.from([Component, Component, Component]).map((stack) => stack)}</>
+    <>
+      {stack}
+      {stack}
+      {stack}
+    </>
   );
 };
 
@@ -51,7 +154,7 @@ const SidebarItem = ({ classroom }: SidebarItemProps) => {
   );
 };
 
-const query = gql`
+const CLASSROOMS_QUERY = gql`
   query ClassroomsQuery {
     me {
       ...UserInfo_user
@@ -69,7 +172,9 @@ const query = gql`
 `;
 
 const Sidebar = () => {
-  const { data, loading, error, refetch } = useQuery<ClassroomsQuery>(query);
+  const { data, loading, error, refetch } = useQuery<ClassroomsQuery>(
+    CLASSROOMS_QUERY
+  );
 
   return (
     <aside className="flex flex-col px-4 space-y-8 max-w-xs">
@@ -82,14 +187,7 @@ const Sidebar = () => {
           <span className="text-gray-500 text-sm font-semibold tracking-wide uppercase">
             Classrooms
           </span>
-          <Button
-            size="xs"
-            variant="light"
-            scheme="orange"
-            className="uppercase rounded"
-          >
-            Create
-          </Button>
+          <CreateClassroom />
         </div>
         {loading && <SidebarSkeleton />}
         {error && (
@@ -102,7 +200,7 @@ const Sidebar = () => {
         {data && (
           <ul className="space-y-2">
             {data.me?.classrooms?.map((classroom) => (
-              <SidebarItem classroom={classroom} />
+              <SidebarItem key={classroom.id} classroom={classroom} />
             ))}
           </ul>
         )}

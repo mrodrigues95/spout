@@ -34,6 +34,8 @@ namespace API.Schema.Mutations.Classrooms {
                 UserId = userId,
                 IsCreator = true
             });
+
+            ctx.Classrooms.Add(classroom);
             await ctx.SaveChangesAsync(cancellationToken);
 
             return new CreateClassroomPayload(classroom);

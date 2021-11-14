@@ -5,7 +5,6 @@ import {
   HomeIcon,
   MessagesIcon,
   SettingsIcon,
-  LogoutIcon
 } from '@spout/assets/icons/solid';
 import { ChevronIcon } from '@spout/assets/icons/outline';
 import { getRandomAvatar } from '../../../utils/getRandomAvatar';
@@ -38,7 +37,10 @@ const TopNavigationItem = ({
 
 const TopNavigation = () => {
   return (
-    <nav aria-labelledby="spout-main-navigation" className="mx-auto shadow-md rounded-md">
+    <nav
+      aria-labelledby="spout-main-navigation"
+      className="mx-auto shadow-md rounded-md"
+    >
       <h2 id="spout-main-navigation" className="sr-only">
         Main navigation
       </h2>

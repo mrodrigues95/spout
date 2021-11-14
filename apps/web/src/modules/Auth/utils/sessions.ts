@@ -12,6 +12,12 @@ import {
   SessionQueryVariables,
 } from './__generated__/index.generated';
 
+if (!process.env.IRON_SESSION_COOKIE_SECRET) {
+  console.warn(
+    'No `IRON_SESSION_COOKIE_SECRET` environment variable was set. This can cause production errors.'
+  );
+}
+
 // The duration that the session will be valid for in seconds (default: 7 days).
 // Sessions will automatically be renewed after 50% of the validity period.
 // NOTE: The duration is meant to match the backend Identity cookie duration, which is 7 days.
@@ -51,14 +57,14 @@ const destroy = (req: ReqWithSession) => {
 
 export const createClientSession = async (
   req: IncomingMessage,
-  sessionId: string,
+  sessionId: string
 ) => {
-  const reqWithSession = req as unknown as ReqWithSession;
+  const reqWithSession = (req as unknown) as ReqWithSession;
   return await create(reqWithSession, sessionId);
 };
 
 export const removeClientSession = async (req: IncomingMessage) => {
-  const reqWithSession = req as unknown as ReqWithSession;
+  const reqWithSession = (req as unknown) as ReqWithSession;
   const sessionId = reqWithSession.session.get(IRON_SESSION_ID_KEY) as string;
   destroy(reqWithSession);
   return sessionId;
@@ -80,7 +86,7 @@ export const resolveClientSession = async ({
 
   let session: Partial<Session> | null = null;
 
-  const reqWithSession = req as unknown as ReqWithSession;
+  const reqWithSession = (req as unknown) as ReqWithSession;
   const sessionId = reqWithSession.session.get(IRON_SESSION_ID_KEY) as string;
 
   if (sessionId) {
@@ -105,7 +111,7 @@ export const resolveClientSession = async ({
 
 const fetchSession = async (
   client: ApolloClient<any>,
-  sessionId: string,
+  sessionId: string
 ): Promise<Partial<Session> | null> => {
   try {
     const data = await client.query<SessionQuery, SessionQueryVariables>({
@@ -132,7 +138,7 @@ const fetchSession = async (
 
 const refreshSession = async (
   client: ApolloClient<any>,
-  sessionId: string,
+  sessionId: string
 ): Promise<Partial<Session> | null> => {
   try {
     const data = await client.mutate<
