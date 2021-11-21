@@ -41,7 +41,7 @@ const Profile = () => {
 
   return (
     <Layout title="Settings">
-      <Container isLoading={loading} isError={error} refetch={refetch}>
+      <Container title="Settings" isLoading={loading} isError={error} refetch={refetch}>
         {data && (
           <Card className="space-y-8">
             <SettingsHeader />

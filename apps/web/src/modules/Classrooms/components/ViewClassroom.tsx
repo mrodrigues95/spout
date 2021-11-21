@@ -32,9 +32,16 @@ const ViewClassroom = ({ classroomId }: Props) => {
     variables: { id: classroomId },
   });
 
+  const title = data?.classroomById.name ?? 'Classroom';
+
   return (
-    <Layout title={data?.classroomById.name ?? 'Classroom'}>
-      <Container isLoading={loading} isError={error} refetch={refetch}>
+    <Layout title={title}>
+      <Container
+        title={title}
+        isLoading={loading}
+        isError={error}
+        refetch={refetch}
+      >
         {data && <ClassroomOverview classroom={data.classroomById} />}
       </Container>
     </Layout>

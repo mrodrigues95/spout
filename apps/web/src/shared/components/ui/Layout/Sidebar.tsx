@@ -10,6 +10,11 @@ import {
   Form,
   useZodForm,
 } from '@spout/toolkit';
+import {
+  HomeIcon,
+  MessagesIcon,
+  SettingsIcon,
+} from '@spout/assets/icons/solid';
 import { getRandomAvatar } from '../../../utils/getRandomAvatar';
 import { UserInfoFragment } from '../../../../modules/Classrooms/Discussion/utils/fragments';
 import { Classroom } from '../../../../__generated__/schema.generated';
@@ -20,8 +25,8 @@ import {
   CreateClassroomMutation,
   CreateClassroomMutationVariables,
 } from './__generated__/Sidebar.generated';
-import Search from '../Search';
 import Avatar from '../Avatar';
+import VerticalNav from '../VerticalNav';
 
 const schema = object({
   name: string().min(1, '- Invalid name').max(64, '- Invalid name'),
@@ -111,7 +116,7 @@ const CreateClassroom = () => {
 
 const SidebarSkeleton = () => {
   const stack = (
-    <Skeleton.Stack>
+    <Skeleton.Stack className="pl-4">
       <Skeleton h="h-3" w="w-1/2" />
       <Skeleton h="h-3" w="w-2/3" />
       <Skeleton h="h-3" w="w-full" />
@@ -124,33 +129,6 @@ const SidebarSkeleton = () => {
       {stack}
       {stack}
     </>
-  );
-};
-
-interface SidebarItemProps {
-  classroom: Pick<Classroom, 'id' | 'name'>;
-}
-
-const SidebarItem = ({ classroom }: SidebarItemProps) => {
-  const { query } = useRouter();
-
-  const selected = useIsCurrentRoute([
-    `/classrooms/${classroom.id}`,
-    `/classrooms/${classroom.id}/${query.discussionId}`,
-  ]);
-
-  return (
-    <li>
-      <Link
-        href={`/classrooms/${classroom.id}`}
-        variant={selected ? 'light' : 'ghost'}
-        fullWidth
-        className="text-sm space-x-4"
-      >
-        <Avatar src={getRandomAvatar()} aria-hidden="true" />
-        <span className="flex-1 truncate min-w-0">{classroom.name}</span>
-      </Link>
-    </li>
   );
 };
 
@@ -172,39 +150,71 @@ const CLASSROOMS_QUERY = gql`
 `;
 
 const Sidebar = () => {
+  const { query } = useRouter();
   const { data, loading, error, refetch } = useQuery<ClassroomsQuery>(
     CLASSROOMS_QUERY
   );
 
   return (
-    <aside className="flex flex-col px-4 space-y-8 max-w-xs">
-      <div className="flex items-center justify-center space-x-6">
+    <aside className="flex flex-col p-5 space-y-8 max-w-xs">
+      <div className="flex items-center space-x-4">
         <Avatar src={getRandomAvatar()} aria-hidden="true" />
-        <Search placeholder="Search" />
+        <span className="text-lg font-bold">spout</span>
       </div>
-      <nav className="space-y-4">
-        <div className="flex items-center space-x-4">
-          <span className="text-gray-500 text-sm font-semibold tracking-wide uppercase">
-            Classrooms
-          </span>
-          <CreateClassroom />
-        </div>
-        {loading && <SidebarSkeleton />}
-        {error && (
-          <ErrorFallback
-            heading="We couldn't load any classrooms"
-            action={refetch}
-            className="!mt-48"
+      <VerticalNav>
+        <VerticalNav.Items>
+          <VerticalNav.Item
+            to="/home"
+            label="Home"
+            icon={<HomeIcon className="w-5 h-5" />}
           />
-        )}
-        {data && (
-          <ul className="space-y-2">
-            {data.me?.classrooms?.map((classroom) => (
-              <SidebarItem key={classroom.id} classroom={classroom} />
-            ))}
-          </ul>
-        )}
-      </nav>
+          <VerticalNav.Item
+            to="/messages"
+            label="Messages"
+            icon={<MessagesIcon className="w-5 h-5" />}
+          />
+          <VerticalNav.Item
+            to="/settings"
+            label="Settings"
+            icon={<SettingsIcon className="w-5 h-5" />}
+          />
+          <VerticalNav.Item
+            isGroup
+            groupTitle="Classrooms"
+            groupActions={<CreateClassroom />}
+          >
+            {loading && <SidebarSkeleton />}
+            {error && (
+              <ErrorFallback
+                heading="We couldn't load any classrooms"
+                action={refetch}
+                className="!mt-48"
+              />
+            )}
+            {data && (
+              <VerticalNav.Items>
+                {data.me!.classrooms?.map((classroom) => (
+                  <VerticalNav.Item
+                    key={classroom.id}
+                    to={`/classrooms/${classroom.id}`}
+                    label={classroom.name}
+                    icon={
+                      <Avatar
+                        src={getRandomAvatar()}
+                        size="xs"
+                        aria-hidden="true"
+                      />
+                    }
+                    routes={[
+                      `/classrooms/${classroom.id}/${query.discussionId}`,
+                    ]}
+                  />
+                ))}
+              </VerticalNav.Items>
+            )}
+          </VerticalNav.Item>
+        </VerticalNav.Items>
+      </VerticalNav>
     </aside>
   );
 };

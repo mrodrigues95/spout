@@ -33,7 +33,6 @@ const SettingsHeader = () => {
 
   return (
     <div className="flex items-center justify-between">
-      <h1 className="font-bold text-3xl text-gray-900">Settings</h1>
       <Button size="sm" variant="light" scheme="blue" onClick={removeSession}>
         Log Out
       </Button>

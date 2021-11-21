@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import { NextSeo } from 'next-seo';
-import TopNavigation from './TopNavigation';
 import Sidebar from './Sidebar';
 
 interface Props {
@@ -14,10 +13,10 @@ export const Layout = ({ title, authenticated = true, children }: Props) => {
     <>
       <NextSeo title={title} />
       <div className="min-h-screen flex flex-col bg-white">
-        <div className="flex flex-1 p-4">
+        <div className="flex flex-1">
           {authenticated && <Sidebar />}
-          <main className="flex flex-1 flex-col space-x-4 space-y-4">
-            {authenticated && <TopNavigation />}
+          <main className="flex flex-1 flex-col bg-blueGray-50">
+            {/* {authenticated && <TopNavigation />} */}
             {children}
           </main>
         </div>
