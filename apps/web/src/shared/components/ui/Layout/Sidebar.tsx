@@ -1,20 +1,20 @@
 import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faHome,
+  faCommentDots,
+  faCog,
+} from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 import { object, string } from 'zod';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import {
-  Link,
   Button,
   Skeleton,
   Modal,
   Form,
   useZodForm,
 } from '@spout/toolkit';
-import {
-  HomeIcon,
-  MessagesIcon,
-  SettingsIcon,
-} from '@spout/assets/icons/solid';
 import { getRandomAvatar } from '../../../utils/getRandomAvatar';
 import { UserInfoFragment } from '../../../../modules/Classrooms/Discussion/utils/fragments';
 import { Classroom } from '../../../../__generated__/schema.generated';
@@ -166,17 +166,27 @@ const Sidebar = () => {
           <VerticalNav.Item
             to="/home"
             label="Home"
-            icon={<HomeIcon className="w-5 h-5 text-blueGray-900" />}
+            icon={
+              <FontAwesomeIcon icon={faHome} className="w-6 h-6 text-blueGray-900" fixedWidth />
+            }
           />
           <VerticalNav.Item
             to="/messages"
             label="Messages"
-            icon={<MessagesIcon className="w-5 h-5 text-blueGray-900" />}
+            icon={
+              <FontAwesomeIcon
+                icon={faCommentDots}
+                className="w-6 h-6 text-blueGray-900"
+                fixedWidth
+              />
+            }
           />
           <VerticalNav.Item
             to="/settings"
             label="Settings"
-            icon={<SettingsIcon className="w-5 h-5 text-blueGray-900" />}
+            icon={
+              <FontAwesomeIcon icon={faCog} className="w-6 h-6 text-blueGray-900" fixedWidth />
+            }
           />
           <VerticalNav.Item
             isGroup

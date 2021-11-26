@@ -6,10 +6,12 @@ type Title = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
 export type TitleProps<T extends Title = 'h1'> = {
   as?: T;
+  variant?: T;
 } & ComponentProps<T>;
 
 export const Title = <T extends Title = 'h1'>({
   as,
+  variant = as,
   className,
   ...props
 }: TitleProps<T>) => {
@@ -19,12 +21,12 @@ export const Title = <T extends Title = 'h1'>({
     <Component
       className={twMerge(clsx(
         'text-blueGray-900 font-bold',
-        as === 'h1' && 'text-4xl',
-        as === 'h2' && 'text-3xl',
-        as === 'h3' && 'text-xl',
-        as === 'h4' && 'text-lg',
-        as === 'h5' && 'text-base',
-        as === 'h6' && 'text-sm',
+        variant === 'h1' && 'text-4xl',
+        variant === 'h2' && 'text-3xl',
+        variant === 'h3' && 'text-xl',
+        variant === 'h4' && 'text-lg',
+        variant === 'h5' && 'text-base',
+        variant === 'h6' && 'text-sm',
         className
       ))}
       {...props}

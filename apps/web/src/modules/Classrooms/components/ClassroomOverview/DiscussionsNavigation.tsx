@@ -1,6 +1,7 @@
 import { ComponentProps } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { HorizontalNavigation, Button, Link, Tooltip } from '@spout/toolkit';
-import { PlusCircleIcon } from '@spout/assets/icons/outline';
 import clsx from 'clsx';
 import { Classroom_Classroom } from '../__generated__/ViewClassroom.generated';
 
@@ -18,7 +19,7 @@ const HorziontalNavigationItem = ({
     <li
       className={clsx(
         'inline-flex items-center justify-center h-full w-16',
-        className,
+        className
       )}
     >
       {children}
@@ -40,7 +41,7 @@ const DiscussionsNavigation = ({ classroom }: Props) => {
               className="flex-1 h-full p-4 bg-indigo-400 text-white select-none outline-none rounded-100 transition-all duration-150 ease-in-out hover:rounded-2xl focus:ring focus:ring-offset-2 focus:ring-offset-white focus:rounded-2xl"
               variant="unstyled"
             >
-              <PlusCircleIcon className="w-4 h-4 mx-auto" />
+              <FontAwesomeIcon icon={faPlus} />
             </Button>
           </Tooltip>
           <HorizontalNavigationSeparator />

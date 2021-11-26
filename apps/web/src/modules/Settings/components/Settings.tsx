@@ -1,7 +1,10 @@
 import { ReactElement, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faIdCard, faCog
+} from '@fortawesome/free-solid-svg-icons';
 import { gql, useQuery } from '@apollo/client';
 import { Tabs } from '@spout/toolkit';
-import { IdentificationIcon, SettingsIcon } from '@spout/assets/icons/solid';
 import { Layout, Container, Card } from '../../../shared/components';
 import { UserInfoFragment } from '../../Classrooms/Discussion/utils/fragments';
 import { MeQuery } from './__generated__/Profile.generated';
@@ -29,12 +32,12 @@ const Profile = () => {
   const [tabs] = useState<Tab[]>([
     {
       label: 'My Details',
-      icon: <IdentificationIcon className="w-5 h-5 mr-2" />,
+      icon: <FontAwesomeIcon icon={faIdCard} className="mr-2" />,
       component: <MyDetails />,
     },
     {
       label: 'App Settings',
-      icon: <SettingsIcon className="w-5 h-5 mr-2" />,
+      icon: <FontAwesomeIcon icon={faCog} className="mr-2" />,
       component: <span>app settings</span>,
     },
   ]);

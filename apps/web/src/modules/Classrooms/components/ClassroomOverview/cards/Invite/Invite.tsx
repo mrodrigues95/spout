@@ -1,4 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
 import { gql, useMutation } from '@apollo/client';
 import { generateId, Spinner, Form, Modal } from '@spout/toolkit';
@@ -41,7 +43,7 @@ const Invite = ({ classroom }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const { classroomInvite, setClassroomInvite } = useContext(
-    ClassroomOverviewContext,
+    ClassroomOverviewContext
   )!;
 
   const [createInvite, { data, loading, error }] = useMutation<
@@ -83,7 +85,7 @@ const Invite = ({ classroom }: Props) => {
           },
         },
       }),
-    [createInvite, classroom],
+    [createInvite, classroom]
   );
 
   const labelId = `spout-classroom-invite-label-${generateId()}`;
@@ -94,7 +96,8 @@ const Invite = ({ classroom }: Props) => {
       <ClassroomActionCard
         aria-labelledby={labelId}
         aria-describedby={descId}
-        title="✉️ Invite"
+        title="Invite"
+        icon={<FontAwesomeIcon icon={faEnvelope} className="text-green-600" />}
         description={`Invite people to ${classroom.name}`}
         className="col-start-2"
         onClick={() => setIsOpen(true)}

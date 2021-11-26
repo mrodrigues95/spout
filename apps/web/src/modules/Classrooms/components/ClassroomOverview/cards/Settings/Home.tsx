@@ -1,6 +1,7 @@
 import { ReactNode, useContext } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { Modal, Button, ButtonOrLinkProps } from '@spout/toolkit';
-import { ChevronIcon } from '@spout/assets/icons/outline';
 import {
   LeaveIllustration,
   EditIllustration,
@@ -19,7 +20,7 @@ const HomeButton = ({ label, illustration, onClick }: HomeButtonProps) => {
         {illustration}
         <span>{label}</span>
       </div>
-      <ChevronIcon className="w-5 h-5 text-black transform rotate-180" />
+      <FontAwesomeIcon icon={faChevronRight} />
     </Button>
   );
 };

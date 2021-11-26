@@ -1,4 +1,6 @@
 import { useState, ReactElement, createContext } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { generateId, Modal } from '@spout/toolkit';
 import { ClassroomActionCard } from '../ClassroomCard';
 import LeaveClassroom from './LeaveClassroom';
@@ -29,7 +31,8 @@ const Settings = () => {
       <ClassroomActionCard
         aria-labelledby={labelId}
         aria-describedby={descId}
-        title="⚙️ Settings"
+        title="Settings"
+        icon={<FontAwesomeIcon icon={faCog} className="text-blueGray-500" />}
         description="Manage your classroom"
         onClick={() => {
           setModal(modals['home']);

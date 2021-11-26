@@ -1,9 +1,12 @@
 import { ComponentProps } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
-import { LoadingIcon } from '@spout/assets/icons/outline';
 import { LoadingBricks } from './loading-bricks';
 
-const styles = {
+const Circle = () => <FontAwesomeIcon icon={faSpinner} />
+
+const STYLES = {
   size: {
     xs: 'h-3 w-3',
     sm: 'h-4 w-4',
@@ -17,15 +20,15 @@ const styles = {
     purple: 'text-purple-500',
   },
   variant: {
-    circle: LoadingIcon,
+    circle: Circle,
     bricks: LoadingBricks,
   },
 };
 
 export interface SpinnerProps extends ComponentProps<'div'> {
-  size?: keyof typeof styles['size'];
-  scheme?: keyof typeof styles['scheme'];
-  variant?: keyof typeof styles['variant'];
+  size?: keyof typeof STYLES['size'];
+  scheme?: keyof typeof STYLES['scheme'];
+  variant?: keyof typeof STYLES['variant'];
   srLabel?: string;
   center?: boolean;
 }
@@ -39,7 +42,7 @@ export const Spinner = ({
   className,
   ...props
 }: SpinnerProps) => {
-  const Spinner = styles.variant[variant];
+  const Spinner = STYLES.variant[variant];
 
   return (
     <div
@@ -54,8 +57,8 @@ export const Spinner = ({
       <Spinner
         className={clsx(
           variant === 'circle' && 'animate-spin',
-          styles.size[size],
-          styles.scheme[scheme]
+          STYLES.size[size],
+          STYLES.scheme[scheme]
         )}
       />
       <span className="sr-only">{srLabel}</span>

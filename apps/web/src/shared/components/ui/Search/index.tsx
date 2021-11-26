@@ -1,5 +1,6 @@
 import { ComponentPropsWithRef, forwardRef } from 'react';
-import { SearchIcon } from '@spout/assets/icons/outline';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@spout/toolkit';
 import { useMediaQuery, MEDIA_QUERIES } from '../../../../shared/hooks';
 
@@ -12,7 +13,10 @@ const Search = forwardRef<HTMLInputElement, Props>(({ ...props }, ref) => {
     <div className="relative flex w-full justify-end">
       {isSmall ? (
         <span className="absolute right-0 inset-y-0 flex items-center pr-4">
-          <SearchIcon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+          <FontAwesomeIcon
+            icon={faSearch}
+            className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400"
+          />
         </span>
       ) : (
         <Button
@@ -21,7 +25,10 @@ const Search = forwardRef<HTMLInputElement, Props>(({ ...props }, ref) => {
           className="sm:ml-3"
           aria-label="Search"
         >
-          <SearchIcon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+          <FontAwesomeIcon
+            icon={faSearch}
+            className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400"
+          />
         </Button>
       )}
       <input

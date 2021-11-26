@@ -1,11 +1,13 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import { ClassroomContentCard } from '../ClassroomCard';
 
 const Participants = () => {
   return (
     <ClassroomContentCard
-      title="📢 Participants"
+      title="Participants"
+      icon={<FontAwesomeIcon icon={faUsers} className="text-blue-800" />}
       description="TODO"
-      className="col-start-3 row-span-3"
     />
   );
 };

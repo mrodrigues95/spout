@@ -1,6 +1,7 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { Controller, FieldValues, UseFormReturn } from 'react-hook-form';
 import { hoursToSeconds, minutesToSeconds } from 'date-fns';
-import { CheckIcon, ChevronIcon } from '@spout/assets/icons/outline';
 import { Select } from '@spout/toolkit';
 
 type MaxAge = { label: string; value: number };
@@ -62,7 +63,7 @@ const InviteSettings = ({ control }: Props) => {
                   key={key}
                   value={props}
                   label={props.label}
-                  selectedIcon={<CheckIcon className="w-5 h-5" />}
+                  selectedIcon={<FontAwesomeIcon icon={faCheck} />}
                 />
               ))}
             </Select.Options>
@@ -88,7 +89,7 @@ const InviteSettings = ({ control }: Props) => {
                   key={key}
                   value={props}
                   label={props.label}
-                  selectedIcon={<CheckIcon className="w-5 h-5" />}
+                  selectedIcon={<FontAwesomeIcon icon={faCheck} />}
                 />
               ))}
             </Select.Options>

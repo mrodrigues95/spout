@@ -1,11 +1,12 @@
 import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faSmile,
+  faPaperclip,
+  faChevronCircleRight,
+} from '@fortawesome/free-solid-svg-icons';
 import { gql, useQuery } from '@apollo/client';
 import clsx from 'clsx';
-import {
-  EmojiHappyIcon,
-  PaperClipIcon,
-  ChevronIcon,
-} from '@spout/assets/icons/outline';
 import { Button } from '@spout/toolkit';
 import { formatNewMessage } from './utils/format';
 import { TextArea } from '../../../../../shared/components';
@@ -26,7 +27,7 @@ const MessageComposer = ({ discussionId }: Props) => {
         }
       }
       ${UserInfoFragment}
-    `,
+    `
   );
   const add = useStore((state) => state.add);
   const [message, setMessage] = useState('');
@@ -53,12 +54,15 @@ const MessageComposer = ({ discussionId }: Props) => {
       <div
         className={clsx(
           'flex items-center justify-between h-full p-3 pointer-events-auto bg-white border-2 rounded-md transition ease-in-out duration-150',
-          focused ? 'border-transparent ring-2 ring-black' : 'border-gray-200',
+          focused ? 'border-transparent ring-2 ring-black' : 'border-gray-200'
         )}
       >
         <div className="flex flex-1 items-center">
           <button type="button">
-            <EmojiHappyIcon className="h-5 w-5 text-gray-400 hover:text-gray-900" />
+            <FontAwesomeIcon
+              icon={faSmile}
+              className="h-5 w-5 text-gray-400 hover:text-gray-900"
+            />
           </button>
           <TextArea
             placeholder="Message..."
@@ -72,7 +76,10 @@ const MessageComposer = ({ discussionId }: Props) => {
         </div>
         <div className="flex items-center ml-8 space-x-3">
           <button type="button">
-            <PaperClipIcon className="h-5 w-5 text-gray-400 hover:text-gray-900" />
+            <FontAwesomeIcon
+              icon={faPaperclip}
+              className="h-5 w-5 text-gray-400 hover:text-gray-900"
+            />
           </button>
           <Button
             aria-label="Send message"
@@ -80,7 +87,10 @@ const MessageComposer = ({ discussionId }: Props) => {
             className="!p-2 shadow-lg"
             onClick={handleNewMessage}
           >
-            <ChevronIcon className="h-5 w-5 text-white transform rotate-180" />
+            <FontAwesomeIcon
+              icon={faChevronCircleRight}
+              className="h-5 w-5 text-white"
+            />
           </Button>
         </div>
       </div>

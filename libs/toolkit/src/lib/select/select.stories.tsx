@@ -1,6 +1,7 @@
-import { Story, Meta } from '@storybook/react';
 import { useState } from 'react';
-import { CheckIcon, ChevronIcon } from '@spout/assets/icons/outline';
+import { Story, Meta } from '@storybook/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { Select, SelectProps } from './select';
 
 export default {
@@ -26,7 +27,10 @@ const Template: Story<SelectProps> = () => {
         label={value ? value.name : 'Select'}
         variant={value ? 'default' : 'placeholder'}
         icon={
-          <ChevronIcon className="w-5 h-5 text-black transform -rotate-90" />
+          <FontAwesomeIcon
+            icon={faChevronRight}
+            className="w-5 h-5 text-black transform -rotate-90"
+          />
         }
       />
       <Select.Options>
@@ -35,7 +39,9 @@ const Template: Story<SelectProps> = () => {
             key={idx}
             value={person}
             label={person.name}
-            selectedIcon={<CheckIcon className="w-5 h-5" />}
+            selectedIcon={
+              <FontAwesomeIcon icon={faCheck} className="w-5 h-5" />
+            }
           />
         ))}
       </Select.Options>

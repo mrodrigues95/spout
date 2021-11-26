@@ -1,5 +1,6 @@
 import { ReactElement } from 'react';
-import { SparklesIcon } from '@spout/assets/icons/outline';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHandSparkles } from '@fortawesome/free-solid-svg-icons';
 import { EmptyState, EmptyStateProps } from '@spout/toolkit';
 
 interface Props extends Omit<EmptyStateProps, 'heading' | 'icon'> {
@@ -12,7 +13,16 @@ const EmptyFallback = ({ icon, heading, body }: Props) => {
     <EmptyState
       heading={heading ? heading : "There's nothing here, yet"}
       body={body}
-      icon={icon ? icon : <SparklesIcon className="h-12 w-12 text-black" />}
+      icon={
+        icon ? (
+          icon
+        ) : (
+          <FontAwesomeIcon
+            icon={faHandSparkles}
+            className="h-12 w-12 text-black"
+          />
+        )
+      }
     />
   );
 };

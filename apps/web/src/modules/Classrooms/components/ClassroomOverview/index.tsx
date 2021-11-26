@@ -18,12 +18,20 @@ const ClassroomOverview = ({ classroom }: Props) => {
   return (
     <ClassroomOverviewProvider>
       <DiscussionsNavigation classroom={classroom} />
-      <div className="flex flex-col grid-rows-3 grid-flow-col gap-4 h-full md:grid">
-        <Settings />
-        <Invite classroom={classroom} />
-        <Announcements />
-        <Upcoming />
-        <Instructor classroom={classroom} />
+      <div className="flex mt-3 space-x-3">
+        <div className="flex-1 space-y-3">
+          <div className="flex space-x-3">
+            <Settings />
+            <Invite classroom={classroom} />
+          </div>
+          <div>
+            <Announcements />
+          </div>
+          <div className="flex space-x-3">
+            <Upcoming />
+            <Instructor classroom={classroom} />
+          </div>
+        </div>
         <Participants />
       </div>
     </ClassroomOverviewProvider>

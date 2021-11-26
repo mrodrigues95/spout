@@ -1,5 +1,6 @@
 import { ReactElement } from 'react';
-import { ExclamationCircle } from '@spout/assets/icons/solid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { EmptyState, EmptyStateProps, Button } from '@spout/toolkit';
 
 export interface Props extends Omit<EmptyStateProps, 'heading' | 'icon'> {
@@ -13,7 +14,7 @@ const ErrorFallback = ({ icon, heading, action, ...props }: Props) => {
     <EmptyState
       heading={heading ? heading : 'Something went wrong'}
       icon={
-        icon ? icon : <ExclamationCircle className="h-8 w-8 text-red-600" />
+        icon ? icon : <FontAwesomeIcon icon={faExclamationCircle} className="h-8 w-8 text-red-600" />
       }
       {...props}
     >

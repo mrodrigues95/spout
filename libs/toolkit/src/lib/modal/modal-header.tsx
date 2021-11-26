@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { Dialog } from '@headlessui/react';
-import { XIcon } from '@spout/assets/icons/outline';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 import { ModalContext } from './modal';
 import { Button } from '../button';
@@ -55,7 +56,7 @@ export const ModalHeader = ({
           aria-label="Close modal"
           onClick={onClose}
         >
-          <XIcon className="w-5 h-5 text-black" />
+          <FontAwesomeIcon icon={faTimes} className="w-5 h-5 text-black" />
         </Button>
       )}
     </header>

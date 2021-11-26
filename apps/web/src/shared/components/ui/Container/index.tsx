@@ -1,8 +1,9 @@
 import { ComponentProps } from 'react';
 import { ApolloError } from '@apollo/client';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Spinner, Button, Title } from '@spout/toolkit';
 import { VoidIllustration } from '@spout/assets/illustrations';
-import { ChevronIcon } from '@spout/assets/icons/outline';
 import clsx from 'clsx';
 import { getRandomAvatar } from '../../../utils/getRandomAvatar';
 import ErrorFallback, { Props as ErrorFallbackProps } from '../ErrorFallback';
@@ -41,10 +42,8 @@ const Container = ({
             <Title as="h1">{title}</Title>
             <Button className="space-x-2" variant="ghost" scheme="gray">
               <Avatar src={getRandomAvatar()} aria-hidden="true" size="xs" />
-              <span className="text-blueGray-900 font-semibold">
-                Marcus Rodrigues
-              </span>
-              <ChevronIcon className="w-4 h-4 transform -rotate-90 text-gray-600" />
+              <span>Marcus Rodrigues</span>
+              <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4 text-gray-600" />
             </Button>
           </section>
           <section className="flex flex-col flex-1">{children}</section>

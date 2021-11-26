@@ -88,7 +88,7 @@ const LoginForm = () => {
           description: 'Dont have an account?',
           link: signUpLink,
         }}
-      >
+      > 
         <Form form={form} onSubmit={onSubmit} className="flex flex-col w-full">
           <AuthError title="Login failed." error={loginError} />
           <Form.Input

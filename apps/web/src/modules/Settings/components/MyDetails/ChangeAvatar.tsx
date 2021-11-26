@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import {
@@ -9,7 +11,6 @@ import {
   Button,
   PhotoCropper,
 } from '@spout/toolkit';
-import { PlusCircleIcon } from '@spout/assets/icons/outline';
 import { UserInfoFragment } from '../../../Classrooms/Discussion/utils/fragments';
 import { Avatar, useToast } from '../../../../shared/components';
 import { getRandomAvatar } from '../../../../shared/utils/getRandomAvatar';
@@ -140,7 +141,10 @@ const ChangeAvatar = () => {
               className="absolute right-0 bottom-0 mr-1 bg-indigo-400 rounded-full shadow-lg outline-none md:mr-4 md:mb-1 lg:mr-6 focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-red-600"
               aria-label="Change profile photo"
             >
-              <PlusCircleIcon className="w-4 h-4 text-white sm:w-6 sm:h-6 lg:w-8 lg:h-8" />
+              <FontAwesomeIcon
+                icon={faPlus}
+                className="w-4 h-4 text-white sm:w-6 sm:h-6 lg:w-8 lg:h-8"
+              />
             </FilePicker.Button>
           </FilePicker>
         </div>

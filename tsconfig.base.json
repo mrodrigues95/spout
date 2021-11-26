@@ -25,12 +25,6 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@spout/assets/icons/outline": [
-        "libs/shared/assets/src/lib/icons/outline/index.ts"
-      ],
-      "@spout/assets/icons/solid": [
-        "libs/shared/assets/src/lib/icons/solid/index.ts"
-      ],
       "@spout/assets/illustrations": [
         "libs/shared/assets/src/lib/illustrations/index.ts"
       ],
