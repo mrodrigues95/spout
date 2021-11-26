@@ -8,7 +8,7 @@ const STYLES = {
   base:
     'relative inline-flex items-center justify-center tracking-wide select-none font-semibold outline-none rounded-md transition duration-150 ease-in-out',
   active:
-    'focus:outline-none focus:ring focus:ring-offset-white',
+    'focus:outline-none focus:ring focus:ring-offset-white focus:ring-offset-2',
   disabled: 'disabled:opacity-60 disabled:pointer-events-none',
   size: {
     xs: 'py-1 px-2 text-xs',
@@ -28,7 +28,7 @@ const STYLES = {
   scheme: {
     gray: {
       solid:
-        'text-white bg-blueGray-900 focus:ring-offset-2 focus:ring-gray-900 hover:bg-blueGray-700',
+        'text-white bg-blueGray-900 focus:ring-gray-900 hover:bg-blueGray-700',
       light:
         'text-blueGray-900 bg-blueGray-100 focus:bg-blueGray-200 focus:ring-gray-900 hover:bg-blueGray-200',
       ghost:
@@ -39,7 +39,7 @@ const STYLES = {
     },
     purple: {
       solid:
-        'text-white bg-purple-600 focus:ring-offset-2 focus:ring-purple-600 hover:bg-purple-700',
+        'text-white bg-purple-600 focus:ring-purple-600 hover:bg-purple-700',
       light:
         'text-purple-600 bg-purple-100 focus:ring-purple-600 hover:bg-purple-200',
       ghost:
@@ -49,7 +49,7 @@ const STYLES = {
       link: 'text-purple-600 bg-white focus:ring-purple-600',
     },
     red: {
-      solid: 'text-white bg-red-600 focus:ring-offset-2 focus:ring-red-600 hover:bg-red-700',
+      solid: 'text-white bg-red-600 focus:ring-red-600 hover:bg-red-700',
       light: 'text-red-600 bg-red-100 focus:ring-red-600 hover:bg-red-200',
       ghost:
         'text-red-600 focus:bg-red-100 focus:ring-red-600 hover:bg-red-100',
@@ -58,7 +58,7 @@ const STYLES = {
       link: 'text-red-600 bg-white focus:ring-red-600',
     },
     orange: {
-      solid: 'text-white bg-orange-600 focus:ring-offset-2 focus:ring-orange-600 hover:bg-orange-700',
+      solid: 'text-white bg-orange-600 focus:ring-orange-600 hover:bg-orange-700',
       light: 'text-orange-600 bg-orange-100 focus:ring-orange-600 hover:bg-orange-200',
       ghost:
         'text-orange-600 focus:bg-orange-100 focus:ring-orange-600 hover:bg-orange-100',
@@ -67,7 +67,7 @@ const STYLES = {
       link: 'text-orange-600 bg-white focus:ring-orange-600',
     },
     blue: {
-      solid: 'text-white bg-blue-600 focus:ring-offset-2 focus:ring-blue-600 hover:bg-blue-700',
+      solid: 'text-white bg-blue-600 focus:ring-blue-600 hover:bg-blue-700',
       light: 'text-blue-600 bg-blue-100 focus:ring-blue-600 hover:bg-blue-200',
       ghost:
         'text-blue-600 focus:bg-blue-100 focus:ring-blue-600 hover:bg-blue-100',

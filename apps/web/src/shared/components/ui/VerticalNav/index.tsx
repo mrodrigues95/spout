@@ -1,5 +1,5 @@
 import { ComponentProps, ReactNode } from 'react';
-import { Link } from '@spout/toolkit';
+import { Link, Title } from '@spout/toolkit';
 import clsx from 'clsx';
 import { useIsCurrentRoute } from '../../../hooks';
 
@@ -14,9 +14,12 @@ const VerticalNavGroupHeader = ({
 }: VerticalNavGroupHeaderProps) => {
   return (
     <div className="flex items-center px-4 space-x-4 mb-3">
-      <span className="text-gray-500 text-xs font-semibold tracking-wide uppercase">
+      <Title
+        as="h5"
+        className="text-blueGray-900 text-xs tracking-wider uppercase"
+      >
         {title}
-      </span>
+      </Title>
       {actions}
     </div>
   );
@@ -72,7 +75,10 @@ const VerticalNavItem = ({
           variant={selected ? 'light' : 'ghost'}
           fullWidth
           size="sm"
-          className="text-sm space-x-4"
+          className={clsx(
+            'text-sm space-x-4',
+            selected ? 'text-blueGray-900' : 'text-blueGray-500'
+          )}
         >
           {icon}
           <span className="flex-1 truncate min-w-0">{label}</span>

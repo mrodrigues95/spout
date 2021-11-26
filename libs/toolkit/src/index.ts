@@ -1,3 +1,5 @@
+export * from './lib/text';
+export * from './lib/title';
 export * from './lib/tabs';
 export * from './lib/card';
 export * from './lib/horizontal-navigation';

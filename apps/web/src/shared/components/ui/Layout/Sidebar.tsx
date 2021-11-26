@@ -166,17 +166,17 @@ const Sidebar = () => {
           <VerticalNav.Item
             to="/home"
             label="Home"
-            icon={<HomeIcon className="w-5 h-5" />}
+            icon={<HomeIcon className="w-5 h-5 text-blueGray-900" />}
           />
           <VerticalNav.Item
             to="/messages"
             label="Messages"
-            icon={<MessagesIcon className="w-5 h-5" />}
+            icon={<MessagesIcon className="w-5 h-5 text-blueGray-900" />}
           />
           <VerticalNav.Item
             to="/settings"
             label="Settings"
-            icon={<SettingsIcon className="w-5 h-5" />}
+            icon={<SettingsIcon className="w-5 h-5 text-blueGray-900" />}
           />
           <VerticalNav.Item
             isGroup

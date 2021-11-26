@@ -1,6 +1,6 @@
 import { ComponentProps } from 'react';
 import { ApolloError } from '@apollo/client';
-import { Spinner, Button } from '@spout/toolkit';
+import { Spinner, Button, Title } from '@spout/toolkit';
 import { VoidIllustration } from '@spout/assets/illustrations';
 import { ChevronIcon } from '@spout/assets/icons/outline';
 import clsx from 'clsx';
@@ -38,7 +38,7 @@ const Container = ({
       {isReady && (
         <>
           <section className="flex items-center justify-between border-b border-gray-200/50 pb-3">
-            <h1 className="font-bold text-3xl">{title}</h1>
+            <Title as="h1">{title}</Title>
             <Button className="space-x-2" variant="ghost" scheme="gray">
               <Avatar src={getRandomAvatar()} aria-hidden="true" size="xs" />
               <span className="text-blueGray-900 font-semibold">
