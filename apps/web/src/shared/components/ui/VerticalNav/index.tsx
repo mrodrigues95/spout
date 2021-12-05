@@ -16,7 +16,7 @@ const VerticalNavGroupHeader = ({
     <div className="flex items-center px-4 space-x-4 mb-3">
       <Title
         as="h5"
-        className="text-blueGray-900 text-xs tracking-wider uppercase"
+        className="text-gray-900 text-xs tracking-wider uppercase"
       >
         {title}
       </Title>
@@ -77,7 +77,7 @@ const VerticalNavItem = ({
           size="sm"
           className={clsx(
             'text-sm space-x-4',
-            selected ? 'text-blueGray-900' : 'text-blueGray-500'
+            selected ? 'text-gray-900' : 'text-gray-500'
           )}
         >
           {icon}

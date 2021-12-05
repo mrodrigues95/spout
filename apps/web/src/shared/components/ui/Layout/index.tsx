@@ -15,7 +15,7 @@ export const Layout = ({ title, authenticated = true, children }: Props) => {
       <div className="min-h-screen flex flex-col bg-white">
         <div className="flex flex-1">
           {authenticated && <Sidebar />}
-          <main className="flex flex-1 flex-col bg-blueGray-50">
+          <main className="flex flex-1 flex-col">
             {children}
           </main>
         </div>

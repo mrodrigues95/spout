@@ -14,7 +14,14 @@ const ErrorFallback = ({ icon, heading, action, ...props }: Props) => {
     <EmptyState
       heading={heading ? heading : 'Something went wrong'}
       icon={
-        icon ? icon : <FontAwesomeIcon icon={faExclamationCircle} className="h-8 w-8 text-red-600" />
+        icon ? (
+          icon
+        ) : (
+          <FontAwesomeIcon
+            icon={faExclamationCircle}
+            className="h-8 w-8 text-red-600"
+          />
+        )
       }
       {...props}
     >

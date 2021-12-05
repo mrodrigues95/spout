@@ -7,7 +7,7 @@ const STYLES = {
   size: {
     xs: 'p-1 text-xs',
     sm: 'p-2 text-sm',
-    md: 'p-4 text-md',
+    md: 'p-3 text-md',
     lg: 'p-6 text-lg',
     xl: 'p-8 text-xl',
   },

@@ -32,7 +32,7 @@ const ClassroomOverview = ({ classroom }: Props) => {
             <Instructor classroom={classroom} />
           </div>
         </div>
-        <Participants />
+        <Participants classroom={classroom} />
       </div>
     </ClassroomOverviewProvider>
   );

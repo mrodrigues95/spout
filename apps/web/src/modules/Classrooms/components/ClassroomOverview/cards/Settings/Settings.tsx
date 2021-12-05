@@ -32,7 +32,7 @@ const Settings = () => {
         aria-labelledby={labelId}
         aria-describedby={descId}
         title="Settings"
-        icon={<FontAwesomeIcon icon={faCog} className="text-blueGray-500" />}
+        icon={<FontAwesomeIcon icon={faCog} className="text-gray-500" />}
         description="Manage your classroom"
         onClick={() => {
           setModal(modals['home']);

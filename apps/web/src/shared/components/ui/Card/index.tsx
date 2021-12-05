@@ -9,7 +9,7 @@ const Card = <T extends ElementType = 'div'>({
 }: CardProps<T>) => {
   return (
     <SCard
-      className={twMerge(clsx('p-4 bg-white rounded-2xl shadow-card', className))}
+      className={twMerge(clsx('p-2 bg-white rounded-2xl', className))}
       {...props}
     />
   );

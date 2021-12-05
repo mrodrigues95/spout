@@ -20,7 +20,7 @@ export const Title = <T extends Title = 'h1'>({
   return (
     <Component
       className={twMerge(clsx(
-        'text-blueGray-900 font-bold',
+        'text-gray-900 font-bold',
         variant === 'h1' && 'text-4xl',
         variant === 'h2' && 'text-3xl',
         variant === 'h3' && 'text-xl',

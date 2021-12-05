@@ -1,13 +1,9 @@
 import { ComponentProps } from 'react';
 import { ApolloError } from '@apollo/client';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { Spinner, Button, Title } from '@spout/toolkit';
+import { Spinner } from '@spout/toolkit';
 import { VoidIllustration } from '@spout/assets/illustrations';
 import clsx from 'clsx';
-import { getRandomAvatar } from '../../../utils/getRandomAvatar';
 import ErrorFallback, { Props as ErrorFallbackProps } from '../ErrorFallback';
-import Avatar from '../Avatar';
 
 interface ContainerProps extends ComponentProps<'div'> {
   title: string;
@@ -28,7 +24,7 @@ const Container = ({
   const isReady = !isError && !isLoading;
 
   return (
-    <div className={clsx('flex flex-col flex-1 p-5 space-y-3')} {...props}>
+    <section className={clsx('flex flex-col flex-1 p-5 space-y-4')} {...props}>
       {isLoading && <Spinner center size="lg" className="flex-1" />}
       {isError && (
         <ErrorFallback
@@ -36,20 +32,8 @@ const Container = ({
           action={() => refetch?.()}
         />
       )}
-      {isReady && (
-        <>
-          <section className="flex items-center justify-between border-b border-gray-200/50 pb-3">
-            <Title as="h1">{title}</Title>
-            <Button className="space-x-2" variant="ghost" scheme="gray">
-              <Avatar src={getRandomAvatar()} aria-hidden="true" size="xs" />
-              <span>Marcus Rodrigues</span>
-              <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4 text-gray-600" />
-            </Button>
-          </section>
-          <section className="flex flex-col flex-1">{children}</section>
-        </>
-      )}
-    </div>
+      {isReady && children}
+    </section>
   );
 };
 

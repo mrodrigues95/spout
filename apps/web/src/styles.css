@@ -3,6 +3,17 @@
 @tailwind utilities;
 
 @layer utilities {
+  .bg-messages {
+    background-image: url("/messages-bg.jpg");
+    background-position: 50% 0%;
+    background-size: 700px;
+    background-repeat: repeat;
+    background-attachment: scroll;
+  }
+
+  .placeholder-normal::placeholder {
+    font-weight: 400;
+  }
   .placeholder-medium::placeholder {
     font-weight: 500;
   }

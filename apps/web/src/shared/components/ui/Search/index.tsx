@@ -32,7 +32,7 @@ const Search = forwardRef<HTMLInputElement, Props>(({ ...props }, ref) => {
         </Button>
       )}
       <input
-        className="hidden w-full pr-12 pl-4 h-12 border-none outline-none tracking-wide rounded-2xl font-bold bg-blueGray-100 placeholder-medium placeholder-gray-400 text-black text-sm items-center transition-all ease-in-out duration-300 sm:inline-flex focus:ring-2 focus:ring-gray-900"
+        className="hidden w-full pr-12 pl-4 h-12 border-none outline-none tracking-wide rounded-2xl font-bold bg-gray-100 placeholder-medium placeholder-gray-400 text-black text-sm items-center transition-all ease-in-out duration-300 sm:inline-flex focus:ring-2 focus:ring-gray-900"
         aria-hidden={!isSmall}
         aria-label="Search"
         ref={ref}

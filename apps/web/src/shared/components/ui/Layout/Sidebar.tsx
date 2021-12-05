@@ -17,8 +17,7 @@ import {
 } from '@spout/toolkit';
 import { getRandomAvatar } from '../../../utils/getRandomAvatar';
 import { UserInfoFragment } from '../../../../modules/Classrooms/Discussion/utils/fragments';
-import { Classroom } from '../../../../__generated__/schema.generated';
-import { useIsCurrentRoute, useIsRedirecting } from '../../../hooks';
+import { useIsRedirecting } from '../../../hooks';
 import { ErrorFallback, useToast } from '../../../../shared/components';
 import {
   ClassroomsQuery,
@@ -167,7 +166,7 @@ const Sidebar = () => {
             to="/home"
             label="Home"
             icon={
-              <FontAwesomeIcon icon={faHome} className="w-6 h-6 text-blueGray-900" fixedWidth />
+              <FontAwesomeIcon icon={faHome} className="w-6 h-6 text-gray-900" fixedWidth />
             }
           />
           <VerticalNav.Item
@@ -176,7 +175,7 @@ const Sidebar = () => {
             icon={
               <FontAwesomeIcon
                 icon={faCommentDots}
-                className="w-6 h-6 text-blueGray-900"
+                className="w-6 h-6 text-gray-900"
                 fixedWidth
               />
             }
@@ -185,7 +184,7 @@ const Sidebar = () => {
             to="/settings"
             label="Settings"
             icon={
-              <FontAwesomeIcon icon={faCog} className="w-6 h-6 text-blueGray-900" fixedWidth />
+              <FontAwesomeIcon icon={faCog} className="w-6 h-6 text-gray-900" fixedWidth />
             }
           />
           <VerticalNav.Item

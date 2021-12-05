@@ -28,14 +28,14 @@ const STYLES = {
   scheme: {
     gray: {
       solid:
-        'text-white bg-blueGray-900 focus:ring-gray-900 hover:bg-blueGray-700',
+        'text-white bg-gray-900 focus:ring-gray-900 hover:bg-gray-700',
       light:
-        'text-blueGray-900 bg-blueGray-100 focus:bg-blueGray-200 focus:ring-gray-900 hover:bg-blueGray-200',
+        'text-gray-900 bg-gray-100 focus:bg-gray-200 focus:ring-gray-900 hover:bg-gray-200',
       ghost:
-        'text-blueGray-900 focus:bg-blueGray-100 focus:ring-gray-900 hover:bg-blueGray-100',
+        'text-gray-900 focus:bg-gray-100 focus:ring-gray-900 hover:bg-gray-100',
       outline:
-        'text-blueGray-900 focus:bg-blueGray-200 focus:ring-gray-900 hover:bg-blueGray-100',
-      link: 'text-blueGray-900 bg-white focus:ring-gray-900',
+        'text-gray-900 focus:bg-gray-200 focus:ring-gray-900 hover:bg-gray-100',
+      link: 'text-gray-900 bg-white focus:ring-gray-900',
     },
     purple: {
       solid:

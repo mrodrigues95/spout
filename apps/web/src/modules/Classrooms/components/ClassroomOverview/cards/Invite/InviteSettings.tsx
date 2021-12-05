@@ -1,5 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheck,
+  faChevronCircleRight,
+} from '@fortawesome/free-solid-svg-icons';
 import { Controller, FieldValues, UseFormReturn } from 'react-hook-form';
 import { hoursToSeconds, minutesToSeconds } from 'date-fns';
 import { Select } from '@spout/toolkit';
@@ -54,7 +57,10 @@ const InviteSettings = ({ control }: Props) => {
               label={value ? value.label : 'Select'}
               variant={value ? 'default' : 'placeholder'}
               icon={
-                <ChevronIcon className="w-5 h-5 text-black transform -rotate-90" />
+                <FontAwesomeIcon
+                  icon={faChevronCircleRight}
+                  className="w-5 h-5 text-black"
+                />
               }
             />
             <Select.Options>
@@ -80,7 +86,10 @@ const InviteSettings = ({ control }: Props) => {
               label={value ? value.label : 'Select'}
               variant={value ? 'default' : 'placeholder'}
               icon={
-                <ChevronIcon className="w-5 h-5 text-black transform -rotate-90" />
+                <FontAwesomeIcon
+                  icon={faChevronCircleRight}
+                  className="w-5 h-5 text-black"
+                />
               }
             />
             <Select.Options>

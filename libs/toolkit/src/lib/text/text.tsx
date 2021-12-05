@@ -4,8 +4,8 @@ import clsx from 'clsx';
 
 const STYLES = {
   color: {
-    body: 'text-blueGray-700',
-    muted: 'text-blueGray-500',
+    body: 'text-gray-700',
+    muted: 'text-gray-500',
   },
   size: {
     xs: 'text-xs',
@@ -28,7 +28,7 @@ const STYLES = {
   },
   variant: {
     default: '',
-    subtitle: 'text-sm font-semibold uppercase text-blueGray-700'
+    subtitle: 'text-sm font-semibold uppercase text-gray-700'
   }
 } as const;
 
