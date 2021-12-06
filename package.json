@@ -7,7 +7,8 @@
     "url": "https://github.com/mrodrigues95/spout.git"
   },
   "scripts": {
-    "preinstall": "npx only-allow npm",
+    "preinstall": "npx only-allow yarn",
+    "bootstrap": "yarn --ignore-platform",
     "add": "nx g @nrwl/workspace:library",
     "rename": "nx g @nrwl/workspace:mv --project {args.src} --destination {args.dest}",
     "remove": "nx g @nrwl/workspace:remove {args.name}",
