@@ -1,15 +1,16 @@
-import { ComponentProps } from 'react';
+import { ComponentProps, useContext } from 'react';
 import { Tab } from '@headlessui/react';
 import clsx from 'clsx';
+import { TabContext } from './tab-provider';
+import { VARIANTS } from './tabs';
 
 type TabListProps = ComponentProps<'div'>;
 
 export const TabList = ({ className, children, ...props }: TabListProps) => {
+  const { variant } = useContext(TabContext)!;
+
   return (
-    <Tab.List
-      className={clsx('flex space-x-10 border-b border-gray-200', className)}
-      {...props}
-    >
+    <Tab.List className={clsx(VARIANTS[variant].tabList, className)} {...props}>
       {children}
     </Tab.List>
   );

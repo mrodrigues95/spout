@@ -20,7 +20,7 @@ const AuthCard = ({ title, subtitle, action, children }: Props) => {
           )}
         </div>
         {children}
-        <div className="w-full text-sm font-semibold">
+        <div className="w-full text-sm font-medium">
           <span className="text-gray-500 mr-1">{action.description}</span>
           {action.link}
         </div>

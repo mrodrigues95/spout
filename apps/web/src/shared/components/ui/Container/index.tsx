@@ -7,6 +7,7 @@ import ErrorFallback, { Props as ErrorFallbackProps } from '../ErrorFallback';
 
 interface ContainerProps extends ComponentProps<'div'> {
   title: string;
+  horizontal?: boolean;
   isLoading?: boolean;
   isError?: boolean | ApolloError;
   refetch?: ErrorFallbackProps['action'];
@@ -16,6 +17,7 @@ const Container = ({
   title,
   children,
   className,
+  horizontal = false,
   isLoading = false,
   isError = false,
   refetch,
@@ -24,7 +26,14 @@ const Container = ({
   const isReady = !isError && !isLoading;
 
   return (
-    <section className={clsx('flex flex-col flex-1 p-5 space-y-4')} {...props}>
+    <section
+      className={clsx(
+        'flex flex-1 p-5',
+        horizontal ? 'flex-row space-x-10' : 'flex-col space-y-4',
+        className
+      )}
+      {...props}
+    >
       {isLoading && <Spinner center size="lg" className="flex-1" />}
       {isError && (
         <ErrorFallback

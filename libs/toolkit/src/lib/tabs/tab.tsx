@@ -1,19 +1,22 @@
-import { ComponentProps } from 'react';
+import { ComponentProps, useContext } from 'react';
 import { Tab as HeadlessTab } from '@headlessui/react';
 import clsx from 'clsx';
+import { TabContext } from './tab-provider';
+import { VARIANTS } from './tabs';
 
 type TabProps = ComponentProps<'button'>;
 
 export const Tab = ({ className, children, ...props }: TabProps) => {
+  const { variant } = useContext(TabContext)!;
+
   return (
     <HeadlessTab
       className={({ selected }) =>
         clsx(
-          'relative inline-flex items-center justify-center px-3 py-2.5 text-sm font-semibold border-b-2 outline-none',
-          'hover:text-orange-500 focus:ring-2 ring-offset-2 ring-offset-blue-400 ring-white',
+          VARIANTS[variant].tab.base,
           selected
-            ? 'text-orange-500 border-current'
-            : 'text-gray-900 border-transparent',
+            ? VARIANTS[variant].tab.active
+            : VARIANTS[variant].tab.inactive,
           className
         )
       }

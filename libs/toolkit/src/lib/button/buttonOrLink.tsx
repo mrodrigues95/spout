@@ -6,7 +6,7 @@ import clsx from 'clsx';
 
 const STYLES = {
   base:
-    'relative inline-flex items-center justify-center tracking-wide select-none font-semibold outline-none rounded-md transition duration-150 ease-in-out',
+    'relative inline-flex items-center justify-center tracking-wide select-none text-left font-semibold outline-none rounded-md transition duration-150 ease-in-out',
   active:
     'focus:outline-none focus:ring focus:ring-offset-white focus:ring-offset-2',
   disabled: 'disabled:opacity-60 disabled:pointer-events-none',
@@ -28,14 +28,14 @@ const STYLES = {
   scheme: {
     gray: {
       solid:
-        'text-white bg-gray-900 focus:ring-gray-900 hover:bg-gray-700',
+        'text-white bg-gray-900 focus:ring hover:bg-gray-700',
       light:
-        'text-gray-900 bg-gray-100 focus:bg-gray-200 focus:ring-gray-900 hover:bg-gray-200',
+        'text-gray-900 bg-gray-100 focus:bg-gray-200 focus:ring hover:bg-gray-200',
       ghost:
-        'text-gray-900 focus:bg-gray-100 focus:ring-gray-900 hover:bg-gray-100',
+        'text-gray-900 focus:bg-gray-100 focus:ring hover:bg-gray-100',
       outline:
-        'text-gray-900 focus:bg-gray-200 focus:ring-gray-900 hover:bg-gray-100',
-      link: 'text-gray-900 bg-white focus:ring-gray-900',
+        'text-gray-900 focus:bg-gray-200 focus:ring hover:bg-gray-100',
+      link: 'text-gray-900 bg-white focus:ring',
     },
     purple: {
       solid:
@@ -66,14 +66,14 @@ const STYLES = {
         'text-orange-600 focus:bg-orange-100 focus:ring-orange-600 hover:bg-orange-100',
       link: 'text-orange-600 bg-white focus:ring-orange-600',
     },
-    blue: {
-      solid: 'text-white bg-blue-600 focus:ring-blue-600 hover:bg-blue-700',
-      light: 'text-blue-600 bg-blue-100 focus:ring-blue-600 hover:bg-blue-200',
+    sky: {
+      solid: 'text-white bg-sky-600 focus:ring-sky-600 hover:bg-sky-700',
+      light: 'text-sky-600 bg-sky-100 focus:ring-sky-600 hover:bg-sky-200',
       ghost:
-        'text-blue-600 focus:bg-blue-100 focus:ring-blue-600 hover:bg-blue-100',
+        'text-sky-600 focus:bg-sky-100 focus:ring-sky-600 hover:bg-sky-100',
       outline:
-        'text-blue-600 focus:bg-blue-100 focus:ring-blue-600 hover:bg-blue-100',
-      link: 'text-blue-600 bg-white focus:ring-blue-600',
+        'text-sky-600 focus:bg-sky-100 focus:ring-sky-600 hover:bg-sky-100',
+      link: 'text-sky-600 bg-white focus:ring-sky-600',
     },
   },
 } as const;

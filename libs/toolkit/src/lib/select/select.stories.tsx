@@ -39,9 +39,7 @@ const Template: Story<SelectProps> = () => {
             key={idx}
             value={person}
             label={person.name}
-            selectedIcon={
-              <FontAwesomeIcon icon={faCheck} className="w-5 h-5" />
-            }
+            selectedIcon={<FontAwesomeIcon icon={faCheck} size="xs" />}
           />
         ))}
       </Select.Options>

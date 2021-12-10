@@ -33,7 +33,7 @@ const SettingsHeader = () => {
 
   return (
     <div className="flex items-center justify-between">
-      <Button size="sm" variant="light" scheme="blue" onClick={removeSession}>
+      <Button size="sm" variant="light" scheme="sky" onClick={removeSession}>
         Log Out
       </Button>
     </div>

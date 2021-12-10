@@ -8,13 +8,7 @@ import {
 import { useRouter } from 'next/router';
 import { object, string } from 'zod';
 import { gql, useMutation, useQuery } from '@apollo/client';
-import {
-  Button,
-  Skeleton,
-  Modal,
-  Form,
-  useZodForm,
-} from '@spout/toolkit';
+import { Button, Skeleton, Modal, Form, useZodForm } from '@spout/toolkit';
 import { getRandomAvatar } from '../../../utils/getRandomAvatar';
 import { UserInfoFragment } from '../../../../modules/Classrooms/Discussion/utils/fragments';
 import { useIsRedirecting } from '../../../hooks';
@@ -165,27 +159,19 @@ const Sidebar = () => {
           <VerticalNav.Item
             to="/home"
             label="Home"
-            icon={
-              <FontAwesomeIcon icon={faHome} className="w-6 h-6 text-gray-900" fixedWidth />
-            }
+            icon={<FontAwesomeIcon icon={faHome} className="text-gray-900" />}
           />
           <VerticalNav.Item
             to="/messages"
             label="Messages"
             icon={
-              <FontAwesomeIcon
-                icon={faCommentDots}
-                className="w-6 h-6 text-gray-900"
-                fixedWidth
-              />
+              <FontAwesomeIcon icon={faCommentDots} className="text-gray-900" />
             }
           />
           <VerticalNav.Item
             to="/settings"
             label="Settings"
-            icon={
-              <FontAwesomeIcon icon={faCog} className="w-6 h-6 text-gray-900" fixedWidth />
-            }
+            icon={<FontAwesomeIcon icon={faCog} className="text-gray-900" />}
           />
           <VerticalNav.Item
             isGroup

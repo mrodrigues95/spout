@@ -2,6 +2,7 @@ import { ComponentProps, ReactNode } from 'react';
 import { Link, Title } from '@spout/toolkit';
 import clsx from 'clsx';
 import { useIsCurrentRoute } from '../../../hooks';
+import { twMerge } from 'tailwind-merge';
 
 interface VerticalNavGroupHeaderProps {
   title: string;
@@ -14,10 +15,7 @@ const VerticalNavGroupHeader = ({
 }: VerticalNavGroupHeaderProps) => {
   return (
     <div className="flex items-center px-4 space-x-4 mb-3">
-      <Title
-        as="h5"
-        className="text-gray-900 text-xs tracking-wider uppercase"
-      >
+      <Title as="h5" className="text-gray-900 text-xs tracking-wider uppercase">
         {title}
       </Title>
       {actions}
@@ -47,6 +45,7 @@ interface VerticalNavItemProps extends ComponentProps<'li'> {
   groupActions?: ReactNode;
   isGroup?: boolean;
   routes?: string[];
+  className?: string;
 }
 
 const VerticalNavItem = ({
@@ -58,6 +57,7 @@ const VerticalNavItem = ({
   groupActions,
   isGroup = false,
   routes = [],
+  className,
   ...props
 }: VerticalNavItemProps) => {
   const selected = useIsCurrentRoute([to || '__', ...routes]);
@@ -73,12 +73,10 @@ const VerticalNavItem = ({
         <Link
           href={to!}
           variant={selected ? 'light' : 'ghost'}
+          scheme={selected ? 'sky' : 'gray'}
           fullWidth
           size="sm"
-          className={clsx(
-            'text-sm space-x-4',
-            selected ? 'text-gray-900' : 'text-gray-500'
-          )}
+          className={twMerge(clsx('text-sm space-x-4 group', className))}
         >
           {icon}
           <span className="flex-1 truncate min-w-0">{label}</span>

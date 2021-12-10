@@ -9,13 +9,13 @@ import { MeQuery } from './__generated__/Message.generated';
 import { formatMessageDate } from './utils/format';
 import { UserInfoFragment } from '../../utils/fragments';
 
-interface MessageMetaProps {
+interface MessageHeaderProps {
   isMine: boolean;
   name: string;
   date: string;
 }
 
-const MessageMeta = ({ isMine, name, date }: MessageMetaProps) => {
+const MessageHeader = ({ isMine, name, date }: MessageHeaderProps) => {
   return (
     <div
       className={clsx(
@@ -121,7 +121,7 @@ const Message = ({ message, optimisticOpts, isLast }: Props) => {
         <Avatar src={avatar} aria-hidden="true" />
       </div>
       <div className="relative flex flex-col max-w-[75%] space-y-1">
-        <MessageMeta
+        <MessageHeader
           isMine={isMine}
           name={message.createdBy.name}
           date={formattedDate}
