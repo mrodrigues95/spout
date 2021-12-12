@@ -7,6 +7,8 @@ import DiscussionHeader from './DiscussionHeader';
 import DiscussionDetails from './DiscussionDetails';
 import { UserInfoFragment } from '../utils/fragments';
 
+// TODO: Move query from `messages` here.
+// TODO: Create welcome message.
 const DiscussionFragment = gql`
   fragment DiscussionInfo_discussion on Discussion {
     id

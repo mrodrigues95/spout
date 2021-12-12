@@ -11,6 +11,7 @@ import Participants from './Participants';
 interface Tab {
   id: number;
   icon: ReactElement;
+  ariaLabel: string;
   component: ReactElement;
 }
 
@@ -23,17 +24,19 @@ const DiscussionDetails = ({ discussion }: Props) => {
     {
       id: 1,
       icon: <FontAwesomeIcon icon={faUsers} />,
+      ariaLabel: 'Participants',
       component: <Participants users={discussion.classroom.users} />,
     },
     {
       id: 2,
       icon: <FontAwesomeIcon icon={faFileAlt} />,
+      ariaLabel: 'Files',
       component: <span>files</span>,
     },
   ]);
 
   return (
-    <div className="w-72 space-y-8">
+    <div className="flex flex-col w-72 space-y-8">
       <div className="flex flex-col items-center">
         <Avatar
           src={getRandomAvatar()}
@@ -49,16 +52,20 @@ const DiscussionDetails = ({ discussion }: Props) => {
         </Title>
       </div>
       <TopicDescription />
-      <div>
-        <Tabs variant="primary">
+      <div className="flex-1">
+        <Tabs className="h-full" variant="primary">
           <Tabs.List>
             {tabs.map((tab) => (
-              <Tabs.Tab key={tab.id}>{tab.icon}</Tabs.Tab>
+              <Tabs.Tab key={tab.id} aria-label={tab.ariaLabel}>
+                {tab.icon}
+              </Tabs.Tab>
             ))}
           </Tabs.List>
-          <Tabs.Panels>
+          <Tabs.Panels className="flex-1">
             {tabs.map((tab) => (
-              <Tabs.Panel key={tab.id}>{tab.component}</Tabs.Panel>
+              <Tabs.Panel className="relative flex-1" key={tab.id}>
+                {tab.component}
+              </Tabs.Panel>
             ))}
           </Tabs.Panels>
         </Tabs>

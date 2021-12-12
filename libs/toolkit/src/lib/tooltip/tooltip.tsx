@@ -14,19 +14,24 @@ import { Portal } from '@headlessui/react';
 import { Placement } from '@popperjs/core';
 import { AnimatePresence, motion, Variants } from 'framer-motion';
 import { generateId } from '../../utils';
+import clsx from 'clsx';
 
 export interface TooltipProps {
-  label: string;
+  label: ReactNode;
   children: ReactNode | ReactElement;
   placement?: Placement;
   delay?: number;
+  className?: string;
+  unstyled?: boolean;
 }
 
 export const Tooltip = ({
   label,
   children,
+  className,
   placement = 'top',
   delay = 0,
+  unstyled = false,
 }: TooltipProps) => {
   const [isShowing, setIsShowing] = useState(false);
   const [trigger, container] = usePopper({
@@ -40,7 +45,7 @@ export const Tooltip = ({
     clearTimeout(timeoutRef.current);
     timeoutRef.current = window.setTimeout(
       () => setIsShowing(true),
-      delay || 0,
+      delay || 0
     );
   };
 
@@ -100,7 +105,11 @@ export const Tooltip = ({
               <motion.span
                 id={id}
                 role="tooltip"
-                className="flex items-center justify-center px-2 py-1 tracking-wider font-semibold whitespace-nowrap bg-black text-white text-xs rounded-md"
+                className={clsx(
+                  !unstyled &&
+                    'flex items-center justify-center px-2 py-1 tracking-wider font-semibold whitespace-nowrap bg-black text-white text-xs rounded-md',
+                  className
+                )}
                 variants={variants}
                 initial="exit"
                 animate="enter"

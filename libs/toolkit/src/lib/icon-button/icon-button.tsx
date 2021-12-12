@@ -1,5 +1,5 @@
+import { forwardRef, ReactElement } from 'react';
 import clsx from 'clsx';
-import { ReactElement } from 'react';
 import { Button, ButtonOrLinkProps } from '../button';
 
 // Override `buttonOrLink` styles and use even padding instead.
@@ -18,22 +18,31 @@ export interface IconButtonProps extends Omit<ButtonOrLinkProps, 'fullWidth'> {
   'aria-label': string;
 }
 
-export const IconButton = ({
-  icon,
-  className,
-  'aria-label': ariaLabel,
-  size = 'sm',
-  variant = 'ghost',
-  ...props
-}: IconButtonProps) => {
-  return (
-    <Button
-      className={clsx(STYLES.size[size], className)}
-      aria-label={ariaLabel}
-      variant={variant}
-      {...props}
-    >
-      {icon}
-    </Button>
-  );
-};
+export const IconButton = forwardRef<
+  HTMLButtonElement & HTMLAnchorElement,
+  IconButtonProps
+>(
+  (
+    {
+      icon,
+      className,
+      'aria-label': ariaLabel,
+      size = 'sm',
+      variant = 'ghost',
+      ...props
+    },
+    ref
+  ) => {
+    return (
+      <Button
+        className={clsx(STYLES.size[size], className)}
+        aria-label={ariaLabel}
+        variant={variant}
+        ref={ref}
+        {...props}
+      >
+        {icon}
+      </Button>
+    );
+  }
+);

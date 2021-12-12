@@ -9,13 +9,17 @@ interface Props {
 
 const Participants = ({ users }: Props) => {
   return (
-    <div className="flex flex-col p-2 space-y-3 border-2 border-gray-100 rounded-md">
-      {users.map((user) => (
-        <Button key={user.id} className="space-x-3" variant="ghost" size="sm">
-          <Avatar src={getRandomAvatar()} aria-hidden="true" size="sm" />
-          <span className="flex-1 truncate min-w-0">{user.name}</span>
-        </Button>
-      ))}
+    <div className="absolute inset-0 overflow-auto">
+      <ul className="space-y-3">
+        {users.map((user) => (
+          <li key={user.id}>
+            <Button className="space-x-3" variant="ghost" size="sm" fullWidth>
+              <Avatar src={getRandomAvatar()} aria-hidden="true" size="sm" />
+              <span className="flex-1 truncate min-w-0">{user.name}</span>
+            </Button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

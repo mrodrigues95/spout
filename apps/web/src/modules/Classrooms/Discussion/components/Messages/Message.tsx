@@ -45,18 +45,18 @@ const MessageContent = ({
   return (
     <div
       className={clsx(
-        'p-3 text-sm w-full rounded-xl shadow-container',
-        isMine ? 'bg-blue-600' : 'bg-white',
+        'p-3 text-sm w-full rounded-lg shadow-container',
+        isMine ? 'bg-blue-600' : 'bg-white ring-1 ring-gray-900/5',
         optimisticOpts?.error ? 'text-red-600' : 'text-black'
       )}
     >
       <p
         className={clsx(
-          'break-words prose-sm',
-          isMine ? 'text-white font-normal' : 'text-gray-900 font-medium'
+          'break-words prose-sm whitespace-pre-line font-medium',
+          isMine ? 'text-white' : 'text-gray-900'
         )}
       >
-        {content}
+        {content.trim()}
       </p>
       {optimisticOpts?.error && (
         <Button
@@ -81,10 +81,9 @@ interface OptimisticOptions {
 interface Props {
   message: Message_Message;
   optimisticOpts?: OptimisticOptions;
-  isLast: boolean;
 }
 
-const Message = ({ message, optimisticOpts, isLast }: Props) => {
+const Message = ({ message, optimisticOpts }: Props) => {
   const { data } = useQuery<MeQuery>(
     gql`
       query MeQuery {
@@ -111,10 +110,9 @@ const Message = ({ message, optimisticOpts, isLast }: Props) => {
   return (
     <div
       className={clsx(
-        'flex items-center space-x-2 my-4',
+        'flex items-center space-x-2 py-2 px-4 hover:bg-indigo-100/50',
         optimisticOpts?.loading ? 'opacity-50' : 'opacity-100',
-        isMine ? 'flex-row-reverse space-x-reverse' : 'flex-row space-x-2',
-        isLast ? 'pt-1 pb-4' : 'py-1'
+        isMine ? 'flex-row-reverse space-x-reverse' : 'flex-row space-x-2'
       )}
     >
       <div className="flex items-center justify-center mb-auto rounded-full">

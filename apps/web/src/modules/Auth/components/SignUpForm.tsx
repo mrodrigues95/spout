@@ -50,7 +50,7 @@ const SignUpForm = () => {
   const { handleError } = useToast();
   const [signUpError, setSignUpError] = useState<Error | UserError>();
   const [signup] = useMutation<SignUpMutation, SignUpMutationVariables>(
-    SIGN_UP_MUTATION,
+    SIGN_UP_MUTATION
   );
 
   const form = useZodForm({
@@ -60,8 +60,8 @@ const SignUpForm = () => {
   const loginLink = (
     <Link
       href="/auth/login"
-      variant="unstyled"
-      className="text-green-600 font-semibold focus:outline-none focus:underline hover:underline"
+      variant="link"
+      className="text-green-600 font-semibold"
       preserveRedirect
     >
       Login.

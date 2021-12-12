@@ -31,7 +31,7 @@ namespace API.Schema.Mutations.Discussions {
             }
 
             var message = new Message {
-                Content = input.Content,
+                Content = input.Content.Trim(),
                 DiscussionId = discussion.Id,
                 CreatedById = userId
             };

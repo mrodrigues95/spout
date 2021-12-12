@@ -22,7 +22,7 @@ const STYLES = {
     light: 'border-none',
     outline: 'border-2 border-current bg-white',
     ghost: 'border-none bg-transparent',
-    link: 'border-none !p-0 hover:underline',
+    link: 'border-none !p-0 focus:underline hover:underline',
     unstyled: '',
   },
   scheme: {
@@ -35,7 +35,7 @@ const STYLES = {
         'text-gray-900 focus:bg-gray-100 focus:ring hover:bg-gray-100',
       outline:
         'text-gray-900 focus:bg-gray-200 focus:ring hover:bg-gray-100',
-      link: 'text-gray-900 bg-white focus:ring',
+      link: 'text-gray-900 bg-white ring-transparent',
     },
     purple: {
       solid:

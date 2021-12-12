@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { NextSeo } from 'next-seo';
 import Sidebar from './Sidebar';
+import clsx from 'clsx';
 
 interface Props {
   title: string;
@@ -15,7 +16,12 @@ export const Layout = ({ title, authenticated = true, children }: Props) => {
       <div className="min-h-screen flex flex-col bg-white">
         <div className="flex flex-1">
           {authenticated && <Sidebar />}
-          <main className="flex flex-1 flex-col">
+          <main
+            className={clsx(
+              'relative flex flex-1 flex-col',
+              authenticated && 'pl-72'
+            )}
+          >
             {children}
           </main>
         </div>

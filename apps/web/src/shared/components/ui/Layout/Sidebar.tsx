@@ -149,7 +149,7 @@ const Sidebar = () => {
   );
 
   return (
-    <aside className="flex flex-col p-5 space-y-8 max-w-xs">
+    <aside className="fixed inset-y-0 left-0 overflow-y-auto flex flex-col z-20 p-5 space-y-8 w-72">
       <div className="flex items-center space-x-4">
         <Avatar src={getRandomAvatar()} aria-hidden="true" />
         <span className="text-lg font-bold">spout</span>

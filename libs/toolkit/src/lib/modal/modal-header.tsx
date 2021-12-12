@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 import { ModalContext } from './modal';
-import { Button } from '../button';
+import { IconButton } from '../icon-button';
 
 interface HeaderProps {
   className?: string;
@@ -33,31 +33,27 @@ export const ModalHeader = ({
         <Dialog.Title
           as="h3"
           className={clsx(
-            'text-lg text-gray-900 uppercase font-bold truncate',
-            titleProps?.className,
+            'text-lg text-gray-900 uppercase font-semibold truncate',
+            titleProps?.className
           )}
         >
           {title}
         </Dialog.Title>
         <Dialog.Description
           as="h4"
-          className={clsx(
-            'font-semibold text-gray-500',
-            descriptionProps?.className,
-          )}
+          className={clsx('text-gray-500', descriptionProps?.className)}
         >
           {description}
         </Dialog.Description>
       </div>
       {dismiss && (
-        <Button
+        <IconButton
           variant="ghost"
           className="mb-auto -mt-1 !p-2"
           aria-label="Close modal"
           onClick={onClose}
-        >
-          <FontAwesomeIcon icon={faTimes} className="w-5 h-5 text-black" />
-        </Button>
+          icon={<FontAwesomeIcon icon={faTimes} />}
+        />
       )}
     </header>
   );

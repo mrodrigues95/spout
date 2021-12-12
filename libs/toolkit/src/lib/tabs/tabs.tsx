@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { Tab as HeadlessTab } from '@headlessui/react';
+import clsx from 'clsx';
 import { TabList } from './tab-list';
 import { TabPanels } from './tab-panels';
 import { TabPanel } from './tab-panel';
@@ -30,12 +31,20 @@ export const VARIANTS = {
 export interface TabsProps {
   children: ReactNode;
   variant?: keyof typeof VARIANTS;
+  className?: string;
 }
 
-export const Tabs = ({ children, variant = 'default' }: TabsProps) => {
+export const Tabs = ({
+  children,
+  className,
+  variant = 'default',
+}: TabsProps) => {
   return (
     <TabProvider variant={variant}>
-      <HeadlessTab.Group as="div" className="flex flex-col flex-1">
+      <HeadlessTab.Group
+        as="div"
+        className={clsx('flex flex-col flex-1', className)}
+      >
         {children}
       </HeadlessTab.Group>
     </TabProvider>

@@ -49,8 +49,8 @@ const LoginForm = () => {
   const signUpLink = (
     <Link
       href="/auth/signup"
-      variant="unstyled"
-      className="text-green-600 font-semibold focus:outline-none focus:underline hover:underline"
+      variant="link"
+      className="text-green-600 font-semibold"
       preserveRedirect
     >
       Sign up.

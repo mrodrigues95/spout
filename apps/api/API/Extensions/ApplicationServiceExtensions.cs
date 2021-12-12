@@ -1,4 +1,3 @@
-using System;
 using API.Data;
 using API.Infrastructure;
 using FluentValidation.AspNetCore;
@@ -14,7 +13,7 @@ namespace API.Extensions {
             services.AddPooledDbContextFactory<ApplicationDbContext>(opt => {
                 opt.UseNpgsql(config.GetConnectionString("DefaultConnection"));
                 opt.UseSnakeCaseNamingConvention();
-                opt.LogTo(Console.WriteLine);
+                //opt.LogTo(Console.WriteLine);
             });
 
             services.AddScoped(p =>

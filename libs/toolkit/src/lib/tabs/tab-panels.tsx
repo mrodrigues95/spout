@@ -10,7 +10,7 @@ export const TabPanels = ({
   ...props
 }: TabPanelsProps) => {
   return (
-    <Tab.Panels as="article" className={clsx('mt-2', className)} {...props}>
+    <Tab.Panels as="article" className={clsx('flex mt-2', className)} {...props}>
       {children}
     </Tab.Panels>
   );

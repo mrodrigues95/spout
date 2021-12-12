@@ -31,8 +31,8 @@ const MessageComposer = ({ discussionId }: Props) => {
   const [focused, setFocused] = useState(false);
 
   const handleNewMessage = () => {
-    if (message.trim().length !== 0) {
-      add(discussionId, formatNewMessage(message), data!.me!);
+    if (message.trim().length) {
+      add(discussionId, formatNewMessage(message.trim()), data!.me!);
       setMessage('');
     }
   };

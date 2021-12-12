@@ -134,9 +134,6 @@ const Messages = ({ discussionId }: Props) => {
       node: message,
     }));
 
-    console.log('Messages to send edges: ', messagesToSendEdges);
-    console.log('Edges: ', edges);
-
     return [...messagesToSendEdges, ...edges];
   }, [data?.discussionById.messages?.edges, messagesToSend]);
 
@@ -152,7 +149,7 @@ const Messages = ({ discussionId }: Props) => {
       )}
       {data && (
         <>
-          <Card className="relative flex flex-col flex-1 bg-indigo-50/40">
+          <Card className="p-0 relative flex flex-col flex-1 bg-indigo-50/40">
             <div className="absolute inset-0 w-full h-full bg-messages opacity-5" />
             <MessageList
               discussionId={discussionId}
