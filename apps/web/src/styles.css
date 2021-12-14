@@ -6,7 +6,7 @@
   .bg-messages {
     background-image: url('/messages-bg.jpg');
     background-position: 50% 0%;
-    background-size: 700px;
+    background-size: 800px;
     background-repeat: repeat;
     background-attachment: scroll;
   }

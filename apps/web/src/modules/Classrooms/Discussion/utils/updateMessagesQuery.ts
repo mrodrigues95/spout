@@ -1,11 +1,11 @@
-import { DiscussionMessagesQuery } from '../components/Messages/__generated__/index.generated';
+import { DiscussionQuery } from '../components/__generated__/Discussion.generated';
 import { Message_Message } from './__generated__/fragments.generated';
 
 export const updateMessagesQuery = (
-  prev: DiscussionMessagesQuery,
+  prev: DiscussionQuery,
   message: Message_Message,
 ) => {
-  const edges = [...(prev.discussionById?.messages?.edges ?? [])];
+  const edges = [...(prev.discussionById.messages?.edges ?? [])];
 
   // Only insert if this message is not already in the discussion.
   if (
@@ -14,7 +14,7 @@ export const updateMessagesQuery = (
     )
   ) {
     edges.unshift({
-      __typename: 'MessageEdge',
+      __typename: 'MessagesEdge',
       node: message,
     });
   }

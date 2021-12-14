@@ -13,7 +13,7 @@ import {
   SignUpMutationVariables,
 } from './__generated__/SignUpForm.generated';
 
-const SIGN_UP_MUTATION = gql`
+const mutation = gql`
   mutation SignUpMutation($input: SignUpInput!) {
     signUp(input: $input) {
       session {
@@ -50,7 +50,7 @@ const SignUpForm = () => {
   const { handleError } = useToast();
   const [signUpError, setSignUpError] = useState<Error | UserError>();
   const [signup] = useMutation<SignUpMutation, SignUpMutationVariables>(
-    SIGN_UP_MUTATION
+    mutation
   );
 
   const form = useZodForm({

@@ -1,7 +1,7 @@
 import * as Types from '../../../../__generated__/schema.generated';
 
 import { UserInfo_User } from '../../Discussion/utils/__generated__/fragments.generated';
-export type Classroom_Classroom = (
+export type ClassroomInfo_Classroom = (
   { __typename?: 'Classroom' }
   & Pick<Types.Classroom, 'id' | 'name'>
   & { users: Array<(
@@ -22,6 +22,6 @@ export type ClassroomQuery = (
   { __typename?: 'Query' }
   & { classroomById: (
     { __typename?: 'Classroom' }
-    & Classroom_Classroom
+    & ClassroomInfo_Classroom
   ) }
 );

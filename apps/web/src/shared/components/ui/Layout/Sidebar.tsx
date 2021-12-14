@@ -10,6 +10,7 @@ import { object, string } from 'zod';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { Button, Skeleton, Modal, Form, useZodForm } from '@spout/toolkit';
 import { getRandomAvatar } from '../../../utils/getRandomAvatar';
+import { ClassroomInfoFragment } from '../../../../modules';
 import { UserInfoFragment } from '../../../../modules/Classrooms/Discussion/utils/fragments';
 import { useIsRedirecting } from '../../../hooks';
 import { ErrorFallback, useToast } from '../../../../shared/components';
@@ -51,7 +52,7 @@ const CreateClassroom = () => {
       setIsOpen(false);
       router.push(`/classrooms/${createClassroom.classroom.id}`);
     },
-    refetchQueries: [CLASSROOMS_QUERY],
+    refetchQueries: [query],
     awaitRefetchQueries: true,
   });
 
@@ -125,28 +126,22 @@ const SidebarSkeleton = () => {
   );
 };
 
-const CLASSROOMS_QUERY = gql`
+const query = gql`
   query ClassroomsQuery {
     me {
       ...UserInfo_user
       classrooms {
-        id
-        name
-        discussions {
-          id
-          name
-        }
+        ...ClassroomInfo_classroom
       }
     }
   }
   ${UserInfoFragment}
+  ${ClassroomInfoFragment}
 `;
 
 const Sidebar = () => {
-  const { query } = useRouter();
-  const { data, loading, error, refetch } = useQuery<ClassroomsQuery>(
-    CLASSROOMS_QUERY
-  );
+  const router = useRouter();
+  const { data, loading, error, refetch } = useQuery<ClassroomsQuery>(query);
 
   return (
     <aside className="fixed inset-y-0 left-0 overflow-y-auto flex flex-col z-20 p-5 space-y-8 w-72">
@@ -201,7 +196,7 @@ const Sidebar = () => {
                       />
                     }
                     routes={[
-                      `/classrooms/${classroom.id}/${query.discussionId}`,
+                      `/classrooms/${classroom.id}/${router.query.discussionId}`,
                     ]}
                   />
                 ))}

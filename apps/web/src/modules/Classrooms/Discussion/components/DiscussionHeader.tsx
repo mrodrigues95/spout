@@ -9,10 +9,10 @@ import {
   faThumbtack,
 } from '@fortawesome/free-solid-svg-icons';
 import { Title, Select, IconButton, Tooltip } from '@spout/toolkit';
-import { DiscussionInfo_Discussion } from './__generated__/Discussion.generated';
+import { DiscussionQuery } from './__generated__/Discussion.generated';
 
 interface Props {
-  discussion: DiscussionInfo_Discussion;
+  discussion: DiscussionQuery['discussionById'];
 }
 
 const DiscussionHeader = ({ discussion }: Props) => {

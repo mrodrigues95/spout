@@ -1,6 +1,7 @@
 import * as Types from '../../../../../__generated__/schema.generated';
 
 import { UserInfo_User } from '../../../../../modules/Classrooms/Discussion/utils/__generated__/fragments.generated';
+import { ClassroomInfo_Classroom } from '../../../../../modules/Classrooms/components/__generated__/ViewClassroom.generated';
 export type CreateClassroomMutationVariables = Types.Exact<{
   input: Types.CreateClassroomInput;
 }>;
@@ -26,11 +27,7 @@ export type ClassroomsQuery = (
     { __typename?: 'User' }
     & { classrooms: Array<(
       { __typename?: 'Classroom' }
-      & Pick<Types.Classroom, 'id' | 'name'>
-      & { discussions: Array<(
-        { __typename?: 'Discussion' }
-        & Pick<Types.Discussion, 'id' | 'name'>
-      )> }
+      & ClassroomInfo_Classroom
     )> }
     & UserInfo_User
   )> }

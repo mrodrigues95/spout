@@ -4,8 +4,8 @@ import { ClassroomQuery } from './__generated__/ViewClassroom.generated';
 import ClassroomOverview from './ClassroomOverview';
 import { UserInfoFragment } from '../Discussion/utils/fragments';
 
-const ClassroomFragment = gql`
-  fragment Classroom_classroom on Classroom {
+export const ClassroomInfoFragment = gql`
+  fragment ClassroomInfo_classroom on Classroom {
     id
     name
     users {
@@ -22,10 +22,10 @@ const ClassroomFragment = gql`
 const query = gql`
   query ClassroomQuery($id: ID!) {
     classroomById(id: $id) {
-      ...Classroom_classroom
+      ...ClassroomInfo_classroom
     }
   }
-  ${ClassroomFragment}
+  ${ClassroomInfoFragment}
 `;
 
 interface Props {

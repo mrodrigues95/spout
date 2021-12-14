@@ -6,7 +6,7 @@ import {
   LogoutMutationVariables,
 } from './__generated__/SettingsHeader.generated';
 
-const LOGOUT_MUTATION = gql`
+const mutation = gql`
   mutation LogoutMutation($input: LogoutInput!) {
     logout(input: $input) {
       isLoggedIn
@@ -17,7 +17,7 @@ const LOGOUT_MUTATION = gql`
 const SettingsHeader = () => {
   const authRedirect = useAuthRedirect();
   const [logout] = useMutation<LogoutMutation, LogoutMutationVariables>(
-    LOGOUT_MUTATION,
+    mutation,
     {
       onCompleted: authRedirect,
     }

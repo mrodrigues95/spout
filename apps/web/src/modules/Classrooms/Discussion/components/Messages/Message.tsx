@@ -10,21 +10,21 @@ import { formatMessageDate } from './utils/format';
 import { UserInfoFragment } from '../../utils/fragments';
 
 interface MessageHeaderProps {
-  isMine: boolean;
+  isMyMessage: boolean;
   name: string;
   date: string;
 }
 
-const MessageHeader = ({ isMine, name, date }: MessageHeaderProps) => {
+const MessageHeader = ({ isMyMessage, name, date }: MessageHeaderProps) => {
   return (
     <div
       className={clsx(
         'flex items-center space-x-2',
-        isMine ? 'flex-row-reverse space-x-reverse' : 'flex-row'
+        isMyMessage ? 'flex-row-reverse space-x-reverse' : 'flex-row'
       )}
     >
       <span className="font-semibold text-gray-900">
-        {isMine ? 'You' : name}
+        {isMyMessage ? 'You' : name}
       </span>
       <span className="text-xs font-medium text-gray-500">{date}</span>
     </div>
@@ -32,28 +32,28 @@ const MessageHeader = ({ isMine, name, date }: MessageHeaderProps) => {
 };
 
 interface MessageContentProps {
-  isMine: boolean;
+  isMyMessage: boolean;
   content: string;
   optimisticOpts?: OptimisticOptions;
 }
 
 const MessageContent = ({
-  isMine,
+  isMyMessage,
   content,
   optimisticOpts,
 }: MessageContentProps) => {
   return (
     <div
       className={clsx(
-        'p-3 text-sm w-full rounded-lg shadow-container',
-        isMine ? 'bg-blue-600' : 'bg-white ring-1 ring-gray-900/5',
+        'p-3 text-sm w-full rounded-md shadow-sm',
+        isMyMessage ? 'bg-blue-600' : 'bg-white ring-1 ring-gray-900/5',
         optimisticOpts?.error ? 'text-red-600' : 'text-black'
       )}
     >
       <p
         className={clsx(
           'break-words prose-sm whitespace-pre-line font-medium',
-          isMine ? 'text-white' : 'text-gray-900'
+          isMyMessage ? 'text-white' : 'text-gray-900'
         )}
       >
         {content.trim()}
@@ -105,14 +105,14 @@ const Message = ({ message, optimisticOpts }: Props) => {
     [message]
   );
 
-  const isMine = message.createdBy.id === data!.me!.id;
+  const isMyMessage = message.createdBy.id === data!.me!.id;
 
   return (
     <div
       className={clsx(
         'flex items-center space-x-2 py-2 px-4 hover:bg-indigo-100/50',
         optimisticOpts?.loading ? 'opacity-50' : 'opacity-100',
-        isMine ? 'flex-row-reverse space-x-reverse' : 'flex-row space-x-2'
+        isMyMessage ? 'flex-row-reverse space-x-reverse' : 'flex-row space-x-2'
       )}
     >
       <div className="flex items-center justify-center mb-auto rounded-full">
@@ -120,12 +120,12 @@ const Message = ({ message, optimisticOpts }: Props) => {
       </div>
       <div className="relative flex flex-col max-w-[75%] space-y-1">
         <MessageHeader
-          isMine={isMine}
+          isMyMessage={isMyMessage}
           name={message.createdBy.name}
           date={formattedDate}
         />
         <MessageContent
-          isMine={isMine}
+          isMyMessage={isMyMessage}
           content={message.content}
           optimisticOpts={optimisticOpts}
         />

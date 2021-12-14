@@ -4,7 +4,7 @@ import { faPaperclip, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import { gql, useQuery } from '@apollo/client';
 import clsx from 'clsx';
-import { IconButton, Button } from '@spout/toolkit';
+import { IconButton } from '@spout/toolkit';
 import { formatNewMessage } from './utils/format';
 import { TextArea } from '../../../../../shared/components';
 import { useStore } from './utils/messagesStore';

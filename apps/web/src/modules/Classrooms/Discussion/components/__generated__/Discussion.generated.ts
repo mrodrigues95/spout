@@ -1,24 +1,10 @@
 import * as Types from '../../../../../__generated__/schema.generated';
 
-import { UserInfo_User } from '../../utils/__generated__/fragments.generated';
-export type DiscussionInfo_Discussion = (
-  { __typename?: 'Discussion' }
-  & Pick<Types.Discussion, 'id' | 'name'>
-  & { classroom: (
-    { __typename?: 'Classroom' }
-    & Pick<Types.Classroom, 'id' | 'name'>
-    & { users: Array<(
-      { __typename?: 'User' }
-      & UserInfo_User
-    )>, discussions: Array<(
-      { __typename?: 'Discussion' }
-      & Pick<Types.Discussion, 'id' | 'name'>
-    )> }
-  ) }
-);
-
+import { ClassroomInfo_Classroom } from '../../../components/__generated__/ViewClassroom.generated';
+import { DiscussionMessages_Discussion } from './DiscussionMessages.generated';
 export type DiscussionQueryVariables = Types.Exact<{
   id: Types.Scalars['ID'];
+  after?: Types.Maybe<Types.Scalars['String']>;
 }>;
 
 
@@ -26,6 +12,11 @@ export type DiscussionQuery = (
   { __typename?: 'Query' }
   & { discussionById: (
     { __typename?: 'Discussion' }
-    & DiscussionInfo_Discussion
+    & Pick<Types.Discussion, 'id' | 'name'>
+    & { classroom: (
+      { __typename?: 'Classroom' }
+      & ClassroomInfo_Classroom
+    ) }
+    & DiscussionMessages_Discussion
   ) }
 );

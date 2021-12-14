@@ -10,4 +10,6 @@ export { default as InfiniteList } from './InfiniteList';
 export { default as Layout } from './Layout';
 export { default as Card } from './Card';
 
+export * from './Layout/Sidebar';
+
 export type { Props as InfiniteListProps } from './InfiniteList';

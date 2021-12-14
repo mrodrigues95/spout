@@ -73,7 +73,7 @@ const OptimisticMessage = ({ discussionId, message }: Props) => {
       sendMessage({
         variables: { input: { discussionId, content: message.content } },
       }),
-    [discussionId, sendMessage, message],
+    [discussionId, sendMessage, message]
   );
 
   useEffect(() => {
@@ -86,7 +86,6 @@ const OptimisticMessage = ({ discussionId, message }: Props) => {
     <Message
       message={message}
       optimisticOpts={{ error, loading, retry: send }}
-      isLast
     />
   );
 };

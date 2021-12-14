@@ -1,77 +1,69 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import React, {
+  useMemo,
+  useCallback,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import { gql, useQuery } from '@apollo/client';
-import { FeelingBlueIllustration } from '@spout/assets/illustrations';
-import { Spinner } from '@spout/toolkit';
-import { ErrorFallback, Card } from '../../../../../shared/components';
+import { Virtuoso } from 'react-virtuoso';
+import { VoidIllustration } from '@spout/assets/illustrations';
+import { Skeleton } from '@spout/toolkit';
+import { generateItems, Item, Divider, group } from './utils/messages';
+import { DiscussionQuery } from '../__generated__/Discussion.generated';
+import { Message_Message } from '../../utils/__generated__/fragments.generated';
+import { OptimisticMessage as OptimisticMessageType } from './utils/messagesStore';
+import { MeQuery } from './__generated__/MessageComposer.generated';
 import { useStore } from './utils/messagesStore';
-import { MessageFragment, UserInfoFragment } from '../../utils/fragments';
-import { updateMessagesQuery } from '../../utils/updateMessagesQuery';
-import {
-  DiscussionMessagesQuery,
-  MeQuery,
-  OnDiscussionMessageReceived,
-  OnDiscussionMessageReceivedVariables,
-} from './__generated__/index.generated';
-import MessageList from './MessageList';
-import MessageComposer from './MessageComposer';
+import { UserInfoFragment } from '../../utils/fragments';
+import { EmptyFallback } from '../../../../../shared/components';
+import OptimisticMessage from './OptimisticMessage';
+import MessageDivider from './MessageDivider';
+import Message from './Message';
+import WelcomeBanner from './WelcomeBanner';
 
-// TODO: Maybe use `before` instead?
-export const query = gql`
-  query DiscussionMessagesQuery($id: ID!, $after: String) {
-    discussionById(id: $id) {
-      id
-      name
-      messages(first: 50, after: $after, order: { id: DESC }) {
-        edges {
-          node {
-            ...Message_message
-          }
-        }
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
-          startCursor
-          endCursor
-        }
-      }
-    }
-  }
-  ${MessageFragment}
-`;
+const isOptimistic = (message: Item) =>
+  'optimisticId' in message && message.optimisticId < 0;
 
-const subscription = gql`
-  subscription OnDiscussionMessageReceived($discussionId: ID!) {
-    onDiscussionMessageReceived(discussionId: $discussionId) {
-      message {
-        ...Message_message
-      }
-    }
+const isDivider = (item: Item) => 'type' in item && item.type === 'divider';
+
+// Items to prepend should always be the page size but since
+// we are not using GroupedVirtuoso, we need to account for the
+// message dividers as well.
+const getItemsToPrepend = (
+  oldMessages: Props['messages'],
+  newMessages: Props['messages']
+) => {
+  console.log('Calculating items to prepend...');
+  const messagesToPrepend = newMessages.length;
+
+  const oldDatesGrouped = group(oldMessages.map(({ node }) => node));
+  const newDatesGrouped = group(newMessages.map(({ node }) => node));
+
+  let dividersToPrepend = 0;
+  for (const newDate in newDatesGrouped) {
+    if (!oldDatesGrouped[newDate]) dividersToPrepend++;
   }
-  ${MessageFragment}
-`;
+
+  console.log('Items to prepend: ', messagesToPrepend + dividersToPrepend);
+
+  return messagesToPrepend + dividersToPrepend;
+};
+
+const START_INDEX = 1000000;
 
 interface Props {
   discussionId: string;
+  messages: { node: OptimisticMessageType | Message_Message }[];
+  next(): Promise<DiscussionQuery | null>;
+  hasNext?: boolean;
 }
 
-// TODO: When a user navigates away from the discussion, we retrieve from the cache
-// when they return so any new messages won't appear. May need to change the fetch policy
-// for this.
-const Messages = ({ discussionId }: Props) => {
-  const {
-    data,
-    loading,
-    error,
-    refetch,
-    subscribeToMore,
-    fetchMore,
-  } = useQuery<DiscussionMessagesQuery>(query, {
-    variables: { id: discussionId },
-    // fetchPolicy: 'cache-and-network',
-    // nextFetchPolicy: 'cache-first'
-  });
-
-  const { data: meData } = useQuery<MeQuery>(
+// TODO: Dates seem to be out of order slightly when more than one user
+// is chatting. This might be because we are removing and updating cache
+// at the same time in OptimisticMessage.tsx.
+const Messages = ({ discussionId, messages, hasNext, next }: Props) => {
+  const { data } = useQuery<MeQuery>(
     gql`
       query MeQuery {
         me {
@@ -79,91 +71,97 @@ const Messages = ({ discussionId }: Props) => {
         }
       }
       ${UserInfoFragment}
-    `
+    `,
+    { fetchPolicy: 'cache-only' }
   );
 
-  const handleLoadMore = useCallback(async () => {
-    const pageInfo = data?.discussionById.messages?.pageInfo;
+  const [firstItemIndex, setFirstItemIndex] = useState(START_INDEX); //  (total of items to be loaded - the one we have already loaded).
+  const [isFetching, setIsFetching] = useState(false);
+  const timeoutRef = useRef(0);
 
-    if (pageInfo?.hasNextPage) {
-      return fetchMore({
-        variables: {
-          discussionId: discussionId,
-          after: data?.discussionById.messages?.pageInfo.endCursor,
-        },
-      }).then(({ data }) => data);
-    }
-  }, [discussionId, data?.discussionById.messages?.pageInfo, fetchMore]);
-
-  useEffect(() => {
-    const unsubscribe = subscribeToMore<
-      OnDiscussionMessageReceived,
-      OnDiscussionMessageReceivedVariables
-    >({
-      document: subscription,
-      variables: { discussionId: discussionId },
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data) return prev;
-
-        const { message } = subscriptionData.data.onDiscussionMessageReceived;
-
-        // We manually update the cache for new messages that are created by the current
-        // user, so they can be ignored here.
-        if (message.createdBy.id === meData?.me?.id) return prev;
-
-        return updateMessagesQuery(prev, message);
-      },
-    });
-
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [discussionId, meData, subscribeToMore]);
-
-  const messagesToSend = useStore(
-    (state) => state.messagesByDiscussionId[discussionId]
+  // NOTE: GroupedVirtuoso doesn't work very well with prepended items so that requires us
+  // to create a flattened array of messages and message dividers.
+  const items = useMemo(
+    () => generateItems(messages.map((edge) => edge.node)),
+    [messages]
   );
 
-  const messages = useMemo(() => {
-    const edges = (data?.discussionById.messages?.edges ?? []).map((edge) => ({
-      node: edge.node,
-    }));
+  const prependItems = useCallback(() => {
+    clearTimeout(timeoutRef.current);
+    setIsFetching(true);
 
-    const messagesToSendEdges = (messagesToSend ?? []).map((message) => ({
-      node: message,
-    }));
+    timeoutRef.current = window.setTimeout(async () => {
+      const oldMessages = [...messages];
 
-    return [...messagesToSendEdges, ...edges];
-  }, [data?.discussionById.messages?.edges, messagesToSend]);
+      const data = await next();
+      const itemsToPrepend = getItemsToPrepend(
+        oldMessages,
+        data?.discussionById.messages?.edges ?? []
+      );
+      setFirstItemIndex((firstItemIndex) => firstItemIndex - itemsToPrepend);
+      setIsFetching(false);
+      clearTimeout(timeoutRef.current);
+    }, 500);
 
+    return false;
+  }, [next, messages]);
+
+  const optimisticMessages =
+    useStore((state) => state.messagesByDiscussionId[discussionId]) ?? [];
+
+  useEffect(() => () => clearTimeout(timeoutRef.current), []);
+
+  // TODO: Create a 'Jump to Present' footer.
+  // TODO: Look into using ScrollSeekPlaceholder for performance improvement.
   return (
-    <div className="flex flex-col flex-1 space-y-3">
-      {loading && !data && <Spinner />}
-      {error && (
-        <ErrorFallback
-          icon={<FeelingBlueIllustration className="w-full h-64" />}
-          heading="Sorry, we can't load any messages for this discussion right now."
-          action={refetch}
-        />
-      )}
-      {data && (
-        <>
-          <Card className="p-0 relative flex flex-col flex-1 bg-indigo-50/40">
-            <div className="absolute inset-0 w-full h-full bg-messages opacity-5" />
-            <MessageList
-              discussionId={discussionId}
-              messages={messages}
-              hasNext={data?.discussionById.messages?.pageInfo.hasNextPage}
-              next={handleLoadMore}
-            />
-          </Card>
-          <Card className="p-0">
-            <MessageComposer discussionId={discussionId} />
-          </Card>
-        </>
-      )}
-    </div>
+    <Virtuoso
+      data={items}
+      overscan={{ main: 200, reverse: 200 }}
+      firstItemIndex={firstItemIndex}
+      initialTopMostItemIndex={items.length - 1}
+      startReached={hasNext ? prependItems : undefined}
+      followOutput={(isAtBottom) => {
+        const myMessages = optimisticMessages.some(
+          (message) => message.createdBy.id === data!.me!.id
+        );
+
+        // If the user is scrolled away and sends a message - bring them to the bottom.
+        if (myMessages) return 'auto';
+
+        // A message from another user has been received - don't pull to bottom unless already there.
+        return isAtBottom ? 'auto' : false;
+      }}
+      itemContent={(_, item) => {
+        if (isDivider(item)) {
+          return <MessageDivider date={(item as Divider).date} />;
+        }
+
+        return isOptimistic(item) ? (
+          <OptimisticMessage
+            key={(item as OptimisticMessageType).optimisticId}
+            discussionId={discussionId}
+            message={item as OptimisticMessageType}
+          />
+        ) : (
+          <Message message={item as Message_Message} />
+        );
+      }}
+      components={{
+        Header: () =>
+          isFetching ? (
+            <div className="px-4 py-1">
+              <Skeleton.Stack>
+                <Skeleton h="h-3" w="w-1/2" />
+                <Skeleton h="h-3" w="w-2/3" />
+                <Skeleton h="h-3" w="w-5/6" />
+              </Skeleton.Stack>
+            </div>
+          ) : (
+            <WelcomeBanner />
+          ),
+        Footer: () => <div className="pt-6" />,
+      }}
+    />
   );
 };
 

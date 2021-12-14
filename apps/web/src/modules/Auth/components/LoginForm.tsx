@@ -13,7 +13,7 @@ import {
   LoginMutationVariables,
 } from './__generated__/LoginForm.generated';
 
-const LOGIN_MUTATION = gql`
+const mutation = gql`
   mutation LoginMutation($input: LoginInput!) {
     login(input: $input) {
       session {
@@ -38,9 +38,7 @@ const LoginForm = () => {
   const init = useInitializeSessionMutation();
   const [loginError, setLoginError] = useState<Error | UserError>();
   const { handleError } = useToast();
-  const [login] = useMutation<LoginMutation, LoginMutationVariables>(
-    LOGIN_MUTATION,
-  );
+  const [login] = useMutation<LoginMutation, LoginMutationVariables>(mutation);
 
   const form = useZodForm({
     schema: loginSchema,
@@ -88,7 +86,7 @@ const LoginForm = () => {
           description: 'Dont have an account?',
           link: signUpLink,
         }}
-      > 
+      >
         <Form form={form} onSubmit={onSubmit} className="flex flex-col w-full">
           <AuthError title="Login failed." error={loginError} />
           <Form.Input
