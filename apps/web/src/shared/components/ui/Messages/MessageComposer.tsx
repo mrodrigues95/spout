@@ -6,10 +6,10 @@ import { gql, useQuery } from '@apollo/client';
 import clsx from 'clsx';
 import { IconButton } from '@spout/toolkit';
 import { formatNewMessage } from './utils/format';
-import { TextArea } from '../../../../../shared/components';
+import TextArea from '../TextArea';
 import { useStore } from './utils/messagesStore';
 import { MeQuery } from './__generated__/MessageComposer.generated';
-import { UserInfoFragment } from '../../utils/fragments';
+import { UserInfoFragment } from '../../../../modules/Classrooms/Discussion/utils/fragments';
 
 interface Props {
   discussionId: string;

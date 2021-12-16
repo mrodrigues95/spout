@@ -31,7 +31,7 @@ const Avatar = ({ src, name, size = 'md', className, ...props }: Props) => {
     >
       <Image
         src={src}
-        className="relative rounded-full"
+        className="relative rounded-md"
         alt={name ?? ''}
         role="img"
         objectFit="contain"

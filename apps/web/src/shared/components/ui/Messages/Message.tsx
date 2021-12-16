@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 import { ApolloError, gql, useQuery } from '@apollo/client';
 import { Button } from '@spout/toolkit';
 import clsx from 'clsx';
-import Avatar from '../../../../../shared/components/ui/Avatar';
-import { getRandomAvatar } from '../../../../../shared/utils/getRandomAvatar';
-import { Message_Message } from '../../utils/__generated__/fragments.generated';
+import Avatar from '../Avatar';
+import { getRandomAvatar } from '../../../utils/getRandomAvatar';
+import { Message_Message } from '../../../../modules/Classrooms/Discussion/utils/__generated__/fragments.generated';
 import { MeQuery } from './__generated__/Message.generated';
 import { formatMessageDate } from './utils/format';
-import { UserInfoFragment } from '../../utils/fragments';
+import { UserInfoFragment } from '../../../../modules/Classrooms/Discussion/utils/fragments';
 
 interface MessageHeaderProps {
   isMyMessage: boolean;

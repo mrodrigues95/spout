@@ -8,17 +8,18 @@ import {
   useQuery,
 } from '@apollo/client';
 import { Card } from '@spout/toolkit';
-import { MessageFragment, UserInfoFragment } from '../utils/fragments';
-import { DiscussionQuery } from './__generated__/Discussion.generated';
+import { MessageFragment, UserInfoFragment } from '../../utils/fragments';
+import { DiscussionQuery } from '../__generated__/Discussion.generated';
 import {
   MeQuery,
   OnDiscussionMessageReceived,
   OnDiscussionMessageReceivedVariables,
-} from './__generated__/DiscussionMessages.generated';
-import { updateMessagesQuery } from '../utils/updateMessagesQuery';
-import { useStore } from './Messages/utils/messagesStore';
-import MessageComposer from './Messages/MessageComposer';
-import Messages from './Messages';
+} from '../__generated__/DiscussionMessages.generated';
+import { updateMessagesQuery } from '../../utils/updateMessagesQuery';
+import { useStore } from '../../../../../shared/components/ui/Messages/utils/messagesStore';
+import MessageComposer from '../../../../../shared/components/ui/Messages/MessageComposer';
+import { Messages } from '../../../../../shared/components';
+import WelcomeHeader from './WelcomeHeader';
 
 export const DiscussionMessagesFragment = gql`
   fragment DiscussionMessages_discussion on Discussion {
@@ -145,6 +146,7 @@ const DicussionMessages = ({
           messages={messages}
           hasNext={discussion.messages?.pageInfo.hasNextPage}
           next={handleLoadMore}
+          header={<WelcomeHeader />}
         />
       </Card>
       <Card className="p-0">

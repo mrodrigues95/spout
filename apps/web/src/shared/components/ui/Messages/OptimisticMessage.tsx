@@ -5,14 +5,14 @@ import {
   useStore,
 } from './utils/messagesStore';
 import Message from './Message';
-import { query } from '.';
+import { query } from '../../../../modules/Classrooms/Discussion/components/Discussion';
 import {
   SendDiscussionMessageMutation,
   SendDiscussionMessageMutationVariables,
 } from './__generated__/OptimisticMessage.generated';
-import { DiscussionMessagesQuery } from './__generated__/index.generated';
-import { updateMessagesQuery } from '../../utils/updateMessagesQuery';
-import { MessageFragment } from '../../utils/fragments';
+import { updateMessagesQuery } from '../../../../modules/Classrooms/Discussion/utils/updateMessagesQuery';
+import { MessageFragment } from '../../../../modules/Classrooms/Discussion/utils/fragments';
+import { DiscussionQuery } from '../../../../modules/Classrooms/Discussion/components/__generated__/Discussion.generated';
 
 const mutation = gql`
   mutation SendDiscussionMessageMutation($input: SendDiscussionMessageInput!) {
@@ -49,7 +49,7 @@ const OptimisticMessage = ({ discussionId, message }: Props) => {
     // TODO: Maybe there's a better way to handle this?
     update: (cache, { data }) => {
       const newMessage = data?.sendDiscussionMessage.message;
-      const prev = cache.readQuery<DiscussionMessagesQuery>({
+      const prev = cache.readQuery<DiscussionQuery>({
         query: query,
         variables: { id: discussionId },
       });
@@ -60,7 +60,7 @@ const OptimisticMessage = ({ discussionId, message }: Props) => {
         // TODO: This will cause two re-renders in the `Messages` component, ideally it should
         // only cause one.
         remove(discussionId, message.optimisticId);
-        cache.writeQuery<DiscussionMessagesQuery>({
+        cache.writeQuery<DiscussionQuery>({
           query: query,
           data: draft,
         });

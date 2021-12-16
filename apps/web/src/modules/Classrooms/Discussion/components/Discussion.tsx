@@ -9,8 +9,7 @@ import DiscussionMessages, {
   DiscussionMessagesFragment,
 } from './DiscussionMessages';
 
-// TODO: Create welcome message.
-const query = gql`
+export const query = gql`
   query DiscussionQuery($id: ID!, $after: String) {
     discussionById(id: $id) {
       id

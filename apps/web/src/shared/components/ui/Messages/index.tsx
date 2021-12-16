@@ -4,23 +4,22 @@ import React, {
   useState,
   useEffect,
   useRef,
+  ReactElement,
 } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { Virtuoso } from 'react-virtuoso';
-import { VoidIllustration } from '@spout/assets/illustrations';
 import { Skeleton } from '@spout/toolkit';
 import { generateItems, Item, Divider, group } from './utils/messages';
-import { DiscussionQuery } from '../__generated__/Discussion.generated';
-import { Message_Message } from '../../utils/__generated__/fragments.generated';
+import { DiscussionQuery } from '../../../../modules/Classrooms/Discussion/components/__generated__/Discussion.generated';
+import { Message_Message } from '../../../../modules/Classrooms/Discussion/utils/__generated__/fragments.generated';
 import { OptimisticMessage as OptimisticMessageType } from './utils/messagesStore';
 import { MeQuery } from './__generated__/MessageComposer.generated';
 import { useStore } from './utils/messagesStore';
-import { UserInfoFragment } from '../../utils/fragments';
-import { EmptyFallback } from '../../../../../shared/components';
+import { UserInfoFragment } from '../../../../modules/Classrooms/Discussion/utils/fragments';
+import { Card } from '../..';
 import OptimisticMessage from './OptimisticMessage';
 import MessageDivider from './MessageDivider';
 import Message from './Message';
-import WelcomeBanner from './WelcomeBanner';
 
 const isOptimistic = (message: Item) =>
   'optimisticId' in message && message.optimisticId < 0;
@@ -57,12 +56,13 @@ interface Props {
   messages: { node: OptimisticMessageType | Message_Message }[];
   next(): Promise<DiscussionQuery | null>;
   hasNext?: boolean;
+  header: ReactElement;
 }
 
 // TODO: Dates seem to be out of order slightly when more than one user
 // is chatting. This might be because we are removing and updating cache
 // at the same time in OptimisticMessage.tsx.
-const Messages = ({ discussionId, messages, hasNext, next }: Props) => {
+const Messages = ({ discussionId, messages, hasNext, next, header }: Props) => {
   const { data } = useQuery<MeQuery>(
     gql`
       query MeQuery {
@@ -149,15 +149,17 @@ const Messages = ({ discussionId, messages, hasNext, next }: Props) => {
       components={{
         Header: () =>
           isFetching ? (
-            <div className="px-4 py-1">
-              <Skeleton.Stack>
-                <Skeleton h="h-3" w="w-1/2" />
-                <Skeleton h="h-3" w="w-2/3" />
-                <Skeleton h="h-3" w="w-5/6" />
-              </Skeleton.Stack>
+            <div className="px-4 py-6">
+              <Card className="rounded-md shadow-sm bg-white ring-1 ring-gray-900/5 space-y-4">
+                <Skeleton.Stack>
+                  <Skeleton h="h-3" w="w-1/2" />
+                  <Skeleton h="h-3" w="w-2/3" />
+                  <Skeleton h="h-3" w="w-5/6" />
+                </Skeleton.Stack>
+              </Card>
             </div>
           ) : (
-            <WelcomeBanner />
+            header
           ),
         Footer: () => <div className="pt-6" />,
       }}
