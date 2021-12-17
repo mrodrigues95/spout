@@ -10,6 +10,14 @@ namespace API.Data.Configurations {
             builder.Property(d => d.Name)
                 .HasMaxLength(64);
 
+            builder.Property(d => d.Topic)
+                .HasMaxLength(250)
+                .IsRequired(false);
+
+            builder.Property(d => d.Description)
+                .HasMaxLength(250)
+                .IsRequired(false);
+
             builder.Property(d => d.CreatedAt)
                 .HasDefaultValueSql("timezone('UTC', now())");
 

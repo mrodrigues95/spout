@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace API.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -382,6 +382,8 @@ namespace API.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     guid = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    topic = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
+                    description = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     classroom_id = table.Column<int>(type: "integer", nullable: false),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     state_id = table.Column<int>(type: "integer", nullable: false),

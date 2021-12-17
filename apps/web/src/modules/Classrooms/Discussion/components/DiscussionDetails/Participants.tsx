@@ -1,10 +1,10 @@
 import { Button } from '@spout/toolkit';
 import { Avatar } from '../../../../../shared/components';
 import { getRandomAvatar } from '../../../../../shared/utils/getRandomAvatar';
-import { DiscussionInfo_Discussion } from '../__generated__/Discussion.generated';
+import { ClassroomInfo_Classroom } from '../../../components/__generated__/ViewClassroom.generated';
 
 interface Props {
-  users: DiscussionInfo_Discussion['classroom']['users'];
+  users: ClassroomInfo_Classroom['users'];
 }
 
 const Participants = ({ users }: Props) => {

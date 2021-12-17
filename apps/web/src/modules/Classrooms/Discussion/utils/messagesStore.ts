@@ -1,6 +1,6 @@
 import create from 'zustand';
-import { Message_Message } from '../../../../../modules/Classrooms/Discussion/utils/__generated__/fragments.generated';
-import { UserInfo_User } from '../../../../../modules/Classrooms/Discussion/utils/__generated__/fragments.generated';
+import { Message_Message } from './__generated__/fragments.generated';
+import { UserInfo_User } from './__generated__/fragments.generated';
 
 let optimisticId = -1;
 const getOptimisticId = () => optimisticId--;

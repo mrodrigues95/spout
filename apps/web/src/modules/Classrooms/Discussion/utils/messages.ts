@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { Message_Message } from '../../../../../modules/Classrooms/Discussion/utils/__generated__/fragments.generated';
+import { Message_Message } from './__generated__/fragments.generated';
 import { OptimisticMessage } from './messagesStore';
 
 type Message = OptimisticMessage | Message_Message;

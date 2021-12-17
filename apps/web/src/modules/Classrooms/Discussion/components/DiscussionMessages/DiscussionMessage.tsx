@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 import { ApolloError, gql, useQuery } from '@apollo/client';
 import { Button } from '@spout/toolkit';
 import clsx from 'clsx';
-import Avatar from '../Avatar';
-import { getRandomAvatar } from '../../../utils/getRandomAvatar';
-import { Message_Message } from '../../../../modules/Classrooms/Discussion/utils/__generated__/fragments.generated';
-import { MeQuery } from './__generated__/Message.generated';
-import { formatMessageDate } from './utils/format';
-import { UserInfoFragment } from '../../../../modules/Classrooms/Discussion/utils/fragments';
+import Avatar from '../../../../../shared/components/ui/Avatar';
+import { getRandomAvatar } from '../../../../../shared/utils/getRandomAvatar';
+import { Message_Message } from '../../utils/__generated__/fragments.generated';
+import { MeQuery } from './__generated__/DiscussionMessage.generated';
+import { formatMessageDate } from '../../utils/format';
+import { UserInfoFragment } from '../../utils/fragments';
 
 interface MessageHeaderProps {
   isMyMessage: boolean;
@@ -15,7 +15,11 @@ interface MessageHeaderProps {
   date: string;
 }
 
-const MessageHeader = ({ isMyMessage, name, date }: MessageHeaderProps) => {
+const DiscussionMessageHeader = ({
+  isMyMessage,
+  name,
+  date,
+}: MessageHeaderProps) => {
   return (
     <div
       className={clsx(
@@ -37,7 +41,7 @@ interface MessageContentProps {
   optimisticOpts?: OptimisticOptions;
 }
 
-const MessageContent = ({
+const DiscussionMessageContent = ({
   isMyMessage,
   content,
   optimisticOpts,
@@ -83,7 +87,7 @@ interface Props {
   optimisticOpts?: OptimisticOptions;
 }
 
-const Message = ({ message, optimisticOpts }: Props) => {
+const DiscussionMessage = ({ message, optimisticOpts }: Props) => {
   const { data } = useQuery<MeQuery>(
     gql`
       query MeQuery {
@@ -119,12 +123,12 @@ const Message = ({ message, optimisticOpts }: Props) => {
         <Avatar src={avatar} aria-hidden="true" />
       </div>
       <div className="relative flex flex-col max-w-[75%] space-y-1">
-        <MessageHeader
+        <DiscussionMessageHeader
           isMyMessage={isMyMessage}
           name={message.createdBy.name}
           date={formattedDate}
         />
-        <MessageContent
+        <DiscussionMessageContent
           isMyMessage={isMyMessage}
           content={message.content}
           optimisticOpts={optimisticOpts}
@@ -134,4 +138,4 @@ const Message = ({ message, optimisticOpts }: Props) => {
   );
 };
 
-export default Message;
+export default DiscussionMessage;

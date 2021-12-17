@@ -3,16 +3,16 @@ import { gql, useMutation } from '@apollo/client';
 import {
   OptimisticMessage as OptimisticMessageType,
   useStore,
-} from './utils/messagesStore';
-import Message from './Message';
-import { query } from '../../../../modules/Classrooms/Discussion/components/Discussion';
+} from '../../utils/messagesStore';
+import Message from './DiscussionMessage';
+import { query } from '../Discussion';
 import {
   SendDiscussionMessageMutation,
   SendDiscussionMessageMutationVariables,
-} from './__generated__/OptimisticMessage.generated';
-import { updateMessagesQuery } from '../../../../modules/Classrooms/Discussion/utils/updateMessagesQuery';
-import { MessageFragment } from '../../../../modules/Classrooms/Discussion/utils/fragments';
-import { DiscussionQuery } from '../../../../modules/Classrooms/Discussion/components/__generated__/Discussion.generated';
+} from './__generated__/DiscussionOptimisticMessage.generated';
+import { updateMessagesQuery } from '../../utils/updateMessagesQuery';
+import { MessageFragment } from '../../utils/fragments';
+import { DiscussionQuery } from '../__generated__/Discussion.generated';
 
 const mutation = gql`
   mutation SendDiscussionMessageMutation($input: SendDiscussionMessageInput!) {

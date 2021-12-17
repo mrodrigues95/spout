@@ -51,7 +51,7 @@ const DiscussionDetails = ({ discussion }: Props) => {
           {discussion.classroom.name}
         </Title>
       </div>
-      <TopicDescription />
+      <TopicDescription topic={discussion.topic} description={discussion.description} />
       <div className="flex-1">
         <Tabs className="h-full" variant="primary">
           <Tabs.List>

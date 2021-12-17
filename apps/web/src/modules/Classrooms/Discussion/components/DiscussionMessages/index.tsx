@@ -16,9 +16,9 @@ import {
   OnDiscussionMessageReceivedVariables,
 } from '../__generated__/DiscussionMessages.generated';
 import { updateMessagesQuery } from '../../utils/updateMessagesQuery';
-import { useStore } from '../../../../../shared/components/ui/Messages/utils/messagesStore';
-import MessageComposer from '../../../../../shared/components/ui/Messages/MessageComposer';
-import { Messages } from '../../../../../shared/components';
+import { useStore } from '../../utils/messagesStore';
+import DiscussionMessageComposer from './DiscussionMessageComposer';
+import DiscussionMessagesList from './DiscussionMessagesList';
 import WelcomeHeader from './WelcomeHeader';
 
 export const DiscussionMessagesFragment = gql`
@@ -141,16 +141,16 @@ const DicussionMessages = ({
     <div className="flex flex-col flex-1 space-y-3">
       <Card className="p-0 relative flex flex-col flex-1 rounded-xl bg-indigo-50/40">
         <div className="absolute inset-0 w-full h-full bg-messages opacity-[7%]" />
-        <Messages
+        <DiscussionMessagesList
           discussionId={discussion.id}
           messages={messages}
           hasNext={discussion.messages?.pageInfo.hasNextPage}
           next={handleLoadMore}
-          header={<WelcomeHeader />}
+          header={<WelcomeHeader discussion={discussion} />}
         />
       </Card>
       <Card className="p-0">
-        <MessageComposer discussionId={discussion.id} />
+        <DiscussionMessageComposer discussionId={discussion.id} />
       </Card>
     </div>
   );

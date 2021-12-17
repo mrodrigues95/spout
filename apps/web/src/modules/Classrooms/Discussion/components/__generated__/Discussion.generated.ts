@@ -12,7 +12,7 @@ export type DiscussionQuery = (
   { __typename?: 'Query' }
   & { discussionById: (
     { __typename?: 'Discussion' }
-    & Pick<Types.Discussion, 'id' | 'name'>
+    & Pick<Types.Discussion, 'id' | 'name' | 'topic' | 'description'>
     & { classroom: (
       { __typename?: 'Classroom' }
       & ClassroomInfo_Classroom

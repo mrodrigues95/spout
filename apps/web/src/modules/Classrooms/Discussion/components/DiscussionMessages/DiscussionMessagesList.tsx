@@ -9,17 +9,16 @@ import React, {
 import { gql, useQuery } from '@apollo/client';
 import { Virtuoso } from 'react-virtuoso';
 import { Skeleton } from '@spout/toolkit';
-import { generateItems, Item, Divider, group } from './utils/messages';
-import { DiscussionQuery } from '../../../../modules/Classrooms/Discussion/components/__generated__/Discussion.generated';
-import { Message_Message } from '../../../../modules/Classrooms/Discussion/utils/__generated__/fragments.generated';
-import { OptimisticMessage as OptimisticMessageType } from './utils/messagesStore';
-import { MeQuery } from './__generated__/MessageComposer.generated';
-import { useStore } from './utils/messagesStore';
-import { UserInfoFragment } from '../../../../modules/Classrooms/Discussion/utils/fragments';
-import { Card } from '../..';
-import OptimisticMessage from './OptimisticMessage';
-import MessageDivider from './MessageDivider';
-import Message from './Message';
+import { DiscussionQuery } from '../__generated__/Discussion.generated';
+import { Message_Message } from '../../utils/__generated__/fragments.generated';
+import { generateItems, Item, Divider, group } from '../../utils/messages';
+import { OptimisticMessage as OptimisticMessageType, useStore } from '../../utils/messagesStore';
+import { MeQuery } from './__generated__/DiscussionMessagesList.generated';
+import { UserInfoFragment } from '../../utils/fragments';
+import { Card } from '../../../../../shared/components';
+import OptimisticMessage from './DiscussionOptimisticMessage';
+import MessageDivider from './DiscussionMessageDivider';
+import Message from './DiscussionMessage';
 
 const isOptimistic = (message: Item) =>
   'optimisticId' in message && message.optimisticId < 0;
@@ -62,7 +61,7 @@ interface Props {
 // TODO: Dates seem to be out of order slightly when more than one user
 // is chatting. This might be because we are removing and updating cache
 // at the same time in OptimisticMessage.tsx.
-const Messages = ({ discussionId, messages, hasNext, next, header }: Props) => {
+const DiscussionMessagesList = ({ discussionId, messages, hasNext, next, header }: Props) => {
   const { data } = useQuery<MeQuery>(
     gql`
       query MeQuery {
@@ -167,4 +166,4 @@ const Messages = ({ discussionId, messages, hasNext, next, header }: Props) => {
   );
 };
 
-export default Messages;
+export default DiscussionMessagesList;

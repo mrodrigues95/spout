@@ -240,6 +240,11 @@ namespace API.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("deleted_at");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("description");
+
                     b.Property<Guid>("Guid")
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
@@ -253,6 +258,11 @@ namespace API.Migrations
                     b.Property<int>("StateId")
                         .HasColumnType("integer")
                         .HasColumnName("state_id");
+
+                    b.Property<string>("Topic")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("topic");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()

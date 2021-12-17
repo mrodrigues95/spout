@@ -5,11 +5,11 @@ import { faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import { gql, useQuery } from '@apollo/client';
 import clsx from 'clsx';
 import { IconButton } from '@spout/toolkit';
-import { formatNewMessage } from './utils/format';
-import TextArea from '../TextArea';
-import { useStore } from './utils/messagesStore';
-import { MeQuery } from './__generated__/MessageComposer.generated';
-import { UserInfoFragment } from '../../../../modules/Classrooms/Discussion/utils/fragments';
+import { formatNewMessage } from '../../utils/format';
+import TextArea from '../../../../../shared/components/ui/TextArea';
+import { useStore } from '../../utils/messagesStore';
+import { MeQuery } from './__generated__/DiscussionMessageComposer.generated';
+import { UserInfoFragment } from '../../utils/fragments';
 
 interface Props {
   discussionId: string;

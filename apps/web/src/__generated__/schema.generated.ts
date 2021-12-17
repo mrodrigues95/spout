@@ -154,6 +154,8 @@ export type Discussion = Node & {
   messages?: Maybe<MessagesConnection>;
   guid: Scalars['UUID'];
   name: Scalars['String'];
+  topic?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
   classroomId: Scalars['Int'];
   createdById: Scalars['Int'];
   stateId: Scalars['Int'];
@@ -186,6 +188,8 @@ export type DiscussionSortInput = {
   id?: Maybe<SortEnumType>;
   guid?: Maybe<SortEnumType>;
   name?: Maybe<SortEnumType>;
+  topic?: Maybe<SortEnumType>;
+  description?: Maybe<SortEnumType>;
   classroomId?: Maybe<SortEnumType>;
   classroom?: Maybe<ClassroomSortInput>;
   createdById?: Maybe<SortEnumType>;
@@ -320,6 +324,8 @@ export type Mutation = {
   createClassroomInvite: CreateClassroomInvitePayload;
   sendDiscussionMessage: SendDiscussionMessagePayload;
   createDiscussion: CreateDiscussionPayload;
+  updateDiscussionTopic: UpdateDiscussionTopicPayload;
+  updateDiscussionDescription: UpdateDiscussionDescriptionPayload;
   signUp: AuthPayload;
   login: AuthPayload;
   logout: AuthPayload;
@@ -355,6 +361,16 @@ export type MutationSendDiscussionMessageArgs = {
 
 export type MutationCreateDiscussionArgs = {
   input: CreateDiscussionInput;
+};
+
+
+export type MutationUpdateDiscussionTopicArgs = {
+  input: UpdateDiscussionTopicInput;
+};
+
+
+export type MutationUpdateDiscussionDescriptionArgs = {
+  input: UpdateDiscussionDescriptionInput;
 };
 
 
@@ -541,6 +557,30 @@ export type UpdateAvatarInput = {
 export type UpdateAvatarPayload = {
   __typename?: 'UpdateAvatarPayload';
   user?: Maybe<User>;
+  userErrors?: Maybe<Array<UserError>>;
+  query: Query;
+};
+
+export type UpdateDiscussionDescriptionInput = {
+  discussionId: Scalars['ID'];
+  description: Scalars['String'];
+};
+
+export type UpdateDiscussionDescriptionPayload = {
+  __typename?: 'UpdateDiscussionDescriptionPayload';
+  discussion?: Maybe<Discussion>;
+  userErrors?: Maybe<Array<UserError>>;
+  query: Query;
+};
+
+export type UpdateDiscussionTopicInput = {
+  discussionId: Scalars['ID'];
+  topic: Scalars['String'];
+};
+
+export type UpdateDiscussionTopicPayload = {
+  __typename?: 'UpdateDiscussionTopicPayload';
+  discussion?: Maybe<Discussion>;
   userErrors?: Maybe<Array<UserError>>;
   query: Query;
 };

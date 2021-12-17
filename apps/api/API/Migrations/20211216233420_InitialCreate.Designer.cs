@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211011162741_Initial")]
-    partial class Initial
+    [Migration("20211216233420_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -242,6 +242,11 @@ namespace API.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("deleted_at");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("description");
+
                     b.Property<Guid>("Guid")
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
@@ -255,6 +260,11 @@ namespace API.Migrations
                     b.Property<int>("StateId")
                         .HasColumnType("integer")
                         .HasColumnName("state_id");
+
+                    b.Property<string>("Topic")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("topic");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()

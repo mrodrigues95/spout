@@ -14,6 +14,8 @@ export const query = gql`
     discussionById(id: $id) {
       id
       name
+      topic
+      description
       classroom {
         ...ClassroomInfo_classroom
       }

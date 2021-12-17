@@ -61,7 +61,7 @@ namespace API.Schema.Mutations.Discussions {
             if (classroom is null) throw new GraphQLException("Classroom not found.");            
 
             var discussion = new Discussion {
-                Name = input.Name,
+                Name = input.Name.Trim(),
                 StateId = (int)Enums.State.Active,
                 CreatedById = userId,
                 ClassroomId = classroom.Id
@@ -71,6 +71,52 @@ namespace API.Schema.Mutations.Discussions {
             await ctx.SaveChangesAsync(cancellationToken);
 
             return new CreateDiscussionPayload(discussion);
+        }
+
+        // TODO: Updating the topic/description are both very similar and can
+        // probably be a shared method.
+        [Authorize]
+        [UseApplicationDbContext]
+        public async Task<UpdateDiscussionTopicPayload> UpdateDiscussionTopicAsync(
+        UpdateDiscussionTopicInput input,
+        [ScopedService] ApplicationDbContext ctx,
+        CancellationToken cancellationToken) {
+            var discussion = await ctx.Discussions.FindAsync(
+                new object[] { input.DiscussionId },
+                cancellationToken);
+
+            if (discussion is null) {
+                return new UpdateDiscussionTopicPayload(
+                  new UserError("Discussion not found.", "DISCUSSION_NOT_FOUND"));
+            }
+
+            // TODO: Send message event.
+            discussion.Topic = input.Topic;
+            await ctx.SaveChangesAsync(cancellationToken);
+
+            return new UpdateDiscussionTopicPayload(discussion);
+        }
+
+        [Authorize]
+        [UseApplicationDbContext]
+        public async Task<UpdateDiscussionDescriptionPayload> UpdateDiscussionDescriptionAsync(
+        UpdateDiscussionDescriptionInput input,
+        [ScopedService] ApplicationDbContext ctx,
+        CancellationToken cancellationToken) {
+            var discussion = await ctx.Discussions.FindAsync(
+                new object[] { input.DiscussionId },
+                cancellationToken);
+
+            if (discussion is null) {
+                return new UpdateDiscussionDescriptionPayload(
+                  new UserError("Discussion not found.", "DISCUSSION_NOT_FOUND"));
+            }
+
+            // TODO: Send message event.
+            discussion.Description = input.Description;
+            await ctx.SaveChangesAsync(cancellationToken);
+
+            return new UpdateDiscussionDescriptionPayload(discussion);
         }
     }
 }
