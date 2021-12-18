@@ -1,25 +1,28 @@
 import { useMemo } from 'react';
 import { ApolloError, gql, useQuery } from '@apollo/client';
-import { Button } from '@spout/toolkit';
+import { Badge, Button, Text } from '@spout/toolkit';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 import clsx from 'clsx';
-import Avatar from '../../../../../shared/components/ui/Avatar';
+import { Avatar, Card } from '../../../../../shared/components';
 import { getRandomAvatar } from '../../../../../shared/utils/getRandomAvatar';
+import { DiscussionEvent } from '../../../../../__generated__/schema.generated';
 import { Message_Message } from '../../utils/__generated__/fragments.generated';
 import { MeQuery } from './__generated__/DiscussionMessage.generated';
 import { formatMessageDate } from '../../utils/format';
 import { UserInfoFragment } from '../../utils/fragments';
 
-interface MessageHeaderProps {
+interface UserMessageHeaderProps {
   isMyMessage: boolean;
   name: string;
   date: string;
 }
 
-const DiscussionMessageHeader = ({
+const UserMessageHeader = ({
   isMyMessage,
   name,
   date,
-}: MessageHeaderProps) => {
+}: UserMessageHeaderProps) => {
   return (
     <div
       className={clsx(
@@ -35,17 +38,17 @@ const DiscussionMessageHeader = ({
   );
 };
 
-interface MessageContentProps {
+interface UserMessageBodyProps {
   isMyMessage: boolean;
   content: string;
   optimisticOpts?: OptimisticOptions;
 }
 
-const DiscussionMessageContent = ({
+const UserMessageBody = ({
   isMyMessage,
   content,
   optimisticOpts,
-}: MessageContentProps) => {
+}: UserMessageBodyProps) => {
   return (
     <div
       className={clsx(
@@ -56,7 +59,7 @@ const DiscussionMessageContent = ({
     >
       <p
         className={clsx(
-          'break-words prose-sm whitespace-pre-line font-medium',
+          'break-words text-sm whitespace-pre-line font-medium',
           isMyMessage ? 'text-white' : 'text-gray-900'
         )}
       >
@@ -76,18 +79,22 @@ const DiscussionMessageContent = ({
   );
 };
 
-interface OptimisticOptions {
-  loading: boolean;
-  retry(): void;
-  error?: ApolloError;
+interface CommonMessageProps {
+  message: Message_Message;
+  date: string;
+  avatar: string;
 }
 
-interface Props {
-  message: Message_Message;
+interface UserMessageProps extends CommonMessageProps {
   optimisticOpts?: OptimisticOptions;
 }
 
-const DiscussionMessage = ({ message, optimisticOpts }: Props) => {
+const UserMessage = ({
+  message,
+  date,
+  avatar,
+  optimisticOpts,
+}: UserMessageProps) => {
   const { data } = useQuery<MeQuery>(
     gql`
       query MeQuery {
@@ -100,16 +107,7 @@ const DiscussionMessage = ({ message, optimisticOpts }: Props) => {
     { fetchPolicy: 'cache-only' }
   );
 
-  const formattedDate = useMemo(() => formatMessageDate(message.createdAt), [
-    message,
-  ]);
-
-  const avatar = useMemo(
-    () => message.createdBy.avatarUrl ?? getRandomAvatar(),
-    [message]
-  );
-
-  const isMyMessage = message.createdBy.id === data!.me!.id;
+  const isMyMessage = message.createdBy.id === data?.me?.id;
 
   return (
     <div
@@ -119,22 +117,106 @@ const DiscussionMessage = ({ message, optimisticOpts }: Props) => {
         isMyMessage ? 'flex-row-reverse space-x-reverse' : 'flex-row space-x-2'
       )}
     >
-      <div className="flex items-center justify-center mb-auto rounded-full">
+      <div className="flex items-center justify-center mb-auto p-0.5 bg-white rounded-full shadow-lg">
         <Avatar src={avatar} aria-hidden="true" />
       </div>
       <div className="relative flex flex-col max-w-[75%] space-y-1">
-        <DiscussionMessageHeader
+        <UserMessageHeader
           isMyMessage={isMyMessage}
           name={message.createdBy.name}
-          date={formattedDate}
+          date={date}
         />
-        <DiscussionMessageContent
+        <UserMessageBody
           isMyMessage={isMyMessage}
           content={message.content}
           optimisticOpts={optimisticOpts}
         />
       </div>
     </div>
+  );
+};
+
+interface EventMessageProps extends CommonMessageProps {}
+
+const EventMessage = ({ message, date, avatar }: EventMessageProps) => {
+  const isTopic = message.discussionEvent === DiscussionEvent.ChangeTopic;
+
+  return (
+    <div className="inline-flex items-center justify-center py-2 px-4 w-full">
+      <Card className="flex flex-col p-3 max-w-[75%] rounded-md shadow-sm bg-white ring-1 ring-gray-900/5 space-y-4">
+        <div className="flex items-center space-x-2">
+          <div className="inline-flex items-center space-x-2">
+            <Avatar src={avatar} aria-hidden="true" size="xs" />
+            <Badge scheme="green">@{message.createdBy.name}</Badge>
+          </div>
+          <div className="inline-flex items-center space-x-2">
+            <Text className="text-gray-900 italic" size="sm" weight="medium">
+              changed the
+            </Text>
+            <FontAwesomeIcon
+              icon={faCommentAlt}
+              className={isTopic ? 'text-pink-700' : 'text-sky-700'}
+            />
+            <Text
+              className={clsx(
+                '!ml-1',
+                isTopic ? 'text-pink-500' : 'text-sky-500'
+              )}
+              weight="bold"
+              casing="uppercase"
+              size="xs"
+            >
+              {isTopic ? 'Topic' : 'Description'}
+            </Text>
+            <Text size="xs" weight="medium" color="muted">
+              {date}
+            </Text>
+          </div>
+        </div>
+        <Text
+          className="text-gray-900 break-words whitespace-pre-line"
+          weight="medium"
+          size="sm"
+        >
+          {message.content.trim()}
+        </Text>
+      </Card>
+    </div>
+  );
+};
+
+interface OptimisticOptions {
+  loading: boolean;
+  retry(): void;
+  error?: ApolloError;
+}
+
+interface Props {
+  message: Message_Message;
+  optimisticOpts?: OptimisticOptions;
+}
+
+const DiscussionMessage = ({ message, optimisticOpts }: Props) => {
+  const formattedDate = useMemo(() => formatMessageDate(message.createdAt), [
+    message,
+  ]);
+
+  const avatar = useMemo(
+    () => message.createdBy.avatarUrl ?? getRandomAvatar(),
+    [message]
+  );
+
+  const isEvent = message.isDiscussionEvent;
+
+  return isEvent ? (
+    <EventMessage message={message} date={formattedDate} avatar={avatar} />
+  ) : (
+    <UserMessage
+      message={message}
+      date={formattedDate}
+      avatar={avatar}
+      optimisticOpts={optimisticOpts}
+    />
   );
 };
 

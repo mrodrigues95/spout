@@ -64,7 +64,8 @@ namespace API.Extensions {
                 .AddTypeExtension<DiscussionMutations>()
                 .AddTypeExtension<DiscussionSubscriptions>()
                 .AddDataLoader<DiscussionByIdDataLoader>()
-                .AddType<DiscussionType>();
+                .AddType<DiscussionType>()
+                .AddType<DiscussionEventType>();
 
             gql
                 .AddTypeExtension<AuthMutations>();

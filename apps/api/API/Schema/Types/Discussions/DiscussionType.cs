@@ -18,6 +18,13 @@ using API.Schema.Types.Users;
 using API.Schema.Queries.Discussions;
 
 namespace API.Schema.Types.Discussions {
+    public enum DiscussionEvent {
+        CHANGE_TOPIC,
+        CHANGE_DESCRIPTION
+    }
+
+    public class DiscussionEventType : EnumType<DiscussionEvent> { }
+
     public class DiscussionType : ObjectType<Discussion> {
         protected override void Configure(IObjectTypeDescriptor<Discussion> descriptor) {
             descriptor

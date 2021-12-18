@@ -1,4 +1,4 @@
-﻿using API.Data.Entities;
+using API.Data.Entities;
 using HotChocolate;
 using HotChocolate.Execution;
 using HotChocolate.Subscriptions;

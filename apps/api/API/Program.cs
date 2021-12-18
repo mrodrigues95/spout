@@ -27,6 +27,7 @@ namespace API {
                     logger.LogError(ex, "An error occured while seeding the database.");
                 }
             }
+
             host.Run();
         }
 

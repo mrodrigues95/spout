@@ -2,7 +2,7 @@ import { ReactElement, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { Title, Tabs } from '@spout/toolkit';
-import { DiscussionQuery } from '../__generated__/Discussion.generated'
+import { DiscussionQuery } from '../__generated__/Discussion.generated';
 import { Avatar } from '../../../../../shared/components';
 import { getRandomAvatar } from '../../../../../shared/utils/getRandomAvatar';
 import TopicDescription from './TopicDescription';
@@ -51,7 +51,7 @@ const DiscussionDetails = ({ discussion }: Props) => {
           {discussion.classroom.name}
         </Title>
       </div>
-      <TopicDescription topic={discussion.topic} description={discussion.description} />
+      <TopicDescription discussion={discussion} />
       <div className="flex-1">
         <Tabs className="h-full" variant="primary">
           <Tabs.List>

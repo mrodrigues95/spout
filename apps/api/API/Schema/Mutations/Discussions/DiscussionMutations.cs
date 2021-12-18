@@ -9,6 +9,7 @@ using API.Data;
 using API.Schema.Common;
 using System.Threading;
 using HotChocolate.AspNetCore.Authorization;
+using API.Schema.Types.Discussions;
 
 namespace API.Schema.Mutations.Discussions {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -33,7 +34,8 @@ namespace API.Schema.Mutations.Discussions {
             var message = new Message {
                 Content = input.Content.Trim(),
                 DiscussionId = discussion.Id,
-                CreatedById = userId
+                CreatedById = userId,
+                IsDiscussionEvent = false
             };
 
             discussion.Messages.Add(message);
@@ -58,7 +60,8 @@ namespace API.Schema.Mutations.Discussions {
                 new object[] { input.ClassroomId },
                 cancellationToken);
 
-            if (classroom is null) throw new GraphQLException("Classroom not found.");            
+            if (classroom is null)
+                throw new GraphQLException("Classroom not found.");
 
             var discussion = new Discussion {
                 Name = input.Name.Trim(),
@@ -73,12 +76,12 @@ namespace API.Schema.Mutations.Discussions {
             return new CreateDiscussionPayload(discussion);
         }
 
-        // TODO: Updating the topic/description are both very similar and can
-        // probably be a shared method.
         [Authorize]
         [UseApplicationDbContext]
         public async Task<UpdateDiscussionTopicPayload> UpdateDiscussionTopicAsync(
         UpdateDiscussionTopicInput input,
+        [GlobalState] int userId,
+        [Service] ITopicEventSender sender,
         [ScopedService] ApplicationDbContext ctx,
         CancellationToken cancellationToken) {
             var discussion = await ctx.Discussions.FindAsync(
@@ -90,9 +93,22 @@ namespace API.Schema.Mutations.Discussions {
                   new UserError("Discussion not found.", "DISCUSSION_NOT_FOUND"));
             }
 
-            // TODO: Send message event.
-            discussion.Topic = input.Topic;
+            var message = new Message {
+                Content = input.Topic.Trim(),
+                DiscussionId = discussion.Id,
+                CreatedById = userId,
+                IsDiscussionEvent = true,
+                DiscussionEvent = DiscussionEvent.CHANGE_TOPIC
+            };
+
+            discussion.Messages.Add(message);
+            discussion.Topic = input.Topic.Trim();
             await ctx.SaveChangesAsync(cancellationToken);
+
+            await sender.SendAsync(
+              "OnDiscussionMessageReceived_" + discussion.Id,
+              message.Id,
+              cancellationToken);
 
             return new UpdateDiscussionTopicPayload(discussion);
         }
@@ -101,6 +117,8 @@ namespace API.Schema.Mutations.Discussions {
         [UseApplicationDbContext]
         public async Task<UpdateDiscussionDescriptionPayload> UpdateDiscussionDescriptionAsync(
         UpdateDiscussionDescriptionInput input,
+        [GlobalState] int userId,
+        [Service] ITopicEventSender sender,
         [ScopedService] ApplicationDbContext ctx,
         CancellationToken cancellationToken) {
             var discussion = await ctx.Discussions.FindAsync(
@@ -112,9 +130,22 @@ namespace API.Schema.Mutations.Discussions {
                   new UserError("Discussion not found.", "DISCUSSION_NOT_FOUND"));
             }
 
-            // TODO: Send message event.
-            discussion.Description = input.Description;
+            var message = new Message {
+                Content = input.Description.Trim(),
+                DiscussionId = discussion.Id,
+                CreatedById = userId,
+                IsDiscussionEvent = true,
+                DiscussionEvent = DiscussionEvent.CHANGE_DESCRIPTION
+            };
+
+            discussion.Messages.Add(message);
+            discussion.Description = input.Description.Trim();
             await ctx.SaveChangesAsync(cancellationToken);
+
+            await sender.SendAsync(
+              "OnDiscussionMessageReceived_" + discussion.Id,
+              message.Id,
+              cancellationToken);
 
             return new UpdateDiscussionDescriptionPayload(discussion);
         }

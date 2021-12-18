@@ -15,6 +15,8 @@ export const MessageFragment = gql`
     id
     content
     createdAt
+    isDiscussionEvent
+    discussionEvent
     createdBy {
       ...UserInfo_user
     }

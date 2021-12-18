@@ -109,8 +109,13 @@ const DicussionMessages = ({
         const { message } = subscriptionData.data.onDiscussionMessageReceived;
 
         // We manually update the cache for new messages that are created by the current
-        // user, so they can be ignored here.
-        if (message.createdBy.id === data!.me!.id) return prev;
+        // user that are not events, so they can be ignored here.
+        if (
+          message.createdBy.id === data!.me!.id &&
+          !message.isDiscussionEvent
+        ) {
+          return prev;
+        }
 
         return updateMessagesQuery(prev, message);
       },

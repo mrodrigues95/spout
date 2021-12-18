@@ -13,9 +13,14 @@ import { DiscussionQuery } from '../__generated__/Discussion.generated';
 interface TopicOrDescriptionProps {
   content: string;
   icon: IconDefinition;
+  label: 'Topic' | 'Description';
 }
 
-const TopicOrDescription = ({ content, icon }: TopicOrDescriptionProps) => {
+const TopicOrDescription = ({
+  content,
+  icon,
+  label,
+}: TopicOrDescriptionProps) => {
   return (
     <div>
       <div className="inline-flex items-center space-x-2">
@@ -27,10 +32,12 @@ const TopicOrDescription = ({ content, icon }: TopicOrDescriptionProps) => {
           weight="bold"
           className="text-gray-900"
         >
-          Topic
+          {label}
         </Text>
       </div>
-      <Text weight="medium">{content}</Text>
+      <Text className="whitespace-pre-line" weight="medium">
+        {content}
+      </Text>
     </div>
   );
 };
@@ -57,12 +64,14 @@ const WelcomeHeader = ({ discussion }: Props) => {
                 <TopicOrDescription
                   content={discussion.topic}
                   icon={faCommentAlt}
+                  label="Topic"
                 />
               )}
               {discussion.description && (
                 <TopicOrDescription
                   content={discussion.description}
                   icon={faPencilAlt}
+                  label="Description"
                 />
               )}
             </div>

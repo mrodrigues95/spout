@@ -10,6 +10,7 @@ export default {
 const loginSchema = object({
   email: string().email({ message: '- Invalid email' }),
   password: string().min(6, { message: '- Invalid password' }),
+  comment: string().min(1, { message: '- Invalid comment' }),
 });
 
 export const Primary: Story<FormProps> = () => {
@@ -34,6 +35,11 @@ export const Primary: Story<FormProps> = () => {
         placeholder="Password"
         type="password"
         {...form.register('password')}
+      />
+      <Form.TextArea
+        label="Comment"
+        placeholder="Comment"
+        {...form.register('comment')}
       />
       <Form.SubmitButton>Submit</Form.SubmitButton>
     </Form>

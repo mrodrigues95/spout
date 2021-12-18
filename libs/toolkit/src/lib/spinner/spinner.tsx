@@ -1,10 +1,7 @@
 import { ComponentProps } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 import { LoadingBricks } from './loading-bricks';
-
-const Circle = () => <FontAwesomeIcon icon={faSpinner} />
+import { LoadingCircle } from './loading-circle';
 
 const STYLES = {
   size: {
@@ -20,7 +17,7 @@ const STYLES = {
     purple: 'text-purple-500',
   },
   variant: {
-    circle: Circle,
+    circle: LoadingCircle,
     bricks: LoadingBricks,
   },
 };

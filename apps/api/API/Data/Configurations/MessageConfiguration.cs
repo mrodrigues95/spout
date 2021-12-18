@@ -1,4 +1,4 @@
-﻿using API.Data.Entities;
+using API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,6 +9,12 @@ namespace API.Data.Configurations {
 
             builder.Property(m => m.Content)
                 .HasMaxLength(2000);
+
+            builder.Property(m => m.IsDiscussionEvent)
+                .HasDefaultValue(false);
+
+            builder.Property(m => m.DiscussionEvent)
+                .IsRequired(false);
 
             builder.Property(m => m.CreatedAt)
                 .HasDefaultValueSql("timezone('UTC', now())");

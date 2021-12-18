@@ -12,6 +12,7 @@ import {
 import { ZodSchema, TypeOf } from 'zod';
 import { FormSubmitButton } from './form-submit-button';
 import { FormInput } from './form-input';
+import { FormTextArea } from './form-textarea';
 
 interface UseZodFormProps<T extends ZodSchema<any>>
   extends UseFormProps<TypeOf<T>> {
@@ -43,7 +44,7 @@ export function FieldError({ name }: FieldErrorProps) {
   if (!error) return null;
 
   return (
-    <span className="text-sm text-red-600 italic" role="alert">
+    <span className="text-sm text-red-600 italic font-medium" role="alert">
       {error.message}
     </span>
   );
@@ -77,3 +78,4 @@ export const Form = <T extends FieldValues>({
 
 Form.SubmitButton = FormSubmitButton;
 Form.Input = FormInput;
+Form.TextArea = FormTextArea;

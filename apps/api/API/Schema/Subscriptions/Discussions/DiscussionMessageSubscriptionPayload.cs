@@ -1,4 +1,4 @@
-﻿using API.Data.Entities;
+using API.Data.Entities;
 using HotChocolate.Types.Relay;
 using System.Threading.Tasks;
 using System.Threading;

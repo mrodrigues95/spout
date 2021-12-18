@@ -176,6 +176,11 @@ export type DiscussionMessagesArgs = {
   order?: Maybe<Array<MessageSortInput>>;
 };
 
+export enum DiscussionEvent {
+  ChangeTopic = 'CHANGE_TOPIC',
+  ChangeDescription = 'CHANGE_DESCRIPTION'
+}
+
 export type DiscussionMessageSubscriptionPayload = {
   __typename?: 'DiscussionMessageSubscriptionPayload';
   discussion: Discussion;
@@ -275,11 +280,13 @@ export type Message = Node & {
   discussionId: Scalars['Int'];
   discussion?: Maybe<Discussion>;
   createdById: Scalars['Int'];
-  deletedAt?: Maybe<Scalars['DateTime']>;
+  isDiscussionEvent: Scalars['Boolean'];
+  discussionEvent?: Maybe<DiscussionEvent>;
   delLogId?: Maybe<Scalars['Int']>;
   delLog?: Maybe<DelLog>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
 };
 
 export type MessageSortInput = {
@@ -289,11 +296,13 @@ export type MessageSortInput = {
   discussion?: Maybe<DiscussionSortInput>;
   createdById?: Maybe<SortEnumType>;
   createdBy?: Maybe<UserSortInput>;
-  deletedAt?: Maybe<SortEnumType>;
+  isDiscussionEvent?: Maybe<SortEnumType>;
+  discussionEvent?: Maybe<SortEnumType>;
   delLogId?: Maybe<SortEnumType>;
   delLog?: Maybe<DelLogSortInput>;
   createdAt?: Maybe<SortEnumType>;
   updatedAt?: Maybe<SortEnumType>;
+  deletedAt?: Maybe<SortEnumType>;
 };
 
 /** A connection to a list of items. */

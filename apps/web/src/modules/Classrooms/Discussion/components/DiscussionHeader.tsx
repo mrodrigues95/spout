@@ -29,7 +29,7 @@ const DiscussionHeader = ({ discussion }: Props) => {
     }
   }, [selectedDiscussionId]);
 
-  const discussions = [...discussion.classroom.discussions].sort((d1, d2) =>
+  const discussions = [...discussion.classroom.discussions ?? []].sort((d1, d2) =>
     d1.name.localeCompare(d2.name)
   );
 

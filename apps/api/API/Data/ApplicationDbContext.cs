@@ -1,11 +1,17 @@
 using API.Data.Entities;
+using API.Schema.Types.Discussions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System.Reflection;
 
 namespace API.Data {
     public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, int> {
+        static ApplicationDbContext() {
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<DiscussionEvent>();
+        }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public override DbSet<User> Users { get; set; } = default!;
@@ -24,7 +30,7 @@ namespace API.Data {
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
 
-            // Configure default ASP.NET table names.
+            // Configure the default ASP.NET table names.
             builder.Entity<User>().ToTable("users");
             builder.Entity<IdentityUserLogin<int>>().ToTable("user_logins");
             builder.Entity<IdentityUserToken<int>>().ToTable("users_tokens");
@@ -32,6 +38,9 @@ namespace API.Data {
             builder.Entity<IdentityUserRole<int>>().ToTable("user_roles");
             builder.Entity<IdentityRoleClaim<int>>().ToTable("role_claims");
             builder.Entity<IdentityRole<int>>().ToTable("roles");
+
+            // Configure enums.
+            builder.HasPostgresEnum<DiscussionEvent>();
 
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }

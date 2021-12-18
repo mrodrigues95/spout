@@ -1,13 +1,17 @@
 ﻿using System;
+using API.Schema.Types.Discussions;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace API.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:Enum:discussion_event", "change_topic,change_description");
+
             migrationBuilder.CreateTable(
                 name: "del_log_types",
                 columns: table => new
@@ -430,10 +434,12 @@ namespace API.Migrations
                     content = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
                     discussion_id = table.Column<int>(type: "integer", nullable: false),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
-                    deleted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    is_discussion_event = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    discussion_event = table.Column<DiscussionEvent>(type: "discussion_event", nullable: true),
                     del_log_id = table.Column<int>(type: "integer", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
-                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
+                    deleted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
