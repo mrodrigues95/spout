@@ -1,3 +1,4 @@
+export * from './lib/avatar';
 export * from './lib/icon-button';
 export * from './lib/text';
 export * from './lib/title';

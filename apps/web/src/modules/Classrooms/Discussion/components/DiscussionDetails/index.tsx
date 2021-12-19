@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { Title, Tabs } from '@spout/toolkit';
 import { DiscussionQuery } from '../__generated__/Discussion.generated';
-import { Avatar } from '../../../../../shared/components';
+import { Image } from '../../../../../shared/components';
 import { getRandomAvatar } from '../../../../../shared/utils/getRandomAvatar';
 import TopicDescription from './TopicDescription';
 import Participants from './Participants';
@@ -38,13 +38,13 @@ const DiscussionDetails = ({ discussion }: Props) => {
   return (
     <div className="flex flex-col w-72 space-y-8">
       <div className="flex flex-col items-center">
-        <Avatar
+        <Image
           src={getRandomAvatar()}
-          className="mb-2"
-          aria-hidden="true"
+          alt=""
           size="xl"
+          rounded
         />
-        <Title as="h2" variant="h4">
+        <Title className="mt-2" as="h2" variant="h4">
           {discussion.name}
         </Title>
         <Title as="h3" variant="h6" className="text-gray-700 font-semibold">

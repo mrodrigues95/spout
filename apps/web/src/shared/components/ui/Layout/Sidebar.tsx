@@ -20,6 +20,7 @@ import {
   CreateClassroomMutationVariables,
 } from './__generated__/Sidebar.generated';
 import Avatar from '../Avatar';
+import Image from '../Image';
 import VerticalNav from '../VerticalNav';
 
 const schema = object({
@@ -146,7 +147,7 @@ const Sidebar = () => {
   return (
     <aside className="fixed inset-y-0 left-0 overflow-y-auto flex flex-col z-20 p-5 space-y-8 w-72">
       <div className="flex items-center space-x-4">
-        <Avatar src={getRandomAvatar()} aria-hidden="true" />
+        <Image src={getRandomAvatar()} alt="Spout" rounded />
         <span className="text-lg font-bold">spout</span>
       </div>
       <VerticalNav>
@@ -188,13 +189,7 @@ const Sidebar = () => {
                     key={classroom.id}
                     to={`/classrooms/${classroom.id}`}
                     label={classroom.name}
-                    icon={
-                      <Avatar
-                        src={getRandomAvatar()}
-                        size="xs"
-                        aria-hidden="true"
-                      />
-                    }
+                    icon={<Image src={getRandomAvatar()} alt="" size="sm" />}
                     routes={[
                       `/classrooms/${classroom.id}/${router.query.discussionId}`,
                     ]}

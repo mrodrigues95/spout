@@ -12,8 +12,7 @@ import {
   PhotoCropper,
 } from '@spout/toolkit';
 import { UserInfoFragment } from '../../../Classrooms/Discussion/utils/fragments';
-import { Avatar, useToast } from '../../../../shared/components';
-import { getRandomAvatar } from '../../../../shared/utils/getRandomAvatar';
+import { useToast } from '../../../../shared/components';
 import {
   MeQuery,
   UpdateAvatar,
@@ -131,11 +130,11 @@ const ChangeAvatar = () => {
       </Modal>
       <figure className="flex flex-col flex-1 items-center justify-center">
         <div className="relative">
-          <Avatar
+          {/* <Avatar
             src={data!.me!.avatarUrl ?? getRandomAvatar()}
             name={data!.me!.name}
             className="h-16 w-16 sm:h-20 sm:w-20 md:w-32 md:h-32 lg:h-48 lg:w-48"
-          />
+          /> */}
           <FilePicker onFileSelected={onFileSelected}>
             <FilePicker.Button
               className="absolute right-0 bottom-0 mr-1 bg-indigo-400 rounded-full shadow-lg outline-none md:mr-4 md:mb-1 lg:mr-6 focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-red-600"

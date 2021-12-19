@@ -1,11 +1,10 @@
 import { useMemo } from 'react';
 import { ApolloError, gql, useQuery } from '@apollo/client';
-import { Badge, Button, Text } from '@spout/toolkit';
+import { Badge, Button, Text, Avatar } from '@spout/toolkit';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 import clsx from 'clsx';
-import { Avatar, Card } from '../../../../../shared/components';
-import { getRandomAvatar } from '../../../../../shared/utils/getRandomAvatar';
+import { Card } from '../../../../../shared/components';
 import { DiscussionEvent } from '../../../../../__generated__/schema.generated';
 import { Message_Message } from '../../utils/__generated__/fragments.generated';
 import { MeQuery } from './__generated__/DiscussionMessage.generated';
@@ -82,19 +81,13 @@ const UserMessageBody = ({
 interface CommonMessageProps {
   message: Message_Message;
   date: string;
-  avatar: string;
 }
 
 interface UserMessageProps extends CommonMessageProps {
   optimisticOpts?: OptimisticOptions;
 }
 
-const UserMessage = ({
-  message,
-  date,
-  avatar,
-  optimisticOpts,
-}: UserMessageProps) => {
+const UserMessage = ({ message, date, optimisticOpts }: UserMessageProps) => {
   const { data } = useQuery<MeQuery>(
     gql`
       query MeQuery {
@@ -117,8 +110,11 @@ const UserMessage = ({
         isMyMessage ? 'flex-row-reverse space-x-reverse' : 'flex-row space-x-2'
       )}
     >
-      <div className="flex items-center justify-center mb-auto p-0.5 bg-white rounded-full shadow-lg">
-        <Avatar src={avatar} aria-hidden="true" />
+      <div className="flex items-center justify-center mb-auto rounded-md shadow-md">
+        <Avatar
+          src={message.createdBy.avatarUrl}
+          name={message.createdBy.name}
+        />
       </div>
       <div className="relative flex flex-col max-w-[75%] space-y-1">
         <UserMessageHeader
@@ -138,7 +134,7 @@ const UserMessage = ({
 
 interface EventMessageProps extends CommonMessageProps {}
 
-const EventMessage = ({ message, date, avatar }: EventMessageProps) => {
+const EventMessage = ({ message, date }: EventMessageProps) => {
   const isTopic = message.discussionEvent === DiscussionEvent.ChangeTopic;
 
   return (
@@ -146,7 +142,11 @@ const EventMessage = ({ message, date, avatar }: EventMessageProps) => {
       <Card className="flex flex-col p-3 max-w-[75%] rounded-md shadow-sm bg-white ring-1 ring-gray-900/5 space-y-4">
         <div className="flex items-center space-x-2">
           <div className="inline-flex items-center space-x-2">
-            <Avatar src={avatar} aria-hidden="true" size="xs" />
+            <Avatar
+              src={message.createdBy.avatarUrl}
+              name={message.createdBy.name}
+              size="xs"
+            />
             <Badge scheme="green">@{message.createdBy.name}</Badge>
           </div>
           <div className="inline-flex items-center space-x-2">
@@ -201,20 +201,14 @@ const DiscussionMessage = ({ message, optimisticOpts }: Props) => {
     message,
   ]);
 
-  const avatar = useMemo(
-    () => message.createdBy.avatarUrl ?? getRandomAvatar(),
-    [message]
-  );
-
   const isEvent = message.isDiscussionEvent;
 
   return isEvent ? (
-    <EventMessage message={message} date={formattedDate} avatar={avatar} />
+    <EventMessage message={message} date={formattedDate} />
   ) : (
     <UserMessage
       message={message}
       date={formattedDate}
-      avatar={avatar}
       optimisticOpts={optimisticOpts}
     />
   );

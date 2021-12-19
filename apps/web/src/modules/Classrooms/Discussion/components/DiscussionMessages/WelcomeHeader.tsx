@@ -7,7 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Badge, Text } from '@spout/toolkit';
 import { getRandomAvatar } from '../../../../../shared/utils/getRandomAvatar';
-import { Avatar, Card } from '../../../../../shared/components';
+import { Image, Card } from '../../../../../shared/components';
 import { DiscussionQuery } from '../__generated__/Discussion.generated';
 
 interface TopicOrDescriptionProps {
@@ -52,8 +52,8 @@ const WelcomeHeader = ({ discussion }: Props) => {
       <Card className="px-6 py-4 relative overflow-hidden rounded-md shadow-sm bg-white ring-1 ring-gray-900/5 space-y-4">
         <div className="space-y-4">
           <div className="flex items-center">
-            <Avatar src={getRandomAvatar()} />
-            <Text className="ml-4 mr-2" weight="semibold">
+            <Image src={getRandomAvatar()} alt="" />
+            <Text className="mx-2" weight="semibold">
               Welcome to
             </Text>
             <Badge scheme="green"># {discussion.name}</Badge>
