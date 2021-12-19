@@ -1,4 +1,5 @@
-import { Avatar, Button } from '@spout/toolkit';
+import { Button } from '@spout/toolkit';
+import { Avatar } from '../../../../../shared/components';
 import { ClassroomInfo_Classroom } from '../../../components/__generated__/ViewClassroom.generated';
 
 interface Props {
@@ -15,6 +16,7 @@ const Participants = ({ users }: Props) => {
               <Avatar
                 src={user.avatarUrl}
                 name={user.name}
+                profileColor={user.profileColor}
                 size="sm"
               />
               <span className="flex-1 truncate min-w-0">{user.name}</span>

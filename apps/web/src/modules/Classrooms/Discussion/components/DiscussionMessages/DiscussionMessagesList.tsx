@@ -12,13 +12,17 @@ import { Skeleton } from '@spout/toolkit';
 import { DiscussionQuery } from '../__generated__/Discussion.generated';
 import { Message_Message } from '../../utils/__generated__/fragments.generated';
 import { generateItems, Item, Divider, group } from '../../utils/messages';
-import { OptimisticMessage as OptimisticMessageType, useStore } from '../../utils/messagesStore';
+import {
+  OptimisticMessage as OptimisticMessageType,
+  useStore,
+} from '../../utils/messagesStore';
 import { MeQuery } from './__generated__/DiscussionMessagesList.generated';
 import { UserInfoFragment } from '../../utils/fragments';
 import { Card } from '../../../../../shared/components';
 import OptimisticMessage from './DiscussionOptimisticMessage';
 import MessageDivider from './DiscussionMessageDivider';
 import Message from './DiscussionMessage';
+import clsx from 'clsx';
 
 const isOptimistic = (message: Item) =>
   'optimisticId' in message && message.optimisticId < 0;
@@ -61,7 +65,13 @@ interface Props {
 // TODO: Dates seem to be out of order slightly when more than one user
 // is chatting. This might be because we are removing and updating cache
 // at the same time in OptimisticMessage.tsx.
-const DiscussionMessagesList = ({ discussionId, messages, hasNext, next, header }: Props) => {
+const DiscussionMessagesList = ({
+  discussionId,
+  messages,
+  hasNext,
+  next,
+  header,
+}: Props) => {
   const { data } = useQuery<MeQuery>(
     gql`
       query MeQuery {
@@ -149,11 +159,12 @@ const DiscussionMessagesList = ({ discussionId, messages, hasNext, next, header 
         Header: () =>
           isFetching ? (
             <div className="px-4 py-6">
-              <Card className="rounded-md shadow-sm bg-white ring-1 ring-gray-900/5 space-y-4">
-                <Skeleton.Stack>
-                  <Skeleton h="h-3" w="w-1/2" />
-                  <Skeleton h="h-3" w="w-2/3" />
-                  <Skeleton h="h-3" w="w-5/6" />
+              <Card className="p-3 flex w-full rounded-md shadow-sm bg-white ring-1 ring-gray-900/5 space-x-2">
+                <Skeleton className="w-10 h-10 rounded-full" />
+                <Skeleton.Stack className="flex-1">
+                  <Skeleton className="h-3 w-1/2" />
+                  <Skeleton className="h-3 w-2/3" />
+                  <Skeleton className="h-3 w-5/6" />
                 </Skeleton.Stack>
               </Card>
             </div>
@@ -161,6 +172,32 @@ const DiscussionMessagesList = ({ discussionId, messages, hasNext, next, header 
             header
           ),
         Footer: () => <div className="pt-6" />,
+        ScrollSeekPlaceholder: ({ height }) => {
+          const isDivider = height <= 45;
+
+          return (
+            <div
+              className={clsx(
+                'flex items-start px-4',
+                isDivider ? 'py-0' : 'py-6'
+              )}
+              style={{ height }}
+            >
+              {isDivider ? (
+                <MessageDivider.Skeleton />
+              ) : (
+                <>
+                  <Skeleton className="h-10 w-10 rounded-full mr-2" />
+                  <Skeleton className="h-full w-1/2" />
+                </>
+              )}
+            </div>
+          );
+        },
+      }}
+      scrollSeekConfiguration={{
+        enter: (velocity) => Math.abs(velocity) > 1500,
+        exit: (velocity) => Math.abs(velocity) < 100,
       }}
     />
   );

@@ -45,7 +45,8 @@ namespace API.Extensions {
             gql
                 .AddTypeExtension<UserQueries>()
                 .AddDataLoader<UserByIdDataLoader>()
-                .AddType<UserType>();
+                .AddType<UserType>()
+                .AddType<UserProfileColorType>();
 
             gql
                 .AddTypeExtension<SessionQueries>()

@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Http;
 using API.Schema.Common;
 using HotChocolate.AspNetCore.Authorization;
 using API.Schema.Mutations.Sessions.Common;
+using API.Common.Enums;
+using API.Schema.Types.Users;
 
 namespace API.Schema.Mutations.Auth {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -31,6 +33,7 @@ namespace API.Schema.Mutations.Auth {
                 Name = input.Name,
                 UserName = input.Email,
                 Email = input.Email,
+                ProfileColor = RandomEnum.Of<UserProfileColor>(),
                 StateId = (int) Enums.State.Active
             };
 

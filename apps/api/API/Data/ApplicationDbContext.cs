@@ -1,5 +1,6 @@
 using API.Data.Entities;
 using API.Schema.Types.Discussions;
+using API.Schema.Types.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -7,9 +8,9 @@ using Npgsql;
 using System.Reflection;
 
 namespace API.Data {
-    public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, int> {
+    public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, int> {        
         static ApplicationDbContext() {
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<DiscussionEvent>();
+            MapEnums();
         }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
@@ -41,8 +42,14 @@ namespace API.Data {
 
             // Configure enums.
             builder.HasPostgresEnum<DiscussionEvent>();
+            builder.HasPostgresEnum<UserProfileColor>();
 
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
+
+        private static void MapEnums() {
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<DiscussionEvent>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<UserProfileColor>();
         }
     }
 }

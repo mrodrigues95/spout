@@ -10,18 +10,19 @@ const styles = {
   scheme: {
     pink: 'bg-pink-100 text-pink-700',
     green: 'bg-green-100 text-green-700',
+    gray: 'bg-gray-100 text-gray-700'
   },
 };
 
 export interface BadgeProps extends ComponentProps<'span'> {
-  scheme: keyof typeof styles['scheme'];
+  scheme?: keyof typeof styles['scheme'];
   size?: keyof typeof styles['size'];
   pill?: boolean;
   children: ReactNode;
 }
 
 export const Badge = ({
-  scheme,
+  scheme = 'gray',
   size = 'sm',
   pill = false,
   children,

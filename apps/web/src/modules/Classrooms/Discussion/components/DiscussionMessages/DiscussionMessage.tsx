@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { ApolloError, gql, useQuery } from '@apollo/client';
-import { Badge, Button, Text, Avatar } from '@spout/toolkit';
+import { Badge, Button, Text } from '@spout/toolkit';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 import clsx from 'clsx';
-import { Card } from '../../../../../shared/components';
+import { Card, Avatar } from '../../../../../shared/components';
 import { DiscussionEvent } from '../../../../../__generated__/schema.generated';
 import { Message_Message } from '../../utils/__generated__/fragments.generated';
 import { MeQuery } from './__generated__/DiscussionMessage.generated';
@@ -114,6 +114,7 @@ const UserMessage = ({ message, date, optimisticOpts }: UserMessageProps) => {
         <Avatar
           src={message.createdBy.avatarUrl}
           name={message.createdBy.name}
+          profileColor={message.createdBy.profileColor}
         />
       </div>
       <div className="relative flex flex-col max-w-[75%] space-y-1">
@@ -145,7 +146,8 @@ const EventMessage = ({ message, date }: EventMessageProps) => {
             <Avatar
               src={message.createdBy.avatarUrl}
               name={message.createdBy.name}
-              size="xs"
+              profileColor={message.createdBy.profileColor}
+              size="sm"
             />
             <Badge scheme="green">@{message.createdBy.name}</Badge>
           </div>

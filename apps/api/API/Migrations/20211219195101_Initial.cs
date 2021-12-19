@@ -1,5 +1,6 @@
 ﻿using System;
 using API.Schema.Types.Discussions;
+using API.Schema.Types.Users;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,7 +11,8 @@ namespace API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:Enum:discussion_event", "change_topic,change_description");
+                .Annotation("Npgsql:Enum:discussion_event", "change_topic,change_description")
+                .Annotation("Npgsql:Enum:user_profile_color", "sky,pink,green,purple,rose,gray,orange");
 
             migrationBuilder.CreateTable(
                 name: "del_log_types",
@@ -127,6 +129,7 @@ namespace API.Migrations
                     guid = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(70)", maxLength: 70, nullable: false),
                     email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    profile_color = table.Column<UserProfileColor>(type: "user_profile_color", nullable: false),
                     avatar_url = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true),
                     state_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),

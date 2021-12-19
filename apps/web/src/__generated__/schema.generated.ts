@@ -614,6 +614,7 @@ export type User = Node & {
   guid: Scalars['UUID'];
   name: Scalars['String'];
   email: Scalars['String'];
+  profileColor: UserProfileColor;
   avatarUrl?: Maybe<Scalars['String']>;
   stateId: Scalars['Int'];
   state?: Maybe<State>;
@@ -643,10 +644,21 @@ export type UserError = {
   code: Scalars['String'];
 };
 
+export enum UserProfileColor {
+  Sky = 'SKY',
+  Pink = 'PINK',
+  Green = 'GREEN',
+  Purple = 'PURPLE',
+  Rose = 'ROSE',
+  Gray = 'GRAY',
+  Orange = 'ORANGE'
+}
+
 export type UserSortInput = {
   guid?: Maybe<SortEnumType>;
   name?: Maybe<SortEnumType>;
   email?: Maybe<SortEnumType>;
+  profileColor?: Maybe<SortEnumType>;
   avatarUrl?: Maybe<SortEnumType>;
   stateId?: Maybe<SortEnumType>;
   state?: Maybe<StateSortInput>;

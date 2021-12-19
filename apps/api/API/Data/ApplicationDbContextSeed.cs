@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Common.Utilities;
+using API.Schema.Types.Users;
 
 namespace API.Data {
     public class ApplicationDbContextSeed {
@@ -96,24 +97,28 @@ namespace API.Data {
                     Name = "Marcus Rodrigues",
                     UserName = "mrodrigues@test.com",
                     Email = "mrodrigues@test.com",
+                    ProfileColor = UserProfileColor.GREEN,
                     State = GetState(context)
                 },
                 new User {
                     Name = "John Doe",
                     UserName = "jdoe@test.com",
                     Email = "jdoe@test.com",
+                    ProfileColor = UserProfileColor.ORANGE,
                     State = GetState(context)
                 },
                 new User {
                     Name = "Debbie Ray",
                     UserName = "dray@test.com",
                     Email = "dray@test.com",
+                    ProfileColor = UserProfileColor.ROSE,
                     State = GetState(context)
                 },
                 new User {
                     Name = "Heather Dook",
                     UserName = "hdook@test.com",
                     Email = "hdook@test.com",
+                    ProfileColor = UserProfileColor.PURPLE,
                     State = GetState(context)
                 },
             };

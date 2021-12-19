@@ -19,6 +19,8 @@ const STYLES = {
     green: 'bg-green-100 text-green-600',
     purple: 'bg-purple-100 text-purple-600',
     rose: 'bg-rose-100 text-rose-600',
+    gray: 'bg-gray-100 text-gray-600',
+    orange: 'bg-orange-100 text-orange-600',
   },
 } as const;
 
@@ -62,7 +64,7 @@ export const Avatar = ({
   isNextJs = true,
   rounded = false,
   size = 'md',
-  scheme = 'green',
+  scheme = 'gray',
   ...props
 }: AvatarProps) => {
   const [error, setError] = useState(!src);

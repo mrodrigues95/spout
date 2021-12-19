@@ -7,6 +7,7 @@ export const UserInfoFragment = gql`
     email
     createdAt
     avatarUrl
+    profileColor
   }
 `;
 

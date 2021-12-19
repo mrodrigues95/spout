@@ -2,6 +2,7 @@
 using System;
 using API.Data;
 using API.Schema.Types.Discussions;
+using API.Schema.Types.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -11,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211218151159_Initial")]
+    [Migration("20211219195101_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,6 +20,7 @@ namespace API.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasPostgresEnum(null, "discussion_event", new[] { "change_topic", "change_description" })
+                .HasPostgresEnum(null, "user_profile_color", new[] { "sky", "pink", "green", "purple", "rose", "gray", "orange" })
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
@@ -609,6 +611,10 @@ namespace API.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean")
                         .HasColumnName("phone_number_confirmed");
+
+                    b.Property<UserProfileColor>("ProfileColor")
+                        .HasColumnType("user_profile_color")
+                        .HasColumnName("profile_color");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text")

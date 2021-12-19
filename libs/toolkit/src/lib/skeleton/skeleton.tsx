@@ -1,5 +1,6 @@
 import { ComponentProps, ReactNode } from 'react';
 import clsx from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 interface SkeletonStackProps extends ComponentProps<'div'> {
   space?: string;
@@ -13,30 +14,22 @@ const SkeletonStack = ({
   ...props
 }: SkeletonStackProps) => {
   return (
-    <div className={clsx('py-2 flex flex-col', space, className)} {...props}>
+    <div className={clsx('flex flex-col', space, className)} {...props}>
       {children}
     </div>
   );
 };
 
-export interface SkeletonProps extends ComponentProps<'div'> {
-  h?: string;
-  w?: string;
-}
+export interface SkeletonProps extends ComponentProps<'div'> {}
 
-export const Skeleton = ({
-  h = 'h-6',
-  w = 'w-full',
-  className,
-  ...props
-}: SkeletonProps) => {
+export const Skeleton = ({ className, ...props }: SkeletonProps) => {
   return (
     <div
-      className={clsx(
-        'bg-gray-500 bg-opacity-25 rounded-lg animate-pulse',
-        h,
-        w,
-        className,
+      className={twMerge(
+        clsx(
+          'bg-gray-500 bg-opacity-25 h-6 w-full rounded-lg animate-pulse',
+          className
+        )
       )}
       {...props}
     />

@@ -16,6 +16,18 @@ using API.Schema.Types.Sessions;
 using API.Schema.Queries.Users;
 
 namespace API.Schema.Types.Users {
+    public enum UserProfileColor {
+        SKY,
+        PINK,
+        GREEN,
+        PURPLE,
+        ROSE,
+        GRAY,
+        ORANGE
+    }
+
+    public class UserProfileColorType : EnumType<UserProfileColor> { }
+
     public class UserType : ObjectType<User> {
         protected override void Configure(IObjectTypeDescriptor<User> descriptor) {
             descriptor

@@ -1,3 +1,4 @@
+using API.Schema.Types.Users;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ namespace API.Data.Entities {
         [Required] public Guid Guid { get; set; } = Guid.NewGuid();
         [Required] public string? Name { get; set; }
         [Required] public override string? Email { get; set; }
+        [Required] public UserProfileColor ProfileColor { get; set; }
         public string? AvatarUrl { get; set; }
         [Required] public int StateId { get; set; }
         public State? State { get; set; }
