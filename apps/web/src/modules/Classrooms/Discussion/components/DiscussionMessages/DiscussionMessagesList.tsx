@@ -11,7 +11,15 @@ import { Virtuoso } from 'react-virtuoso';
 import { Skeleton } from '@spout/toolkit';
 import { DiscussionQuery } from '../__generated__/Discussion.generated';
 import { Message_Message } from '../../utils/__generated__/fragments.generated';
-import { generateItems, Item, Divider, group } from '../../utils/messages';
+import {
+  generateItems,
+  getRecentMessages,
+  Divider,
+  group,
+  isDivider,
+  isEvent,
+  isOptimistic,
+} from '../../utils/messages';
 import {
   OptimisticMessage as OptimisticMessageType,
   useStore,
@@ -19,15 +27,10 @@ import {
 import { MeQuery } from './__generated__/DiscussionMessagesList.generated';
 import { UserInfoFragment } from '../../utils/fragments';
 import { Card } from '../../../../../shared/components';
-import OptimisticMessage from './DiscussionOptimisticMessage';
-import MessageDivider from './DiscussionMessageDivider';
-import Message from './DiscussionMessage';
-import clsx from 'clsx';
-
-const isOptimistic = (message: Item) =>
-  'optimisticId' in message && message.optimisticId < 0;
-
-const isDivider = (item: Item) => 'type' in item && item.type === 'divider';
+import DiscussionOptimisticMessage from './DiscussionOptimisticMessage';
+import DiscussionMessageDivider from './DiscussionMessageDivider';
+import DiscussionMessage from './DiscussionMessage';
+import DiscussionMessageEvent from './DicussionMessageEvent';
 
 // Items to prepend should always be the page size but since
 // we are not using GroupedVirtuoso, we need to account for the
@@ -88,12 +91,14 @@ const DiscussionMessagesList = ({
   const [isFetching, setIsFetching] = useState(false);
   const timeoutRef = useRef(0);
 
-  // NOTE: GroupedVirtuoso doesn't work very well with prepended items so that requires us
+  // `GroupedVirtuoso` doesn't support prepended items so that requires us
   // to create a flattened array of messages and message dividers.
   const items = useMemo(
     () => generateItems(messages.map((edge) => edge.node)),
     [messages]
   );
+
+  const recentMessages = useMemo(() => getRecentMessages(items), [items]);
 
   const prependItems = useCallback(() => {
     clearTimeout(timeoutRef.current);
@@ -120,8 +125,10 @@ const DiscussionMessagesList = ({
 
   useEffect(() => () => clearTimeout(timeoutRef.current), []);
 
+  console.log('Items: ', items);
+  console.log('Recent messages: ', recentMessages);
+
   // TODO: Create a 'Jump to Present' footer.
-  // TODO: Look into using ScrollSeekPlaceholder for performance improvement.
   return (
     <Virtuoso
       data={items}
@@ -142,17 +149,27 @@ const DiscussionMessagesList = ({
       }}
       itemContent={(_, item) => {
         if (isDivider(item)) {
-          return <MessageDivider date={(item as Divider).date} />;
+          return <DiscussionMessageDivider date={(item as Divider).date} />;
+        }
+
+        // Events are still considered a regular message, just styled differently.
+        if (isEvent(item)) {
+          return (
+            <DiscussionMessageEvent messageEvent={item as Message_Message} />
+          );
         }
 
         return isOptimistic(item) ? (
-          <OptimisticMessage
+          <DiscussionOptimisticMessage
             key={(item as OptimisticMessageType).optimisticId}
-            discussionId={discussionId}
             message={item as OptimisticMessageType}
+            discussionId={discussionId}
           />
         ) : (
-          <Message message={item as Message_Message} />
+          <DiscussionMessage
+            recentMessages={recentMessages}
+            message={item as Message_Message}
+          />
         );
       }}
       components={{
@@ -172,32 +189,6 @@ const DiscussionMessagesList = ({
             header
           ),
         Footer: () => <div className="pt-6" />,
-        ScrollSeekPlaceholder: ({ height }) => {
-          const isDivider = height <= 45;
-
-          return (
-            <div
-              className={clsx(
-                'flex items-start px-4',
-                isDivider ? 'py-0' : 'py-6'
-              )}
-              style={{ height }}
-            >
-              {isDivider ? (
-                <MessageDivider.Skeleton />
-              ) : (
-                <>
-                  <Skeleton className="h-10 w-10 rounded-full mr-2" />
-                  <Skeleton className="h-full w-1/2" />
-                </>
-              )}
-            </div>
-          );
-        },
-      }}
-      scrollSeekConfiguration={{
-        enter: (velocity) => Math.abs(velocity) > 1500,
-        exit: (velocity) => Math.abs(velocity) < 100,
       }}
     />
   );

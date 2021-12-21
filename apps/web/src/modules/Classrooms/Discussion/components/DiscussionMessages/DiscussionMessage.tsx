@@ -1,27 +1,25 @@
 import { useMemo } from 'react';
 import { ApolloError, gql, useQuery } from '@apollo/client';
-import { Badge, Button, Text } from '@spout/toolkit';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCommentAlt } from '@fortawesome/free-regular-svg-icons';
+import { Button } from '@spout/toolkit';
 import clsx from 'clsx';
-import { Card, Avatar } from '../../../../../shared/components';
-import { DiscussionEvent } from '../../../../../__generated__/schema.generated';
+import { Avatar } from '../../../../../shared/components';
 import { Message_Message } from '../../utils/__generated__/fragments.generated';
 import { MeQuery } from './__generated__/DiscussionMessage.generated';
 import { formatMessageDate } from '../../utils/format';
 import { UserInfoFragment } from '../../utils/fragments';
+import { RecentMessages } from '../../utils/messages';
 
-interface UserMessageHeaderProps {
+interface DiscussionMessageHeaderProps {
   isMyMessage: boolean;
   name: string;
   date: string;
 }
 
-const UserMessageHeader = ({
+const DiscussionMessageHeader = ({
   isMyMessage,
   name,
   date,
-}: UserMessageHeaderProps) => {
+}: DiscussionMessageHeaderProps) => {
   return (
     <div
       className={clsx(
@@ -37,17 +35,17 @@ const UserMessageHeader = ({
   );
 };
 
-interface UserMessageBodyProps {
+interface DiscussionMessageBodyProps {
   isMyMessage: boolean;
   content: string;
   optimisticOpts?: OptimisticOptions;
 }
 
-const UserMessageBody = ({
+const DiscussionMessageBody = ({
   isMyMessage,
   content,
   optimisticOpts,
-}: UserMessageBodyProps) => {
+}: DiscussionMessageBodyProps) => {
   return (
     <div
       className={clsx(
@@ -78,16 +76,25 @@ const UserMessageBody = ({
   );
 };
 
-interface CommonMessageProps {
-  message: Message_Message;
-  date: string;
+interface OptimisticOptions {
+  loading: boolean;
+  retry(): void;
+  error?: ApolloError;
 }
 
-interface UserMessageProps extends CommonMessageProps {
+interface Props {
+  message: Message_Message;
+  recentMessages?: RecentMessages;
   optimisticOpts?: OptimisticOptions;
 }
 
-const UserMessage = ({ message, date, optimisticOpts }: UserMessageProps) => {
+// TODO: Border radius should mimic something like messenger (3/4 corners are rounded.)
+// TODO: Messages sent around the same time should be grouped (don't show avatar).
+const DiscussionMessage = ({
+  message,
+  recentMessages,
+  optimisticOpts,
+}: Props) => {
   const { data } = useQuery<MeQuery>(
     gql`
       query MeQuery {
@@ -100,7 +107,13 @@ const UserMessage = ({ message, date, optimisticOpts }: UserMessageProps) => {
     { fetchPolicy: 'cache-only' }
   );
 
+  const formattedDate = useMemo(() => formatMessageDate(message.createdAt), [
+    message,
+  ]);
+
   const isMyMessage = message.createdBy.id === data?.me?.id;
+
+  const { isFirstMessage, isRecent } = recentMessages?.[message.id] || {};
 
   return (
     <div
@@ -111,108 +124,31 @@ const UserMessage = ({ message, date, optimisticOpts }: UserMessageProps) => {
       )}
     >
       <div className="flex items-center justify-center mb-auto rounded-md shadow-md">
-        <Avatar
-          src={message.createdBy.avatarUrl}
-          name={message.createdBy.name}
-          profileColor={message.createdBy.profileColor}
-        />
+        {isFirstMessage || !isRecent ? (
+          <Avatar
+            src={message.createdBy.avatarUrl}
+            name={message.createdBy.name}
+            profileColor={message.createdBy.profileColor}
+          />
+        ) : (
+          <span>DATE HERE</span>
+        )}
       </div>
       <div className="relative flex flex-col max-w-[75%] space-y-1">
-        <UserMessageHeader
-          isMyMessage={isMyMessage}
-          name={message.createdBy.name}
-          date={date}
-        />
-        <UserMessageBody
+        {(isFirstMessage || !isRecent) && (
+          <DiscussionMessageHeader
+            isMyMessage={isMyMessage}
+            name={message.createdBy.name}
+            date={formattedDate}
+          />
+        )}
+        <DiscussionMessageBody
           isMyMessage={isMyMessage}
           content={message.content}
           optimisticOpts={optimisticOpts}
         />
       </div>
     </div>
-  );
-};
-
-interface EventMessageProps extends CommonMessageProps {}
-
-const EventMessage = ({ message, date }: EventMessageProps) => {
-  const isTopic = message.discussionEvent === DiscussionEvent.ChangeTopic;
-
-  return (
-    <div className="inline-flex items-center justify-center py-2 px-4 w-full">
-      <Card className="flex flex-col p-3 max-w-[75%] rounded-md shadow-sm bg-white ring-1 ring-gray-900/5 space-y-4">
-        <div className="flex items-center space-x-2">
-          <div className="inline-flex items-center space-x-2">
-            <Avatar
-              src={message.createdBy.avatarUrl}
-              name={message.createdBy.name}
-              profileColor={message.createdBy.profileColor}
-              size="sm"
-            />
-            <Badge scheme="green">@{message.createdBy.name}</Badge>
-          </div>
-          <div className="inline-flex items-center space-x-2">
-            <Text className="text-gray-900 italic" size="sm" weight="medium">
-              changed the
-            </Text>
-            <FontAwesomeIcon
-              icon={faCommentAlt}
-              className={isTopic ? 'text-pink-700' : 'text-sky-700'}
-            />
-            <Text
-              className={clsx(
-                '!ml-1',
-                isTopic ? 'text-pink-500' : 'text-sky-500'
-              )}
-              weight="bold"
-              casing="uppercase"
-              size="xs"
-            >
-              {isTopic ? 'Topic' : 'Description'}
-            </Text>
-            <Text size="xs" weight="medium" color="muted">
-              {date}
-            </Text>
-          </div>
-        </div>
-        <Text
-          className="text-gray-900 break-words whitespace-pre-line"
-          weight="medium"
-          size="sm"
-        >
-          {message.content.trim()}
-        </Text>
-      </Card>
-    </div>
-  );
-};
-
-interface OptimisticOptions {
-  loading: boolean;
-  retry(): void;
-  error?: ApolloError;
-}
-
-interface Props {
-  message: Message_Message;
-  optimisticOpts?: OptimisticOptions;
-}
-
-const DiscussionMessage = ({ message, optimisticOpts }: Props) => {
-  const formattedDate = useMemo(() => formatMessageDate(message.createdAt), [
-    message,
-  ]);
-
-  const isEvent = message.isDiscussionEvent;
-
-  return isEvent ? (
-    <EventMessage message={message} date={formattedDate} />
-  ) : (
-    <UserMessage
-      message={message}
-      date={formattedDate}
-      optimisticOpts={optimisticOpts}
-    />
   );
 };
 

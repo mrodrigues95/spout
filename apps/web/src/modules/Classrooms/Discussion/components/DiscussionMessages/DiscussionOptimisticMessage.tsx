@@ -4,7 +4,6 @@ import {
   OptimisticMessage as OptimisticMessageType,
   useStore,
 } from '../../utils/messagesStore';
-import Message from './DiscussionMessage';
 import { query } from '../Discussion';
 import {
   SendDiscussionMessageMutation,
@@ -13,6 +12,7 @@ import {
 import { updateMessagesQuery } from '../../utils/updateMessagesQuery';
 import { MessageFragment } from '../../utils/fragments';
 import { DiscussionQuery } from '../__generated__/Discussion.generated';
+import DiscussionMessage from './DiscussionMessage';
 
 const mutation = gql`
   mutation SendDiscussionMessageMutation($input: SendDiscussionMessageInput!) {
@@ -83,7 +83,7 @@ const OptimisticMessage = ({ discussionId, message }: Props) => {
   }, [data, loading, error, send]);
 
   return (
-    <Message
+    <DiscussionMessage
       message={message}
       optimisticOpts={{ error, loading, retry: send }}
     />

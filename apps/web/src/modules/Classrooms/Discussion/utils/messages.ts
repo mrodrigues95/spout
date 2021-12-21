@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { differenceInMinutes, format } from 'date-fns';
 import { Message_Message } from './__generated__/fragments.generated';
 import { OptimisticMessage } from './messagesStore';
 
@@ -36,7 +36,7 @@ const sort = (groups: GroupedMessages) => {
   Object.entries(days).forEach(([_, messages]) =>
     messages
       .sort((x, y) => getTime(x.createdAt) - getTime(y.createdAt))
-      .reverse(),
+      .reverse()
   );
 
   const sortedDays = Object.keys(days)
@@ -44,7 +44,7 @@ const sort = (groups: GroupedMessages) => {
     .reverse()
     .reduce(
       (acc: GroupedMessages, day) => ({ ...acc, [day]: [...days[day]] }),
-      {},
+      {}
     );
 
   // Returning a map gurantees sort order is respected when being iterated on.
@@ -72,10 +72,7 @@ export type Item = Message | Divider;
 
 /**
  * Normalizes the messages by calling `normalize()` and then flattens the map
- * and inserts a message divier between each date.
- *
- * This is only required for the time being because `GroupedVirtuoso` doesn't
- * support prepending items.
+ * and inserts a message divider between each date.
  *
  * @param messages The array of messages that require normalization.
  * @returns An array of items.
@@ -89,4 +86,93 @@ export const generateItems = (messages: Messages): Item[] => {
   }
 
   return items.reverse();
+};
+
+export const isOptimistic = (item: Item) =>
+  'optimisticId' in item && item.optimisticId < 0;
+
+export const isDivider = (item: Item) =>
+  'type' in item && item.type === 'divider';
+
+export const isEvent = (item: Item) =>
+  'isDiscussionEvent' in item && item.discussionEvent;
+
+const isMessage = (item: Item) =>
+  !(isOptimistic(item) || isDivider(item) || isEvent(item));
+
+interface RecentMessage {
+  message: Message_Message;
+  isBefore: string | null;
+  isAfter: string | null;
+  isRecent: boolean;
+  isFirstMessage: boolean;
+  isLastMessage: boolean;
+  isMiddleMessage: boolean;
+}
+
+export type RecentMessages = Record<string, RecentMessage>;
+
+export const getRecentMessages = (items: Item[]) => {
+  const isRecent = (d1: string, d2: string) => {
+    return differenceInMinutes(new Date(d1), new Date(d2)) < 5;
+  };
+
+  const isCreatedByUser = (m1: Message_Message, m2: Message_Message) => {
+    return m1.createdBy.id === m2.createdBy.id;
+  };
+
+  return items.reduce((acc: RecentMessages, item, idx) => {
+    const prevItem: Item | undefined = items[idx - 1];
+    const nextItem: Item | undefined = items[idx + 1];
+
+    if (!prevItem && !nextItem) return acc;
+    if (!isMessage(item)) return acc;
+
+    const currentMessage = item as Message_Message;
+    const rm: RecentMessage = {
+      message: currentMessage,
+      isBefore: null,
+      isAfter: null,
+      isRecent: false,
+      isFirstMessage: false,
+      isMiddleMessage: false,
+      isLastMessage: false,
+    };
+
+    if (prevItem && isMessage(prevItem)) {
+      const prevMessage = prevItem as Message_Message;
+
+      if (
+        isCreatedByUser(prevMessage, currentMessage) &&
+        isRecent(currentMessage.createdAt, prevMessage.createdAt)
+      ) {
+        rm.isRecent = true;
+        rm.isAfter = prevMessage.id;
+      }
+    }
+
+    if (nextItem && isMessage(nextItem)) {
+      const nextMessage = nextItem as Message_Message;
+
+      if (
+        isCreatedByUser(nextMessage, currentMessage) &&
+        isRecent(currentMessage.createdAt, nextMessage.createdAt)
+      ) {
+        rm.isRecent = true;
+        rm.isBefore = nextMessage.id;
+      }
+    }
+
+    if (!rm.isRecent) return acc;
+
+    return {
+      ...acc,
+      [currentMessage.id]: {
+        ...rm,
+        isFirstMessage: !!(rm.isBefore && !(rm.isBefore && rm.isAfter)),
+        isMiddleMessage: !!(rm.isBefore && rm.isAfter),
+        isLastMessage: !!(rm.isAfter && !(rm.isBefore && rm.isAfter)),
+      },
+    };
+  }, {});
 };

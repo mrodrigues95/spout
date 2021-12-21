@@ -141,7 +141,7 @@ const DicussionMessages = ({
 
     return [...messagesToSendEdges, ...edges];
   }, [discussion.messages?.edges, messagesToSend]);
-
+  
   return (
     <div className="flex flex-col flex-1 space-y-3">
       <Card className="p-0 relative flex flex-col flex-1 rounded-xl bg-indigo-50/40">
