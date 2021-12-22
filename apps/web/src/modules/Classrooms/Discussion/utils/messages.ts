@@ -100,7 +100,7 @@ export const isEvent = (item: Item) =>
 const isMessage = (item: Item) =>
   !(isOptimistic(item) || isDivider(item) || isEvent(item));
 
-interface RecentMessage {
+export interface RecentMessage {
   message: Message_Message;
   isBefore: string | null;
   isAfter: string | null;
@@ -112,7 +112,18 @@ interface RecentMessage {
 
 export type RecentMessages = Record<string, RecentMessage>;
 
+/**
+ * Filters messages that have been sent by the same user within the
+ * past five minutes.
+ * 
+ * This function is primarily used for styling recently sent messages
+ * from the same user.
+ * 
+ * @param items An array of `items`.
+ * @returns An `object` containing recently grouped messages.
+ */
 export const getRecentMessages = (items: Item[]) => {
+  // Validate that the messages are within a five minute threshold of eachother.
   const isRecent = (d1: string, d2: string) => {
     return differenceInMinutes(new Date(d1), new Date(d2)) < 5;
   };
@@ -156,7 +167,7 @@ export const getRecentMessages = (items: Item[]) => {
 
       if (
         isCreatedByUser(nextMessage, currentMessage) &&
-        isRecent(currentMessage.createdAt, nextMessage.createdAt)
+        isRecent(nextMessage.createdAt, currentMessage.createdAt)
       ) {
         rm.isRecent = true;
         rm.isBefore = nextMessage.id;

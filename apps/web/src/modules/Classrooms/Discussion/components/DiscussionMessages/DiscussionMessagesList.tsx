@@ -125,9 +125,6 @@ const DiscussionMessagesList = ({
 
   useEffect(() => () => clearTimeout(timeoutRef.current), []);
 
-  console.log('Items: ', items);
-  console.log('Recent messages: ', recentMessages);
-
   // TODO: Create a 'Jump to Present' footer.
   return (
     <Virtuoso
@@ -188,7 +185,7 @@ const DiscussionMessagesList = ({
           ) : (
             header
           ),
-        Footer: () => <div className="pt-6" />,
+        Footer: () => <div className="pt-2" />,
       }}
     />
   );

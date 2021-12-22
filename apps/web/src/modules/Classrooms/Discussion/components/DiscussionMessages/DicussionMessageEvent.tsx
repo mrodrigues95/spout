@@ -15,7 +15,7 @@ interface Props {
 const DiscussionMessageEvent = ({ messageEvent }: Props) => {
   const isTopic = messageEvent.discussionEvent === DiscussionEvent.ChangeTopic;
   const formattedDate = useMemo(
-    () => formatMessageDate(messageEvent.createdAt),
+    () => formatMessageDate(messageEvent.createdAt, 'h:mm a'),
     [messageEvent]
   );
 
@@ -52,7 +52,7 @@ const DiscussionMessageEvent = ({ messageEvent }: Props) => {
               {isTopic ? 'Topic' : 'Description'}
             </Text>
             <Text size="xs" weight="medium" color="muted">
-              {formattedDate}
+              at {formattedDate}
             </Text>
           </div>
         </div>

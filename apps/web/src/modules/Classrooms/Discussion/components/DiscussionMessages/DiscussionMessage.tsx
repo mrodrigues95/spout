@@ -7,7 +7,7 @@ import { Message_Message } from '../../utils/__generated__/fragments.generated';
 import { MeQuery } from './__generated__/DiscussionMessage.generated';
 import { formatMessageDate } from '../../utils/format';
 import { UserInfoFragment } from '../../utils/fragments';
-import { RecentMessages } from '../../utils/messages';
+import { RecentMessage, RecentMessages } from '../../utils/messages';
 
 interface DiscussionMessageHeaderProps {
   isMyMessage: boolean;
@@ -35,23 +35,39 @@ const DiscussionMessageHeader = ({
   );
 };
 
-interface DiscussionMessageBodyProps {
-  isMyMessage: boolean;
+interface DiscussionMessageBodyProps extends Partial<RecentMessage> {
   content: string;
+  isMyMessage: boolean;
   optimisticOpts?: OptimisticOptions;
 }
 
 const DiscussionMessageBody = ({
-  isMyMessage,
   content,
+  isMyMessage,
+  isRecent,
+  isFirstMessage,
+  isMiddleMessage,
+  isLastMessage,
   optimisticOpts,
 }: DiscussionMessageBodyProps) => {
+  const borders = ['rounded-l-2xl'];
+  if (isRecent) {
+    if (isFirstMessage) borders.push('rounded-tr-2xl', 'rounded-br-md');
+    if (isMiddleMessage) borders.push('rounded-r-md');
+    if (isLastMessage) borders.push('rounded-br-2xl', 'rounded-tr-md');
+  } else {
+    borders.push('rounded-r-2xl');
+  }
+
   return (
     <div
       className={clsx(
-        'p-3 text-sm w-full rounded-md shadow-sm',
-        isMyMessage ? 'bg-blue-600' : 'bg-white ring-1 ring-gray-900/5',
-        optimisticOpts?.error ? 'text-red-600' : 'text-black'
+        'p-3 text-sm w-full',
+        isMyMessage
+          ? 'bg-blue-600 shadow-md'
+          : 'bg-white ring-1 ring-gray-900/5 shadow-sm',
+        optimisticOpts?.error ? 'text-red-600' : 'text-black',
+        borders.join(' ')
       )}
     >
       <p
@@ -76,6 +92,17 @@ const DiscussionMessageBody = ({
   );
 };
 
+const getVerticalMessagePadding = ({
+  isFirstMessage,
+  isMiddleMessage,
+  isLastMessage,
+}: Partial<RecentMessage>) => {
+  if (isFirstMessage) return 'pt-1 pb-0.5';
+  if (isMiddleMessage) return 'py-0.5';
+  if (isLastMessage) return 'pb-1 pt-0.5';
+  return 'py-1';
+};
+
 interface OptimisticOptions {
   loading: boolean;
   retry(): void;
@@ -88,8 +115,6 @@ interface Props {
   optimisticOpts?: OptimisticOptions;
 }
 
-// TODO: Border radius should mimic something like messenger (3/4 corners are rounded.)
-// TODO: Messages sent around the same time should be grouped (don't show avatar).
 const DiscussionMessage = ({
   message,
   recentMessages,
@@ -107,46 +132,75 @@ const DiscussionMessage = ({
     { fetchPolicy: 'cache-only' }
   );
 
-  const formattedDate = useMemo(() => formatMessageDate(message.createdAt), [
-    message,
-  ]);
-
   const isMyMessage = message.createdBy.id === data?.me?.id;
 
-  const { isFirstMessage, isRecent } = recentMessages?.[message.id] || {};
+  const { isFirstMessage, isMiddleMessage, isLastMessage, isRecent } =
+    recentMessages?.[message.id] || {};
+
+  const messagePadding = getVerticalMessagePadding({
+    isFirstMessage,
+    isMiddleMessage,
+    isLastMessage,
+  });
+
+  const formattedDate = useMemo(() => {
+    if (isRecent && (isMiddleMessage || isLastMessage)) {
+      return formatMessageDate(message.createdAt, 'h:mm a');
+    }
+    return formatMessageDate(message.createdAt);
+  }, [message]);
 
   return (
     <div
       className={clsx(
-        'flex items-center space-x-2 py-2 px-4 hover:bg-indigo-100/50',
-        optimisticOpts?.loading ? 'opacity-50' : 'opacity-100',
-        isMyMessage ? 'flex-row-reverse space-x-reverse' : 'flex-row space-x-2'
+        !isRecent && 'py-2',
+        isFirstMessage && 'pt-2',
+        isLastMessage && 'pb-2'
       )}
     >
-      <div className="flex items-center justify-center mb-auto rounded-md shadow-md">
-        {isFirstMessage || !isRecent ? (
-          <Avatar
-            src={message.createdBy.avatarUrl}
-            name={message.createdBy.name}
-            profileColor={message.createdBy.profileColor}
-          />
-        ) : (
-          <span>DATE HERE</span>
+      <div
+        className={clsx(
+          'flex items-center space-x-2 px-4 group hover:bg-indigo-100/50',
+          isMyMessage
+            ? 'flex-row-reverse space-x-reverse'
+            : 'flex-row space-x-2',
+          optimisticOpts?.loading ? 'opacity-50' : 'opacity-100',
+          messagePadding
         )}
-      </div>
-      <div className="relative flex flex-col max-w-[75%] space-y-1">
-        {(isFirstMessage || !isRecent) && (
-          <DiscussionMessageHeader
+      >
+        <div className="flex items-center justify-center flex-shrink-0 mb-auto w-14">
+          {!isRecent || isFirstMessage ? (
+            <div className="rounded-md shadow-md">
+              <Avatar
+                src={message.createdBy.avatarUrl}
+                name={message.createdBy.name}
+                profileColor={message.createdBy.profileColor}
+              />
+            </div>
+          ) : (
+            <span className="hidden group-hover:inline-block text-xs font-medium text-gray-500">
+              {formattedDate}
+            </span>
+          )}
+        </div>
+        <div className="relative flex flex-col max-w-[75%] space-y-1">
+          {(!isRecent || isFirstMessage) && (
+            <DiscussionMessageHeader
+              isMyMessage={isMyMessage}
+              name={message.createdBy.name}
+              date={formattedDate}
+            />
+          )}
+          <DiscussionMessageBody
+            content={message.content}
+            optimisticOpts={optimisticOpts}
             isMyMessage={isMyMessage}
-            name={message.createdBy.name}
-            date={formattedDate}
+            isRecent={isRecent}
+            isFirstMessage={isFirstMessage}
+            isMiddleMessage={isMiddleMessage}
+            isLastMessage={isLastMessage}
           />
-        )}
-        <DiscussionMessageBody
-          isMyMessage={isMyMessage}
-          content={message.content}
-          optimisticOpts={optimisticOpts}
-        />
+        </div>
       </div>
     </div>
   );
