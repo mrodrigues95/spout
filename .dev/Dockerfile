@@ -11,9 +11,13 @@ RUN su -c "source ${NVM_DIR}/nvm.sh && npm install -g nx && npm install -g yarn 
 
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
+ARG INSTALL_AZURE_CLI=false
 
 # Update UID/GID if needed
 RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then \
         groupmod --gid ${USER_GID} node \
         && usermod --uid ${USER_UID} --gid ${USER_GID} node; \
-    fi
+    fi \
+    && if [ "$INSTALL_AZURE_CLI" = "true" ]; then \
+        curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash; \
+    fi \

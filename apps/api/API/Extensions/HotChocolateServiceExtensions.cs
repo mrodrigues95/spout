@@ -76,7 +76,7 @@ namespace API.Extensions {
                 .AddType<UploadType>();
 
             gql
-                .AddAuthorization()
+                //.AddAuthorization()
                 .AddErrorFilter<CustomErrorFilter>()
                 .AddHttpRequestInterceptor<CustomHttpRequestInterceptor>()
                 .AddFairyBread()
