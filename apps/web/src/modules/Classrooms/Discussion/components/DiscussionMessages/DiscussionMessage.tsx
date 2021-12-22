@@ -35,6 +35,37 @@ const DiscussionMessageHeader = ({
   );
 };
 
+const getMessageBorders = (
+  {
+    isFirstMessage,
+    isMiddleMessage,
+    isLastMessage,
+    isRecent,
+  }: Partial<RecentMessage>,
+  isMyMessage: boolean
+) => {
+  const borders: string[] = [];
+
+  if (!isRecent) {
+    borders.push('rounded-2xl');
+    return borders;
+  }
+
+  if (isMyMessage) {
+    borders.push('rounded-l-2xl');
+    if (isFirstMessage) borders.push('rounded-tr-2xl', 'rounded-br-md');
+    if (isMiddleMessage) borders.push('rounded-r-md');
+    if (isLastMessage) borders.push('rounded-br-2xl', 'rounded-tr-md');
+  } else {
+    borders.push('rounded-r-2xl');
+    if (isFirstMessage) borders.push('rounded-tl-2xl', 'rounded-bl-md');
+    if (isMiddleMessage) borders.push('rounded-l-md');
+    if (isLastMessage) borders.push('rounded-bl-2xl', 'rounded-tl-md');
+  }
+
+  return borders;
+};
+
 interface DiscussionMessageBodyProps extends Partial<RecentMessage> {
   content: string;
   isMyMessage: boolean;
@@ -50,14 +81,14 @@ const DiscussionMessageBody = ({
   isLastMessage,
   optimisticOpts,
 }: DiscussionMessageBodyProps) => {
-  const borders = ['rounded-l-2xl'];
-  if (isRecent) {
-    if (isFirstMessage) borders.push('rounded-tr-2xl', 'rounded-br-md');
-    if (isMiddleMessage) borders.push('rounded-r-md');
-    if (isLastMessage) borders.push('rounded-br-2xl', 'rounded-tr-md');
-  } else {
-    borders.push('rounded-r-2xl');
-  }
+  const messageBorders = useMemo(
+    () =>
+      getMessageBorders(
+        { isRecent, isFirstMessage, isMiddleMessage, isLastMessage },
+        isMyMessage
+      ),
+    [isRecent, isFirstMessage, isMiddleMessage, isLastMessage, isMyMessage]
+  );
 
   return (
     <div
@@ -67,7 +98,7 @@ const DiscussionMessageBody = ({
           ? 'bg-blue-600 shadow-md'
           : 'bg-white ring-1 ring-gray-900/5 shadow-sm',
         optimisticOpts?.error ? 'text-red-600' : 'text-black',
-        borders.join(' ')
+        messageBorders.join(' ')
       )}
     >
       <p
@@ -97,10 +128,10 @@ const getVerticalMessagePadding = ({
   isMiddleMessage,
   isLastMessage,
 }: Partial<RecentMessage>) => {
-  if (isFirstMessage) return 'pt-1 pb-0.5';
+  if (isFirstMessage) return 'pt-2 pb-0.5';
   if (isMiddleMessage) return 'py-0.5';
-  if (isLastMessage) return 'pb-1 pt-0.5';
-  return 'py-1';
+  if (isLastMessage) return 'pb-2 pt-0.5';
+  return 'py-2';
 };
 
 interface OptimisticOptions {
@@ -137,11 +168,15 @@ const DiscussionMessage = ({
   const { isFirstMessage, isMiddleMessage, isLastMessage, isRecent } =
     recentMessages?.[message.id] || {};
 
-  const messagePadding = getVerticalMessagePadding({
-    isFirstMessage,
-    isMiddleMessage,
-    isLastMessage,
-  });
+  const messagePadding = useMemo(
+    () =>
+      getVerticalMessagePadding({
+        isFirstMessage,
+        isMiddleMessage,
+        isLastMessage,
+      }),
+    [isFirstMessage, isMiddleMessage, isLastMessage]
+  );
 
   const formattedDate = useMemo(() => {
     if (isRecent && (isMiddleMessage || isLastMessage)) {
@@ -153,9 +188,9 @@ const DiscussionMessage = ({
   return (
     <div
       className={clsx(
-        !isRecent && 'py-2',
-        isFirstMessage && 'pt-2',
-        isLastMessage && 'pb-2'
+        !isRecent && 'py-1',
+        isFirstMessage && 'pt-1',
+        isLastMessage && 'pb-1'
       )}
     >
       <div

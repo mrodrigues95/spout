@@ -129,7 +129,6 @@ const DiscussionMessagesList = ({
   return (
     <Virtuoso
       data={items}
-      overscan={{ main: 200, reverse: 200 }}
       firstItemIndex={firstItemIndex}
       initialTopMostItemIndex={items.length - 1}
       startReached={hasNext ? prependItems : undefined}

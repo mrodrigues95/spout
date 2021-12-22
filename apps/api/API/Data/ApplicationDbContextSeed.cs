@@ -180,7 +180,7 @@ namespace API.Data {
                         .User;
 
                     discussions.Add(new Discussion {
-                        Name = $"{classroom.Name!.Split("-")[1]} - Discussion {i}",
+                        Name = $"{classroom.Name!.Split("-")[1]} - Discussion {i}".Trim(),
                         CreatedBy = randomUser,
                         Classroom = classroom,
                         State = GetState(context)

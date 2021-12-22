@@ -10,12 +10,13 @@ import TextArea from '../../../../../shared/components/ui/TextArea';
 import { useStore } from '../../utils/messagesStore';
 import { MeQuery } from './__generated__/DiscussionMessageComposer.generated';
 import { UserInfoFragment } from '../../utils/fragments';
+import { DiscussionQuery } from '../__generated__/Discussion.generated';
 
 interface Props {
-  discussionId: string;
+  discussion: DiscussionQuery['discussionById'];
 }
 
-const MessageComposer = ({ discussionId }: Props) => {
+const MessageComposer = ({ discussion }: Props) => {
   const { data } = useQuery<MeQuery>(
     gql`
       query MeQuery {
@@ -32,7 +33,7 @@ const MessageComposer = ({ discussionId }: Props) => {
 
   const handleNewMessage = () => {
     if (message.trim().length) {
-      add(discussionId, formatNewMessage(message.trim()), data!.me!);
+      add(discussion.id, formatNewMessage(message.trim()), data!.me!);
       setMessage('');
     }
   };
@@ -55,7 +56,7 @@ const MessageComposer = ({ discussionId }: Props) => {
     >
       <div className="flex flex-col w-full space-y-3">
         <TextArea
-          placeholder="Message #discussion"
+          placeholder={`Message #${discussion.name.trim()}`}
           value={message}
           aria-label="Enter message"
           onChange={handleOnChange}
