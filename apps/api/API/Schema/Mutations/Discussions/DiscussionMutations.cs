@@ -10,10 +10,12 @@ using API.Schema.Common;
 using System.Threading;
 using HotChocolate.AspNetCore.Authorization;
 using API.Schema.Types.Discussions;
+using System;
 
 namespace API.Schema.Mutations.Discussions {
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class DiscussionMutations {
+        // TODO: Add `files` to the input so we can create `MessageFile` records.
         [Authorize]
         [UseApplicationDbContext]
         public async Task<SendDiscussionMessagePayload> SendDiscussionMessageAsync(
@@ -38,6 +40,7 @@ namespace API.Schema.Mutations.Discussions {
                 IsDiscussionEvent = false
             };
 
+            // TODO: Check for files sent in the input as well and generate records for those.
             discussion.Messages.Add(message);
             await ctx.SaveChangesAsync(cancellationToken);
 
@@ -103,6 +106,7 @@ namespace API.Schema.Mutations.Discussions {
 
             discussion.Messages.Add(message);
             discussion.Topic = input.Topic.Trim();
+            discussion.UpdatedAt = DateTime.UtcNow;
             await ctx.SaveChangesAsync(cancellationToken);
 
             await sender.SendAsync(
@@ -140,6 +144,7 @@ namespace API.Schema.Mutations.Discussions {
 
             discussion.Messages.Add(message);
             discussion.Description = input.Description.Trim();
+            discussion.UpdatedAt = DateTime.UtcNow;
             await ctx.SaveChangesAsync(cancellationToken);
 
             await sender.SendAsync(

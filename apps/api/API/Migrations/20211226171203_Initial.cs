@@ -1,5 +1,6 @@
 ﻿using System;
 using API.Schema.Types.Discussions;
+using API.Schema.Types.Files;
 using API.Schema.Types.Users;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,6 +13,8 @@ namespace API.Migrations
         {
             migrationBuilder.AlterDatabase()
                 .Annotation("Npgsql:Enum:discussion_event", "change_topic,change_description")
+                .Annotation("Npgsql:Enum:file_extension", "aac,csv,pdf,xls,xlsx,ppt,pptx,bmp,gif,jpeg,jpg,jpe,png,tiff,tif,txt,text,rtf,doc,docx,dot,dotx,dwg,dwf,dxf,mp3,mp4,wav,avi,mov,mpeg,wmv,zip")
+                .Annotation("Npgsql:Enum:file_upload_status", "queued,completed,error,ignored")
                 .Annotation("Npgsql:Enum:user_profile_color", "sky,pink,green,purple,rose,gray,orange");
 
             migrationBuilder.CreateTable(
@@ -44,8 +47,8 @@ namespace API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_invites", x => x.id);
-                    table.CheckConstraint("ck_positive_uses", "uses >= 0");
-                    table.CheckConstraint("ck_positive_max_uses", "max_uses >= 0 AND max_uses <= 100");
+                    table.CheckConstraint("ck_uses", "uses >= 0");
+                    table.CheckConstraint("ck_max_uses", "max_uses >= 0 AND max_uses <= 100");
                 });
 
             migrationBuilder.CreateTable(
@@ -191,22 +194,37 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "file_uploads",
+                name: "files",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     uploaded_by_id = table.Column<int>(type: "integer", nullable: false),
-                    url = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: false),
-                    location = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: false),
-                    uploaded_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
-                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
+                    content_length = table.Column<long>(type: "bigint", maxLength: 8388608, nullable: false),
+                    mime_type = table.Column<string>(type: "text", nullable: false),
+                    extension = table.Column<FileExtension>(type: "file_extension", nullable: false),
+                    upload_status = table.Column<FileUploadStatus>(type: "file_upload_status", maxLength: 255, nullable: false),
+                    sas = table.Column<string>(type: "text", nullable: false),
+                    signature_encoded = table.Column<string>(type: "text", nullable: false),
+                    signature_decoded = table.Column<string>(type: "text", nullable: false),
+                    container_name = table.Column<string>(type: "text", nullable: false),
+                    blob_name = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: false),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    location = table.Column<string>(type: "text", nullable: true),
+                    e_tag = table.Column<string>(type: "text", nullable: true),
+                    md5 = table.Column<string>(type: "text", nullable: true),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
+                    deleted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_file_uploads", x => x.id);
+                    table.PrimaryKey("pk_files", x => x.id);
+                    table.CheckConstraint("ck_content_length", "content_length > 0");
+                    table.CheckConstraint("ck_container_name", "length(container_name) >= 3 AND length(container_name) <= 63");
                     table.ForeignKey(
-                        name: "fk_file_uploads_users_uploaded_by_id",
+                        name: "fk_files_users_uploaded_by_id",
                         column: x => x.uploaded_by_id,
                         principalTable: "users",
                         principalColumn: "id",
@@ -467,6 +485,32 @@ namespace API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "message_files",
+                columns: table => new
+                {
+                    message_id = table.Column<int>(type: "integer", nullable: false),
+                    file_id = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_message_files", x => new { x.message_id, x.file_id });
+                    table.ForeignKey(
+                        name: "fk_message_files_files_file_id",
+                        column: x => x.file_id,
+                        principalTable: "files",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_message_files_messages_message_id",
+                        column: x => x.message_id,
+                        principalTable: "messages",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "ix_classroom_invites_classroom_id",
                 table: "classroom_invites",
@@ -523,8 +567,14 @@ namespace API.Migrations
                 column: "state_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_file_uploads_uploaded_by_id",
-                table: "file_uploads",
+                name: "ix_files_blob_name_container_name",
+                table: "files",
+                columns: new[] { "blob_name", "container_name" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_files_uploaded_by_id",
+                table: "files",
                 column: "uploaded_by_id");
 
             migrationBuilder.CreateIndex(
@@ -532,6 +582,11 @@ namespace API.Migrations
                 table: "invites",
                 column: "code",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_message_files_file_id",
+                table: "message_files",
+                column: "file_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_messages_created_by_id_discussion_id",
@@ -605,10 +660,7 @@ namespace API.Migrations
                 name: "classroom_users");
 
             migrationBuilder.DropTable(
-                name: "file_uploads");
-
-            migrationBuilder.DropTable(
-                name: "messages");
+                name: "message_files");
 
             migrationBuilder.DropTable(
                 name: "role_claims");
@@ -632,10 +684,16 @@ namespace API.Migrations
                 name: "invites");
 
             migrationBuilder.DropTable(
-                name: "discussions");
+                name: "files");
+
+            migrationBuilder.DropTable(
+                name: "messages");
 
             migrationBuilder.DropTable(
                 name: "roles");
+
+            migrationBuilder.DropTable(
+                name: "discussions");
 
             migrationBuilder.DropTable(
                 name: "classrooms");

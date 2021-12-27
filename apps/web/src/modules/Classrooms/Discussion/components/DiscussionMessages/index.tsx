@@ -17,7 +17,7 @@ import {
 } from '../__generated__/DiscussionMessages.generated';
 import { updateMessagesQuery } from '../../utils/updateMessagesQuery';
 import { useStore } from '../../utils/messagesStore';
-import DiscussionMessageComposer from './DiscussionMessageComposer';
+import DiscussionMessageComposer from './Composer';
 import DiscussionMessagesList from './DiscussionMessagesList';
 import WelcomeHeader from './WelcomeHeader';
 

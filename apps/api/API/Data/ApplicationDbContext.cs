@@ -1,5 +1,6 @@
 using API.Data.Entities;
 using API.Schema.Types.Discussions;
+using API.Schema.Types.Files;
 using API.Schema.Types.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -22,11 +23,12 @@ namespace API.Data {
         public DbSet<ClassroomInvite> ClassroomInvites { get; set; } = default!;
         public DbSet<Discussion> Discussions { get; set; } = default!;
         public DbSet<Message> Messages { get; set; } = default!;
+        public DbSet<File> Files { get; set; } = default!;
+        public DbSet<MessageFile> MessageFiles { get; set; } = default!;
         public DbSet<Invite> Invites { get; set; } = default!;
         public DbSet<State> States { get; set; } = default!;
         public DbSet<DelLogType> DelLogTypes { get; set; } = default!;
         public DbSet<DelLog> DelLogs { get; set; } = default!;
-        public DbSet<FileUpload> FileUploads { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
@@ -43,6 +45,8 @@ namespace API.Data {
             // Configure enums.
             builder.HasPostgresEnum<DiscussionEvent>();
             builder.HasPostgresEnum<UserProfileColor>();
+            builder.HasPostgresEnum<FileExtension>();
+            builder.HasPostgresEnum<FileUploadStatus>();
 
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
@@ -50,6 +54,8 @@ namespace API.Data {
         private static void MapEnums() {
             NpgsqlConnection.GlobalTypeMapper.MapEnum<DiscussionEvent>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<UserProfileColor>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<FileExtension>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<FileUploadStatus>();
         }
     }
 }

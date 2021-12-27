@@ -43,6 +43,7 @@ services:
       context: .
       args:
         - INSTALL_AZURE_CLI=true
+        - INSTALL_EF_DOTNET_TOOLS=true
     working_dir: /workspace
     ports:
       - 5000:5000

@@ -17,13 +17,15 @@ const Template: Story<FilePickerProps> = (args) => {
       acceptedFiles.map((file) => ({
         ...file,
         preview: URL.createObjectURL(file),
-      })),
+      }))
     );
   }, []);
 
   return (
-    <FilePicker {...args} onFileSelected={onFileSelected}>
-      <FilePicker.Button>Click here to pick a file</FilePicker.Button>
+    <FilePicker {...args} onDrop={onFileSelected}>
+      <FilePicker.Button>
+        Click here to pick a file
+      </FilePicker.Button>
     </FilePicker>
   );
 };

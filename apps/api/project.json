@@ -35,9 +35,27 @@
     "migrations-add": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
+        "commands": ["dotnet ef migrations add {args.name} --project=API"],
+        "cwd": "apps/api"
+      }
+    },
+    "seed-db": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
         "commands": [
-          "dotnet ef migrations add {args.name} --project=API",
-          "dotnet ef database update --project=API"
+          "docker stop api",
+          "nx run api:drop-db",
+          "docker start api"
+        ],
+        "cwd": "apps/api",
+        "parallel": false
+      }
+    },
+    "drop-db": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "dropdb -U postgres -h host.docker.internal -p 15432 -f --if-exists spout"
         ],
         "cwd": "apps/api"
       }

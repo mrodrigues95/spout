@@ -27,14 +27,11 @@ const STYLES = {
   },
   scheme: {
     gray: {
-      solid:
-        'text-white bg-gray-900 focus:ring hover:bg-gray-700',
+      solid: 'text-white bg-gray-900 focus:ring hover:bg-gray-700',
       light:
         'text-gray-900 bg-gray-100 focus:bg-gray-200 focus:ring hover:bg-gray-200',
-      ghost:
-        'text-gray-900 focus:bg-gray-100 focus:ring hover:bg-gray-100',
-      outline:
-        'text-gray-900 focus:bg-gray-200 focus:ring hover:bg-gray-100',
+      ghost: 'text-gray-900 focus:bg-gray-100 focus:ring hover:bg-gray-100',
+      outline: 'text-gray-900 focus:bg-gray-200 focus:ring hover:bg-gray-100',
       link: 'text-gray-900 bg-white ring-transparent',
     },
     purple: {
@@ -58,8 +55,10 @@ const STYLES = {
       link: 'text-red-600 bg-white focus:ring-red-600',
     },
     orange: {
-      solid: 'text-white bg-orange-600 focus:ring-orange-600 hover:bg-orange-700',
-      light: 'text-orange-600 bg-orange-100 focus:ring-orange-600 hover:bg-orange-200',
+      solid:
+        'text-white bg-orange-600 focus:ring-orange-600 hover:bg-orange-700',
+      light:
+        'text-orange-600 bg-orange-100 focus:ring-orange-600 hover:bg-orange-200',
       ghost:
         'text-orange-600 focus:bg-orange-100 focus:ring-orange-600 hover:bg-orange-100',
       outline:
@@ -77,6 +76,8 @@ const STYLES = {
     },
   },
 } as const;
+
+export const buttonOrLinkStyles = { ...STYLES };
 
 export interface Styles {
   size?: keyof typeof STYLES['size'];

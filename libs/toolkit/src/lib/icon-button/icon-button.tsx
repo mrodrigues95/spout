@@ -11,7 +11,9 @@ const STYLES = {
     lg: 'p-6 text-lg',
     xl: 'p-8 text-xl',
   },
-};
+} as const;
+
+export const iconButtonStyles = { ...STYLES };
 
 export interface IconButtonProps extends Omit<ButtonOrLinkProps, 'fullWidth'> {
   icon: ReactElement;

@@ -19,20 +19,20 @@ import {
   UpdateAvatarVariables,
 } from './__generated__/ChangeAvatar.generated';
 
-const mutation = gql`
-  mutation UpdateAvatar($input: UpdateAvatarInput!) {
-    updateAvatar(input: $input) {
-      user {
-        ...UserInfo_user
-      }
-      userErrors {
-        message
-        code
-      }
-    }
-  }
-  ${UserInfoFragment}
-`;
+// const mutation = gql`
+//   mutation UpdateAvatar($input: UpdateAvatarInput!) {
+//     updateAvatar(input: $input) {
+//       user {
+//         ...UserInfo_user
+//       }
+//       userErrors {
+//         message
+//         code
+//       }
+//     }
+//   }
+//   ${UserInfoFragment}
+// `;
 
 // TODO: Move this to a common place, we use this query in a lot of areas.
 const query = gql`
@@ -50,13 +50,13 @@ const ChangeAvatar = () => {
   const [cropper, setCropper] = useState<Cropper>();
   const { handleError } = useToast();
   const { data } = useQuery<MeQuery>(query, { fetchPolicy: 'cache-only' });
-  const [updateAvatar, updateAvatarResult] = useMutation<
-    UpdateAvatar,
-    UpdateAvatarVariables
-  >(mutation, {
-    onError: (error) => handleError(error),
-    onCompleted: () => setIsOpen(false),
-  });
+  // const [updateAvatar, updateAvatarResult] = useMutation<
+  //   UpdateAvatar,
+  //   UpdateAvatarVariables
+  // >(mutation, {
+  //   onError: (error) => handleError(error),
+  //   onCompleted: () => setIsOpen(false),
+  // });
 
   useEffect(() => {
     return () => {
@@ -65,11 +65,11 @@ const ChangeAvatar = () => {
   }, [files]);
 
   const onSubmit = useCallback(
-    () =>
-      cropper?.getCroppedCanvas().toBlob((blob) => {
-        updateAvatar({ variables: { input: { file: blob } } });
-      }),
-    [cropper, updateAvatar]
+    () => console.log('test'),
+    // cropper?.getCroppedCanvas().toBlob((blob) => {
+    //   updateAvatar({ variables: { input: { file: blob } } });
+    // }),
+    [cropper]
   );
 
   const onFileSelected = useCallback((acceptedFiles: File[]) => {
@@ -119,8 +119,8 @@ const ChangeAvatar = () => {
               </Button>
               <Form.SubmitButton
                 size="sm"
-                disabled={updateAvatarResult.loading}
-                isSubmitting={updateAvatarResult.loading}
+                // disabled={updateAvatarResult.loading}
+                // isSubmitting={updateAvatarResult.loading}
               >
                 Apply
               </Form.SubmitButton>
@@ -135,7 +135,7 @@ const ChangeAvatar = () => {
             name={data!.me!.name}
             className="h-16 w-16 sm:h-20 sm:w-20 md:w-32 md:h-32 lg:h-48 lg:w-48"
           /> */}
-          <FilePicker onFileSelected={onFileSelected}>
+          <FilePicker onDrop={onFileSelected}>
             <FilePicker.Button
               className="absolute right-0 bottom-0 mr-1 bg-indigo-400 rounded-full shadow-lg outline-none md:mr-4 md:mb-1 lg:mr-6 focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-red-600"
               aria-label="Change profile photo"

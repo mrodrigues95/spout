@@ -1,4 +1,4 @@
-﻿using API.Data.Entities;
+using API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -38,10 +38,9 @@ namespace API.Data.Configurations {
             builder.HasIndex(i => i.Code)
                 .IsUnique();
 
-            builder.HasCheckConstraint("ck_positive_uses", "uses >= 0");
+            builder.HasCheckConstraint("ck_uses", "uses >= 0");
 
-            builder.HasCheckConstraint("ck_positive_max_uses", "max_uses >= 0 AND max_uses <= 100");
-
+            builder.HasCheckConstraint("ck_max_uses", "max_uses >= 0 AND max_uses <= 100");
         }
     }
 }

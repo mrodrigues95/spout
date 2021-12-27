@@ -35,9 +35,7 @@ namespace API.Extensions {
                 });
             });
 
-            services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
             services.Configure<AzureStorageConfig>(config.GetSection("AzureStorageConfig"));
-            services.AddScoped<IFileManager, FileManager>();
             services.AddScoped<IBlobService, BlobService>();
 
             return services;

@@ -19,6 +19,8 @@ import clsx from 'clsx';
 export interface TooltipProps {
   label: ReactNode;
   children: ReactNode | ReactElement;
+  onOpen?: () => void;
+  onClose?: () => void;
   placement?: Placement;
   delay?: number;
   className?: string;
@@ -29,6 +31,8 @@ export const Tooltip = ({
   label,
   children,
   className,
+  onOpen,
+  onClose,
   placement = 'top',
   delay = 0,
   unstyled = false,
@@ -43,15 +47,16 @@ export const Tooltip = ({
 
   const showTooltip = () => {
     clearTimeout(timeoutRef.current);
-    timeoutRef.current = window.setTimeout(
-      () => setIsShowing(true),
-      delay || 0
-    );
+    timeoutRef.current = window.setTimeout(() => {
+      setIsShowing(true);
+      if (onOpen) onOpen();
+    }, delay || 0);
   };
 
   const hideTooltip = () => {
     clearTimeout(timeoutRef.current);
     setIsShowing(false);
+    if (onClose) onClose();
   };
 
   const id = useMemo(() => `spout-tooltip-${generateId()}`, []);

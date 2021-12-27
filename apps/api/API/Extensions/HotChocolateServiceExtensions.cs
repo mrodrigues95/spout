@@ -1,15 +1,19 @@
+using API.Common.Enums;
+using API.Common.Utilities;
 using API.Schema.Mutations.Auth;
 using API.Schema.Mutations.Classrooms;
 using API.Schema.Mutations.Discussions;
-using API.Schema.Mutations.FileUploads;
+using API.Schema.Mutations.Files;
 using API.Schema.Mutations.Sessions;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Discussions;
+using API.Schema.Queries.Files;
 using API.Schema.Queries.Sessions;
 using API.Schema.Queries.Users;
 using API.Schema.Subscriptions.Discussions;
 using API.Schema.Types.Classrooms;
 using API.Schema.Types.Discussions;
+using API.Schema.Types.Files;
 using API.Schema.Types.Sessions;
 using API.Schema.Types.Users;
 using FluentValidation;
@@ -72,11 +76,14 @@ namespace API.Extensions {
                 .AddTypeExtension<AuthMutations>();
 
             gql
-                .AddTypeExtension<FileUploadMutations>()
-                .AddType<UploadType>();
+                .AddTypeExtension<FileMutations>()
+                .AddTypeExtension<FileByIdDataLoader>()
+                .AddType<FileType>()
+                .AddType<FileUploadStatusType>()
+                .AddType<FileExtensionType>();
 
             gql
-                //.AddAuthorization()
+                .AddAuthorization()
                 .AddErrorFilter<CustomErrorFilter>()
                 .AddHttpRequestInterceptor<CustomHttpRequestInterceptor>()
                 .AddFairyBread()

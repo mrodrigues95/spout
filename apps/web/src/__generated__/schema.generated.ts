@@ -11,11 +11,12 @@ export type Scalars = {
   Float: number;
   /** The `DateTime` scalar represents an ISO-8601 compliant date time type. */
   DateTime: string;
+  /** The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1. */
+  Long: any;
   /** The `Short` scalar type represents non-fractional signed whole 16-bit numeric values. Short can represent values between -(2^15) and 2^15 - 1. */
   Short: any;
+  URL: any;
   UUID: any;
-  /** The `Upload` scalar type represents a file upload. */
-  Upload: any;
 };
 
 
@@ -77,6 +78,17 @@ export type ClassroomSortInput = {
   delLog?: Maybe<DelLogSortInput>;
   createdAt?: Maybe<SortEnumType>;
   updatedAt?: Maybe<SortEnumType>;
+};
+
+export type CompleteUploadInput = {
+  fileId: Scalars['ID'];
+};
+
+export type CompleteUploadPayload = {
+  __typename?: 'CompleteUploadPayload';
+  file?: Maybe<File>;
+  userErrors?: Maybe<Array<UserError>>;
+  query: Query;
 };
 
 export type CreateClassroomInput = {
@@ -228,15 +240,97 @@ export type DiscussionsEdge = {
   node: Discussion;
 };
 
-export type FileUpload = {
-  __typename?: 'FileUpload';
-  id: Scalars['Int'];
+export type File = Node & {
+  __typename?: 'File';
+  id: Scalars['ID'];
   uploadedById: Scalars['Int'];
   uploadedBy: User;
-  url: Scalars['String'];
-  location: Scalars['String'];
-  uploadedAt: Scalars['DateTime'];
+  contentLength: Scalars['Long'];
+  mimeType: Scalars['String'];
+  extension: FileExtension;
+  uploadStatus: FileUploadStatus;
+  sas: Scalars['URL'];
+  signatureEncoded: Scalars['String'];
+  signatureDecoded: Scalars['String'];
+  containerName: Scalars['String'];
+  blobName: Scalars['String'];
+  name: Scalars['String'];
+  location?: Maybe<Scalars['URL']>;
+  eTag?: Maybe<Scalars['String']>;
+  mD5?: Maybe<Scalars['String']>;
+  isDeleted: Scalars['Boolean'];
+  createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  messageFiles: Array<MessageFile>;
+};
+
+export type FileByIdDataLoader = {
+  __typename?: 'FileByIdDataLoader';
+  load: File;
+};
+
+
+export type FileByIdDataLoaderLoadArgs = {
+  key: Scalars['Int'];
+};
+
+export enum FileExtension {
+  Aac = 'AAC',
+  Csv = 'CSV',
+  Pdf = 'PDF',
+  Xls = 'XLS',
+  Xlsx = 'XLSX',
+  Ppt = 'PPT',
+  Pptx = 'PPTX',
+  Bmp = 'BMP',
+  Gif = 'GIF',
+  Jpeg = 'JPEG',
+  Jpg = 'JPG',
+  Jpe = 'JPE',
+  Png = 'PNG',
+  Tiff = 'TIFF',
+  Tif = 'TIF',
+  Txt = 'TXT',
+  Text = 'TEXT',
+  Rtf = 'RTF',
+  Doc = 'DOC',
+  Docx = 'DOCX',
+  Dot = 'DOT',
+  Dotx = 'DOTX',
+  Dwg = 'DWG',
+  Dwf = 'DWF',
+  Dxf = 'DXF',
+  Mp3 = 'MP3',
+  Mp4 = 'MP4',
+  Wav = 'WAV',
+  Avi = 'AVI',
+  Mov = 'MOV',
+  Mpeg = 'MPEG',
+  Wmv = 'WMV',
+  Zip = 'ZIP'
+}
+
+export enum FileUploadStatus {
+  Queued = 'QUEUED',
+  Completed = 'COMPLETED',
+  Error = 'ERROR',
+  Ignored = 'IGNORED'
+}
+
+export type GenerateUploadSasInput = {
+  fileName: Scalars['String'];
+  size: Scalars['Long'];
+  mimeType: Scalars['String'];
+  fileExtension: FileExtension;
+};
+
+export type GenerateUploadSasPayload = {
+  __typename?: 'GenerateUploadSASPayload';
+  sas?: Maybe<Scalars['URL']>;
+  file?: Maybe<File>;
+  userErrors?: Maybe<Array<UserError>>;
+  query: Query;
 };
 
 export type Invite = {
@@ -272,6 +366,7 @@ export type LogoutInput = {
   sessionId: Scalars['ID'];
 };
 
+
 export type Message = Node & {
   __typename?: 'Message';
   id: Scalars['ID'];
@@ -287,6 +382,17 @@ export type Message = Node & {
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   deletedAt?: Maybe<Scalars['DateTime']>;
+  messageFiles: Array<MessageFile>;
+};
+
+export type MessageFile = {
+  __typename?: 'MessageFile';
+  messageId: Scalars['Int'];
+  message?: Maybe<Message>;
+  fileId: Scalars['Int'];
+  file?: Maybe<File>;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type MessageSortInput = {
@@ -338,8 +444,8 @@ export type Mutation = {
   signUp: AuthPayload;
   login: AuthPayload;
   logout: AuthPayload;
-  upload: UploadPayload;
-  updateAvatar: UpdateAvatarPayload;
+  generateUploadSAS: GenerateUploadSasPayload;
+  completeUpload: CompleteUploadPayload;
 };
 
 
@@ -398,13 +504,13 @@ export type MutationLogoutArgs = {
 };
 
 
-export type MutationUploadArgs = {
-  input: UploadInput;
+export type MutationGenerateUploadSasArgs = {
+  input: GenerateUploadSasInput;
 };
 
 
-export type MutationUpdateAvatarArgs = {
-  input: UpdateAvatarInput;
+export type MutationCompleteUploadArgs = {
+  input: CompleteUploadInput;
 };
 
 /** The node interface is implemented by entities that have a global unique identifier. */
@@ -559,16 +665,6 @@ export type SubscriptionOnDiscussionMessageReceivedArgs = {
 };
 
 
-export type UpdateAvatarInput = {
-  file: Scalars['Upload'];
-};
-
-export type UpdateAvatarPayload = {
-  __typename?: 'UpdateAvatarPayload';
-  user?: Maybe<User>;
-  userErrors?: Maybe<Array<UserError>>;
-  query: Query;
-};
 
 export type UpdateDiscussionDescriptionInput = {
   discussionId: Scalars['ID'];
@@ -594,18 +690,6 @@ export type UpdateDiscussionTopicPayload = {
   query: Query;
 };
 
-
-export type UploadInput = {
-  file: Scalars['Upload'];
-};
-
-export type UploadPayload = {
-  __typename?: 'UploadPayload';
-  fileUpload?: Maybe<FileUpload>;
-  userErrors?: Maybe<Array<UserError>>;
-  query: Query;
-};
-
 export type User = Node & {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -622,7 +706,7 @@ export type User = Node & {
   updatedAt: Scalars['DateTime'];
   messages: Array<Message>;
   invites: Array<ClassroomInvite>;
-  fileUploads: Array<FileUpload>;
+  fileUploads: Array<File>;
   userName?: Maybe<Scalars['String']>;
   normalizedUserName?: Maybe<Scalars['String']>;
   normalizedEmail?: Maybe<Scalars['String']>;

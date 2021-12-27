@@ -78,7 +78,8 @@ namespace API.Schema.Mutations.Classrooms {
                 ClassroomId = classroomInvite.ClassroomId,
                 IsInviter = false,
                 IsInvitee = true,
-                UsedAt = DateTime.UtcNow
+                UsedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             });
 
             classroom.Users.Add(new ClassroomUser {

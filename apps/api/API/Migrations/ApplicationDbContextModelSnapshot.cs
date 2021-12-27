@@ -2,6 +2,7 @@
 using System;
 using API.Data;
 using API.Schema.Types.Discussions;
+using API.Schema.Types.Files;
 using API.Schema.Types.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -18,6 +19,8 @@ namespace API.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasPostgresEnum(null, "discussion_event", new[] { "change_topic", "change_description" })
+                .HasPostgresEnum(null, "file_extension", new[] { "aac", "csv", "pdf", "xls", "xlsx", "ppt", "pptx", "bmp", "gif", "jpeg", "jpg", "jpe", "png", "tiff", "tif", "txt", "text", "rtf", "doc", "docx", "dot", "dotx", "dwg", "dwf", "dxf", "mp3", "mp4", "wav", "avi", "mov", "mpeg", "wmv", "zip" })
+                .HasPostgresEnum(null, "file_upload_status", new[] { "queued", "completed", "error", "ignored" })
                 .HasPostgresEnum(null, "user_profile_color", new[] { "sky", "pink", "green", "purple", "rose", "gray", "orange" })
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.10")
@@ -292,7 +295,7 @@ namespace API.Migrations
                     b.ToTable("discussions");
                 });
 
-            modelBuilder.Entity("API.Data.Entities.FileUpload", b =>
+            modelBuilder.Entity("API.Data.Entities.File", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -300,11 +303,78 @@ namespace API.Migrations
                         .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Location")
+                    b.Property<string>("BlobName")
                         .IsRequired()
-                        .HasMaxLength(2048)
-                        .HasColumnType("character varying(2048)")
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
+                        .HasColumnName("blob_name");
+
+                    b.Property<string>("ContainerName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("container_name");
+
+                    b.Property<long>("ContentLength")
+                        .HasMaxLength(8388608)
+                        .HasColumnType("bigint")
+                        .HasColumnName("content_length");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("timezone('UTC', now())");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("ETag")
+                        .HasColumnType("text")
+                        .HasColumnName("e_tag");
+
+                    b.Property<FileExtension>("Extension")
+                        .HasColumnType("file_extension")
+                        .HasColumnName("extension");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("text")
                         .HasColumnName("location");
+
+                    b.Property<string>("MD5")
+                        .HasColumnType("text")
+                        .HasColumnName("md5");
+
+                    b.Property<string>("MimeType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("mime_type");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Sas")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("sas");
+
+                    b.Property<string>("SignatureDecoded")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("signature_decoded");
+
+                    b.Property<string>("SignatureEncoded")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("signature_encoded");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
@@ -312,29 +382,30 @@ namespace API.Migrations
                         .HasColumnName("updated_at")
                         .HasDefaultValueSql("timezone('UTC', now())");
 
-                    b.Property<DateTime>("UploadedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("uploaded_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                    b.Property<FileUploadStatus>("UploadStatus")
+                        .HasMaxLength(255)
+                        .HasColumnType("file_upload_status")
+                        .HasColumnName("upload_status");
 
                     b.Property<int>("UploadedById")
                         .HasColumnType("integer")
                         .HasColumnName("uploaded_by_id");
 
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasMaxLength(2048)
-                        .HasColumnType("character varying(2048)")
-                        .HasColumnName("url");
-
                     b.HasKey("Id")
-                        .HasName("pk_file_uploads");
+                        .HasName("pk_files");
 
                     b.HasIndex("UploadedById")
-                        .HasDatabaseName("ix_file_uploads_uploaded_by_id");
+                        .HasDatabaseName("ix_files_uploaded_by_id");
 
-                    b.ToTable("file_uploads");
+                    b.HasIndex("BlobName", "ContainerName")
+                        .IsUnique()
+                        .HasDatabaseName("ix_files_blob_name_container_name");
+
+                    b.ToTable("files");
+
+                    b.HasCheckConstraint("ck_content_length", "content_length > 0");
+
+                    b.HasCheckConstraint("ck_container_name", "length(container_name) >= 3 AND length(container_name) <= 63");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Invite", b =>
@@ -390,9 +461,9 @@ namespace API.Migrations
 
                     b.ToTable("invites");
 
-                    b.HasCheckConstraint("ck_positive_uses", "uses >= 0");
+                    b.HasCheckConstraint("ck_uses", "uses >= 0");
 
-                    b.HasCheckConstraint("ck_positive_max_uses", "max_uses >= 0 AND max_uses <= 100");
+                    b.HasCheckConstraint("ck_max_uses", "max_uses >= 0 AND max_uses <= 100");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Message", b =>
@@ -460,6 +531,37 @@ namespace API.Migrations
                         .HasDatabaseName("ix_messages_created_by_id_discussion_id");
 
                     b.ToTable("messages");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.MessageFile", b =>
+                {
+                    b.Property<int>("MessageId")
+                        .HasColumnType("integer")
+                        .HasColumnName("message_id");
+
+                    b.Property<int>("FileId")
+                        .HasColumnType("integer")
+                        .HasColumnName("file_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("timezone('UTC', now())");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("timezone('UTC', now())");
+
+                    b.HasKey("MessageId", "FileId")
+                        .HasName("pk_message_files");
+
+                    b.HasIndex("FileId")
+                        .HasDatabaseName("ix_message_files_file_id");
+
+                    b.ToTable("message_files");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Session", b =>
@@ -937,12 +1039,12 @@ namespace API.Migrations
                     b.Navigation("State");
                 });
 
-            modelBuilder.Entity("API.Data.Entities.FileUpload", b =>
+            modelBuilder.Entity("API.Data.Entities.File", b =>
                 {
                     b.HasOne("API.Data.Entities.User", "UploadedBy")
                         .WithMany("FileUploads")
                         .HasForeignKey("UploadedById")
-                        .HasConstraintName("fk_file_uploads_users_uploaded_by_id")
+                        .HasConstraintName("fk_files_users_uploaded_by_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -975,6 +1077,27 @@ namespace API.Migrations
                     b.Navigation("DelLog");
 
                     b.Navigation("Discussion");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.MessageFile", b =>
+                {
+                    b.HasOne("API.Data.Entities.File", "File")
+                        .WithMany("MessageFiles")
+                        .HasForeignKey("FileId")
+                        .HasConstraintName("fk_message_files_files_file_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Data.Entities.Message", "Message")
+                        .WithMany("MessageFiles")
+                        .HasForeignKey("MessageId")
+                        .HasConstraintName("fk_message_files_messages_message_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("File");
+
+                    b.Navigation("Message");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Session", b =>
@@ -1086,9 +1209,19 @@ namespace API.Migrations
                     b.Navigation("Messages");
                 });
 
+            modelBuilder.Entity("API.Data.Entities.File", b =>
+                {
+                    b.Navigation("MessageFiles");
+                });
+
             modelBuilder.Entity("API.Data.Entities.Invite", b =>
                 {
                     b.Navigation("Logs");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.Message", b =>
+                {
+                    b.Navigation("MessageFiles");
                 });
 
             modelBuilder.Entity("API.Data.Entities.State", b =>

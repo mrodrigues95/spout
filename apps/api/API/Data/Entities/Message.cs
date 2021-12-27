@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using API.Schema.Types.Discussions;
 
@@ -21,5 +22,7 @@ namespace API.Data.Entities {
         [Required] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         [Required] public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? DeletedAt { get; set; }
+
+        public ICollection<MessageFile> MessageFiles { get; set; } = new List<MessageFile>();
     }
 }

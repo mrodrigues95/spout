@@ -20,6 +20,6 @@ namespace API.Data.Entities {
         public ICollection<Message> Messages { get; set; } = new List<Message>();
         public ICollection<ClassroomUser> Classrooms { get; set; } = new List<ClassroomUser>();
         public ICollection<ClassroomInvite> Invites { get; set; } = new List<ClassroomInvite>();
-        public ICollection<FileUpload> FileUploads { get; set; } = new List<FileUpload>();
+        public ICollection<File> FileUploads { get; set; } = new List<File>();
     }
 }

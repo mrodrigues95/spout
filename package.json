@@ -20,6 +20,7 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.4.1",
+    "@azure/storage-blob": "^12.8.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
@@ -35,6 +36,7 @@
     "date-fns": "^2.22.1",
     "framer-motion": "^4.1.17",
     "graphql": "^15.5.0",
+    "mime-types": "^2.1.34",
     "next": "^12.0.7",
     "next-iron-session": "^4.1.13",
     "next-seo": "^4.24.0",
@@ -86,6 +88,7 @@
     "@testing-library/react": "12.1.2",
     "@testing-library/react-hooks": "7.0.2",
     "@types/jest": "27.0.2",
+    "@types/mime-types": "^2.1.1",
     "@types/node": "^15.0.0",
     "@types/nprogress": "^0.2.0",
     "@types/react": "17.0.30",

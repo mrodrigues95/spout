@@ -6,31 +6,32 @@ using Azure.Storage.Sas;
 using Microsoft.Extensions.Options;
 
 namespace API.Infrastructure {
+    // TODO: Use Azure Key Vault instead of local user secrets.
+    // TODO: Only allow SAS over HTTPS (re-enable this in Azure).
     public class BlobService : IBlobService {
-        private readonly string? _storageAccountUriString;
-        private readonly string? _storageAccountContainerName;
+        private readonly string _storageAccountUriString;
+        private readonly string _containerName;
 
         public BlobService(IOptions<AzureStorageConfig> config) {
-            _storageAccountUriString = config.Value.Uri;
-            _storageAccountContainerName = config.Value.ContainerName;
+            _storageAccountUriString = config.Value.Uri ??
+                throw new ArgumentNullException(nameof(config));
+
+            // TODO: Container name will probably be dynamic at some point depending on how
+            // we want to structure this in Azure (e.g. spout-messages-container,
+            // spout-user-avatars-container, etc). If so, we can just pass in a container name
+            // and remove this secret.
+            _containerName = config.Value.ContainerName ??
+                throw new ArgumentNullException(nameof(config));
         }
 
         private BlobServiceClient CreateBlobServiceClient() {
-            // TODO: Use Azure Key Vault.
-            if (string.IsNullOrEmpty(_storageAccountUriString)) {
-                throw new Exception("No `storageAccountUriString` user secret was set.");
-            }
-
             var credential = new DefaultAzureCredential();
-            return new BlobServiceClient(new Uri(_storageAccountUriString), credential);
+            return new BlobServiceClient(new Uri(_storageAccountUriString!), credential);
         }
 
-        private async Task<BlobContainerClient> CreateBlobContainerClient(BlobServiceClient serviceClient) {
-            if (string.IsNullOrEmpty(_storageAccountContainerName)) {
-                throw new Exception("No `storageAccountContainerName` user secret was set.");
-            }
-
-            var containerClient = serviceClient.GetBlobContainerClient(_storageAccountContainerName);
+        private async Task<BlobContainerClient> CreateBlobContainerClient(
+            BlobServiceClient serviceClient) {
+            var containerClient = serviceClient.GetBlobContainerClient(_containerName);
 
             try {
                 await containerClient.CreateIfNotExistsAsync();
@@ -40,32 +41,45 @@ namespace API.Infrastructure {
             }
         }
 
-        /// <summary>
-        /// Returns a URI containing a SAS for the blob.
-        /// </summary>
-        /// <param name="blobName">A string containing the name of the blob.</param>
-        /// <returns>A string containing the URI for the blob, with the SAS token appended.</returns>
-        public async Task<Uri> GetBlobSasUri(string blobName) {
-            var serviceClient = CreateBlobServiceClient();
-            var containerClient = await CreateBlobContainerClient(serviceClient);
-            var blobClient = containerClient.GetBlobClient(blobName);
-            var userDelegationKey = await serviceClient.GetUserDelegationKeyAsync(
-                DateTime.UtcNow, DateTime.UtcNow.AddMinutes(5));
+        public async Task<Uri?> GetBlobSasUri(string blobName) {
+            try {
+                var blobServiceClient = CreateBlobServiceClient();
+                var blobContainerClient = await CreateBlobContainerClient(blobServiceClient);
+                var blobClient = blobContainerClient.GetBlobClient(blobName);
+                var userDelegationKey = await blobServiceClient.GetUserDelegationKeyAsync(
+                    DateTime.UtcNow, DateTime.UtcNow.AddMinutes(5));
 
-            var sasBuilder = new BlobSasBuilder {
-                BlobContainerName = containerClient.Name,
-                BlobName = blobName,
-                Resource = "b", // b for blob, c for container.
-                StartsOn = DateTimeOffset.UtcNow,
-                ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(5),
-            };
+                var sasBuilder = new BlobSasBuilder {
+                    BlobContainerName = blobContainerClient.Name,
+                    BlobName = blobName,
+                    Resource = "b", // b for blob, c for container.
+                    StartsOn = DateTimeOffset.UtcNow.AddMinutes(-15),
+                    ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(15),
+                };
 
-            sasBuilder.SetPermissions(BlobSasPermissions.Write | BlobSasPermissions.Create);
+                sasBuilder.SetPermissions(BlobSasPermissions.Write | BlobSasPermissions.Create);
 
-            var blobUriBuilder = new BlobUriBuilder(blobClient.Uri) {
-                Sas = sasBuilder.ToSasQueryParameters(userDelegationKey, serviceClient.AccountName)
-            };
-            return blobUriBuilder.ToUri();
+                var blobUriBuilder = new BlobUriBuilder(blobClient.Uri) {
+                    Sas = sasBuilder.ToSasQueryParameters(userDelegationKey,
+                        blobServiceClient.AccountName)
+                };
+
+                return blobUriBuilder.ToUri();
+            } catch (Exception) {
+                // TODO: Configure logging.
+                return null;
+            }
+        }
+
+        public async Task<BlobClient?> GetBlobClient(string blobName) {
+            try {
+                var blobServiceClient = CreateBlobServiceClient();
+                var blobContainerClient = await CreateBlobContainerClient(blobServiceClient);
+                var blobClient = blobContainerClient.GetBlobClient(blobName);
+                return blobClient;
+            } catch (Exception){
+                return null;
+            }
         }
     }
 

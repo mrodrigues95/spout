@@ -1,16 +1,40 @@
-import { ComponentProps, createContext, ReactNode, useContext } from 'react';
-import { useDropzone } from 'react-dropzone';
+import {
+  ComponentProps,
+  createContext,
+  forwardRef,
+  ReactNode,
+  useContext,
+} from 'react';
+import { DropzoneOptions, useDropzone } from 'react-dropzone';
 
 export interface FileType extends File {
   preview?: string;
 }
 
-interface ButtonProps extends ComponentProps<'button'> {}
+interface ButtonProps extends ComponentProps<'span'> {
+  disabled?: boolean;
+}
 
-const Button = ({ ...props }: ButtonProps) => {
-  const { open } = useContext(FilePickerContext)!;
-  return <button type="button" {...props} onClick={open} />;
-};
+const Button = forwardRef<HTMLSpanElement, ButtonProps>(
+  ({ disabled = false, ...props }, ref) => {
+    const { open } = useContext(FilePickerContext)!;
+
+    return (
+      <span
+        tabIndex={disabled ? undefined : 0}
+        role="button"
+        onKeyPress={(e) => {
+          if (e.code === 'Enter' || e.code === 'Space') {
+            e.preventDefault();
+            open();
+          }
+        }}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
 
 interface FilePickerContextType {
   open: () => void;
@@ -18,24 +42,32 @@ interface FilePickerContextType {
 
 const FilePickerContext = createContext<FilePickerContextType | null>(null);
 
-export interface FilePickerProps {
-  onFileSelected: (acceptedFiles: File[]) => void;
+export interface FilePickerProps extends DropzoneOptions {
   children: ReactNode;
 }
 
-export const FilePicker = ({ onFileSelected, children }: FilePickerProps) => {
+export const FilePicker = ({
+  children,
+  disabled,
+  ...props
+}: FilePickerProps) => {
   const { getRootProps, getInputProps, open } = useDropzone({
-    onDrop: onFileSelected,
     noClick: true,
     noKeyboard: true,
+    noDragEventsBubbling: true,
+    disabled,
+    ...props,
   });
 
   return (
     <FilePickerContext.Provider value={{ open }}>
-      <div {...getRootProps()}>
-        <input {...getInputProps()} aria-hidden="true" />
+      <label
+        {...getRootProps()}
+        onClick={(e) => disabled && e.preventDefault()}
+      >
+        <input {...getInputProps()} />
         {children}
-      </div>
+      </label>
     </FilePickerContext.Provider>
   );
 };
