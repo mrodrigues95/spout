@@ -21,13 +21,14 @@ import {
 import clsx from 'clsx';
 import {
   FileUploadQueue,
+  FileWithId,
   formatBytesToHumanReadable,
   getAcceptedFileExtensions,
   getFileExtensionFromContentType,
   MAX_FILES_PER_UPLOAD,
   MAX_FILE_SIZE,
   MIN_FILE_SIZE,
-  useFileUpload,
+  useFileUploadQueue,
 } from '../../../utils/files';
 import { ComposerContext } from '.';
 
@@ -77,7 +78,7 @@ const getIcon = ({
 };
 
 interface AttachmentProps extends FileUploadQueue {
-  removeFromQueue: (id: number) => void;
+  removeFromQueue: ReturnType<typeof useFileUploadQueue>['removeFromQueue'];
 }
 
 const Attachment = ({
@@ -113,7 +114,7 @@ const Attachment = ({
             type="button"
             aria-label="Remove File"
             disabled={isQueued || isUploading}
-            onClick={() => removeFromQueue(id)}
+            onClick={() => removeFromQueue(id, file.id)}
             className={clsx(
               'inline-flex items-center justify-center z-10 rounded-sm shadow-lg',
               'transition duration-150 ease-in-out',
@@ -205,14 +206,20 @@ interface AttachmentsProps {
   acceptedFiles: File[];
   rejectedFiles: FileRejection[];
   setIsUploadingFiles: (value: boolean) => void;
+  setUploadedFiles: (files: FileWithId[]) => void;
+  shouldClearFiles: boolean;
+  setShouldClearFiles: (value: boolean) => void;
 }
 
 export const Attachments = ({
   acceptedFiles,
   rejectedFiles: _rejectedFiles,
   setIsUploadingFiles,
+  setUploadedFiles,
+  setShouldClearFiles,
+  shouldClearFiles = false,
 }: AttachmentsProps) => {
-  const { upload, queue, removeFromQueue } = useFileUpload();
+  const { upload, queue, removeFromQueue, resetQueue } = useFileUploadQueue();
   const [isOpen, setIsOpen] = useState(false);
   const [rejectedFiles, setRejectedFiles] = useState(_rejectedFiles);
   const [errorFiles, setErrorFiles] = useState<FileRejection[]>([]);
@@ -220,21 +227,13 @@ export const Attachments = ({
   useEffect(() => setRejectedFiles(_rejectedFiles), [_rejectedFiles]);
 
   useEffect(() => {
-    const errors: FileRejection[] = [];
-
-    for (const file of queue.files) {
-      if (file.isError) {
-        errors.push({
-          file: file.file,
-          errors: [
-            { message: 'Server error', code: ServerErrorCode.ServerError },
-          ],
-        });
-      }
-    }
+    const errors = queue.errorFiles.map((errorFile) => ({
+      file: errorFile,
+      errors: [{ message: 'Server error', code: ServerErrorCode.ServerError }],
+    }));
 
     setErrorFiles(errors);
-  }, [queue.files]);
+  }, [queue.errorFiles]);
 
   const rejectedOrErrorAttachments = useMemo(
     () => [...rejectedFiles, ...errorFiles],
@@ -260,8 +259,17 @@ export const Attachments = ({
       setIsUploadingFiles(true);
     } else {
       setIsUploadingFiles(false);
+      setUploadedFiles(queue.uploadedFiles);
     }
-  }, [queue.isInFlight]);
+  }, [queue.isInFlight, queue.uploadedFiles]);
+
+  useEffect(() => {
+    // TODO: Can probably remove this once we use a form.
+    if (shouldClearFiles) {
+      resetQueue();
+      setShouldClearFiles(false);
+    }
+  }, [shouldClearFiles]);
 
   const onClose = useCallback(() => {
     setIsOpen(false);
@@ -276,7 +284,7 @@ export const Attachments = ({
     [queue.files]
   );
 
-  // TODO: Get image/video previews working.  
+  // TODO: Get image/video previews working.
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>

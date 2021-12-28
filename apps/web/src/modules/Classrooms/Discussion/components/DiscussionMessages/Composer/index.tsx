@@ -4,9 +4,10 @@ import { gql, useQuery } from '@apollo/client';
 import clsx from 'clsx';
 import { FilePickerProps } from '@spout/toolkit';
 import { formatNewMessage } from '../../../utils/format';
+import { FileWithId } from '../../../utils/files';
+import { UserInfoFragment } from '../../../utils/fragments';
 import { useStore } from '../../../utils/messagesStore';
 import { MeQuery } from './__generated__/index.generated';
-import { UserInfoFragment } from '../../../utils/fragments';
 import { DiscussionQuery } from '../../__generated__/Discussion.generated';
 import { Attachments } from './Attachments';
 import TextArea from '../../../../../../shared/components/ui/TextArea';
@@ -40,15 +41,24 @@ const Composer = ({ discussion }: Props) => {
   const add = useStore((state) => state.add);
   const [acceptedFiles, setAcceptedFiles] = useState<File[]>([]);
   const [rejectedFiles, setRejectedFiles] = useState<FileRejection[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<FileWithId[]>([]);
   const [isUploadingFiles, setIsUploadingFiles] = useState(false);
+  const [shouldClearFiles, setShouldClearFiles] = useState(false);
   const [message, setMessage] = useState('');
   const [focused, setFocused] = useState(false);
 
   const onNewMessage = () => {
     if (isUploadingFiles) return;
+
     if (message.trim().length) {
-      add(discussion.id, formatNewMessage(message.trim()), data!.me!);
+      add(
+        discussion.id,
+        formatNewMessage(message.trim()),
+        uploadedFiles,
+        data!.me!
+      );
       setMessage('');
+      setShouldClearFiles(true);
     }
   };
 
@@ -96,7 +106,10 @@ const Composer = ({ discussion }: Props) => {
         <Attachments
           acceptedFiles={acceptedFiles}
           rejectedFiles={rejectedFiles}
+          shouldClearFiles={shouldClearFiles}
           setIsUploadingFiles={setIsUploadingFiles}
+          setUploadedFiles={setUploadedFiles}
+          setShouldClearFiles={setShouldClearFiles}
         />
         <ComposerContext.Provider
           value={{

@@ -1,12 +1,15 @@
 import create from 'zustand';
+import { FileWithId } from './files';
 import { Message_Message } from './__generated__/fragments.generated';
 import { UserInfo_User } from './__generated__/fragments.generated';
 
 let optimisticId = -1;
 const getOptimisticId = () => optimisticId--;
 
-export interface OptimisticMessage extends Message_Message {
+export interface OptimisticMessage
+  extends Omit<Message_Message, 'attachments'> {
   optimisticId: number;
+  attachmentIds: string[];
 }
 
 interface MessagesStore {
@@ -14,7 +17,8 @@ interface MessagesStore {
   add: (
     discussionId: string,
     message: string,
-    createdBy: UserInfo_User,
+    files: FileWithId[],
+    createdBy: UserInfo_User
   ) => void;
   remove: (discussionId: string, optimisticMessageId: number) => void;
 }
@@ -23,7 +27,12 @@ interface MessagesStore {
 // to reduce renders and update the query cache?
 export const useStore = create<MessagesStore>((set) => ({
   messagesByDiscussionId: {},
-  add: (discussionId: string, message: string, createdBy: UserInfo_User) =>
+  add: (
+    discussionId: string,
+    message: string,
+    attachments: FileWithId[],
+    createdBy: UserInfo_User
+  ) =>
     set((state) => {
       // Initialize an empty array if this is a new discussion.
       if (!state.messagesByDiscussionId[discussionId]) {
@@ -39,8 +48,10 @@ export const useStore = create<MessagesStore>((set) => ({
               id: discussionId,
               optimisticId: getOptimisticId(),
               content: message,
+              attachmentIds: attachments.map((a) => a.id!),
               createdAt: new Date().toISOString(),
               createdBy: createdBy,
+              isDiscussionEvent: false,
             },
           ],
         },
@@ -56,7 +67,7 @@ export const useStore = create<MessagesStore>((set) => ({
       // If a message at this index is found, remove it.
       const messageIndex = state.messagesByDiscussionId[discussionId].findIndex(
         (message: OptimisticMessage) =>
-          message.optimisticId === optimisticMessageId,
+          message.optimisticId === optimisticMessageId
       );
 
       if (messageIndex === -1) {
@@ -65,7 +76,7 @@ export const useStore = create<MessagesStore>((set) => ({
       }
 
       const messages = state.messagesByDiscussionId[discussionId].filter(
-        (_, i) => i !== messageIndex,
+        (_, i) => i !== messageIndex
       );
 
       console.log('Removed message from store.');

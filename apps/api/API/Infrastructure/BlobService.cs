@@ -3,16 +3,19 @@ using System.Threading.Tasks;
 using Azure.Identity;
 using Azure.Storage.Blobs;
 using Azure.Storage.Sas;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace API.Infrastructure {
     // TODO: Use Azure Key Vault instead of local user secrets.
     // TODO: Only allow SAS over HTTPS (re-enable this in Azure).
     public class BlobService : IBlobService {
+        private readonly ILogger<BlobService> _logger;
         private readonly string _storageAccountUriString;
         private readonly string _containerName;
 
-        public BlobService(IOptions<AzureStorageConfig> config) {
+        public BlobService(IOptions<AzureStorageConfig> config, ILogger<BlobService> logger) {
+            _logger = logger;
             _storageAccountUriString = config.Value.Uri ??
                 throw new ArgumentNullException(nameof(config));
 
@@ -47,7 +50,7 @@ namespace API.Infrastructure {
                 var blobContainerClient = await CreateBlobContainerClient(blobServiceClient);
                 var blobClient = blobContainerClient.GetBlobClient(blobName);
                 var userDelegationKey = await blobServiceClient.GetUserDelegationKeyAsync(
-                    DateTime.UtcNow, DateTime.UtcNow.AddMinutes(5));
+                    DateTime.UtcNow.AddMinutes(-15), DateTime.UtcNow.AddMinutes(15));
 
                 var sasBuilder = new BlobSasBuilder {
                     BlobContainerName = blobContainerClient.Name,
@@ -65,8 +68,8 @@ namespace API.Infrastructure {
                 };
 
                 return blobUriBuilder.ToUri();
-            } catch (Exception) {
-                // TODO: Configure logging.
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Error generating blob SAS URI.");
                 return null;
             }
         }
@@ -77,7 +80,8 @@ namespace API.Infrastructure {
                 var blobContainerClient = await CreateBlobContainerClient(blobServiceClient);
                 var blobClient = blobContainerClient.GetBlobClient(blobName);
                 return blobClient;
-            } catch (Exception){
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Error retrieving blob client.");
                 return null;
             }
         }

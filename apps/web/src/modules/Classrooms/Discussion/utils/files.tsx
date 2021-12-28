@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import mime from 'mime-types';
 import { FileExtension } from '../../../../__generated__/schema.generated';
@@ -7,6 +7,8 @@ import {
   GenerateUploadSasMutationVariables as _GenerateUploadSasMutationVariables,
   CompleteUploadMutation as _CompleteUploadMutation,
   CompleteUploadMutationVariables as _CompleteUploadMutationVariables,
+  DeleteFileMutation as _DeleteFileMutation,
+  DeleteFileMutationVariables as _DeleteFileMutationVariables,
 } from './__generated__/files.generated';
 import { useBlob } from '../../../../shared/hooks/useBlob';
 import { generateId } from '@spout/toolkit';
@@ -82,16 +84,34 @@ const CompleteUploadMutation = gql`
   }
 `;
 
+const DeleteFileMutation = gql`
+  mutation DeleteFileMutation($input: DeleteFileInput!) {
+    deleteFile(input: $input) {
+      file {
+        id
+      }
+      userErrors {
+        message
+        code
+      }
+    }
+  }
+`;
+
+export interface FileWithId extends File {
+  id?: string | null;
+}
+
 export interface FileUploadQueue {
   id: number;
-  file: File;
+  file: FileWithId;
   isUploading: boolean;
   isUploaded: boolean;
   isError: boolean;
   isQueued: boolean;
 }
 
-export const useFileUpload = () => {
+export const useFileUploadQueue = () => {
   const blob = useBlob();
   const [isInFlight, setIsInFlight] = useState(false);
   const [fileUploadQueue, setFileUploadQueue] = useState<FileUploadQueue[]>([]);
@@ -100,10 +120,16 @@ export const useFileUpload = () => {
     _GenerateUploadSasMutation,
     _GenerateUploadSasMutationVariables
   >(GenerateUploadSASMutation);
+
   const [completeUpload] = useMutation<
     _CompleteUploadMutation,
     _CompleteUploadMutationVariables
   >(CompleteUploadMutation);
+
+  const [deleteFile] = useMutation<
+    _DeleteFileMutation,
+    _DeleteFileMutationVariables
+  >(DeleteFileMutation);
 
   const generateSignature = useCallback(async (file: File) => {
     try {
@@ -125,7 +151,7 @@ export const useFileUpload = () => {
       const { sas, file: _file } = data!.generateUploadSAS!;
       return { sas, fileId: _file!.id };
     } catch (e) {
-      console.error('Error generating SAS - ', e);
+      console.error(`[Error generating SAS]: ${e}`);
       return null;
     }
   }, []);
@@ -134,7 +160,6 @@ export const useFileUpload = () => {
     try {
       return await blob.upload(sas, file);
     } catch (e) {
-      console.error(e);
       return null;
     }
   }, []);
@@ -156,19 +181,33 @@ export const useFileUpload = () => {
       const { file } = data!.completeUpload!;
       return file;
     } catch (e) {
-      console.error('Error finishing file upload - ', e);
+      console.error(`[Error updating file]: ${e}`);
       return null;
     }
   }, []);
 
-  // TODO: Call api to delete the blob if the user removes a successfull upload.
   const removeFromQueue = useCallback(
-    (id: number) =>
-      setFileUploadQueue((prev) => [...prev.filter((item) => item.id !== id)]),
+    (queueId: number, fileId?: FileWithId['id']) => {
+      setFileUploadQueue((prev) => [
+        ...prev.filter((item) => item.id !== queueId),
+      ]);
+
+      if (fileId) {
+        deleteFile({ variables: { input: { fileId } } }).catch((e) =>
+          console.error(`[Error deleting file]: ${e}`)
+        );
+      }
+    },
     []
   );
 
-  const upload = useCallback(async (files: File[]) => {
+  const resetQueue = useCallback(() => {
+    setFileUploadQueue([]);
+    setIsInFlight(false);
+  }, []);
+
+  // TODO: This can probably be cleaned up with `useReducer`.
+  const upload = useCallback(async (files: FileWithId[]) => {
     const queue: FileUploadQueue[] = [];
     for (const file of files) {
       queue.push({
@@ -188,7 +227,7 @@ export const useFileUpload = () => {
     // 1. A SAS needs to be generated.
     // 2. The SAS then needs to be consumed.
     // 3. A third and final request is made to the api in order to
-    //    update the record in the database and mark the upload as complete.
+    //    update the file record in the database and mark the upload as complete.
     for (const entry of queue) {
       // This file has already been handled in a previous transaction, ignore it.
       if (entry.isUploaded || entry.isError || !entry.isQueued) continue;
@@ -226,8 +265,8 @@ export const useFileUpload = () => {
 
       await uploadBlob(sas, file);
 
-      const completeResult = await updateFile(fileId);
-      if (!completeResult) {
+      const updateFileResult = await updateFile(fileId);
+      if (!updateFileResult) {
         setFileUploadQueue((prev) => [
           ...prev.filter((item) => item.id !== id),
           {
@@ -240,6 +279,7 @@ export const useFileUpload = () => {
         continue;
       }
 
+      status.file.id = fileId;
       setFileUploadQueue((prev) => [
         ...prev.filter((item) => item.id !== id),
         {
@@ -254,9 +294,26 @@ export const useFileUpload = () => {
     setIsInFlight(false);
   }, []);
 
+  const uploadedFiles = useMemo(
+    () =>
+      [...fileUploadQueue.filter((queue) => queue.isUploaded)].map(
+        (queue) => queue.file
+      ),
+    [fileUploadQueue]
+  );
+
+  const errorFiles = useMemo(
+    () =>
+      [...fileUploadQueue.filter((queue) => queue.isError)].map(
+        (queue) => queue.file
+      ),
+    [fileUploadQueue]
+  );
+
   return {
-    removeFromQueue,
     upload,
-    queue: { isInFlight, files: fileUploadQueue },
+    resetQueue,
+    removeFromQueue,
+    queue: { isInFlight, files: fileUploadQueue, uploadedFiles, errorFiles },
   };
 };

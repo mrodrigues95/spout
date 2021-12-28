@@ -1,5 +1,3 @@
-using API.Common.Enums;
-using API.Common.Utilities;
 using API.Schema.Mutations.Auth;
 using API.Schema.Mutations.Classrooms;
 using API.Schema.Mutations.Discussions;
@@ -16,16 +14,13 @@ using API.Schema.Types.Discussions;
 using API.Schema.Types.Files;
 using API.Schema.Types.Sessions;
 using API.Schema.Types.Users;
-using FluentValidation;
 using HotChocolate;
 using HotChocolate.AspNetCore;
 using HotChocolate.Execution;
-using HotChocolate.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,9 +29,6 @@ namespace API.Extensions {
     public static class HotChocolateServiceExtensions {
         public static IServiceCollection AddHotChocolateServices(this IServiceCollection services) {
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
-            // Add FluentValidation validators.
-            services.AddValidatorsFromAssemblyContaining<CreateClassroomInputValidator>();
 
             // Add GraphQL core services.
             var gql = services.AddGraphQLServer();
@@ -76,6 +68,7 @@ namespace API.Extensions {
                 .AddTypeExtension<AuthMutations>();
 
             gql
+                .AddTypeExtension<FileQueries>()
                 .AddTypeExtension<FileMutations>()
                 .AddTypeExtension<FileByIdDataLoader>()
                 .AddType<FileType>()
@@ -84,7 +77,6 @@ namespace API.Extensions {
 
             gql
                 .AddAuthorization()
-                .AddErrorFilter<CustomErrorFilter>()
                 .AddHttpRequestInterceptor<CustomHttpRequestInterceptor>()
                 .AddFairyBread()
                 .AddInMemorySubscriptions()
@@ -97,22 +89,6 @@ namespace API.Extensions {
                 });
 
             return services;
-        }
-
-        private class CustomErrorFilter : IErrorFilter {
-            public IError OnError(IError error) {
-              if (error.Exception is AggregateException ex) {
-                var errors = new List<IError>();
-
-                foreach (Exception innerException in ex.InnerExceptions) {
-                    errors.Add(error.WithMessage(innerException.Message).WithException(innerException));
-                }
-
-                return new AggregateError(errors);
-              }
-
-              return error;
-            }
         }
 
         private class CustomHttpRequestInterceptor : DefaultHttpRequestInterceptor {

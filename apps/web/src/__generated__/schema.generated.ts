@@ -158,6 +158,17 @@ export type DelLogTypeSortInput = {
   type?: Maybe<SortEnumType>;
 };
 
+export type DeleteFileInput = {
+  fileId: Scalars['ID'];
+};
+
+export type DeleteFilePayload = {
+  __typename?: 'DeleteFilePayload';
+  file?: Maybe<File>;
+  userErrors?: Maybe<Array<UserError>>;
+  query: Query;
+};
+
 export type Discussion = Node & {
   __typename?: 'Discussion';
   id: Scalars['ID'];
@@ -371,6 +382,7 @@ export type Message = Node & {
   __typename?: 'Message';
   id: Scalars['ID'];
   createdBy: User;
+  attachments: Array<File>;
   content: Scalars['String'];
   discussionId: Scalars['Int'];
   discussion?: Maybe<Discussion>;
@@ -382,7 +394,6 @@ export type Message = Node & {
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   deletedAt?: Maybe<Scalars['DateTime']>;
-  messageFiles: Array<MessageFile>;
 };
 
 export type MessageFile = {
@@ -446,6 +457,7 @@ export type Mutation = {
   logout: AuthPayload;
   generateUploadSAS: GenerateUploadSasPayload;
   completeUpload: CompleteUploadPayload;
+  deleteFile: DeleteFilePayload;
 };
 
 
@@ -513,6 +525,11 @@ export type MutationCompleteUploadArgs = {
   input: CompleteUploadInput;
 };
 
+
+export type MutationDeleteFileArgs = {
+  input: DeleteFileInput;
+};
+
 /** The node interface is implemented by entities that have a global unique identifier. */
 export type Node = {
   id: Scalars['ID'];
@@ -548,6 +565,7 @@ export type Query = {
   discussions?: Maybe<DiscussionsConnection>;
   discussionById: Discussion;
   discussionsById: Array<Discussion>;
+  files: Array<File>;
 };
 
 
@@ -604,6 +622,7 @@ export type RefreshSessionInput = {
 
 export type SendDiscussionMessageInput = {
   discussionId: Scalars['ID'];
+  fileIds: Array<Scalars['ID']>;
   content: Scalars['String'];
 };
 

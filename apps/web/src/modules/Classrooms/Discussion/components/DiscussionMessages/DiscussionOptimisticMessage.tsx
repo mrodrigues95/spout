@@ -71,7 +71,13 @@ const OptimisticMessage = ({ discussionId, message }: Props) => {
   const send = useCallback(
     () =>
       sendMessage({
-        variables: { input: { discussionId, content: message.content } },
+        variables: {
+          input: {
+            discussionId,
+            content: message.content,
+            fileIds: message.attachmentIds,
+          },
+        },
       }),
     [discussionId, sendMessage, message]
   );
@@ -84,7 +90,7 @@ const OptimisticMessage = ({ discussionId, message }: Props) => {
 
   return (
     <DiscussionMessage
-      message={message}
+      message={{ ...message, attachments: [] }}
       optimisticOpts={{ error, loading, retry: send }}
     />
   );

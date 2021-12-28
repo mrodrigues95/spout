@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace API.Schema.Mutations.Auth {
     public record LoginInput(string Email, string Password);

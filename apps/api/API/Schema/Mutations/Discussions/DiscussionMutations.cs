@@ -15,7 +15,6 @@ using System;
 namespace API.Schema.Mutations.Discussions {
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class DiscussionMutations {
-        // TODO: Add `files` to the input so we can create `MessageFile` records.
         [Authorize]
         [UseApplicationDbContext]
         public async Task<SendDiscussionMessagePayload> SendDiscussionMessageAsync(
@@ -40,7 +39,14 @@ namespace API.Schema.Mutations.Discussions {
                 IsDiscussionEvent = false
             };
 
-            // TODO: Check for files sent in the input as well and generate records for those.
+            // Save files that are attached to this message.
+            foreach (var fileId in input.FileIds) {
+                message.MessageFiles.Add(new MessageFile {
+                    MessageId = message.Id,
+                    FileId = fileId
+                });
+            }
+
             discussion.Messages.Add(message);
             await ctx.SaveChangesAsync(cancellationToken);
 

@@ -8,6 +8,7 @@ import { MeQuery } from './__generated__/DiscussionMessage.generated';
 import { formatMessageDate } from '../../utils/format';
 import { UserInfoFragment } from '../../utils/fragments';
 import { RecentMessage, RecentMessages } from '../../utils/messages';
+import DiscussionMessageAttachments from './DiscussionMessageAttachments';
 
 interface DiscussionMessageHeaderProps {
   isMyMessage: boolean;
@@ -67,13 +68,12 @@ const getMessageBorders = (
 };
 
 interface DiscussionMessageBodyProps extends Partial<RecentMessage> {
-  content: string;
   isMyMessage: boolean;
   optimisticOpts?: OptimisticOptions;
 }
 
 const DiscussionMessageBody = ({
-  content,
+  message,
   isMyMessage,
   isRecent,
   isFirstMessage,
@@ -93,7 +93,7 @@ const DiscussionMessageBody = ({
   return (
     <div
       className={clsx(
-        'p-3 text-sm w-full',
+        'flex flex-col p-3 text-sm space-y-4',
         isMyMessage
           ? 'bg-blue-600 shadow-md'
           : 'bg-white ring-1 ring-gray-900/5 shadow-sm',
@@ -101,14 +101,27 @@ const DiscussionMessageBody = ({
         messageBorders.join(' ')
       )}
     >
-      <p
+      <div
         className={clsx(
-          'break-words text-sm whitespace-pre-line font-medium',
-          isMyMessage ? 'text-white' : 'text-gray-900'
+          'flex',
+          isMyMessage ? 'items-end justify-end' : 'items-start justify-start'
         )}
       >
-        {content.trim()}
-      </p>
+        <p
+          className={clsx(
+            'break-words text-sm whitespace-pre-line font-medium ',
+            isMyMessage ? 'text-white' : 'text-gray-900'
+          )}
+        >
+          {message!.content.trim()}
+        </p>
+      </div>
+      {!!message!.attachments?.length && (
+        <DiscussionMessageAttachments
+          attachments={message!.attachments}
+          isMyMessage={isMyMessage}
+        />
+      )}
       {optimisticOpts?.error && (
         <Button
           type="button"
@@ -218,7 +231,12 @@ const DiscussionMessage = ({
             </span>
           )}
         </div>
-        <div className="relative flex flex-col max-w-[75%] space-y-1">
+        <div
+          className={clsx(
+            'relative flex flex-col max-w-[75%] space-y-1',
+            isMyMessage ? 'items-end' : 'items-start'
+          )}
+        >
           {(!isRecent || isFirstMessage) && (
             <DiscussionMessageHeader
               isMyMessage={isMyMessage}
@@ -227,7 +245,7 @@ const DiscussionMessage = ({
             />
           )}
           <DiscussionMessageBody
-            content={message.content}
+            message={message}
             optimisticOpts={optimisticOpts}
             isMyMessage={isMyMessage}
             isRecent={isRecent}

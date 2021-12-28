@@ -38,3 +38,22 @@ export type CompleteUploadMutation = (
     )>> }
   ) }
 );
+
+export type DeleteFileMutationVariables = Types.Exact<{
+  input: Types.DeleteFileInput;
+}>;
+
+
+export type DeleteFileMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteFile: (
+    { __typename?: 'DeleteFilePayload' }
+    & { file?: Types.Maybe<(
+      { __typename?: 'File' }
+      & Pick<Types.File, 'id'>
+    )>, userErrors?: Types.Maybe<Array<(
+      { __typename?: 'UserError' }
+      & Pick<Types.UserError, 'message' | 'code'>
+    )>> }
+  ) }
+);

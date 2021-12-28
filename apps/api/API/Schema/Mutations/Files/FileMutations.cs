@@ -15,11 +15,14 @@ using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
+using Azure.Storage.Blobs.Models;
 
 namespace API.Schema.Mutations.Files {
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class FileMutations {
         private readonly string _containerName;
+        private readonly ILogger<FileMutations> _logger;
         private readonly IDictionary<FileExtension, string> _acceptedMimeTypes =
             new Dictionary<FileExtension, string>() {
            { FileExtension.GIF, "image/gif" },
@@ -56,7 +59,8 @@ namespace API.Schema.Mutations.Files {
            { FileExtension.DWF, "drawing/x-dwf" },
         };
 
-        public FileMutations(IOptions<AzureStorageConfig> config) {
+        public FileMutations(IOptions<AzureStorageConfig> config, ILogger<FileMutations> logger) {
+            _logger = logger;
             _containerName = config.Value.ContainerName ??
                 throw new ArgumentNullException(nameof(config));
         }
@@ -176,7 +180,8 @@ namespace API.Schema.Mutations.Files {
                 await ctx.SaveChangesAsync(cancellationToken);
 
                 return new CompleteUploadPayload(file);
-            } catch (Exception) {
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Error getting blob properties.");
                 file.UploadStatus = FileUploadStatus.ERROR;
                 file.UpdatedAt = DateTime.UtcNow;
                 await ctx.SaveChangesAsync(cancellationToken);
@@ -185,13 +190,58 @@ namespace API.Schema.Mutations.Files {
             }
         }
 
-        //[Authorize]
-        //[UseApplicationDbContext]
-        //public async Task<> DeleteFileAsync() {
-        // Mark IsDeleted = 1,
-        // Maybe set Location = null?
-        // Call azure to delete blob: https://stackoverflow.com/questions/36497399/how-to-delete-files-from-blob-container
-        //}
+        [Authorize]
+        [UseApplicationDbContext]
+        public async Task<DeleteFilePayload> DeleteFileAsync(
+            DeleteFileInput input,
+            [Service] IBlobService blob,
+            [ScopedService] ApplicationDbContext ctx,
+            CancellationToken cancellationToken) {
+            var file = await ctx.Files.FindAsync(
+                new object[] { input.FileId },
+                cancellationToken);
+
+            if (file is null) {
+                return new DeleteFilePayload(new UserError("File not found", "FILE_NOT_FOUND"));
+            }
+
+            var blobClient = await blob.GetBlobClient(file.BlobName!);
+            if (blobClient is null) {
+                file.UploadStatus = FileUploadStatus.IGNORED;
+                file.UpdatedAt = DateTime.UtcNow;
+                await ctx.SaveChangesAsync(cancellationToken);
+                return new DeleteFilePayload(
+                    new UserError("Blob not found.", "BLOB_NOT_FOUND"));
+            }
+
+            try {
+                var success = await blobClient.DeleteIfExistsAsync(
+                    DeleteSnapshotsOption.IncludeSnapshots);
+
+                if (success) {
+                    file.IsDeleted = true;
+                    file.Location = null;
+                    file.UpdatedAt = DateTime.UtcNow;
+                    file.DeletedAt = DateTime.UtcNow;
+                    await ctx.SaveChangesAsync(cancellationToken);
+                    return new DeleteFilePayload(file);
+                }
+
+                file.UploadStatus = FileUploadStatus.IGNORED;
+                file.UpdatedAt = DateTime.UtcNow;
+                await ctx.SaveChangesAsync(cancellationToken);
+                _logger.LogWarning("Unsuccessful blob deletion.", file);
+                return new DeleteFilePayload(new UserError("Unable to delete blob.", "BLOB_ERROR"));
+            } catch (Exception ex) {
+                _logger.LogError(ex,
+                    $"Error deleting blob for `FileId: ${file.Id}` - `Blob name: {file.BlobName}.`",
+                    file);
+                file.UploadStatus = FileUploadStatus.IGNORED;
+                file.UpdatedAt = DateTime.UtcNow;
+                await ctx.SaveChangesAsync(cancellationToken);
+                return new DeleteFilePayload(new UserError("Unable to delete blob.", "BLOB_ERROR"));
+            }
+        }
 
         private class Signature {
             public string? Encoded { get; set; }
