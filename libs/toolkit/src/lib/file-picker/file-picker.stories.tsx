@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Story, Meta } from '@storybook/react';
 import { FilePicker, FilePickerProps, FileType } from './file-picker';
 
@@ -10,23 +10,21 @@ export default {
 const Template: Story<FilePickerProps> = (args) => {
   const [files, setFiles] = useState<FileType[]>([]);
 
-  useEffect(() => console.log(files), [files]);
-
-  const onFileSelected = useCallback((acceptedFiles: File[]) => {
-    setFiles(
-      acceptedFiles.map((file) => ({
-        ...file,
-        preview: URL.createObjectURL(file),
-      }))
-    );
-  }, []);
+  const onDrop = useCallback((files: File[]) => setFiles(files), []);
 
   return (
-    <FilePicker {...args} onDrop={onFileSelected}>
-      <FilePicker.Button>
-        Click here to pick a file
-      </FilePicker.Button>
-    </FilePicker>
+    <>
+      <FilePicker {...args} onDrop={onDrop}>
+        <FilePicker.Button>Click here to pick a file</FilePicker.Button>
+      </FilePicker>
+      <ul>
+        {files.map((file, idx) => (
+          <li key={idx}>
+            {file.name} - {file.size}
+          </li>
+        ))}
+      </ul>
+    </>
   );
 };
 

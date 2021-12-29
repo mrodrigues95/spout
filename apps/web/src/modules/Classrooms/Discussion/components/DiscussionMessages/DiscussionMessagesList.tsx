@@ -129,7 +129,7 @@ const DiscussionMessagesList = ({
   return (
     <Virtuoso
       data={items}
-      increaseViewportBy={200}
+      increaseViewportBy={300}
       firstItemIndex={firstItemIndex}
       initialTopMostItemIndex={items.length - 1}
       startReached={hasNext ? prependItems : undefined}

@@ -329,6 +329,18 @@ export enum FileUploadStatus {
   Ignored = 'IGNORED'
 }
 
+export type GenerateDownloadSasInput = {
+  fileId: Scalars['ID'];
+};
+
+export type GenerateDownloadSasPayload = {
+  __typename?: 'GenerateDownloadSASPayload';
+  sas?: Maybe<Scalars['URL']>;
+  file?: Maybe<File>;
+  userErrors?: Maybe<Array<UserError>>;
+  query: Query;
+};
+
 export type GenerateUploadSasInput = {
   fileName: Scalars['String'];
   size: Scalars['Long'];
@@ -456,6 +468,7 @@ export type Mutation = {
   login: AuthPayload;
   logout: AuthPayload;
   generateUploadSAS: GenerateUploadSasPayload;
+  generateDownloadSAS: GenerateDownloadSasPayload;
   completeUpload: CompleteUploadPayload;
   deleteFile: DeleteFilePayload;
 };
@@ -518,6 +531,11 @@ export type MutationLogoutArgs = {
 
 export type MutationGenerateUploadSasArgs = {
   input: GenerateUploadSasInput;
+};
+
+
+export type MutationGenerateDownloadSasArgs = {
+  input: GenerateDownloadSasInput;
 };
 
 

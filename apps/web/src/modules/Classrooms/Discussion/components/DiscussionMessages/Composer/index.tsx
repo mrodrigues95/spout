@@ -4,7 +4,7 @@ import { gql, useQuery } from '@apollo/client';
 import clsx from 'clsx';
 import { FilePickerProps } from '@spout/toolkit';
 import { formatNewMessage } from '../../../utils/format';
-import { FileWithId } from '../../../utils/files';
+import { FileWithId } from '../../../hooks';
 import { UserInfoFragment } from '../../../utils/fragments';
 import { useStore } from '../../../utils/messagesStore';
 import { MeQuery } from './__generated__/index.generated';

@@ -17,6 +17,7 @@ using HotChocolate.Types;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Sas;
 
 namespace API.Schema.Mutations.Files {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -34,12 +35,12 @@ namespace API.Schema.Mutations.Files {
            { FileExtension.DXF, "image/x-dxf" },
            { FileExtension.TIFF, "image/tiff" },
            { FileExtension.TIF, "image/tiff" },
-           { FileExtension.AVI, "video/avi" },
+           { FileExtension.AVI, "video/x-msvideo" },
            { FileExtension.MOV, "video/quicktime" },
            { FileExtension.WMV, "video/x-ms-wmv" },
            { FileExtension.MPEG, "video/mpeg" },
+           { FileExtension.MP3, "audio/mpeg" },
            { FileExtension.MP4, "video/mp4" },
-           { FileExtension.MP3, "audio/x-mpeg" },
            { FileExtension.WAV, "audio/wav" },
            { FileExtension.AAC, "audio/aac" },
            { FileExtension.TXT, "text/plain" },
@@ -111,7 +112,8 @@ namespace API.Schema.Mutations.Files {
             }
 
             var blobName = Guid.NewGuid().ToString();
-            var sas = await blob.GetBlobSasUri(blobName);
+            var sas = await blob.GetBlobSasUri(blobName,
+                BlobSasPermissions.Write | BlobSasPermissions.Create);
             if (sas is null) {
                 // TODO: Improve error handling here.
                 return new GenerateUploadSASPayload(
@@ -143,6 +145,41 @@ namespace API.Schema.Mutations.Files {
             await ctx.SaveChangesAsync(cancellationToken);
 
             return new GenerateUploadSASPayload(sas, file);
+        }
+
+        [Authorize]
+        [UseApplicationDbContext]
+        public async Task<GenerateDownloadSASPayload> GenerateDownloadSASAsync(
+            GenerateDownloadSASInput input,
+            [Service] IBlobService blob,
+            [ScopedService] ApplicationDbContext ctx,
+            CancellationToken cancellationToken) {
+            var file = await ctx.Files.FindAsync(
+                new object[] { input.FileId },
+                cancellationToken);
+
+            if (file is null) {
+                return new GenerateDownloadSASPayload(new UserError(
+                    "File not found.", "FILE_NOT_FOUND"));
+            }
+
+            if (file.BlobName is null) {
+                if (file.Location is not null || file.UploadStatus == FileUploadStatus.COMPLETED) {
+                    _logger.LogWarning($"An uploaded file does not contain a proper blob name - " +
+                        $"FileId: ${file.Id}", file);
+                }
+
+                return new GenerateDownloadSASPayload(new UserError(
+                    "Blob not found.", "BLOB_NOT_FOUND"));
+            }
+
+            var sas = await blob.GetBlobSasUri(file.BlobName, BlobSasPermissions.Read);
+            if (sas is null) {
+                return new GenerateDownloadSASPayload(
+                    new UserError("Unable to generate signature.", "INVALID_SAS"));
+            }
+
+            return new GenerateDownloadSASPayload(sas, file);
         }
 
         [Authorize]

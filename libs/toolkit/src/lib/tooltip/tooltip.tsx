@@ -70,7 +70,6 @@ export const Tooltip = ({
     'aria-describedby': isShowing ? id : undefined,
   };
 
-  // Check if `children` is a valid ReactElement before cloning.
   const childrenWithTriggerProps = Children.map(children, (child) => {
     if (isValidElement(child)) {
       return cloneElement(child, { ...withProps });

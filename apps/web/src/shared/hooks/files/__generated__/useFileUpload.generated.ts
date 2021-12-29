@@ -1,5 +1,6 @@
-import * as Types from '../../../../../__generated__/schema.generated';
+import * as Types from '../../../../__generated__/schema.generated';
 
+import { File_File } from '../../../../modules/Classrooms/Discussion/utils/__generated__/fragments.generated';
 export type GenerateUploadSasMutationVariables = Types.Exact<{
   input: Types.GenerateUploadSasInput;
 }>;
@@ -12,7 +13,7 @@ export type GenerateUploadSasMutation = (
     & Pick<Types.GenerateUploadSasPayload, 'sas'>
     & { file?: Types.Maybe<(
       { __typename?: 'File' }
-      & Pick<Types.File, 'id'>
+      & File_File
     )>, userErrors?: Types.Maybe<Array<(
       { __typename?: 'UserError' }
       & Pick<Types.UserError, 'message' | 'code'>
@@ -31,26 +32,7 @@ export type CompleteUploadMutation = (
     { __typename?: 'CompleteUploadPayload' }
     & { file?: Types.Maybe<(
       { __typename?: 'File' }
-      & Pick<Types.File, 'id'>
-    )>, userErrors?: Types.Maybe<Array<(
-      { __typename?: 'UserError' }
-      & Pick<Types.UserError, 'message' | 'code'>
-    )>> }
-  ) }
-);
-
-export type DeleteFileMutationVariables = Types.Exact<{
-  input: Types.DeleteFileInput;
-}>;
-
-
-export type DeleteFileMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteFile: (
-    { __typename?: 'DeleteFilePayload' }
-    & { file?: Types.Maybe<(
-      { __typename?: 'File' }
-      & Pick<Types.File, 'id'>
+      & File_File
     )>, userErrors?: Types.Maybe<Array<(
       { __typename?: 'UserError' }
       & Pick<Types.UserError, 'message' | 'code'>

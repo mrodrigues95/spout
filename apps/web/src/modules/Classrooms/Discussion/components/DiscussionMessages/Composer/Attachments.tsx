@@ -1,5 +1,9 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { FileRejection, ErrorCode as DropzoneErrorCode } from 'react-dropzone';
+import {
+  FileRejection,
+  ErrorCode as DropzoneErrorCode,
+  useDropzone,
+} from 'react-dropzone';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheckCircle,
@@ -22,15 +26,17 @@ import clsx from 'clsx';
 import {
   FileUploadQueue,
   FileWithId,
+  useFileUploadQueue,
+} from '../../../hooks';
+import { ComposerContext } from '.';
+import {
   formatBytesToHumanReadable,
   getAcceptedFileExtensions,
   getFileExtensionFromContentType,
   MAX_FILES_PER_UPLOAD,
   MAX_FILE_SIZE,
   MIN_FILE_SIZE,
-  useFileUploadQueue,
-} from '../../../utils/files';
-import { ComposerContext } from '.';
+} from '../../../../../../shared/utils';
 
 export const UploadAttachments = () => {
   const { onFilesAccepted, onFilesRejected } = useContext(ComposerContext)!;
@@ -158,11 +164,11 @@ const getErrorMessageFromErrorCode = (code?: FileUploadErrorCode) => {
     case DropzoneErrorCode.FileInvalidType:
       return 'Unsupported file type';
     case DropzoneErrorCode.FileTooSmall:
-      return 'File is too small - must be greater than 0 bytes';
+      return 'Attachment is too small - must be greater than 0 bytes';
     case DropzoneErrorCode.FileTooLarge:
-      return 'File is too large - must be less than 8MB';
+      return 'Attachment is too large - must be less than 8MB';
     case DropzoneErrorCode.TooManyFiles:
-      return 'Too many files - a maximum of 10 files can only be uploaded at once';
+      return 'Too many attachments - a maximum of 10 attachments can only be uploaded at once';
     case ServerErrorCode.ServerError:
       return 'Server error - please try again';
     default:
@@ -178,6 +184,7 @@ const RejectedOrErrorAttachment = ({
   file,
   errors,
 }: RejectedOrErrorAttachmentProps) => {
+  console.log(file.type);
   const fileExtension = getFileExtensionFromContentType(file.type);
 
   // A file can have more than one error but we only display the first one.
@@ -241,8 +248,9 @@ export const Attachments = ({
   );
 
   useEffect(() => {
+    console.log(acceptedFiles);
     upload(acceptedFiles);
-  }, [acceptedFiles]);
+  }, [upload, acceptedFiles]);
 
   useEffect(() => {
     // Show the modal when the user selects invalid files and/or
@@ -261,7 +269,12 @@ export const Attachments = ({
       setIsUploadingFiles(false);
       setUploadedFiles(queue.uploadedFiles);
     }
-  }, [queue.isInFlight, queue.uploadedFiles]);
+  }, [
+    queue.isInFlight,
+    queue.uploadedFiles,
+    setIsUploadingFiles,
+    setUploadedFiles,
+  ]);
 
   useEffect(() => {
     // TODO: Can probably remove this once we use a form.
@@ -269,7 +282,7 @@ export const Attachments = ({
       resetQueue();
       setShouldClearFiles(false);
     }
-  }, [shouldClearFiles]);
+  }, [shouldClearFiles, resetQueue, setShouldClearFiles]);
 
   const onClose = useCallback(() => {
     setIsOpen(false);

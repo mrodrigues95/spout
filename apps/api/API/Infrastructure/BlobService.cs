@@ -44,7 +44,7 @@ namespace API.Infrastructure {
             }
         }
 
-        public async Task<Uri?> GetBlobSasUri(string blobName) {
+        public async Task<Uri?> GetBlobSasUri(string blobName, BlobSasPermissions permissions) {
             try {
                 var blobServiceClient = CreateBlobServiceClient();
                 var blobContainerClient = await CreateBlobContainerClient(blobServiceClient);
@@ -60,7 +60,7 @@ namespace API.Infrastructure {
                     ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(15),
                 };
 
-                sasBuilder.SetPermissions(BlobSasPermissions.Write | BlobSasPermissions.Create);
+                sasBuilder.SetPermissions(permissions);
 
                 var blobUriBuilder = new BlobUriBuilder(blobClient.Uri) {
                     Sas = sasBuilder.ToSasQueryParameters(userDelegationKey,
