@@ -10,16 +10,19 @@ services:
       - --entrypoints.web.address=:80
       - --entrypoints.web-secure.address=:443
       - --providers.docker=true
+      - --providers.file=true
       - --providers.file.filename=/etc/traefik/config.yml
     ports:
       - 80:80
       - 443:443
       - 8080:8080
     volumes:
-      - ./config/traefik.http.yml:/etc/traefik/config.yml:ro
+      - ./config/traefik.https.yml:/etc/traefik/config.yml:ro
       - /var/run/docker.sock:/var/run/docker.sock
       # See: https://stackoverflow.com/questions/36765138/bind-to-docker-socket-on-windows
-      # - //var/run/docker.sock:/var/run/docker.sock:ro
+      - //var/run/docker.sock:/var/run/docker.sock:ro
+      # Map the certs into the container.
+      - ./config/certs:/etc/certs
 
   postgres:
     container_name: postgres
@@ -53,16 +56,21 @@ services:
       - DOTNET_USE_POLLING_FILE_WATCHER=true
       - DOTNET_RUNNING_IN_CONTAINER=true
       - ASPNETCORE_URLS=https://+:5001;http://+:5000
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=dev
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/local.pfx
     volumes:
       - ../:/workspace:rw
-      - ${USERPROFILE}/.azure:/root/.azure
-      - ${APPDATA}\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${USERPROFILE}/.azure:/root/.azure:rw
       - ${APPDATA}\.aspnet\https:/root/.aspnet/https:ro
+      - ${APPDATA}\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
     depends_on:
       - postgres
     labels:
       - traefik.http.routers.api-http.rule=Host(`spout.local`) && PathPrefix(`/api/graphql`)
       - traefik.http.routers.api-http.service=api
+      - traefik.http.routers.api-https.rule=Host(`spout.local`) && PathPrefix(`/api/graphql`)
+      - traefik.http.routers.api-https.service=api
+      - traefik.http.routers.api-https.tls=true
       - traefik.http.services.api.loadbalancer.server.port=5000
 
   web:
@@ -80,6 +88,9 @@ services:
     labels:
       - traefik.http.routers.web-http.rule=Host(`spout.local`)
       - traefik.http.routers.web-http.service=web
+      - traefik.http.routers.web-https.rule=Host(`spout.local`)
+      - traefik.http.routers.web-https.service=web
+      - traefik.http.routers.web-https.tls=true
       - traefik.http.services.web.loadbalancer.server.port=3000
 
   web-compiler:

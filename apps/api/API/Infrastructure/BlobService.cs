@@ -8,7 +8,6 @@ using Microsoft.Extensions.Options;
 
 namespace API.Infrastructure {
     // TODO: Use Azure Key Vault instead of local user secrets.
-    // TODO: Only allow SAS over HTTPS (re-enable this in Azure).
     public class BlobService : IBlobService {
         private readonly ILogger<BlobService> _logger;
         private readonly string _storageAccountUriString;

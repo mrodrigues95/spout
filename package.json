@@ -15,6 +15,7 @@
     "dev:up": "docker compose --file .dev/docker-compose.yml up",
     "dev:down": "docker compose --file .dev/docker-compose.yml down",
     "dev:setup:localhost": "node .dev/scripts/elevate.js .dev/scripts/setupLocalhost.js",
+    "dev:setup:https": "node .dev/scripts/setupHttps.js",
     "prepare": "nx g @nx-dotnet/core:restore"
   },
   "private": true,

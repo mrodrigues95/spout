@@ -79,7 +79,7 @@ export const createApolloClient = ({
     // See: https://github.com/apollographql/apollo-link/issues/375
     uri: ssrMode
       ? 'http://api:5000/api/graphql'
-      : 'http://spout.local/api/graphql',
+      : 'https://spout.local/api/graphql',
     headers: headers,
     credentials: 'include',
   });

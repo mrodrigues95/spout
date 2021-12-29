@@ -2,7 +2,6 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
   FileRejection,
   ErrorCode as DropzoneErrorCode,
-  useDropzone,
 } from 'react-dropzone';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -248,7 +247,6 @@ export const Attachments = ({
   );
 
   useEffect(() => {
-    console.log(acceptedFiles);
     upload(acceptedFiles);
   }, [upload, acceptedFiles]);
 

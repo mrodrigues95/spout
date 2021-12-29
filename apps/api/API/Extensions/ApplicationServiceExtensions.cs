@@ -31,7 +31,10 @@ namespace API.Extensions {
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials()
-                        .WithOrigins(new[] { "http://spout.local", "http://localhost:3000" });
+                        .WithOrigins(new[] {
+                            "http://spout.local", "http://localhost:3000",
+                            "https://spout.local", "https://localhost:3000"
+                        });
                 });
             });
 
