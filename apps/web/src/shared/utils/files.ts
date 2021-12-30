@@ -1,5 +1,4 @@
-import mime from 'mime-types';
-import { FileExtension } from '../../__generated__/schema.generated';
+import { WhitelistedFileExtension } from '../../__generated__/schema.generated';
 
 export const MAX_FILES_PER_UPLOAD = 10;
 export const MIN_FILE_SIZE = 1;
@@ -8,7 +7,7 @@ export const MAX_FILE_SIZE = 8388608; // 8MB (8388608 bytes).
 export const getAcceptedFileExtensions = () => {
   const acceptedFileExtensions: string[] = [];
 
-  for (const ext in FileExtension) {
+  for (const ext in WhitelistedFileExtension) {
     const prefix = '.';
     const accepted = `${prefix}${ext.toLowerCase()}`;
     acceptedFileExtensions.push(accepted);
@@ -17,12 +16,30 @@ export const getAcceptedFileExtensions = () => {
   return acceptedFileExtensions;
 };
 
-export const getFileExtensionFromContentType = (type: string) => {
-  const extension = mime.extension(type);
-  if (!extension) return null;
+/**
+ * Gets the `WhitelistedFileExtension` index for `ext`, if it exists.
+ * 
+ * `ext` can 
+ * 
+ * This is mainly used to convert raw file extension strings into a suitable
+ * payload value for GraphQL mutations.
+ * 
+ * @param ext The file extension.
+ * @returns A `WhitelistedFileExtension` key or `null` if no index is found.
+ */
+export const convertFileExtensionToEnumIndex = (ext: string) => {
+  // If the extension is prefixed with '.', strip it first.
+  const extension = ext.startsWith('.') ? ext.replace('.', '') : ext;
 
+  // Capitlize the first letter so we can index it on the enum.
+  const extensionIndex = extension.replace(/^./, (str) => str.toUpperCase());
 
-  return extension.toUpperCase() as FileExtension;
+  if (!(extensionIndex in WhitelistedFileExtension)) {
+    console.warn(`${ext} is not a whitelisted file extension.`);
+    return null;
+  }
+
+  return extensionIndex as keyof typeof WhitelistedFileExtension;
 };
 
 const units = [

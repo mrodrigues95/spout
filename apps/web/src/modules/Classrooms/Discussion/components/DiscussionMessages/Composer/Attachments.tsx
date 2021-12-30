@@ -1,8 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import {
-  FileRejection,
-  ErrorCode as DropzoneErrorCode,
-} from 'react-dropzone';
+import { FileRejection, ErrorCode as DropzoneErrorCode } from 'react-dropzone';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheckCircle,
@@ -17,9 +14,9 @@ import {
   Spinner,
   Tooltip,
   FileIcon,
-  FILE_EXTENSIONS,
   Modal,
   Button,
+  getFileExtensionFromFileName,
 } from '@spout/toolkit';
 import clsx from 'clsx';
 import {
@@ -31,7 +28,6 @@ import { ComposerContext } from '.';
 import {
   formatBytesToHumanReadable,
   getAcceptedFileExtensions,
-  getFileExtensionFromContentType,
   MAX_FILES_PER_UPLOAD,
   MAX_FILE_SIZE,
   MIN_FILE_SIZE,
@@ -105,7 +101,7 @@ const Attachment = ({
     isFocused,
   });
 
-  const fileExtension = getFileExtensionFromContentType(file.type);
+  const fileExtension = getFileExtensionFromFileName(file.name).toKey();
 
   return (
     <li className="relative flex w-48 p-3 rounded-md shadow-md ring-1 ring-gray-900/10">
@@ -136,14 +132,12 @@ const Attachment = ({
           </button>
         </Tooltip>
       </div>
-      <FileIcon
-        ext={fileExtension?.toLowerCase() as keyof typeof FILE_EXTENSIONS}
-        className="text-3xl mt-1.5 mr-2"
-      />
+      <FileIcon ext={fileExtension} className="text-3xl mt-1.5 mr-2" />
       <div className="flex-1 min-w-0">
         <p className="font-medium truncate">{file.name}</p>
         <p className="text-gray-500 truncate text-sm">
-          {formatBytesToHumanReadable(file.size)} - {fileExtension}
+          {formatBytesToHumanReadable(file.size)} -{' '}
+          {fileExtension.toUpperCase()}
         </p>
       </div>
     </li>
@@ -183,22 +177,18 @@ const RejectedOrErrorAttachment = ({
   file,
   errors,
 }: RejectedOrErrorAttachmentProps) => {
-  console.log(file.type);
-  const fileExtension = getFileExtensionFromContentType(file.type);
-
   // A file can have more than one error but we only display the first one.
   const errorMessage = getErrorMessageFromErrorCode(errors[0]?.code);
+  const fileExtension = getFileExtensionFromFileName(file.name).toKey();
 
   return (
     <li className="relative flex p-3 rounded-md shadow-sm ring-1 ring-gray-900/10">
-      <FileIcon
-        ext={fileExtension?.toLowerCase() as keyof typeof FILE_EXTENSIONS}
-        className="text-3xl mt-1.5 mr-2"
-      />
+      <FileIcon ext={fileExtension} className="text-3xl mt-1.5 mr-2" />
       <div className="flex-1 min-w-0">
         <p className="font-medium truncate">{file.name}</p>
         <p className="text-gray-500 truncate text-sm">
-          {formatBytesToHumanReadable(file.size)} - {fileExtension}
+          {formatBytesToHumanReadable(file.size)} -{' '}
+          {fileExtension.toUpperCase()}
         </p>
         {errorMessage && (
           <p className="text-sm font-medium text-red-600">{errorMessage}</p>

@@ -19,9 +19,9 @@ namespace API.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasPostgresEnum(null, "discussion_event", new[] { "change_topic", "change_description" })
-                .HasPostgresEnum(null, "file_extension", new[] { "aac", "csv", "pdf", "xls", "xlsx", "ppt", "pptx", "bmp", "gif", "jpeg", "jpg", "jpe", "png", "tiff", "tif", "txt", "text", "rtf", "doc", "docx", "dot", "dotx", "dwg", "dwf", "dxf", "mp3", "mp4", "wav", "avi", "mov", "mpeg", "wmv", "zip" })
                 .HasPostgresEnum(null, "file_upload_status", new[] { "queued", "completed", "error", "ignored" })
                 .HasPostgresEnum(null, "user_profile_color", new[] { "sky", "pink", "green", "purple", "rose", "gray", "orange" })
+                .HasPostgresEnum(null, "whitelisted_file_extension", new[] { "aac", "csv", "pdf", "xls", "xlsx", "ppt", "pptx", "bmp", "gif", "jpeg", "jpg", "jpe", "png", "tiff", "tif", "txt", "text", "rtf", "doc", "docx", "dot", "dotx", "dwg", "dwf", "dxf", "mp3", "mp4", "wav", "avi", "mov", "mpeg", "wmv", "zip" })
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
@@ -333,9 +333,9 @@ namespace API.Migrations
                         .HasColumnType("text")
                         .HasColumnName("e_tag");
 
-                    b.Property<FileExtension>("Extension")
-                        .HasColumnType("file_extension")
-                        .HasColumnName("extension");
+                    b.Property<WhitelistedFileExtension>("FileExtension")
+                        .HasColumnType("whitelisted_file_extension")
+                        .HasColumnName("file_extension");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()

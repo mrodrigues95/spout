@@ -73,12 +73,13 @@ namespace API.Extensions {
                 .AddTypeExtension<FileByIdDataLoader>()
                 .AddType<FileType>()
                 .AddType<FileUploadStatusType>()
-                .AddType<FileExtensionType>();
+                .AddType<WhitelistedFileExtensionType>();
 
             gql
                 .AddAuthorization()
                 .AddHttpRequestInterceptor<CustomHttpRequestInterceptor>()
                 .AddFairyBread()
+                //.AddMutationConventions()
                 .AddInMemorySubscriptions()
                 .AddFiltering()
                 .AddSorting()

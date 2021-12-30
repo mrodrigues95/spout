@@ -2,19 +2,11 @@ import { useCallback, useRef, useState } from 'react';
 import {
   faChevronDown,
   faChevronUp,
-  faCloudDownloadAlt,
   faExternalLinkAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Disclosure } from '@headlessui/react';
-import {
-  Button,
-  FileIcon,
-  FILE_EXTENSIONS,
-  IconButton,
-  Tooltip,
-  Spinner,
-} from '@spout/toolkit';
+import { Button, FileIcon, IconButton, Tooltip, Spinner } from '@spout/toolkit';
 import clsx from 'clsx';
 import { formatBytesToHumanReadable } from '../../../../../shared/utils';
 import { useFileDownload } from '../../../../../shared/hooks';
@@ -95,10 +87,7 @@ const DiscussionMessageAttachment = ({
           </Tooltip>
         </div>
       )}
-      <FileIcon
-        ext={attachment.extension.toLowerCase() as keyof typeof FILE_EXTENSIONS}
-        className="text-3xl mt-1.5 mr-2"
-      />
+      <FileIcon fileName={attachment.name} className="text-3xl mt-1.5 mr-2" />
       <div className="flex-1 min-w-0">
         <p className="font-medium truncate">{attachment.name}</p>
         <p className="text-gray-500 truncate text-sm">

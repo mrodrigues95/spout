@@ -10,7 +10,7 @@ namespace API.Data.Entities {
         [Required] public User? UploadedBy { get; set; }
         [Required] public long ContentLength { get; set; }
         [Required] public string? MimeType { get; set; }
-        [Required] public FileExtension Extension { get; set; }
+        [Required] public WhitelistedFileExtension FileExtension { get; set; }
         [Required] public FileUploadStatus UploadStatus { get; set; }
         [Required] public Uri? Sas { get; set; }
         [Required] public string? SignatureEncoded { get; set; }

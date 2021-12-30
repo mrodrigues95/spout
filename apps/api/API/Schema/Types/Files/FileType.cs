@@ -11,9 +11,9 @@ namespace API.Schema.Types.Files {
     }
 
     /// <summary>
-    /// Accepted file extensions.
+    /// Whitelisted file extensions.
     /// </summary>
-    public enum FileExtension {
+    public enum WhitelistedFileExtension {
         AAC,
         CSV,
         PDF,
@@ -59,7 +59,7 @@ namespace API.Schema.Types.Files {
         IGNORED
     }
 
-    public class FileExtensionType : EnumType<FileExtension> { }
+    public class WhitelistedFileExtensionType : EnumType<WhitelistedFileExtension> { }
     public class FileUploadStatusType : EnumType<FileUploadStatus> { }
     public class FileSizeType : EnumType<FileSize> { }
 
@@ -70,6 +70,10 @@ namespace API.Schema.Types.Files {
                 .IdField(f => f.Id)
                 .ResolveNode((ctx, id) =>
                     ctx.DataLoader<FileByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+
+            descriptor
+                .Field(f => f.FileExtension)
+                .Name("extension");
         }
     }
 }

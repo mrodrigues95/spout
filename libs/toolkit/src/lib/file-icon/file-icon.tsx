@@ -28,33 +28,39 @@ const types = {
     icon: faFileVideo,
     color: 'text-sky-600',
   },
-  pdf: {
-    icon: faFilePdf,
-    color: 'text-red-600',
+  text: {
+    icon: faFileAlt,
+    color: 'text-gray-600',
   },
-  word: {
-    icon: faFileWord,
-    color: 'text-blue-600',
+  application: {
+    pdf: {
+      icon: faFilePdf,
+      color: 'text-red-600',
+    },
+    word: {
+      icon: faFileWord,
+      color: 'text-blue-600',
+    },
+    presentation: {
+      icon: faFilePowerpoint,
+      color: 'text-orange-600',
+    },
+    spreadsheet: {
+      icon: faFileExcel,
+      color: 'text-green-600',
+    },
+    compressed: {
+      icon: faFileArchive,
+      color: 'text-purple-600',
+    },
   },
-  presentation: {
-    icon: faFilePowerpoint,
-    color: 'text-orange-600',
-  },
-  spreadsheet: {
-    icon: faFileExcel,
-    color: 'text-green-600',
-  },
-  compressed: {
-    icon: faFileArchive,
-    color: 'text-purple-600',
-  },
-  default: {
+  other: {
     icon: faFileAlt,
     color: 'text-gray-600',
   },
 } as const;
 
-export const FILE_EXTENSIONS = {
+export const COMMON_FILE_EXTENSIONS = {
   gif: types.image,
   jpeg: types.image,
   jpg: types.image,
@@ -72,37 +78,74 @@ export const FILE_EXTENSIONS = {
   wmv: types.video,
   mpeg: types.video,
   mp4: types.video,
-  pdf: types.pdf,
-  dot: types.word,
-  dotx: types.word,
-  doc: types.word,
-  docx: types.word,
-  ppt: types.presentation,
-  pptx: types.presentation,
-  xls: types.spreadsheet,
-  xlsx: types.spreadsheet,
-  csv: types.spreadsheet,
-  zip: types.compressed,
-  default: types.default,
+  txt: types.text,
+  text: types.text,
+  pdf: types.application.pdf,
+  dot: types.application.word,
+  dotx: types.application.word,
+  doc: types.application.word,
+  docx: types.application.word,
+  ppt: types.application.presentation,
+  pptx: types.application.presentation,
+  xls: types.application.spreadsheet,
+  xlsx: types.application.spreadsheet,
+  csv: types.application.spreadsheet,
+  zip: types.application.compressed,
+  other: types.other,
 } as const;
+
+export type CommonFileExtensionKeys = keyof typeof COMMON_FILE_EXTENSIONS;
+
+export const getFileExtensionFromFileName = (fileName: string) => {
+  const split = fileName.split('.');
+  let ext = split.pop()!;
+
+  const toKey = () => {
+    if (!(ext in COMMON_FILE_EXTENSIONS)) {
+      ext = 'other';
+    }
+
+    return ext as CommonFileExtensionKeys;
+  };
+
+  return { ext, toKey };
+};
 
 export interface FileIconProps
   extends Omit<FontAwesomeIconProps, 'icon' | 'color'> {
-  ext: keyof typeof FILE_EXTENSIONS;
+  /** The file extension. */
+  ext?: CommonFileExtensionKeys;
+  /** The file name.
+   *
+   * The file extension will attempt to be parsed from the file name.
+   * If parsing fails, `CommonFileExtensionKeys.other` will be used as a fallback.
+   */
+  fileName?: string;
 }
 
 export const FileIcon = ({
-  ext = 'default',
+  ext,
+  fileName,
   className,
   ...props
 }: FileIconProps) => {
-  const extension = ext in FILE_EXTENSIONS ? ext : 'default';
-  const icon = FILE_EXTENSIONS[extension].icon;
+  if (!ext && !fileName) {
+    throw new Error('`ext` or `fileName` props must be provided.');
+  }
+
+  let extension: CommonFileExtensionKeys = 'other';
+  if (fileName) {
+    extension = getFileExtensionFromFileName(fileName).toKey();
+  } else if (ext) {
+    extension = ext;
+  }
+
+  const icon = COMMON_FILE_EXTENSIONS[extension].icon;
 
   return (
     <FontAwesomeIcon
       icon={icon}
-      className={clsx(FILE_EXTENSIONS[extension].color, className)}
+      className={clsx(COMMON_FILE_EXTENSIONS[extension].color, className)}
       {...props}
     />
   );

@@ -1,3 +1,4 @@
+using System;
 using FluentValidation;
 
 namespace API.Schema.Mutations.Auth {

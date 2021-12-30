@@ -45,7 +45,7 @@ namespace API.Data {
             // Configure enums.
             builder.HasPostgresEnum<DiscussionEvent>();
             builder.HasPostgresEnum<UserProfileColor>();
-            builder.HasPostgresEnum<FileExtension>();
+            builder.HasPostgresEnum<WhitelistedFileExtension>();
             builder.HasPostgresEnum<FileUploadStatus>();
 
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
@@ -54,7 +54,7 @@ namespace API.Data {
         private static void MapEnums() {
             NpgsqlConnection.GlobalTypeMapper.MapEnum<DiscussionEvent>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<UserProfileColor>();
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<FileExtension>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<WhitelistedFileExtension>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<FileUploadStatus>();
         }
     }

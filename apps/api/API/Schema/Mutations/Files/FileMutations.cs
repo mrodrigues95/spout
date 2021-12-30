@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,41 +23,6 @@ namespace API.Schema.Mutations.Files {
     public class FileMutations {
         private readonly string _containerName;
         private readonly ILogger<FileMutations> _logger;
-        private readonly IDictionary<FileExtension, string> _acceptedMimeTypes =
-            new Dictionary<FileExtension, string>() {
-           { FileExtension.GIF, "image/gif" },
-           { FileExtension.JPEG, "image/jpeg" },
-           { FileExtension.JPG, "image/jpeg" },
-           { FileExtension.PNG, "image/png" },
-           { FileExtension.BMP, "image/bmp" },
-           { FileExtension.DWG, "image/x-dwg" },
-           { FileExtension.DXF, "image/x-dxf" },
-           { FileExtension.TIFF, "image/tiff" },
-           { FileExtension.TIF, "image/tiff" },
-           { FileExtension.AVI, "video/x-msvideo" },
-           { FileExtension.MOV, "video/quicktime" },
-           { FileExtension.WMV, "video/x-ms-wmv" },
-           { FileExtension.MPEG, "video/mpeg" },
-           { FileExtension.MP3, "audio/mpeg" },
-           { FileExtension.MP4, "video/mp4" },
-           { FileExtension.WAV, "audio/wav" },
-           { FileExtension.AAC, "audio/aac" },
-           { FileExtension.TXT, "text/plain" },
-           { FileExtension.TEXT, "text/plain" },
-           { FileExtension.CSV, "text/csv" },
-           { FileExtension.PDF, "application/pdf" },
-           { FileExtension.ZIP, "application/zip" },
-           { FileExtension.RTF, "application/rtf" },
-           { FileExtension.DOT, "application/msword" },
-           { FileExtension.DOTX, "application/vnd.openxmlformats-officedocument.wordprocessingml.template" },
-           { FileExtension.DOC, "application/msword" },
-           { FileExtension.DOCX, "application/vnd.openxmlformats-officedocument.wordprocessingml.document" },
-           { FileExtension.PPT, "application/vnd.ms-powerpoint" },
-           { FileExtension.PPTX, "application/vnd.openxmlformats-officedocument.presentationml.presentation" },
-           { FileExtension.XLS, "application/vnd.ms-excel" },
-           { FileExtension.XLSX, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" },
-           { FileExtension.DWF, "drawing/x-dwf" },
-        };
 
         public FileMutations(IOptions<AzureStorageConfig> config, ILogger<FileMutations> logger) {
             _logger = logger;
@@ -100,22 +64,10 @@ namespace API.Schema.Mutations.Files {
             [Service] IBlobService blob,
             [ScopedService] ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
-            string? mimeType;
-            if (!_acceptedMimeTypes.TryGetValue(input.FileExtension, out mimeType)) {
-                return new GenerateUploadSASPayload(new UserError("Unsupported MIME type.",
-                    "UNSUPPORTED_MIME_TYPE"));
-            }
-
-            if (input.MimeType != mimeType) {
-                return new GenerateUploadSASPayload(new UserError("Invalid MIME type.",
-                    "Invalid_MIME_TYPE"));
-            }
-
             var blobName = Guid.NewGuid().ToString();
             var sas = await blob.GetBlobSasUri(blobName,
                 BlobSasPermissions.Write | BlobSasPermissions.Create);
             if (sas is null) {
-                // TODO: Improve error handling here.
                 return new GenerateUploadSASPayload(
                     new UserError("Unable to generate signature.", "INVALID_SAS"));
             }
@@ -126,11 +78,16 @@ namespace API.Schema.Mutations.Files {
                 new UserError("Unable to parse signature.", "INVALID_SIGNATURE"));
             }
 
+            var mimeType = input.MimeType;
+            if (string.IsNullOrEmpty(mimeType)) {
+                mimeType = "application/octet-stream";
+            }
+
             var file = new File {
                 UploadedById = userId,
                 ContentLength = input.Size,
-                MimeType = input.MimeType,
-                Extension = input.FileExtension,
+                MimeType = mimeType,
+                FileExtension = input.FileExtension,
                 Name = input.FileName,
                 UploadStatus = FileUploadStatus.QUEUED,
                 Sas = sas,

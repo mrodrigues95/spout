@@ -1,5 +1,6 @@
 import { gql, useMutation } from '@apollo/client';
 import { useCallback } from 'react';
+import { getFileExtensionFromFileName } from '@spout/toolkit';
 import { FileFragment } from '../../../modules/Classrooms/Discussion/utils/fragments';
 import {
   GenerateUploadSasMutation as _GenerateUploadSasMutation,
@@ -7,8 +8,9 @@ import {
   CompleteUploadMutation as _CompleteUploadMutation,
   CompleteUploadMutationVariables as _CompleteUploadMutationVariables,
 } from './__generated__/useFileUpload.generated';
-import { getFileExtensionFromContentType } from '../../utils';
+import { WhitelistedFileExtension } from '../../../__generated__/schema.generated';
 import { useBlob } from './useBlob';
+import { convertFileExtensionToEnumIndex } from '../../utils';
 
 const GenerateUploadSASMutation = gql`
   mutation GenerateUploadSASMutation($input: GenerateUploadSASInput!) {
@@ -54,6 +56,10 @@ export const useFileUpload = () => {
 
   const generateUploadSAS = useCallback(
     async (file: File) => {
+      const { ext } = getFileExtensionFromFileName(file.name);
+      const index = convertFileExtensionToEnumIndex(ext);
+      if (!index) return null;
+
       try {
         const { data, errors } = await generate({
           variables: {
@@ -61,7 +67,7 @@ export const useFileUpload = () => {
               fileName: file.name,
               size: file.size,
               mimeType: file.type,
-              fileExtension: getFileExtensionFromContentType(file.type)!,
+              fileExtension: WhitelistedFileExtension[index],
             },
           },
         });

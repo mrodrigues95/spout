@@ -12,10 +12,10 @@ export type Scalars = {
   /** The `DateTime` scalar represents an ISO-8601 compliant date time type. */
   DateTime: string;
   /** The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1. */
-  Long: any;
+  Long: number;
   /** The `Short` scalar type represents non-fractional signed whole 16-bit numeric values. Short can represent values between -(2^15) and 2^15 - 1. */
   Short: any;
-  URL: any;
+  URL: string;
   UUID: any;
 };
 
@@ -254,11 +254,11 @@ export type DiscussionsEdge = {
 export type File = Node & {
   __typename?: 'File';
   id: Scalars['ID'];
+  extension: WhitelistedFileExtension;
   uploadedById: Scalars['Int'];
   uploadedBy: User;
   contentLength: Scalars['Long'];
   mimeType: Scalars['String'];
-  extension: FileExtension;
   uploadStatus: FileUploadStatus;
   sas: Scalars['URL'];
   signatureEncoded: Scalars['String'];
@@ -286,42 +286,6 @@ export type FileByIdDataLoaderLoadArgs = {
   key: Scalars['Int'];
 };
 
-export enum FileExtension {
-  Aac = 'AAC',
-  Csv = 'CSV',
-  Pdf = 'PDF',
-  Xls = 'XLS',
-  Xlsx = 'XLSX',
-  Ppt = 'PPT',
-  Pptx = 'PPTX',
-  Bmp = 'BMP',
-  Gif = 'GIF',
-  Jpeg = 'JPEG',
-  Jpg = 'JPG',
-  Jpe = 'JPE',
-  Png = 'PNG',
-  Tiff = 'TIFF',
-  Tif = 'TIF',
-  Txt = 'TXT',
-  Text = 'TEXT',
-  Rtf = 'RTF',
-  Doc = 'DOC',
-  Docx = 'DOCX',
-  Dot = 'DOT',
-  Dotx = 'DOTX',
-  Dwg = 'DWG',
-  Dwf = 'DWF',
-  Dxf = 'DXF',
-  Mp3 = 'MP3',
-  Mp4 = 'MP4',
-  Wav = 'WAV',
-  Avi = 'AVI',
-  Mov = 'MOV',
-  Mpeg = 'MPEG',
-  Wmv = 'WMV',
-  Zip = 'ZIP'
-}
-
 export enum FileUploadStatus {
   Queued = 'QUEUED',
   Completed = 'COMPLETED',
@@ -344,8 +308,8 @@ export type GenerateDownloadSasPayload = {
 export type GenerateUploadSasInput = {
   fileName: Scalars['String'];
   size: Scalars['Long'];
-  mimeType: Scalars['String'];
-  fileExtension: FileExtension;
+  mimeType?: Maybe<Scalars['String']>;
+  fileExtension: WhitelistedFileExtension;
 };
 
 export type GenerateUploadSasPayload = {
@@ -800,3 +764,39 @@ export type UserSortInput = {
   lockoutEnabled?: Maybe<SortEnumType>;
   accessFailedCount?: Maybe<SortEnumType>;
 };
+
+export enum WhitelistedFileExtension {
+  Aac = 'AAC',
+  Csv = 'CSV',
+  Pdf = 'PDF',
+  Xls = 'XLS',
+  Xlsx = 'XLSX',
+  Ppt = 'PPT',
+  Pptx = 'PPTX',
+  Bmp = 'BMP',
+  Gif = 'GIF',
+  Jpeg = 'JPEG',
+  Jpg = 'JPG',
+  Jpe = 'JPE',
+  Png = 'PNG',
+  Tiff = 'TIFF',
+  Tif = 'TIF',
+  Txt = 'TXT',
+  Text = 'TEXT',
+  Rtf = 'RTF',
+  Doc = 'DOC',
+  Docx = 'DOCX',
+  Dot = 'DOT',
+  Dotx = 'DOTX',
+  Dwg = 'DWG',
+  Dwf = 'DWF',
+  Dxf = 'DXF',
+  Mp3 = 'MP3',
+  Mp4 = 'MP4',
+  Wav = 'WAV',
+  Avi = 'AVI',
+  Mov = 'MOV',
+  Mpeg = 'MPEG',
+  Wmv = 'WMV',
+  Zip = 'ZIP'
+}

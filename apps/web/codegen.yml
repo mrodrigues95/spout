@@ -11,6 +11,8 @@ generates:
     config:
       scalars:
         DateTime: string
+        URL: string
+        Long: number
   src/:
     preset: near-operation-file
     presetConfig:
@@ -22,3 +24,5 @@ generates:
       omitOperationSuffix: true
       scalars:
         DateTime: string
+        URL: string
+        Long: number
