@@ -69,7 +69,7 @@ const LoginForm = () => {
         return;
       }
 
-      await init(result.data?.login?.session?.id!);
+      await init(result.data!.login!.session!.id);
       authRedirect();
     } catch (error) {
       handleError(error);

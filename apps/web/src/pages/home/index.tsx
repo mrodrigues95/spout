@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next';
-import { authenticatedRoute } from '../../modules/Auth';
+import { authenticatedRoute } from '../../shared/utils';
 import { Home } from '../../modules';
 
 export const getServerSideProps: GetServerSideProps = authenticatedRoute;

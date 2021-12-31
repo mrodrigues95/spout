@@ -17,9 +17,9 @@ export const getAcceptedFileExtensions = () => {
 };
 
 /**
- * Gets the `WhitelistedFileExtension` index for `ext`, if it exists.
+ * Gets the `WhitelistedFileExtension` key for the given `ext`, if it exists.
  * 
- * `ext` can 
+ * `ext` can either be prefixed with or without a `.`
  * 
  * This is mainly used to convert raw file extension strings into a suitable
  * payload value for GraphQL mutations.

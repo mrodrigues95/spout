@@ -1,6 +1,6 @@
 const hostile = require('hostile');
 
-const domainName = `spout.local`;
+const domainName = `spout.dev`;
 
 hostile.set('127.0.0.1', domainName, function (err) {
   if (err) {

@@ -1,4 +1,5 @@
 module.exports = {
+  swcMinify: true,
   // Enable fast refresh to work inside WSL2.
   webpackDevMiddleware: (config) => {
     config.watchOptions = {

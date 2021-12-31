@@ -1,11 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { applySession } from 'next-iron-session';
-import { removeClientSession, sessionOptions } from '../../../modules';
+import { withIronSessionApiRoute } from 'iron-session/next';
+import { removeIronSession, sessionOptions } from '../../../shared/utils';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  await applySession(req, res, sessionOptions);
-  const sessionId = await removeClientSession(req);
+  const sessionId = await removeIronSession(req);
   res.send(JSON.stringify(sessionId));
 };
 
-export default handler;
+export default withIronSessionApiRoute(handler, sessionOptions);

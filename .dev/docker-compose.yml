@@ -66,9 +66,9 @@ services:
     depends_on:
       - postgres
     labels:
-      - traefik.http.routers.api-http.rule=Host(`spout.local`) && PathPrefix(`/api/graphql`)
+      - traefik.http.routers.api-http.rule=Host(`spout.dev`) && PathPrefix(`/api/graphql`)
       - traefik.http.routers.api-http.service=api
-      - traefik.http.routers.api-https.rule=Host(`spout.local`) && PathPrefix(`/api/graphql`)
+      - traefik.http.routers.api-https.rule=Host(`spout.dev`) && PathPrefix(`/api/graphql`)
       - traefik.http.routers.api-https.service=api
       - traefik.http.routers.api-https.tls=true
       - traefik.http.services.api.loadbalancer.server.port=5000
@@ -86,9 +86,9 @@ services:
     depends_on:
       - api
     labels:
-      - traefik.http.routers.web-http.rule=Host(`spout.local`)
+      - traefik.http.routers.web-http.rule=Host(`spout.dev`)
       - traefik.http.routers.web-http.service=web
-      - traefik.http.routers.web-https.rule=Host(`spout.local`)
+      - traefik.http.routers.web-https.rule=Host(`spout.dev`)
       - traefik.http.routers.web-https.service=web
       - traefik.http.routers.web-https.tls=true
       - traefik.http.services.web.loadbalancer.server.port=3000
