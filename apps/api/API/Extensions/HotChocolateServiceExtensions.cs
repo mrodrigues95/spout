@@ -78,6 +78,7 @@ namespace API.Extensions {
             gql
                 .AddAuthorization()
                 .AddHttpRequestInterceptor<CustomHttpRequestInterceptor>()
+                .AddDiagnosticEventListener<CustomDiagnosticEventListener>()
                 .AddFairyBread()
                 //.AddMutationConventions()
                 .AddInMemorySubscriptions()

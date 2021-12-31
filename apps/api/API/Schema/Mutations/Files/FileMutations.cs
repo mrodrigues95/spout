@@ -120,17 +120,7 @@ namespace API.Schema.Mutations.Files {
                     "File not found.", "FILE_NOT_FOUND"));
             }
 
-            if (file.BlobName is null) {
-                if (file.Location is not null || file.UploadStatus == FileUploadStatus.COMPLETED) {
-                    _logger.LogWarning($"An uploaded file does not contain a proper blob name - " +
-                        $"FileId: ${file.Id}", file);
-                }
-
-                return new GenerateDownloadSASPayload(new UserError(
-                    "Blob not found.", "BLOB_NOT_FOUND"));
-            }
-
-            var sas = await blob.GetBlobSasUri(file.BlobName, BlobSasPermissions.Read);
+            var sas = await blob.GetBlobSasUri(file.BlobName!, BlobSasPermissions.Read);
             if (sas is null) {
                 return new GenerateDownloadSASPayload(
                     new UserError("Unable to generate signature.", "INVALID_SAS"));

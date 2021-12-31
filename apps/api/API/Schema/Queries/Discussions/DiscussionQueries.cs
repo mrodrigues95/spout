@@ -1,4 +1,4 @@
-﻿using API.Extensions;
+using API.Extensions;
 using API.Data.Entities;
 using HotChocolate.Types;
 using System.Collections.Generic;

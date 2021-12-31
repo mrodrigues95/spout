@@ -129,7 +129,7 @@ const DiscussionMessagesList = ({
   return (
     <Virtuoso
       data={items}
-      increaseViewportBy={300}
+      overscan={{ main: 5000, reverse: 5000 }}
       firstItemIndex={firstItemIndex}
       initialTopMostItemIndex={items.length - 1}
       startReached={hasNext ? prependItems : undefined}

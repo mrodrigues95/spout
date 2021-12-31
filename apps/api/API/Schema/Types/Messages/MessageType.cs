@@ -20,19 +20,21 @@ namespace API.Schema.Types.Messages {
             descriptor
                 .ImplementsNode()
                 .IdField(m => m.Id)
-                .ResolveNode((ctx, id) => ctx.DataLoader<MessageByIdDataLoader>().LoadAsync(
-                    id, ctx.RequestAborted));
+                .ResolveNode((ctx, id) =>
+                    ctx.DataLoader<MessageByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
             descriptor
                 .Field(m => m.CreatedBy)
                 .Type<NonNullType<UserType>>()
-                .ResolveWith<MessageResolvers>(x => x.GetCreatedByAsync(default!, default!, default!))
+                .ResolveWith<MessageResolvers>(x =>
+                    x.GetCreatedByAsync(default!, default!, default!))
                 .Name("createdBy");
 
             descriptor
                 .Field(m => m.MessageFiles)
                 .Type<NonNullType<ListType<NonNullType<FileType>>>>()
-                .ResolveWith<MessageResolvers>(x => x.GetAttachmentsAsync(default!, default!, default!, default!))
+                .ResolveWith<MessageResolvers>(x =>
+                    x.GetAttachmentsAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .Name("attachments");
         }
