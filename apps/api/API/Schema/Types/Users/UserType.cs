@@ -1,6 +1,5 @@
 using API.Data;
 using API.Data.Entities;
-using API.Extensions;
 using HotChocolate;
 using HotChocolate.Types;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +13,7 @@ using API.Schema.Queries.Sessions;
 using API.Schema.Types.Classrooms;
 using API.Schema.Types.Sessions;
 using API.Schema.Queries.Users;
+using HotChocolate.Data.Filters;
 
 namespace API.Schema.Types.Users {
     public enum UserProfileColor {
@@ -27,6 +27,14 @@ namespace API.Schema.Types.Users {
     }
 
     public class UserProfileColorType : EnumType<UserProfileColor> { }
+
+    public class UserFilterInputType : FilterInputType<User> {
+        protected override void Configure(IFilterInputTypeDescriptor<User> descriptor) {
+            descriptor
+                .Field(x => x.Id)
+                .Type<IdOperationFilterInputType>();
+        }
+    }
 
     public class UserType : ObjectType<User> {
         protected override void Configure(IObjectTypeDescriptor<User> descriptor) {

@@ -1,6 +1,6 @@
 import * as Types from '../../../../../../__generated__/schema.generated';
 
-import { Message_Message, UserInfo_User } from '../../../utils/__generated__/fragments.generated';
+import { Message_Message, UserInfo_User, File_File } from '../../../utils/__generated__/fragments.generated';
 export type DiscussionMessages_Discussion = (
   { __typename?: 'Discussion' }
   & { messages?: Types.Maybe<(

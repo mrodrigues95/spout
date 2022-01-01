@@ -36,6 +36,11 @@ export type AuthPayload = {
   query: Query;
 };
 
+export type BooleanOperationFilterInput = {
+  eq?: Maybe<Scalars['Boolean']>;
+  neq?: Maybe<Scalars['Boolean']>;
+};
+
 export type Classroom = Node & {
   __typename?: 'Classroom';
   id: Scalars['ID'];
@@ -53,6 +58,24 @@ export type Classroom = Node & {
   invites: Array<ClassroomInvite>;
 };
 
+export type ClassroomFilterInput = {
+  and?: Maybe<Array<ClassroomFilterInput>>;
+  or?: Maybe<Array<ClassroomFilterInput>>;
+  id?: Maybe<ComparableInt32OperationFilterInput>;
+  guid?: Maybe<ComparableGuidOperationFilterInput>;
+  name?: Maybe<StringOperationFilterInput>;
+  stateId?: Maybe<ComparableInt32OperationFilterInput>;
+  state?: Maybe<StateFilterInput>;
+  deletedAt?: Maybe<ComparableNullableOfDateTimeOperationFilterInput>;
+  delLogId?: Maybe<ComparableNullableOfInt32OperationFilterInput>;
+  delLog?: Maybe<DelLogFilterInput>;
+  createdAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  updatedAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  discussions?: Maybe<ListFilterInputTypeOfDiscussionFilterInput>;
+  users?: Maybe<ListFilterInputTypeOfClassroomUserFilterInput>;
+  invites?: Maybe<ListFilterInputTypeOfClassroomInviteFilterInput>;
+};
+
 export type ClassroomInvite = {
   __typename?: 'ClassroomInvite';
   inviteId: Scalars['Int'];
@@ -67,6 +90,21 @@ export type ClassroomInvite = {
   updatedAt: Scalars['DateTime'];
 };
 
+export type ClassroomInviteFilterInput = {
+  and?: Maybe<Array<ClassroomInviteFilterInput>>;
+  or?: Maybe<Array<ClassroomInviteFilterInput>>;
+  inviteId?: Maybe<ComparableInt32OperationFilterInput>;
+  invite?: Maybe<InviteFilterInput>;
+  userId?: Maybe<ComparableInt32OperationFilterInput>;
+  user?: Maybe<UserFilterInput>;
+  classroomId?: Maybe<ComparableInt32OperationFilterInput>;
+  classroom?: Maybe<ClassroomFilterInput>;
+  isInviter?: Maybe<BooleanOperationFilterInput>;
+  isInvitee?: Maybe<BooleanOperationFilterInput>;
+  usedAt?: Maybe<ComparableNullableOfDateTimeOperationFilterInput>;
+  updatedAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+};
+
 export type ClassroomSortInput = {
   id?: Maybe<SortEnumType>;
   guid?: Maybe<SortEnumType>;
@@ -78,6 +116,153 @@ export type ClassroomSortInput = {
   delLog?: Maybe<DelLogSortInput>;
   createdAt?: Maybe<SortEnumType>;
   updatedAt?: Maybe<SortEnumType>;
+};
+
+export type ClassroomUserFilterInput = {
+  and?: Maybe<Array<ClassroomUserFilterInput>>;
+  or?: Maybe<Array<ClassroomUserFilterInput>>;
+  classroomId?: Maybe<ComparableInt32OperationFilterInput>;
+  classroom?: Maybe<ClassroomFilterInput>;
+  userId?: Maybe<ComparableInt32OperationFilterInput>;
+  user?: Maybe<UserFilterInput>;
+  isCreator?: Maybe<BooleanOperationFilterInput>;
+  joinedAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  updatedAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+};
+
+export type ComparableDateTimeOperationFilterInput = {
+  eq?: Maybe<Scalars['DateTime']>;
+  neq?: Maybe<Scalars['DateTime']>;
+  in?: Maybe<Array<Scalars['DateTime']>>;
+  nin?: Maybe<Array<Scalars['DateTime']>>;
+  gt?: Maybe<Scalars['DateTime']>;
+  ngt?: Maybe<Scalars['DateTime']>;
+  gte?: Maybe<Scalars['DateTime']>;
+  ngte?: Maybe<Scalars['DateTime']>;
+  lt?: Maybe<Scalars['DateTime']>;
+  nlt?: Maybe<Scalars['DateTime']>;
+  lte?: Maybe<Scalars['DateTime']>;
+  nlte?: Maybe<Scalars['DateTime']>;
+};
+
+export type ComparableGuidOperationFilterInput = {
+  eq?: Maybe<Scalars['UUID']>;
+  neq?: Maybe<Scalars['UUID']>;
+  in?: Maybe<Array<Scalars['UUID']>>;
+  nin?: Maybe<Array<Scalars['UUID']>>;
+  gt?: Maybe<Scalars['UUID']>;
+  ngt?: Maybe<Scalars['UUID']>;
+  gte?: Maybe<Scalars['UUID']>;
+  ngte?: Maybe<Scalars['UUID']>;
+  lt?: Maybe<Scalars['UUID']>;
+  nlt?: Maybe<Scalars['UUID']>;
+  lte?: Maybe<Scalars['UUID']>;
+  nlte?: Maybe<Scalars['UUID']>;
+};
+
+export type ComparableInt16OperationFilterInput = {
+  eq?: Maybe<Scalars['Short']>;
+  neq?: Maybe<Scalars['Short']>;
+  in?: Maybe<Array<Scalars['Short']>>;
+  nin?: Maybe<Array<Scalars['Short']>>;
+  gt?: Maybe<Scalars['Short']>;
+  ngt?: Maybe<Scalars['Short']>;
+  gte?: Maybe<Scalars['Short']>;
+  ngte?: Maybe<Scalars['Short']>;
+  lt?: Maybe<Scalars['Short']>;
+  nlt?: Maybe<Scalars['Short']>;
+  lte?: Maybe<Scalars['Short']>;
+  nlte?: Maybe<Scalars['Short']>;
+};
+
+export type ComparableInt32OperationFilterInput = {
+  eq?: Maybe<Scalars['Int']>;
+  neq?: Maybe<Scalars['Int']>;
+  in?: Maybe<Array<Scalars['Int']>>;
+  nin?: Maybe<Array<Scalars['Int']>>;
+  gt?: Maybe<Scalars['Int']>;
+  ngt?: Maybe<Scalars['Int']>;
+  gte?: Maybe<Scalars['Int']>;
+  ngte?: Maybe<Scalars['Int']>;
+  lt?: Maybe<Scalars['Int']>;
+  nlt?: Maybe<Scalars['Int']>;
+  lte?: Maybe<Scalars['Int']>;
+  nlte?: Maybe<Scalars['Int']>;
+};
+
+export type ComparableInt64OperationFilterInput = {
+  eq?: Maybe<Scalars['Long']>;
+  neq?: Maybe<Scalars['Long']>;
+  in?: Maybe<Array<Scalars['Long']>>;
+  nin?: Maybe<Array<Scalars['Long']>>;
+  gt?: Maybe<Scalars['Long']>;
+  ngt?: Maybe<Scalars['Long']>;
+  gte?: Maybe<Scalars['Long']>;
+  ngte?: Maybe<Scalars['Long']>;
+  lt?: Maybe<Scalars['Long']>;
+  nlt?: Maybe<Scalars['Long']>;
+  lte?: Maybe<Scalars['Long']>;
+  nlte?: Maybe<Scalars['Long']>;
+};
+
+export type ComparableNullableOfDateTimeOffsetOperationFilterInput = {
+  eq?: Maybe<Scalars['DateTime']>;
+  neq?: Maybe<Scalars['DateTime']>;
+  in?: Maybe<Array<Maybe<Scalars['DateTime']>>>;
+  nin?: Maybe<Array<Maybe<Scalars['DateTime']>>>;
+  gt?: Maybe<Scalars['DateTime']>;
+  ngt?: Maybe<Scalars['DateTime']>;
+  gte?: Maybe<Scalars['DateTime']>;
+  ngte?: Maybe<Scalars['DateTime']>;
+  lt?: Maybe<Scalars['DateTime']>;
+  nlt?: Maybe<Scalars['DateTime']>;
+  lte?: Maybe<Scalars['DateTime']>;
+  nlte?: Maybe<Scalars['DateTime']>;
+};
+
+export type ComparableNullableOfDateTimeOperationFilterInput = {
+  eq?: Maybe<Scalars['DateTime']>;
+  neq?: Maybe<Scalars['DateTime']>;
+  in?: Maybe<Array<Maybe<Scalars['DateTime']>>>;
+  nin?: Maybe<Array<Maybe<Scalars['DateTime']>>>;
+  gt?: Maybe<Scalars['DateTime']>;
+  ngt?: Maybe<Scalars['DateTime']>;
+  gte?: Maybe<Scalars['DateTime']>;
+  ngte?: Maybe<Scalars['DateTime']>;
+  lt?: Maybe<Scalars['DateTime']>;
+  nlt?: Maybe<Scalars['DateTime']>;
+  lte?: Maybe<Scalars['DateTime']>;
+  nlte?: Maybe<Scalars['DateTime']>;
+};
+
+export type ComparableNullableOfInt16OperationFilterInput = {
+  eq?: Maybe<Scalars['Short']>;
+  neq?: Maybe<Scalars['Short']>;
+  in?: Maybe<Array<Maybe<Scalars['Short']>>>;
+  nin?: Maybe<Array<Maybe<Scalars['Short']>>>;
+  gt?: Maybe<Scalars['Short']>;
+  ngt?: Maybe<Scalars['Short']>;
+  gte?: Maybe<Scalars['Short']>;
+  ngte?: Maybe<Scalars['Short']>;
+  lt?: Maybe<Scalars['Short']>;
+  nlt?: Maybe<Scalars['Short']>;
+  lte?: Maybe<Scalars['Short']>;
+  nlte?: Maybe<Scalars['Short']>;
+};
+
+export type ComparableNullableOfInt32OperationFilterInput = {
+  eq?: Maybe<Scalars['Int']>;
+  neq?: Maybe<Scalars['Int']>;
+  in?: Maybe<Array<Maybe<Scalars['Int']>>>;
+  nin?: Maybe<Array<Maybe<Scalars['Int']>>>;
+  gt?: Maybe<Scalars['Int']>;
+  ngt?: Maybe<Scalars['Int']>;
+  gte?: Maybe<Scalars['Int']>;
+  ngte?: Maybe<Scalars['Int']>;
+  lt?: Maybe<Scalars['Int']>;
+  nlt?: Maybe<Scalars['Int']>;
+  lte?: Maybe<Scalars['Int']>;
+  nlte?: Maybe<Scalars['Int']>;
 };
 
 export type CompleteUploadInput = {
@@ -138,6 +323,19 @@ export type DelLog = {
   deletedMessages: Array<Message>;
 };
 
+export type DelLogFilterInput = {
+  and?: Maybe<Array<DelLogFilterInput>>;
+  or?: Maybe<Array<DelLogFilterInput>>;
+  id?: Maybe<ComparableInt32OperationFilterInput>;
+  deletedForId?: Maybe<ComparableInt32OperationFilterInput>;
+  deletedFor?: Maybe<DelLogTypeFilterInput>;
+  createdAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  updatedAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  deletedClassrooms?: Maybe<ListFilterInputTypeOfClassroomFilterInput>;
+  deletedDiscussions?: Maybe<ListFilterInputTypeOfDiscussionFilterInput>;
+  deletedMessages?: Maybe<ListFilterInputTypeOfMessageFilterInput>;
+};
+
 export type DelLogSortInput = {
   id?: Maybe<SortEnumType>;
   deletedForId?: Maybe<SortEnumType>;
@@ -151,6 +349,14 @@ export type DelLogType = {
   id: Scalars['Int'];
   type: Scalars['String'];
   delLogs: Array<DelLog>;
+};
+
+export type DelLogTypeFilterInput = {
+  and?: Maybe<Array<DelLogTypeFilterInput>>;
+  or?: Maybe<Array<DelLogTypeFilterInput>>;
+  id?: Maybe<ComparableInt32OperationFilterInput>;
+  type?: Maybe<StringOperationFilterInput>;
+  delLogs?: Maybe<ListFilterInputTypeOfDelLogFilterInput>;
 };
 
 export type DelLogTypeSortInput = {
@@ -204,6 +410,28 @@ export enum DiscussionEvent {
   ChangeDescription = 'CHANGE_DESCRIPTION'
 }
 
+export type DiscussionFilterInput = {
+  and?: Maybe<Array<DiscussionFilterInput>>;
+  or?: Maybe<Array<DiscussionFilterInput>>;
+  id?: Maybe<IdOperationFilterInput>;
+  guid?: Maybe<ComparableGuidOperationFilterInput>;
+  name?: Maybe<StringOperationFilterInput>;
+  topic?: Maybe<StringOperationFilterInput>;
+  description?: Maybe<StringOperationFilterInput>;
+  classroomId?: Maybe<ComparableInt32OperationFilterInput>;
+  classroom?: Maybe<ClassroomFilterInput>;
+  createdById?: Maybe<ComparableInt32OperationFilterInput>;
+  createdBy?: Maybe<UserFilterInput>;
+  stateId?: Maybe<ComparableInt32OperationFilterInput>;
+  state?: Maybe<StateFilterInput>;
+  deletedAt?: Maybe<ComparableNullableOfDateTimeOperationFilterInput>;
+  delLogId?: Maybe<ComparableNullableOfInt32OperationFilterInput>;
+  delLog?: Maybe<DelLogFilterInput>;
+  createdAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  updatedAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  messages?: Maybe<ListFilterInputTypeOfMessageFilterInput>;
+};
+
 export type DiscussionMessageSubscriptionPayload = {
   __typename?: 'DiscussionMessageSubscriptionPayload';
   discussion: Discussion;
@@ -231,26 +459,6 @@ export type DiscussionSortInput = {
   updatedAt?: Maybe<SortEnumType>;
 };
 
-/** A connection to a list of items. */
-export type DiscussionsConnection = {
-  __typename?: 'DiscussionsConnection';
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** A list of edges. */
-  edges?: Maybe<Array<DiscussionsEdge>>;
-  /** A flattened list of the nodes. */
-  nodes?: Maybe<Array<Discussion>>;
-};
-
-/** An edge in a connection. */
-export type DiscussionsEdge = {
-  __typename?: 'DiscussionsEdge';
-  /** A cursor for use in pagination. */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge. */
-  node: Discussion;
-};
-
 export type File = Node & {
   __typename?: 'File';
   id: Scalars['ID'];
@@ -258,7 +466,7 @@ export type File = Node & {
   uploadedById: Scalars['Int'];
   uploadedBy: User;
   contentLength: Scalars['Long'];
-  mimeType: Scalars['String'];
+  mimeType?: Maybe<Scalars['String']>;
   uploadStatus: FileUploadStatus;
   sas: Scalars['URL'];
   signatureEncoded: Scalars['String'];
@@ -276,14 +484,53 @@ export type File = Node & {
   messageFiles: Array<MessageFile>;
 };
 
-export type FileByIdDataLoader = {
-  __typename?: 'FileByIdDataLoader';
-  load: File;
+export type FileFilterInput = {
+  and?: Maybe<Array<FileFilterInput>>;
+  or?: Maybe<Array<FileFilterInput>>;
+  id?: Maybe<ComparableInt32OperationFilterInput>;
+  uploadedById?: Maybe<ComparableInt32OperationFilterInput>;
+  uploadedBy?: Maybe<UserFilterInput>;
+  contentLength?: Maybe<ComparableInt64OperationFilterInput>;
+  mimeType?: Maybe<StringOperationFilterInput>;
+  fileExtension?: Maybe<WhitelistedFileExtensionOperationFilterInput>;
+  uploadStatus?: Maybe<FileUploadStatusOperationFilterInput>;
+  sas?: Maybe<UriFilterInput>;
+  signatureEncoded?: Maybe<StringOperationFilterInput>;
+  signatureDecoded?: Maybe<StringOperationFilterInput>;
+  containerName?: Maybe<StringOperationFilterInput>;
+  blobName?: Maybe<StringOperationFilterInput>;
+  name?: Maybe<StringOperationFilterInput>;
+  location?: Maybe<UriFilterInput>;
+  eTag?: Maybe<StringOperationFilterInput>;
+  mD5?: Maybe<StringOperationFilterInput>;
+  isDeleted?: Maybe<BooleanOperationFilterInput>;
+  createdAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  updatedAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  deletedAt?: Maybe<ComparableNullableOfDateTimeOperationFilterInput>;
+  messageFiles?: Maybe<ListFilterInputTypeOfMessageFileFilterInput>;
 };
 
-
-export type FileByIdDataLoaderLoadArgs = {
-  key: Scalars['Int'];
+export type FileSortInput = {
+  id?: Maybe<SortEnumType>;
+  uploadedById?: Maybe<SortEnumType>;
+  uploadedBy?: Maybe<UserSortInput>;
+  contentLength?: Maybe<SortEnumType>;
+  mimeType?: Maybe<SortEnumType>;
+  fileExtension?: Maybe<SortEnumType>;
+  uploadStatus?: Maybe<SortEnumType>;
+  sas?: Maybe<UriSortInput>;
+  signatureEncoded?: Maybe<SortEnumType>;
+  signatureDecoded?: Maybe<SortEnumType>;
+  containerName?: Maybe<SortEnumType>;
+  blobName?: Maybe<SortEnumType>;
+  name?: Maybe<SortEnumType>;
+  location?: Maybe<UriSortInput>;
+  eTag?: Maybe<SortEnumType>;
+  mD5?: Maybe<SortEnumType>;
+  isDeleted?: Maybe<SortEnumType>;
+  createdAt?: Maybe<SortEnumType>;
+  updatedAt?: Maybe<SortEnumType>;
+  deletedAt?: Maybe<SortEnumType>;
 };
 
 export enum FileUploadStatus {
@@ -292,6 +539,33 @@ export enum FileUploadStatus {
   Error = 'ERROR',
   Ignored = 'IGNORED'
 }
+
+export type FileUploadStatusOperationFilterInput = {
+  eq?: Maybe<FileUploadStatus>;
+  neq?: Maybe<FileUploadStatus>;
+  in?: Maybe<Array<FileUploadStatus>>;
+  nin?: Maybe<Array<FileUploadStatus>>;
+};
+
+/** A connection to a list of items. */
+export type FilesConnection = {
+  __typename?: 'FilesConnection';
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** A list of edges. */
+  edges?: Maybe<Array<FilesEdge>>;
+  /** A flattened list of the nodes. */
+  nodes?: Maybe<Array<File>>;
+};
+
+/** An edge in a connection. */
+export type FilesEdge = {
+  __typename?: 'FilesEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node: File;
+};
 
 export type GenerateDownloadSasInput = {
   fileId: Scalars['ID'];
@@ -320,6 +594,13 @@ export type GenerateUploadSasPayload = {
   query: Query;
 };
 
+export type IdOperationFilterInput = {
+  eq?: Maybe<Scalars['ID']>;
+  neq?: Maybe<Scalars['ID']>;
+  in?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  nin?: Maybe<Array<Maybe<Scalars['ID']>>>;
+};
+
 export type Invite = {
   __typename?: 'Invite';
   id: Scalars['Int'];
@@ -333,6 +614,20 @@ export type Invite = {
   logs: Array<ClassroomInvite>;
 };
 
+export type InviteFilterInput = {
+  and?: Maybe<Array<InviteFilterInput>>;
+  or?: Maybe<Array<InviteFilterInput>>;
+  id?: Maybe<ComparableInt32OperationFilterInput>;
+  code?: Maybe<StringOperationFilterInput>;
+  uses?: Maybe<ComparableInt16OperationFilterInput>;
+  maxUses?: Maybe<ComparableNullableOfInt16OperationFilterInput>;
+  maxAge?: Maybe<ComparableNullableOfInt32OperationFilterInput>;
+  expiresAt?: Maybe<ComparableNullableOfDateTimeOperationFilterInput>;
+  createdAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  updatedAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  logs?: Maybe<ListFilterInputTypeOfClassroomInviteFilterInput>;
+};
+
 export type JoinClassroomInput = {
   code: Scalars['String'];
 };
@@ -342,6 +637,83 @@ export type JoinClassroomPayload = {
   classroom?: Maybe<Classroom>;
   userErrors?: Maybe<Array<UserError>>;
   query: Query;
+};
+
+export type ListFilterInputTypeOfClassroomFilterInput = {
+  all?: Maybe<ClassroomFilterInput>;
+  none?: Maybe<ClassroomFilterInput>;
+  some?: Maybe<ClassroomFilterInput>;
+  any?: Maybe<Scalars['Boolean']>;
+};
+
+export type ListFilterInputTypeOfClassroomInviteFilterInput = {
+  all?: Maybe<ClassroomInviteFilterInput>;
+  none?: Maybe<ClassroomInviteFilterInput>;
+  some?: Maybe<ClassroomInviteFilterInput>;
+  any?: Maybe<Scalars['Boolean']>;
+};
+
+export type ListFilterInputTypeOfClassroomUserFilterInput = {
+  all?: Maybe<ClassroomUserFilterInput>;
+  none?: Maybe<ClassroomUserFilterInput>;
+  some?: Maybe<ClassroomUserFilterInput>;
+  any?: Maybe<Scalars['Boolean']>;
+};
+
+export type ListFilterInputTypeOfDelLogFilterInput = {
+  all?: Maybe<DelLogFilterInput>;
+  none?: Maybe<DelLogFilterInput>;
+  some?: Maybe<DelLogFilterInput>;
+  any?: Maybe<Scalars['Boolean']>;
+};
+
+export type ListFilterInputTypeOfDiscussionFilterInput = {
+  all?: Maybe<DiscussionFilterInput>;
+  none?: Maybe<DiscussionFilterInput>;
+  some?: Maybe<DiscussionFilterInput>;
+  any?: Maybe<Scalars['Boolean']>;
+};
+
+export type ListFilterInputTypeOfFileFilterInput = {
+  all?: Maybe<FileFilterInput>;
+  none?: Maybe<FileFilterInput>;
+  some?: Maybe<FileFilterInput>;
+  any?: Maybe<Scalars['Boolean']>;
+};
+
+export type ListFilterInputTypeOfMessageFileFilterInput = {
+  all?: Maybe<MessageFileFilterInput>;
+  none?: Maybe<MessageFileFilterInput>;
+  some?: Maybe<MessageFileFilterInput>;
+  any?: Maybe<Scalars['Boolean']>;
+};
+
+export type ListFilterInputTypeOfMessageFilterInput = {
+  all?: Maybe<MessageFilterInput>;
+  none?: Maybe<MessageFilterInput>;
+  some?: Maybe<MessageFilterInput>;
+  any?: Maybe<Scalars['Boolean']>;
+};
+
+export type ListFilterInputTypeOfSessionFilterInput = {
+  all?: Maybe<SessionFilterInput>;
+  none?: Maybe<SessionFilterInput>;
+  some?: Maybe<SessionFilterInput>;
+  any?: Maybe<Scalars['Boolean']>;
+};
+
+export type ListFilterInputTypeOfUserFilterInput = {
+  all?: Maybe<UserFilterInput>;
+  none?: Maybe<UserFilterInput>;
+  some?: Maybe<UserFilterInput>;
+  any?: Maybe<Scalars['Boolean']>;
+};
+
+export type ListStringOperationFilterInput = {
+  all?: Maybe<StringOperationFilterInput>;
+  none?: Maybe<StringOperationFilterInput>;
+  some?: Maybe<StringOperationFilterInput>;
+  any?: Maybe<Scalars['Boolean']>;
 };
 
 export type LoginInput = {
@@ -380,6 +752,36 @@ export type MessageFile = {
   file?: Maybe<File>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+};
+
+export type MessageFileFilterInput = {
+  and?: Maybe<Array<MessageFileFilterInput>>;
+  or?: Maybe<Array<MessageFileFilterInput>>;
+  messageId?: Maybe<ComparableInt32OperationFilterInput>;
+  message?: Maybe<MessageFilterInput>;
+  fileId?: Maybe<ComparableInt32OperationFilterInput>;
+  file?: Maybe<FileFilterInput>;
+  createdAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  updatedAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+};
+
+export type MessageFilterInput = {
+  and?: Maybe<Array<MessageFilterInput>>;
+  or?: Maybe<Array<MessageFilterInput>>;
+  id?: Maybe<ComparableInt32OperationFilterInput>;
+  content?: Maybe<StringOperationFilterInput>;
+  discussionId?: Maybe<ComparableInt32OperationFilterInput>;
+  discussion?: Maybe<DiscussionFilterInput>;
+  createdById?: Maybe<ComparableInt32OperationFilterInput>;
+  createdBy?: Maybe<UserFilterInput>;
+  isDiscussionEvent?: Maybe<BooleanOperationFilterInput>;
+  discussionEvent?: Maybe<NullableOfDiscussionEventOperationFilterInput>;
+  delLogId?: Maybe<ComparableNullableOfInt32OperationFilterInput>;
+  delLog?: Maybe<DelLogFilterInput>;
+  createdAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  updatedAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  deletedAt?: Maybe<ComparableNullableOfDateTimeOperationFilterInput>;
+  messageFiles?: Maybe<ListFilterInputTypeOfMessageFileFilterInput>;
 };
 
 export type MessageSortInput = {
@@ -517,6 +919,13 @@ export type Node = {
   id: Scalars['ID'];
 };
 
+export type NullableOfDiscussionEventOperationFilterInput = {
+  eq?: Maybe<DiscussionEvent>;
+  neq?: Maybe<DiscussionEvent>;
+  in?: Maybe<Array<Maybe<DiscussionEvent>>>;
+  nin?: Maybe<Array<Maybe<DiscussionEvent>>>;
+};
+
 /** Information about pagination in a connection. */
 export type PageInfo = {
   __typename?: 'PageInfo';
@@ -544,10 +953,10 @@ export type Query = {
   classrooms: Array<Classroom>;
   classroomById: Classroom;
   classroomsById: Array<Classroom>;
-  discussions?: Maybe<DiscussionsConnection>;
+  discussions: Array<Discussion>;
   discussionById: Discussion;
   discussionsById: Array<Discussion>;
-  files: Array<File>;
+  files?: Maybe<FilesConnection>;
 };
 
 
@@ -581,14 +990,6 @@ export type QueryClassroomsByIdArgs = {
 };
 
 
-export type QueryDiscussionsArgs = {
-  first?: Maybe<Scalars['Int']>;
-  after?: Maybe<Scalars['String']>;
-  last?: Maybe<Scalars['Int']>;
-  before?: Maybe<Scalars['String']>;
-};
-
-
 export type QueryDiscussionByIdArgs = {
   id: Scalars['ID'];
 };
@@ -596,6 +997,16 @@ export type QueryDiscussionByIdArgs = {
 
 export type QueryDiscussionsByIdArgs = {
   ids: Array<Scalars['ID']>;
+};
+
+
+export type QueryFilesArgs = {
+  first?: Maybe<Scalars['Int']>;
+  after?: Maybe<Scalars['String']>;
+  last?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['String']>;
+  where?: Maybe<FileFilterInput>;
+  order?: Maybe<Array<FileSortInput>>;
 };
 
 export type RefreshSessionInput = {
@@ -625,6 +1036,17 @@ export type Session = Node & {
   updatedAt: Scalars['DateTime'];
 };
 
+export type SessionFilterInput = {
+  and?: Maybe<Array<SessionFilterInput>>;
+  or?: Maybe<Array<SessionFilterInput>>;
+  id?: Maybe<ComparableGuidOperationFilterInput>;
+  userId?: Maybe<ComparableInt32OperationFilterInput>;
+  user?: Maybe<UserFilterInput>;
+  createdAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  expiresAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  updatedAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+};
+
 
 export type SignUpInput = {
   name: Scalars['String'];
@@ -648,11 +1070,38 @@ export type State = {
   discussions: Array<Discussion>;
 };
 
+export type StateFilterInput = {
+  and?: Maybe<Array<StateFilterInput>>;
+  or?: Maybe<Array<StateFilterInput>>;
+  id?: Maybe<ComparableInt32OperationFilterInput>;
+  status?: Maybe<StringOperationFilterInput>;
+  createdAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  updatedAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  users?: Maybe<ListFilterInputTypeOfUserFilterInput>;
+  classrooms?: Maybe<ListFilterInputTypeOfClassroomFilterInput>;
+  discussions?: Maybe<ListFilterInputTypeOfDiscussionFilterInput>;
+};
+
 export type StateSortInput = {
   id?: Maybe<SortEnumType>;
   status?: Maybe<SortEnumType>;
   createdAt?: Maybe<SortEnumType>;
   updatedAt?: Maybe<SortEnumType>;
+};
+
+export type StringOperationFilterInput = {
+  and?: Maybe<Array<StringOperationFilterInput>>;
+  or?: Maybe<Array<StringOperationFilterInput>>;
+  eq?: Maybe<Scalars['String']>;
+  neq?: Maybe<Scalars['String']>;
+  contains?: Maybe<Scalars['String']>;
+  ncontains?: Maybe<Scalars['String']>;
+  in?: Maybe<Array<Maybe<Scalars['String']>>>;
+  nin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  startsWith?: Maybe<Scalars['String']>;
+  nstartsWith?: Maybe<Scalars['String']>;
+  endsWith?: Maybe<Scalars['String']>;
+  nendsWith?: Maybe<Scalars['String']>;
 };
 
 export type Subscription = {
@@ -689,6 +1138,72 @@ export type UpdateDiscussionTopicPayload = {
   discussion?: Maybe<Discussion>;
   userErrors?: Maybe<Array<UserError>>;
   query: Query;
+};
+
+export type UriFilterInput = {
+  and?: Maybe<Array<UriFilterInput>>;
+  or?: Maybe<Array<UriFilterInput>>;
+  absolutePath?: Maybe<StringOperationFilterInput>;
+  absoluteUri?: Maybe<StringOperationFilterInput>;
+  localPath?: Maybe<StringOperationFilterInput>;
+  authority?: Maybe<StringOperationFilterInput>;
+  hostNameType?: Maybe<UriHostNameTypeOperationFilterInput>;
+  isDefaultPort?: Maybe<BooleanOperationFilterInput>;
+  isFile?: Maybe<BooleanOperationFilterInput>;
+  isLoopback?: Maybe<BooleanOperationFilterInput>;
+  pathAndQuery?: Maybe<StringOperationFilterInput>;
+  segments?: Maybe<ListStringOperationFilterInput>;
+  isUnc?: Maybe<BooleanOperationFilterInput>;
+  host?: Maybe<StringOperationFilterInput>;
+  port?: Maybe<ComparableInt32OperationFilterInput>;
+  query?: Maybe<StringOperationFilterInput>;
+  fragment?: Maybe<StringOperationFilterInput>;
+  scheme?: Maybe<StringOperationFilterInput>;
+  originalString?: Maybe<StringOperationFilterInput>;
+  dnsSafeHost?: Maybe<StringOperationFilterInput>;
+  idnHost?: Maybe<StringOperationFilterInput>;
+  isAbsoluteUri?: Maybe<BooleanOperationFilterInput>;
+  userEscaped?: Maybe<BooleanOperationFilterInput>;
+  userInfo?: Maybe<StringOperationFilterInput>;
+};
+
+export enum UriHostNameType {
+  Unknown = 'UNKNOWN',
+  Basic = 'BASIC',
+  Dns = 'DNS',
+  IPv4 = 'I_PV4',
+  IPv6 = 'I_PV6'
+}
+
+export type UriHostNameTypeOperationFilterInput = {
+  eq?: Maybe<UriHostNameType>;
+  neq?: Maybe<UriHostNameType>;
+  in?: Maybe<Array<UriHostNameType>>;
+  nin?: Maybe<Array<UriHostNameType>>;
+};
+
+export type UriSortInput = {
+  absolutePath?: Maybe<SortEnumType>;
+  absoluteUri?: Maybe<SortEnumType>;
+  localPath?: Maybe<SortEnumType>;
+  authority?: Maybe<SortEnumType>;
+  hostNameType?: Maybe<SortEnumType>;
+  isDefaultPort?: Maybe<SortEnumType>;
+  isFile?: Maybe<SortEnumType>;
+  isLoopback?: Maybe<SortEnumType>;
+  pathAndQuery?: Maybe<SortEnumType>;
+  isUnc?: Maybe<SortEnumType>;
+  host?: Maybe<SortEnumType>;
+  port?: Maybe<SortEnumType>;
+  query?: Maybe<SortEnumType>;
+  fragment?: Maybe<SortEnumType>;
+  scheme?: Maybe<SortEnumType>;
+  originalString?: Maybe<SortEnumType>;
+  dnsSafeHost?: Maybe<SortEnumType>;
+  idnHost?: Maybe<SortEnumType>;
+  isAbsoluteUri?: Maybe<SortEnumType>;
+  userEscaped?: Maybe<SortEnumType>;
+  userInfo?: Maybe<SortEnumType>;
 };
 
 export type User = Node & {
@@ -729,6 +1244,39 @@ export type UserError = {
   code: Scalars['String'];
 };
 
+export type UserFilterInput = {
+  and?: Maybe<Array<UserFilterInput>>;
+  or?: Maybe<Array<UserFilterInput>>;
+  id?: Maybe<IdOperationFilterInput>;
+  guid?: Maybe<ComparableGuidOperationFilterInput>;
+  name?: Maybe<StringOperationFilterInput>;
+  email?: Maybe<StringOperationFilterInput>;
+  profileColor?: Maybe<UserProfileColorOperationFilterInput>;
+  avatarUrl?: Maybe<StringOperationFilterInput>;
+  stateId?: Maybe<ComparableInt32OperationFilterInput>;
+  state?: Maybe<StateFilterInput>;
+  createdAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  updatedAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+  sessions?: Maybe<ListFilterInputTypeOfSessionFilterInput>;
+  messages?: Maybe<ListFilterInputTypeOfMessageFilterInput>;
+  classrooms?: Maybe<ListFilterInputTypeOfClassroomUserFilterInput>;
+  invites?: Maybe<ListFilterInputTypeOfClassroomInviteFilterInput>;
+  fileUploads?: Maybe<ListFilterInputTypeOfFileFilterInput>;
+  userName?: Maybe<StringOperationFilterInput>;
+  normalizedUserName?: Maybe<StringOperationFilterInput>;
+  normalizedEmail?: Maybe<StringOperationFilterInput>;
+  emailConfirmed?: Maybe<BooleanOperationFilterInput>;
+  passwordHash?: Maybe<StringOperationFilterInput>;
+  securityStamp?: Maybe<StringOperationFilterInput>;
+  concurrencyStamp?: Maybe<StringOperationFilterInput>;
+  phoneNumber?: Maybe<StringOperationFilterInput>;
+  phoneNumberConfirmed?: Maybe<BooleanOperationFilterInput>;
+  twoFactorEnabled?: Maybe<BooleanOperationFilterInput>;
+  lockoutEnd?: Maybe<ComparableNullableOfDateTimeOffsetOperationFilterInput>;
+  lockoutEnabled?: Maybe<BooleanOperationFilterInput>;
+  accessFailedCount?: Maybe<ComparableInt32OperationFilterInput>;
+};
+
 export enum UserProfileColor {
   Sky = 'SKY',
   Pink = 'PINK',
@@ -738,6 +1286,13 @@ export enum UserProfileColor {
   Gray = 'GRAY',
   Orange = 'ORANGE'
 }
+
+export type UserProfileColorOperationFilterInput = {
+  eq?: Maybe<UserProfileColor>;
+  neq?: Maybe<UserProfileColor>;
+  in?: Maybe<Array<UserProfileColor>>;
+  nin?: Maybe<Array<UserProfileColor>>;
+};
 
 export type UserSortInput = {
   guid?: Maybe<SortEnumType>;
@@ -800,3 +1355,10 @@ export enum WhitelistedFileExtension {
   Wmv = 'WMV',
   Zip = 'ZIP'
 }
+
+export type WhitelistedFileExtensionOperationFilterInput = {
+  eq?: Maybe<WhitelistedFileExtension>;
+  neq?: Maybe<WhitelistedFileExtension>;
+  in?: Maybe<Array<WhitelistedFileExtension>>;
+  nin?: Maybe<Array<WhitelistedFileExtension>>;
+};

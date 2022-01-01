@@ -1,15 +1,8 @@
-﻿using API.Data;
-using HotChocolate.Types;
-using HotChocolate.Types.Descriptors;
-using System.Reflection;
+using API.Data;
+using HotChocolate.Data;
 
 namespace API.Extensions {
-    public class UseApplicationDbContextAttribute : ObjectFieldDescriptorAttribute {
-        public override void OnConfigure(
-            IDescriptorContext context,
-            IObjectFieldDescriptor descriptor,
-            MemberInfo member) {
-            descriptor.UseDbContext<ApplicationDbContext>();
-        }
+    public class UseApplicationDbContextAttribute : UseDbContextAttribute {
+        public UseApplicationDbContextAttribute() : base(typeof(ApplicationDbContext)) { }
     }
 }

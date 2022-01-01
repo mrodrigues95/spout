@@ -90,10 +90,8 @@ export const resolveSession = async ({
       0.5 * IRON_SESSION_TTL;
 
     if (shouldRefreshSession) {
-      console.log('Refreshing session...');
       session = await refreshSession(client, session.id!);
       if (!session) return destroy(req);
-      console.log('Refreshed session, setting it now...');
       await create(req, session.id!);
     }
   }
@@ -124,7 +122,7 @@ const fetchSession = async (
 
     return data.data.sessionById;
   } catch (error) {
-    console.log('Fetch client session error: ', error);
+    console.log('[ERROR] - fetching client session: ', error);
     return null;
   }
 };
@@ -155,7 +153,7 @@ const refreshSession = async (
 
     return data.data?.refreshSession?.session || null;
   } catch (error) {
-    console.log('Refresh client session error: ', error);
+    console.log('[ERROR] -  refreshing client session: ', error);
     return null;
   }
 };

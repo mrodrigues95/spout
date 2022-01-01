@@ -12,7 +12,6 @@ using API.Data;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using API.Extensions;
 
 namespace API.Schema.Types.Messages {
     public class MessageType : ObjectType<Message> {
@@ -33,9 +32,9 @@ namespace API.Schema.Types.Messages {
             descriptor
                 .Field(m => m.MessageFiles)
                 .Type<NonNullType<ListType<NonNullType<FileType>>>>()
+                .UseDbContext<ApplicationDbContext>()
                 .ResolveWith<MessageResolvers>(x =>
                     x.GetAttachmentsAsync(default!, default!, default!, default!))
-                .UseDbContext<ApplicationDbContext>()
                 .Name("attachments");
         }
 

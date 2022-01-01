@@ -5,14 +5,18 @@ using HotChocolate;
 using API.Data;
 using System.Linq;
 using HotChocolate.AspNetCore.Authorization;
+using HotChocolate.Data;
 
 namespace API.Schema.Queries.Files {
     [ExtendObjectType(OperationTypeNames.Query)]
     public class FileQueries {
         [Authorize]
         [UseApplicationDbContext]
+        [UsePaging(MaxPageSize = 50)]
+        [UseFiltering]
+        [UseSorting]
         public IQueryable<File> GetFiles(
-            [ScopedService] ApplicationDbContext context)
-            => context.Files;
+            [ScopedService] ApplicationDbContext ctx)
+            => ctx.Files.OrderBy(f => f.Id);
     }
 }

@@ -7,6 +7,7 @@ import { Image } from '../../../../../shared/components';
 import { getRandomAvatar } from '../../../../../shared/utils/getRandomAvatar';
 import TopicDescription from './TopicDescription';
 import Participants from './Participants';
+import Attachments from './Attachments';
 
 interface Tab {
   id: number;
@@ -30,8 +31,8 @@ const DiscussionDetails = ({ discussion }: Props) => {
     {
       id: 2,
       icon: <FontAwesomeIcon icon={faFileAlt} />,
-      ariaLabel: 'Files',
-      component: <span>files</span>,
+      ariaLabel: 'Attachments',
+      component: <Attachments />,
     },
   ]);
 

@@ -73,7 +73,7 @@ const VerticalNavItem = ({
         <Link
           href={to!}
           variant={selected ? 'light' : 'ghost'}
-          scheme={selected ? 'sky' : 'gray'}
+          scheme='gray'
           fullWidth
           size="sm"
           className={twMerge(clsx('text-sm space-x-4 group', className))}

@@ -60,8 +60,11 @@ namespace API.Schema.Types.Files {
     }
 
     public class WhitelistedFileExtensionType : EnumType<WhitelistedFileExtension> { }
+
     public class FileUploadStatusType : EnumType<FileUploadStatus> { }
+
     public class FileSizeType : EnumType<FileSize> { }
+
 
     public class FileType : ObjectType<File> {
         protected override void Configure(IObjectTypeDescriptor<File> descriptor) {

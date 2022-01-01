@@ -7,7 +7,6 @@ using API.Data;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using API.Extensions;
 using HotChocolate.Types.Pagination;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Messages;
@@ -16,6 +15,7 @@ using API.Schema.Types.Classrooms;
 using API.Schema.Types.Messages;
 using API.Schema.Types.Users;
 using API.Schema.Queries.Discussions;
+using HotChocolate.Data.Filters;
 
 namespace API.Schema.Types.Discussions {
     public enum DiscussionEvent {
@@ -25,32 +25,44 @@ namespace API.Schema.Types.Discussions {
 
     public class DiscussionEventType : EnumType<DiscussionEvent> { }
 
+    public class DiscussionFilterInputType : FilterInputType<Discussion> {
+        protected override void Configure(IFilterInputTypeDescriptor<Discussion> descriptor) {
+            descriptor
+                .Field(x => x.Id)
+                .Type<IdOperationFilterInputType>();
+        }
+    }
+
     public class DiscussionType : ObjectType<Discussion> {
         protected override void Configure(IObjectTypeDescriptor<Discussion> descriptor) {
             descriptor
                 .ImplementsNode()
                 .IdField(d => d.Id)
-                .ResolveNode((ctx, id) => ctx.DataLoader<DiscussionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+                .ResolveNode((ctx, id) =>
+                    ctx.DataLoader<DiscussionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
             descriptor
                 .Field(d => d.CreatedBy)
                 .Type<NonNullType<UserType>>()
-                .ResolveWith<DiscussionResolvers>(x => x.GetCreatedByAsync(default!, default!, default!))
+                .ResolveWith<DiscussionResolvers>(x =>
+                    x.GetCreatedByAsync(default!, default!, default!))
                 .Name("createdBy");
 
             descriptor
                 .Field(d => d.Classroom)
                 .Type<NonNullType<ClassroomType>>()
-                .ResolveWith<DiscussionResolvers>(x => x.GetClassroomAsync(default!, default!, default!))
+                .ResolveWith<DiscussionResolvers>(x =>
+                    x.GetClassroomAsync(default!, default!, default!))
                 .Name("classroom");
 
             descriptor
                 .Field(d => d.Messages)
                 .Type<NonNullType<ListType<NonNullType<MessageType>>>>()
+                .UseDbContext<ApplicationDbContext>()
                 .UsePaging<NonNullType<MessageType>>(options: new PagingOptions { MaxPageSize = 50 })
                 .UseSorting()
-                .ResolveWith<DiscussionResolvers>(x => x.GetMessagesAsync(default!, default!, default!, default!))
-                .UseDbContext<ApplicationDbContext>()
+                .ResolveWith<DiscussionResolvers>(x =>
+                    x.GetMessagesAsync(default!, default!, default!, default!))
                 .Name("messages");
         }
 
@@ -69,14 +81,14 @@ namespace API.Schema.Types.Discussions {
 
             public async Task<IEnumerable<Message>> GetMessagesAsync(
                 [Parent] Discussion discussion,
-                [ScopedService] ApplicationDbContext context,
+                [ScopedService] ApplicationDbContext ctx,
                 MessageByIdDataLoader messageById,
                 CancellationToken cancellationToken) {
                 // TODO: Paginate this.
                 // This will currently fetch all messages and chop the pages in memory but
                 // instead we should paginate the messages before passing it into the data loader.
                 // See: https://github.com/ChilliCream/graphql-workshop/blob/master/docs/6-adding-complex-filter-capabilities.md
-                int[] messageIds = await context.Discussions
+                int[] messageIds = await ctx.Discussions
                     .Where(d => d.Id == discussion.Id)
                     .Include(d => d.Messages)
                     .SelectMany(d => d.Messages.Select(m => m.Id))

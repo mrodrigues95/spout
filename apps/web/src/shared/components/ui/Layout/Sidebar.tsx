@@ -19,7 +19,6 @@ import {
   CreateClassroomMutation,
   CreateClassroomMutationVariables,
 } from './__generated__/Sidebar.generated';
-import Avatar from '../Avatar';
 import Image from '../Image';
 import VerticalNav from '../VerticalNav';
 
@@ -112,9 +111,9 @@ const CreateClassroom = () => {
 const SidebarSkeleton = () => {
   const stack = (
     <Skeleton.Stack className="pl-4">
-      <Skeleton h="h-3" w="w-1/2" />
-      <Skeleton h="h-3" w="w-2/3" />
-      <Skeleton h="h-3" w="w-full" />
+      <Skeleton className="h-3 w-1/2" />
+      <Skeleton className="h-3 w-2/3" />
+      <Skeleton className="h-3 w-full" />
     </Skeleton.Stack>
   );
 

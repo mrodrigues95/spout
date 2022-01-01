@@ -42,7 +42,8 @@ namespace API.Extensions {
                 .AddTypeExtension<UserQueries>()
                 .AddDataLoader<UserByIdDataLoader>()
                 .AddType<UserType>()
-                .AddType<UserProfileColorType>();
+                .AddType<UserProfileColorType>()
+                .AddType<UserFilterInputType>();
 
             gql
                 .AddTypeExtension<SessionQueries>()
@@ -62,7 +63,8 @@ namespace API.Extensions {
                 .AddTypeExtension<DiscussionSubscriptions>()
                 .AddDataLoader<DiscussionByIdDataLoader>()
                 .AddType<DiscussionType>()
-                .AddType<DiscussionEventType>();
+                .AddType<DiscussionEventType>()
+                .AddType<DiscussionFilterInputType>();
 
             gql
                 .AddTypeExtension<AuthMutations>();
@@ -70,7 +72,7 @@ namespace API.Extensions {
             gql
                 .AddTypeExtension<FileQueries>()
                 .AddTypeExtension<FileMutations>()
-                .AddTypeExtension<FileByIdDataLoader>()
+                .AddDataLoader<FileByIdDataLoader>()
                 .AddType<FileType>()
                 .AddType<FileUploadStatusType>()
                 .AddType<WhitelistedFileExtensionType>();
