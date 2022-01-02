@@ -11,11 +11,20 @@ const STYLES = {
     'focus:outline-none focus:ring focus:ring-offset-white focus:ring-offset-2',
   disabled: 'disabled:opacity-60 disabled:pointer-events-none',
   size: {
-    xs: 'py-1 px-2 text-xs',
-    sm: 'py-2 px-4 text-sm',
-    md: 'py-2 px-6 text-md',
-    lg: 'py-3 px-8 text-lg',
-    xl: 'py-4 px-10 text-xl',
+    regular: {
+      xs: 'py-1 px-2 text-xs',
+      sm: 'py-2 px-4 text-sm',
+      md: 'py-2 px-6 text-md',
+      lg: 'py-3 px-8 text-lg',
+      xl: 'py-4 px-10 text-xl',
+    },
+    icon: {
+      xs: 'p-1 text-xs',
+      sm: 'p-2 text-sm',
+      md: 'p-3 text-md',
+      lg: 'p-6 text-lg',
+      xl: 'p-8 text-xl',
+    },
   },
   variant: {
     solid: 'border-none',
@@ -80,10 +89,11 @@ const STYLES = {
 export const buttonOrLinkStyles = { ...STYLES };
 
 export interface Styles {
-  size?: keyof typeof STYLES['size'];
+  size?: keyof typeof STYLES['size']['icon'];
   variant?: keyof typeof STYLES['variant'];
   scheme?: keyof typeof STYLES['scheme'];
   fullWidth?: boolean;
+  isIcon?: boolean;
 }
 
 export type ButtonOrLinkProps = {
@@ -104,6 +114,7 @@ export const ButtonOrLink = forwardRef<
       variant = 'solid',
       scheme = 'gray',
       fullWidth = false,
+      isIcon = false,
       className,
       ...props
     },
@@ -120,9 +131,9 @@ export const ButtonOrLink = forwardRef<
             STYLES.base,
             STYLES.disabled,
             STYLES.active,
-            STYLES.size[size],
             STYLES.variant[variant],
             STYLES.scheme[scheme][variant],
+            isIcon ? STYLES.size['icon'][size] : STYLES.size['regular'][size],
             fullWidth && 'w-full'
           );
 

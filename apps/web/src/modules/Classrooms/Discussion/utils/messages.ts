@@ -1,6 +1,7 @@
 import { differenceInMinutes, format } from 'date-fns';
 import { Message_Message } from './__generated__/fragments.generated';
 import { OptimisticMessage } from './messagesStore';
+import { getTime } from './dates';
 
 type Message = OptimisticMessage | Message_Message;
 type Messages = Message[];
@@ -30,8 +31,6 @@ export const group = (messages: Messages): GroupedMessages =>
  */
 const sort = (groups: GroupedMessages) => {
   const days = { ...groups };
-
-  const getTime = (date: string) => new Date(date).getTime();
 
   Object.entries(days).forEach(([_, messages]) =>
     messages
@@ -115,10 +114,10 @@ export type RecentMessages = Record<string, RecentMessage>;
 /**
  * Filters messages that have been sent by the same user within the
  * past five minutes.
- * 
+ *
  * This function is primarily used for styling recently sent messages
  * from the same user.
- * 
+ *
  * @param items An array of `items`.
  * @returns An `object` containing recently grouped messages.
  */

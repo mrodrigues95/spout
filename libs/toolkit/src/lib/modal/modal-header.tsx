@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 import { ModalContext } from './modal';
-import { IconButton } from '../icon-button';
+import { IconButton } from '../button';
 
 interface HeaderProps {
   className?: string;

@@ -15,7 +15,10 @@ import {
   OnDiscussionMessageReceived,
   OnDiscussionMessageReceivedVariables,
 } from '../__generated__/DiscussionMessages.generated';
-import { updateMessagesQuery } from '../../utils/updateMessagesQuery';
+import {
+  updateMessagesQuery,
+  updateDiscussionFilesQuery,
+} from '../../utils/queryCache';
 import { useStore } from '../../utils/messagesStore';
 import DiscussionMessageComposer from './Composer';
 import DiscussionMessagesList from './DiscussionMessagesList';
@@ -82,7 +85,9 @@ const DicussionMessages = ({
   fetchMore,
   subscribeToMore,
 }: Props) => {
-  const { data } = useQuery<MeQuery>(query, { fetchPolicy: 'cache-only' });
+  const { data, client } = useQuery<MeQuery>(query, {
+    fetchPolicy: 'cache-only',
+  });
 
   const handleLoadMore = useCallback(async () => {
     const pageInfo = discussion.messages?.pageInfo;
@@ -108,8 +113,11 @@ const DicussionMessages = ({
 
         const { message } = subscriptionData.data.onDiscussionMessageReceived;
 
+        // Update the sidebar "Attachments" panel.
+        updateDiscussionFilesQuery(client.cache, message, discussion.id);
+
         // We manually update the cache for new messages that are created by the current
-        // user that are not events, so they can be ignored here.
+        // user and aren't events, so they can be ignored here.
         if (
           message.createdBy.id === data!.me!.id &&
           !message.isDiscussionEvent
@@ -124,12 +132,14 @@ const DicussionMessages = ({
     return () => {
       if (unsubscribe) unsubscribe();
     };
-  }, [discussion.id, data, subscribeToMore]);
+  }, [discussion.id, data, subscribeToMore, client]);
 
+  // Optimistic messages.
   const messagesToSend = useStore(
     (state) => state.messagesByDiscussionId[discussion.id]
   );
 
+  // Combine optimistic messages with already fetched messages.
   const messages = useMemo(() => {
     const edges = (discussion.messages?.edges ?? []).map((edge) => ({
       node: edge.node,

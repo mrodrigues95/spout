@@ -462,9 +462,9 @@ export type DiscussionSortInput = {
 export type File = Node & {
   __typename?: 'File';
   id: Scalars['ID'];
+  uploadedBy: User;
   extension: WhitelistedFileExtension;
   uploadedById: Scalars['Int'];
-  uploadedBy: User;
   contentLength: Scalars['Long'];
   mimeType?: Maybe<Scalars['String']>;
   uploadStatus: FileUploadStatus;

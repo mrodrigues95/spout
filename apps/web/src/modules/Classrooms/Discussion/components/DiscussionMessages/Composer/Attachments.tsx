@@ -10,7 +10,6 @@ import {
 import {
   buttonOrLinkStyles,
   FilePicker,
-  iconButtonStyles,
   Spinner,
   Tooltip,
   FileIcon,
@@ -53,7 +52,7 @@ export const UploadAttachments = () => {
             buttonOrLinkStyles.active,
             buttonOrLinkStyles.variant['ghost'],
             buttonOrLinkStyles.scheme['gray']['ghost'],
-            iconButtonStyles.size['sm']
+            buttonOrLinkStyles.size['icon'].sm
           )}
           aria-label="Select attachments to upload"
         >

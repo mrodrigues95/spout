@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useState } from 'react';
 import {
   faChevronDown,
   faChevronUp,
@@ -6,10 +6,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Disclosure } from '@headlessui/react';
-import { Button, FileIcon, IconButton, Tooltip, Spinner } from '@spout/toolkit';
+import { Button, FileIcon, IconLink, Tooltip } from '@spout/toolkit';
 import clsx from 'clsx';
 import { formatBytesToHumanReadable } from '../../../../../shared/utils';
-import { useFileDownload } from '../../../../../shared/hooks';
 import {
   File_File,
   Message_Message,
@@ -24,65 +23,38 @@ const DiscussionMessageAttachment = ({
   isMyMessage,
   attachment,
 }: DiscussionMessageAttachmentProps) => {
-  const {
-    generateDownloadSAS,
-    loading: fetchingAttachment,
-  } = useFileDownload();
   const [isActive, setIsActive] = useState(false);
-
-  const ref = useRef<HTMLAnchorElement>(null);
-
-  const viewAttachment = useCallback(
-    async (attachmentId: string) => {
-      const { sas } = (await generateDownloadSAS(attachmentId)) || {};
-      if (!sas) return;
-
-      // TODO: Is there a better way to handle loading external links like this?
-      if (ref.current) {
-        ref.current.href = sas;
-        ref.current.click();
-        ref.current.href = '';
-      }
-    },
-    [generateDownloadSAS]
-  );
-
-  const icon = fetchingAttachment ? (
-    <Spinner variant="circle" size="xs" scheme="white" />
-  ) : (
-    <FontAwesomeIcon icon={faExternalLinkAlt} />
-  );
 
   return (
     <li
       className={clsx(
         'relative flex p-3 rounded-md bg-white max-w-[12rem] select-none',
-        isMyMessage ? 'shadow-lg' : 'shadow-sm ring-1 ring-gray-900/10',
-        fetchingAttachment ? 'cursor-default' : 'cursor-pointer'
+        isMyMessage ? 'shadow-lg' : 'shadow-sm ring-1 ring-gray-900/10'
       )}
       onMouseEnter={() => setIsActive(true)}
       onMouseLeave={() => setIsActive(false)}
     >
-      <a
-        ref={ref}
-        rel="noreferrer"
-        target="_blank"
-        aria-hidden="true"
-        className="hidden"
-        tabIndex={-1}
-      />
       {isActive && (
-        <div className="inline-flex absolute -top-1.5 -right-1.5 bg-blue-700 rounded-md">
-          <Tooltip label="View File">
-            <IconButton
-              className="z-10 text-white bg-blue-700 focus:bg-blue-800 focus:ring hover:bg-blue-800"
+        <div
+          className={clsx(
+            'inline-flex absolute -top-1.5 -right-1.5 rounded-md',
+            isMyMessage && 'bg-blue-700 '
+          )}
+        >
+          <Tooltip label="View Attachment">
+            <IconLink
+              className={clsx(
+                'z-10',
+                isMyMessage &&
+                  'text-white bg-blue-700 focus:bg-blue-800 focus:ring hover:bg-blue-800'
+              )}
               variant="light"
               size="xs"
-              aria-label="View File"
-              role="link"
-              icon={icon}
-              disabled={fetchingAttachment}
-              onClick={() => viewAttachment(attachment.id)}
+              aria-label="View Attachment"
+              rel="noreferrer"
+              target="_blank"
+              icon={<FontAwesomeIcon icon={faExternalLinkAlt} />}
+              href={attachment.location!}
             />
           </Tooltip>
         </div>
@@ -91,7 +63,7 @@ const DiscussionMessageAttachment = ({
       <div className="flex-1 min-w-0">
         <p className="font-medium truncate">{attachment.name}</p>
         <p className="text-gray-500 truncate text-sm">
-          {formatBytesToHumanReadable(attachment.contentLength)}{' '}-{' '}
+          {formatBytesToHumanReadable(attachment.contentLength)} -{' '}
           {attachment.extension}
         </p>
       </div>

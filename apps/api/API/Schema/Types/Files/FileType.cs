@@ -1,5 +1,10 @@
+using System.Threading;
+using System.Threading.Tasks;
 using API.Data.Entities;
 using API.Schema.Queries.Files;
+using API.Schema.Queries.Users;
+using API.Schema.Types.Users;
+using HotChocolate;
 using HotChocolate.Types;
 
 namespace API.Schema.Types.Files {
@@ -75,8 +80,23 @@ namespace API.Schema.Types.Files {
                     ctx.DataLoader<FileByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
             descriptor
+                .Field(f => f.UploadedBy)
+                .Type<NonNullType<UserType>>()
+                .ResolveWith<FileResolvers>(x =>
+                    x.GetUploadedByAsync(default!, default!, default!))
+                .Name("uploadedBy");
+
+            descriptor
                 .Field(f => f.FileExtension)
                 .Name("extension");
+        }
+
+        private class FileResolvers {
+            public async Task<User> GetUploadedByAsync(
+            [Parent] File file,
+            UserByIdDataLoader userById,
+            CancellationToken cancellationToken)
+            => await userById.LoadAsync(file.UploadedById, cancellationToken);
         }
     }
 }

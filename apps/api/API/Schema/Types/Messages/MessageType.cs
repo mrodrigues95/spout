@@ -42,8 +42,8 @@ namespace API.Schema.Types.Messages {
             public async Task<User> GetCreatedByAsync(
             [Parent] Message message,
             UserByIdDataLoader userById,
-            CancellationToken cancellationToken) =>
-            await userById.LoadAsync(message.CreatedById, cancellationToken);
+            CancellationToken cancellationToken)
+            => await userById.LoadAsync(message.CreatedById, cancellationToken);
 
             public async Task<IEnumerable<File>> GetAttachmentsAsync(
                 [Parent] Message message,

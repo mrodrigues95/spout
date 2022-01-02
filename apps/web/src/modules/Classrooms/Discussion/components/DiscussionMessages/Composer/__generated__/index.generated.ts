@@ -1,6 +1,6 @@
 import * as Types from '../../../../../../../__generated__/schema.generated';
 
-import { UserInfo_User, File_File } from '../../../../utils/__generated__/fragments.generated';
+import { UserInfo_User } from '../../../../utils/__generated__/fragments.generated';
 export type MeQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 

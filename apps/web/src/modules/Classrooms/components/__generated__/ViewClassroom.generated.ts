@@ -1,6 +1,6 @@
 import * as Types from '../../../../__generated__/schema.generated';
 
-import { UserInfo_User, File_File } from '../../Discussion/utils/__generated__/fragments.generated';
+import { UserInfo_User } from '../../Discussion/utils/__generated__/fragments.generated';
 export type ClassroomInfo_Classroom = (
   { __typename?: 'Classroom' }
   & Pick<Types.Classroom, 'id' | 'name'>

@@ -1,16 +1,5 @@
 import { gql } from '@apollo/client';
 
-export const FileFragment = gql`
-  fragment File_file on File {
-    id
-    name
-    contentLength
-    extension
-    location
-    mimeType
-  }
-`;
-
 export const UserInfoFragment = gql`
   fragment UserInfo_user on User {
     id
@@ -20,6 +9,22 @@ export const UserInfoFragment = gql`
     avatarUrl
     profileColor
   }
+`;
+
+export const FileFragment = gql`
+  fragment File_file on File {
+    id
+    name
+    contentLength
+    extension
+    location
+    mimeType
+    createdAt
+    uploadedBy {
+      ...UserInfo_user
+    }
+  }
+  ${UserInfoFragment}
 `;
 
 export const MessageFragment = gql`

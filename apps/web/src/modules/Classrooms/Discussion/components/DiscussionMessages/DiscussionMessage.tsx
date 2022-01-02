@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { Avatar } from '../../../../../shared/components';
 import { Message_Message } from '../../utils/__generated__/fragments.generated';
 import { MeQuery } from './__generated__/DiscussionMessage.generated';
-import { formatMessageDate } from '../../utils/format';
+import { formatMessageDate } from '../../utils/dates';
 import { UserInfoFragment } from '../../utils/fragments';
 import { RecentMessage, RecentMessages } from '../../utils/messages';
 import DiscussionMessageAttachments from './DiscussionMessageAttachments';

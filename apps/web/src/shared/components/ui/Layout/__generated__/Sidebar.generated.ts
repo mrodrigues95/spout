@@ -1,6 +1,6 @@
 import * as Types from '../../../../../__generated__/schema.generated';
 
-import { UserInfo_User, File_File } from '../../../../../modules/Classrooms/Discussion/utils/__generated__/fragments.generated';
+import { UserInfo_User } from '../../../../../modules/Classrooms/Discussion/utils/__generated__/fragments.generated';
 import { ClassroomInfo_Classroom } from '../../../../../modules/Classrooms/components/__generated__/ViewClassroom.generated';
 export type CreateClassroomMutationVariables = Types.Exact<{
   input: Types.CreateClassroomInput;

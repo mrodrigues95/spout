@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { Card, Avatar } from '../../../../../shared/components';
 import { DiscussionEvent } from '../../../../../__generated__/schema.generated';
 import { Message_Message } from '../../utils/__generated__/fragments.generated';
-import { formatMessageDate } from '../../utils/format';
+import { formatMessageDate } from '../../utils/dates';
 
 interface Props {
   messageEvent: Message_Message;
