@@ -27,11 +27,11 @@ const DiscussionHeader = ({ discussion }: Props) => {
         `/classrooms/${discussion.classroom.id}/${selectedDiscussionId}`
       );
     }
-  }, [selectedDiscussionId]);
+  }, [discussion.classroom.id, discussion.id, router, selectedDiscussionId]);
 
-  const discussions = [...discussion.classroom.discussions ?? []].sort((d1, d2) =>
-    d1.name.localeCompare(d2.name)
-  );
+  const discussions = [
+    ...(discussion.classroom.discussions ?? []),
+  ].sort((d1, d2) => d1.name.localeCompare(d2.name));
 
   return (
     <div className="flex items-center justify-between">
@@ -61,7 +61,7 @@ const DiscussionHeader = ({ discussion }: Props) => {
         <Tooltip label="Notifications" placement="bottom">
           <IconButton
             icon={<FontAwesomeIcon icon={faBell} />}
-            className="text-gray-500 hover:text-gray-900 focus:text-gray-900"
+            className="text-gray-500"
             aria-label="Show notifications"
             size="md"
           />
@@ -74,7 +74,7 @@ const DiscussionHeader = ({ discussion }: Props) => {
                 className="transform rotate-45"
               />
             }
-            className="text-gray-500 hover:text-gray-900 focus:text-gray-900"
+            className="text-gray-500"
             aria-label="Show pinned messages"
             size="md"
           />

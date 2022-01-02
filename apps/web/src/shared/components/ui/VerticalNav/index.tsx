@@ -73,10 +73,16 @@ const VerticalNavItem = ({
         <Link
           href={to!}
           variant={selected ? 'light' : 'ghost'}
-          scheme='gray'
+          scheme="gray"
           fullWidth
           size="sm"
-          className={twMerge(clsx('text-sm space-x-4 group', className))}
+          className={twMerge(
+            clsx(
+              'text-sm space-x-4 group',
+              selected ? 'text-gray-900' : 'text-gray-600',
+              className
+            )
+          )}
         >
           {icon}
           <span className="flex-1 truncate min-w-0">{label}</span>

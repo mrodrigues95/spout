@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react';
+import { useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { Title, Tabs } from '@spout/toolkit';
@@ -9,42 +9,33 @@ import TopicDescription from './TopicDescription';
 import Participants from './Participants';
 import Attachments from './Attachments';
 
-interface Tab {
-  id: number;
-  icon: ReactElement;
-  ariaLabel: string;
-  component: ReactElement;
-}
-
 interface Props {
   discussion: DiscussionQuery['discussionById'];
 }
 
 const DiscussionDetails = ({ discussion }: Props) => {
-  const [tabs] = useState<Tab[]>([
-    {
-      id: 1,
-      icon: <FontAwesomeIcon icon={faUsers} />,
-      ariaLabel: 'Participants',
-      component: <Participants users={discussion.classroom.users} />,
-    },
-    {
-      id: 2,
-      icon: <FontAwesomeIcon icon={faFileAlt} />,
-      ariaLabel: 'Attachments',
-      component: <Attachments />,
-    },
-  ]);
+  const tabs = useMemo(
+    () => [
+      {
+        id: 1,
+        icon: <FontAwesomeIcon icon={faUsers} />,
+        ariaLabel: 'Participants',
+        component: <Participants users={discussion.classroom.users} />,
+      },
+      {
+        id: 2,
+        icon: <FontAwesomeIcon icon={faFileAlt} />,
+        ariaLabel: 'Attachments',
+        component: <Attachments />,
+      },
+    ],
+    [discussion.classroom.users]
+  );
 
   return (
     <div className="flex flex-col w-72 space-y-8">
       <div className="flex flex-col items-center">
-        <Image
-          src={getRandomAvatar()}
-          alt=""
-          size="xl"
-          rounded
-        />
+        <Image src={getRandomAvatar()} alt="" size="xl" rounded />
         <Title className="mt-2" as="h2" variant="h4">
           {discussion.name}
         </Title>

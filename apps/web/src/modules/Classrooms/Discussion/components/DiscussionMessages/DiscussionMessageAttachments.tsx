@@ -46,7 +46,7 @@ const DiscussionMessageAttachment = ({
               className={clsx(
                 'z-10',
                 isMyMessage &&
-                  'text-white bg-blue-700 focus:bg-blue-800 focus:ring hover:bg-blue-800'
+                  'text-white bg-blue-700 focus:bg-blue-800 focus:ring hover:bg-blue-800 hover:text-white focus:text-white'
               )}
               variant="light"
               size="xs"
@@ -92,7 +92,7 @@ const DiscussionMessageAttachments = ({ isMyMessage, attachments }: Props) => {
               className={clsx(
                 'space-x-2 uppercase',
                 isMyMessage &&
-                  'bg-blue-700 text-white focus:bg-blue-800 focus:ring hover:bg-blue-800'
+                  'bg-blue-700 text-white focus:bg-blue-800 focus:ring hover:bg-blue-800 hover:text-white focus:text-white'
               )}
               variant="light"
               size="xs"

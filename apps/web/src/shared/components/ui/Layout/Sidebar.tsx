@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faHome,
-  faCommentDots,
-  faCog,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCog, faCommentDots, faHome } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 import { object, string } from 'zod';
 import { gql, useMutation, useQuery } from '@apollo/client';
@@ -154,19 +150,19 @@ const Sidebar = () => {
           <VerticalNav.Item
             to="/home"
             label="Home"
-            icon={<FontAwesomeIcon icon={faHome} className="text-gray-900" />}
+            icon={<FontAwesomeIcon icon={faHome} />}
           />
           <VerticalNav.Item
             to="/messages"
             label="Messages"
             icon={
-              <FontAwesomeIcon icon={faCommentDots} className="text-gray-900" />
+              <FontAwesomeIcon icon={faCommentDots} />
             }
           />
           <VerticalNav.Item
             to="/settings"
             label="Settings"
-            icon={<FontAwesomeIcon icon={faCog} className="text-gray-900" />}
+            icon={<FontAwesomeIcon icon={faCog} />}
           />
           <VerticalNav.Item
             isGroup

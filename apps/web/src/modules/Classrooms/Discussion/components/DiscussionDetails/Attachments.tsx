@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { forwardRef, useMemo } from 'react';
+import { forwardRef, useEffect, useMemo } from 'react';
 import { Components, Virtuoso } from 'react-virtuoso';
 import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -77,7 +77,7 @@ const Attachment = ({ index, file }: AttachmentProps) => {
             profileColor={file.uploadedBy.profileColor}
             size="xs"
           />
-          <Text size="xs" weight="medium" truncate className="text-gray-900">
+          <Text size="xs" weight="medium" truncate>
             {file.uploadedBy.name}
           </Text>
         </div>
@@ -121,7 +121,9 @@ const Attachments = () => {
       id: router.query.discussionId as string,
     },
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network'
   });
+
 
   const files = useMemo(
     () =>

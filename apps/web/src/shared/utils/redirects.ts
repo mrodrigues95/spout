@@ -32,7 +32,6 @@ const authRoute = async (
   ctx: GetServerSidePropsContext,
   redirect = '/auth/signup'
 ): Promise<GetServerSidePropsResult<Record<string, unknown>>> => {
-  console.log('Ctx: ', ctx.req.session)
   const session = await resolveSession(ctx);
 
   if (!session) {

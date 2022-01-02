@@ -43,6 +43,7 @@ export const Tabs = ({
     <TabProvider variant={variant}>
       <HeadlessTab.Group
         as="div"
+        manual
         className={clsx('flex flex-col flex-1', className)}
       >
         {children}

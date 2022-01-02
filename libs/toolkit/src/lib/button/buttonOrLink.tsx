@@ -38,8 +38,8 @@ const STYLES = {
     gray: {
       solid: 'text-white bg-gray-900 focus:ring hover:bg-gray-700',
       light:
-        'text-gray-900 bg-gray-100 focus:bg-gray-200 focus:ring hover:bg-gray-200',
-      ghost: 'text-gray-900 focus:bg-gray-100 focus:ring hover:bg-gray-100',
+        'text-gray-700 bg-gray-100 focus:bg-gray-200 focus:ring focus:text-gray-900 hover:text-gray-900 hover:bg-gray-200',
+      ghost: 'text-gray-700 focus:bg-gray-100 focus:ring focus:text-gray-900 hover:text-gray-900 hover:bg-gray-100',
       outline: 'text-gray-900 focus:bg-gray-200 focus:ring hover:bg-gray-100',
       link: 'text-gray-900 bg-white ring-transparent',
     },
