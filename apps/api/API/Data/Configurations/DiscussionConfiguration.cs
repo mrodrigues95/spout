@@ -7,8 +7,21 @@ namespace API.Data.Configurations {
         public void Configure(EntityTypeBuilder<Discussion> builder) {
             builder.HasKey(d => d.Id);
 
+            builder.Property(d => d.Guid)
+                .IsRequired();
+
+            builder.Property(d => d.ClassroomId)
+                .IsRequired();
+
+            builder.Property(d => d.CreatedById)
+                .IsRequired();
+
+            builder.Property(d => d.StateId)
+                .IsRequired();
+
             builder.Property(d => d.Name)
-                .HasMaxLength(64);
+                .HasMaxLength(64)
+                .IsRequired();
 
             builder.Property(d => d.Topic)
                 .HasMaxLength(250)
@@ -19,10 +32,12 @@ namespace API.Data.Configurations {
                 .IsRequired(false);
 
             builder.Property(d => d.CreatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("timezone('UTC', now())")
+                .IsRequired();
 
             builder.Property(d => d.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("timezone('UTC', now())")
+                .IsRequired();
 
             builder.HasIndex(d => new { d.CreatedById, d.ClassroomId });
 

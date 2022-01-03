@@ -6,12 +6,14 @@ using API.Schema.Mutations.Sessions;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Discussions;
 using API.Schema.Queries.Files;
+using API.Schema.Queries.Messages;
 using API.Schema.Queries.Sessions;
 using API.Schema.Queries.Users;
 using API.Schema.Subscriptions.Discussions;
 using API.Schema.Types.Classrooms;
 using API.Schema.Types.Discussions;
 using API.Schema.Types.Files;
+using API.Schema.Types.Messages;
 using API.Schema.Types.Sessions;
 using API.Schema.Types.Users;
 using HotChocolate;
@@ -65,6 +67,10 @@ namespace API.Extensions {
                 .AddType<DiscussionType>()
                 .AddType<DiscussionEventType>()
                 .AddType<DiscussionFilterInputType>();
+
+            gql
+                .AddDataLoader<MessageByIdDataLoader>()
+                .AddType<MessageType>();
 
             gql
                 .AddTypeExtension<AuthMutations>();

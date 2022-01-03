@@ -44,17 +44,16 @@ export type BooleanOperationFilterInput = {
 export type Classroom = Node & {
   __typename?: 'Classroom';
   id: Scalars['ID'];
-  users: Array<User>;
-  discussions: Array<Discussion>;
   guid: Scalars['UUID'];
   name: Scalars['String'];
-  stateId: Scalars['Int'];
-  state: State;
-  deletedAt?: Maybe<Scalars['DateTime']>;
-  delLogId?: Maybe<Scalars['Int']>;
-  delLog?: Maybe<DelLog>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  users: Array<User>;
+  discussions: Array<Discussion>;
+  state?: Maybe<State>;
+  delLogId?: Maybe<Scalars['Int']>;
+  delLog?: Maybe<DelLog>;
+  deletedAt?: Maybe<Scalars['DateTime']>;
   invites: Array<ClassroomInvite>;
 };
 
@@ -66,9 +65,9 @@ export type ClassroomFilterInput = {
   name?: Maybe<StringOperationFilterInput>;
   stateId?: Maybe<ComparableInt32OperationFilterInput>;
   state?: Maybe<StateFilterInput>;
-  deletedAt?: Maybe<ComparableNullableOfDateTimeOperationFilterInput>;
   delLogId?: Maybe<ComparableNullableOfInt32OperationFilterInput>;
   delLog?: Maybe<DelLogFilterInput>;
+  deletedAt?: Maybe<ComparableNullableOfDateTimeOperationFilterInput>;
   createdAt?: Maybe<ComparableDateTimeOperationFilterInput>;
   updatedAt?: Maybe<ComparableDateTimeOperationFilterInput>;
   discussions?: Maybe<ListFilterInputTypeOfDiscussionFilterInput>;
@@ -111,9 +110,9 @@ export type ClassroomSortInput = {
   name?: Maybe<SortEnumType>;
   stateId?: Maybe<SortEnumType>;
   state?: Maybe<StateSortInput>;
-  deletedAt?: Maybe<SortEnumType>;
   delLogId?: Maybe<SortEnumType>;
   delLog?: Maybe<DelLogSortInput>;
+  deletedAt?: Maybe<SortEnumType>;
   createdAt?: Maybe<SortEnumType>;
   updatedAt?: Maybe<SortEnumType>;
 };
@@ -378,22 +377,19 @@ export type DeleteFilePayload = {
 export type Discussion = Node & {
   __typename?: 'Discussion';
   id: Scalars['ID'];
+  guid: Scalars['UUID'];
+  name: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
   createdBy: User;
   classroom: Classroom;
   messages?: Maybe<MessagesConnection>;
-  guid: Scalars['UUID'];
-  name: Scalars['String'];
   topic?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-  classroomId: Scalars['Int'];
-  createdById: Scalars['Int'];
-  stateId: Scalars['Int'];
-  state: State;
+  state?: Maybe<State>;
   deletedAt?: Maybe<Scalars['DateTime']>;
   delLogId?: Maybe<Scalars['Int']>;
   delLog?: Maybe<DelLog>;
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
 };
 
 
@@ -463,10 +459,8 @@ export type File = Node & {
   __typename?: 'File';
   id: Scalars['ID'];
   uploadedBy: User;
-  extension: WhitelistedFileExtension;
-  uploadedById: Scalars['Int'];
   contentLength: Scalars['Long'];
-  mimeType?: Maybe<Scalars['String']>;
+  extension: WhitelistedFileExtension;
   uploadStatus: FileUploadStatus;
   sas: Scalars['URL'];
   signatureEncoded: Scalars['String'];
@@ -474,12 +468,13 @@ export type File = Node & {
   containerName: Scalars['String'];
   blobName: Scalars['String'];
   name: Scalars['String'];
-  location?: Maybe<Scalars['URL']>;
-  eTag?: Maybe<Scalars['String']>;
-  mD5?: Maybe<Scalars['String']>;
   isDeleted: Scalars['Boolean'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  mimeType?: Maybe<Scalars['String']>;
+  location?: Maybe<Scalars['URL']>;
+  eTag?: Maybe<Scalars['String']>;
+  mD5?: Maybe<Scalars['String']>;
   deletedAt?: Maybe<Scalars['DateTime']>;
   messageFiles: Array<MessageFile>;
 };
@@ -729,18 +724,16 @@ export type LogoutInput = {
 export type Message = Node & {
   __typename?: 'Message';
   id: Scalars['ID'];
+  content: Scalars['String'];
+  discussion: Discussion;
+  isDiscussionEvent: Scalars['Boolean'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
   createdBy: User;
   attachments: Array<File>;
-  content: Scalars['String'];
-  discussionId: Scalars['Int'];
-  discussion?: Maybe<Discussion>;
-  createdById: Scalars['Int'];
-  isDiscussionEvent: Scalars['Boolean'];
   discussionEvent?: Maybe<DiscussionEvent>;
   delLogId?: Maybe<Scalars['Int']>;
   delLog?: Maybe<DelLog>;
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
   deletedAt?: Maybe<Scalars['DateTime']>;
 };
 
@@ -1030,10 +1023,9 @@ export type Session = Node & {
   __typename?: 'Session';
   id: Scalars['ID'];
   user?: Maybe<User>;
-  userId: Scalars['Int'];
   createdAt: Scalars['DateTime'];
-  expiresAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  expiresAt: Scalars['DateTime'];
 };
 
 export type SessionFilterInput = {
@@ -1209,17 +1201,16 @@ export type UriSortInput = {
 export type User = Node & {
   __typename?: 'User';
   id: Scalars['ID'];
-  classrooms: Array<Classroom>;
-  sessions: Array<Session>;
   guid: Scalars['UUID'];
   name: Scalars['String'];
   email: Scalars['String'];
   profileColor: UserProfileColor;
-  avatarUrl?: Maybe<Scalars['String']>;
-  stateId: Scalars['Int'];
-  state?: Maybe<State>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  classrooms: Array<Classroom>;
+  sessions: Array<Session>;
+  avatarUrl?: Maybe<Scalars['String']>;
+  state?: Maybe<State>;
   messages: Array<Message>;
   invites: Array<ClassroomInvite>;
   fileUploads: Array<File>;

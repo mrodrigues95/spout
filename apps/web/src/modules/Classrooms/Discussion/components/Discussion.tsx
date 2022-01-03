@@ -37,6 +37,7 @@ const Discussion = () => {
     fetchMore,
   } = useQuery<DiscussionQuery>(query, {
     variables: { id: router.query.discussionId as string },
+    skip: !router.isReady
   });
 
   const title = data?.discussionById.name ?? 'Discussion';

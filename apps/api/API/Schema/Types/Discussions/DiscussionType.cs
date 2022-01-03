@@ -34,12 +34,43 @@ namespace API.Schema.Types.Discussions {
     }
 
     public class DiscussionType : ObjectType<Discussion> {
-        protected override void Configure(IObjectTypeDescriptor<Discussion> descriptor) {
+        protected override void Configure(IObjectTypeDescriptor<Discussion> descriptor) {           
             descriptor
                 .ImplementsNode()
                 .IdField(d => d.Id)
                 .ResolveNode((ctx, id) =>
                     ctx.DataLoader<DiscussionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+
+            descriptor
+                .Field(d => d.Guid)
+                .Type<NonNullType<UuidType>>();
+
+            descriptor
+                .Field(d => d.Name)
+                .Type<NonNullType<StringType>>();
+
+            descriptor
+                .Field(d => d.ClassroomId)
+                .Type<NonNullType<IntType>>()
+                .Ignore();
+
+            descriptor
+                .Field(d => d.CreatedById)
+                .Type<NonNullType<IntType>>()
+                .Ignore();
+
+            descriptor
+                .Field(d => d.StateId)
+                .Type<NonNullType<IntType>>()
+                .Ignore();
+
+            descriptor
+                .Field(d => d.CreatedAt)
+                .Type<NonNullType<DateTimeType>>();
+
+            descriptor
+                .Field(d => d.UpdatedAt)
+                .Type<NonNullType<DateTimeType>>();
 
             descriptor
                 .Field(d => d.CreatedBy)

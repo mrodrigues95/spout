@@ -80,6 +80,11 @@ namespace API.Schema.Types.Files {
                     ctx.DataLoader<FileByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
             descriptor
+                .Field(f => f.UploadedById)
+                .Type<NonNullType<IntType>>()
+                .Ignore();
+
+            descriptor
                 .Field(f => f.UploadedBy)
                 .Type<NonNullType<UserType>>()
                 .ResolveWith<FileResolvers>(x =>
@@ -87,8 +92,53 @@ namespace API.Schema.Types.Files {
                 .Name("uploadedBy");
 
             descriptor
+                .Field(f => f.ContentLength)
+                .Type<NonNullType<LongType>>();
+
+            descriptor
                 .Field(f => f.FileExtension)
-                .Name("extension");
+                .Name("extension")
+                .Type<NonNullType<WhitelistedFileExtensionType>>();
+
+            descriptor
+                .Field(f => f.UploadStatus)
+                .Type<NonNullType<FileUploadStatusType>>();
+
+            descriptor
+                .Field(f => f.Sas)
+                .Type<NonNullType<UrlType>>();
+
+            descriptor
+                .Field(f => f.SignatureEncoded)
+                .Type<NonNullType<StringType>>();
+
+            descriptor
+                .Field(f => f.SignatureDecoded)
+                .Type<NonNullType<StringType>>();
+
+            descriptor
+                .Field(f => f.ContainerName)
+                .Type<NonNullType<StringType>>();
+
+            descriptor
+                .Field(f => f.BlobName)
+                .Type<NonNullType<StringType>>();
+
+            descriptor
+                .Field(f => f.Name)
+                .Type<NonNullType<StringType>>();
+
+            descriptor
+                .Field(f => f.IsDeleted)
+                .Type<NonNullType<BooleanType>>();
+
+            descriptor
+                .Field(f => f.CreatedAt)
+                .Type<NonNullType<DateTimeType>>();
+
+            descriptor
+                .Field(f => f.UpdatedAt)
+                .Type<NonNullType<DateTimeType>>();
         }
 
         private class FileResolvers {

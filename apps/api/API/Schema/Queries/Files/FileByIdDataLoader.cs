@@ -27,7 +27,7 @@ namespace API.Schema.Queries.Files {
             await using ApplicationDbContext dbContext = _dbContextFactory.CreateDbContext();
 
             return await dbContext.Files
-                .Where(s => keys.Contains(s.Id))
+                .Where(f => keys.Contains(f.Id))
                 .ToDictionaryAsync(t => t.Id, cancellationToken);
         }
     }

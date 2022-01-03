@@ -1,4 +1,4 @@
-﻿using API.Data.Entities;
+using API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -7,14 +7,20 @@ namespace API.Data.Configurations {
         public void Configure(EntityTypeBuilder<Session> builder) {
             builder.HasKey(s => s.Id);
 
+            builder.Property(s => s.UserId)
+                .IsRequired();
+
             builder.Property(s => s.CreatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("timezone('UTC', now())")
+                .IsRequired();
 
             builder.Property(s => s.ExpiresAt)
-                .HasDefaultValueSql("timezone('UTC', now() + INTERVAL '7 DAYS')");
+                .HasDefaultValueSql("timezone('UTC', now() + INTERVAL '7 DAYS')")
+                .IsRequired();
 
             builder.Property(s => s.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("timezone('UTC', now())")
+                .IsRequired();
 
             builder.HasIndex(s => s.UserId);
 

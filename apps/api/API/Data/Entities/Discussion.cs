@@ -1,25 +1,24 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace API.Data.Entities {
     public class Discussion {
         public int Id { get; set; }
-        [Required] public Guid Guid { get; set; } = Guid.NewGuid();
-        [Required] public string? Name { get; set; }
+        public Guid Guid { get; set; } = Guid.NewGuid();
+        public string? Name { get; set; }
         public string? Topic { get; set; }
         public string? Description { get; set; }
-        [Required] public int ClassroomId { get; set; }
+        public int ClassroomId { get; set; }
         public Classroom? Classroom { get; set; }
-        [Required] public int CreatedById { get; set; }
+        public int CreatedById { get; set; }
         public User? CreatedBy { get; set; }
-        [Required] public int StateId { get; set; }
-        [Required] public State? State { get; set; }
+        public int StateId { get; set; }
+        public State? State { get; set; }
         public DateTime? DeletedAt { get; set; }
         public int? DelLogId { get; set; }
         public DelLog? DelLog { get; set; }
-        [Required] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        [Required] public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<Message> Messages { get; set; } = new List<Message>();
     }

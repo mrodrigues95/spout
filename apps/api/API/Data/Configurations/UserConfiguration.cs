@@ -7,21 +7,34 @@ namespace API.Data.Configurations {
         public void Configure(EntityTypeBuilder<User> builder) {
             builder.HasKey(u => u.Id);
 
+            builder.Property(u => u.Guid)
+                .IsRequired();
+
+            builder.Property(u => u.StateId)
+                .IsRequired();
+
             builder.Property(u => u.Name)
-                .HasMaxLength(70);
+                .HasMaxLength(70)
+                .IsRequired();
 
             builder.Property(u => u.Email)
-                .HasMaxLength(256);
+                .HasMaxLength(256)
+                .IsRequired();
+
+            builder.Property(u => u.ProfileColor)
+                .IsRequired();
 
             builder.Property(u => u.AvatarUrl)
                 .HasMaxLength(2048)
                 .IsRequired(false);
 
             builder.Property(u => u.CreatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("timezone('UTC', now())")
+                .IsRequired();
 
             builder.Property(u => u.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("timezone('UTC', now())")
+                .IsRequired();
 
             builder.HasMany(u => u.Classrooms)
                 .WithOne(uc => uc.User!)

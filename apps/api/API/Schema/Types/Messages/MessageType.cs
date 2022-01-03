@@ -12,6 +12,7 @@ using API.Data;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using API.Schema.Types.Discussions;
 
 namespace API.Schema.Types.Messages {
     public class MessageType : ObjectType<Message> {
@@ -21,6 +22,36 @@ namespace API.Schema.Types.Messages {
                 .IdField(m => m.Id)
                 .ResolveNode((ctx, id) =>
                     ctx.DataLoader<MessageByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+
+            descriptor
+                .Field(m => m.Content)
+                .Type<NonNullType<StringType>>();
+
+            descriptor
+                .Field(m => m.DiscussionId)
+                .Type<NonNullType<IntType>>()
+                .Ignore();
+
+            descriptor
+                .Field(m => m.CreatedById)
+                .Type<NonNullType<IntType>>()
+                .Ignore();
+
+            descriptor
+                .Field(m => m.Discussion)
+                .Type<NonNullType<DiscussionType>>();
+
+            descriptor
+                .Field(m => m.IsDiscussionEvent)
+                .Type<NonNullType<BooleanType>>();
+
+            descriptor
+                .Field(m => m.CreatedAt)
+                .Type<NonNullType<DateTimeType>>();
+
+            descriptor
+                .Field(m => m.UpdatedAt)
+                .Type<NonNullType<DateTimeType>>();
 
             descriptor
                 .Field(m => m.CreatedBy)

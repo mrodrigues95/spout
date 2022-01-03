@@ -21,6 +21,27 @@ namespace API.Schema.Types.Classrooms {
                 .ResolveNode((ctx, id) => ctx.DataLoader<ClassroomByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
             descriptor
+                .Field(c => c.Guid)
+                .Type<NonNullType<UuidType>>();
+
+            descriptor
+                .Field(c => c.Name)
+                .Type<NonNullType<StringType>>();
+
+            descriptor
+                .Field(c => c.StateId)
+                .Type<NonNullType<IntType>>()
+                .Ignore();
+
+           descriptor
+                .Field(c => c.CreatedAt)
+                .Type<NonNullType<DateTimeType>>();
+
+            descriptor
+                .Field(c => c.UpdatedAt)
+                .Type<NonNullType<DateTimeType>>();
+
+            descriptor
                 .Field(c => c.Users)
                 .ResolveWith<ClassroomResolvers>(x => x.GetUsersAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()

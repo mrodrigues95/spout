@@ -15,9 +15,26 @@ namespace API.Schema.Types.Sessions {
                 .ResolveNode((ctx, id) => ctx.DataLoader<SessionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
             descriptor
+                .Field(s => s.UserId)
+                .Type<NonNullType<IntType>>()
+                .Ignore();
+
+            descriptor
                 .Field(x => x.User)
                 .ResolveWith<SessionResolvers>(x => x.GetUserAsync(default!, default!, default!))
                 .Name("user");
+
+            descriptor
+                .Field(s => s.CreatedAt)
+                .Type<NonNullType<DateTimeType>>();
+
+            descriptor
+                .Field(s => s.UpdatedAt)
+                .Type<NonNullType<DateTimeType>>();
+
+            descriptor
+                .Field(s => s.ExpiresAt)
+                .Type<NonNullType<DateTimeType>>();
         }
 
         private class SessionResolvers {

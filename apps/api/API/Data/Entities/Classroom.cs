@@ -1,24 +1,23 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace API.Data.Entities {
     public class Classroom {
         private string? _name;
 
         public int Id { get; set; }
-        [Required] public Guid Guid { get; set; } = Guid.NewGuid();
-        [Required] public string? Name {
+        public Guid Guid { get; set; } = Guid.NewGuid();
+        public string? Name {
             get => _name;
             set { _name = value?.Trim(); }
         }
-        [Required] public int StateId { get; set; }
-        [Required] public State? State { get; set; }
-        public DateTime? DeletedAt { get; set; }
+        public int StateId { get; set; }
+        public State? State { get; set; }
         public int? DelLogId { get; set; }
         public DelLog? DelLog { get; set; }
-        [Required] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        [Required] public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? DeletedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<Discussion> Discussions { get; set; } = new List<Discussion>();
         public ICollection<ClassroomUser> Users { get; set; } = new List<ClassroomUser>();

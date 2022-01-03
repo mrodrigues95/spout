@@ -44,6 +44,35 @@ namespace API.Schema.Types.Users {
                 .ResolveNode((ctx, id) => ctx.DataLoader<UserByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
             descriptor
+                .Field(u => u.Guid)
+                .Type<NonNullType<UuidType>>();
+
+            descriptor
+                .Field(u => u.StateId)
+                .Type<NonNullType<IntType>>()
+                .Ignore();
+
+            descriptor
+                .Field(u => u.Name)
+                .Type<NonNullType<StringType>>();
+
+            descriptor
+                .Field(u => u.Email)
+                .Type<NonNullType<StringType>>();
+
+            descriptor
+                .Field(u => u.ProfileColor)
+                .Type<NonNullType<UserProfileColorType>>();
+
+            descriptor
+                .Field(u => u.CreatedAt)
+                .Type<NonNullType<DateTimeType>>();
+
+            descriptor
+                .Field(u => u.UpdatedAt)
+                .Type<NonNullType<DateTimeType>>();
+
+            descriptor
                 .Field(x => x.Classrooms)
                 .Type<NonNullType<ListType<NonNullType<ClassroomType>>>>()
                 .ResolveWith<UserResolvers>(x => x.GetClassroomsAsync(default!, default!, default!, default!))

@@ -8,17 +8,39 @@ namespace API.Data.Configurations {
         public void Configure(EntityTypeBuilder<File> builder) {
             builder.HasKey(f => f.Id);
 
+            builder.Property(f => f.UploadedById)
+                .IsRequired();
+
             builder.Property(f => f.ContentLength)
-                .HasMaxLength((int)FileSize._8MB);
+                .HasMaxLength((int)FileSize._8MB)
+                .IsRequired();
 
             builder.Property(f => f.UploadStatus)
-                .HasMaxLength(255);
+                .HasMaxLength(255)
+                .IsRequired();
+
+            builder.Property(f => f.FileExtension)
+                .IsRequired();
 
             builder.Property(f => f.Sas)
-                .HasColumnType("text");
+                .HasColumnType("text")
+                .IsRequired();
+
+            builder.Property(f => f.SignatureDecoded)
+                .IsRequired();
+
+            builder.Property(f => f.SignatureEncoded)
+                .IsRequired();
+
+            builder.Property(f => f.ContainerName)
+                .IsRequired();
+
+            builder.Property(f => f.Name)
+                .IsRequired();
 
             builder.Property(f => f.BlobName)
-                .HasMaxLength(1024);
+                .HasMaxLength(1024)
+                .IsRequired();
 
             builder.Property(f => f.Location)
                 .IsRequired(false);
@@ -30,13 +52,16 @@ namespace API.Data.Configurations {
                 .IsRequired(false);
 
             builder.Property(f => f.IsDeleted)
-                .HasDefaultValue(false);
+                .HasDefaultValue(false)
+                .IsRequired();
 
             builder.Property(f => f.CreatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("timezone('UTC', now())")
+                .IsRequired();
 
             builder.Property(f => f.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("timezone('UTC', now())")
+                .IsRequired();
 
             builder.Property(f => f.DeletedAt)
                 .IsRequired(false);

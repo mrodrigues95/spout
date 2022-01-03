@@ -1,6 +1,6 @@
+import { forwardRef, useEffect, useMemo } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { forwardRef, useEffect, useMemo } from 'react';
 import { Components, Virtuoso } from 'react-virtuoso';
 import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,7 +11,10 @@ import {
 import clsx from 'clsx';
 import { FileIcon, IconLink, Spinner, Text, Tooltip } from '@spout/toolkit';
 import { FileFragment } from '../../utils/fragments';
-import { DiscussionFilesQuery } from './__generated__/Attachments.generated';
+import {
+  DiscussionFilesQuery,
+  DiscussionFilesQueryVariables,
+} from './__generated__/Attachments.generated';
 import {
   Avatar,
   EmptyFallback,
@@ -115,16 +118,18 @@ export const query = gql`
 const Attachments = () => {
   const router = useRouter();
   const { data, loading, error, refetch, fetchMore } = useQuery<
-    DiscussionFilesQuery
+    DiscussionFilesQuery,
+    DiscussionFilesQueryVariables
   >(query, {
     variables: {
       id: router.query.discussionId as string,
     },
     notifyOnNetworkStatusChange: true,
-    fetchPolicy: 'cache-and-network'
+    fetchPolicy: 'cache-and-network',
+    skip: !router.isReady,
   });
 
-
+  // TODO: Make composer form
   const files = useMemo(
     () =>
       (data?.files?.edges ?? [])

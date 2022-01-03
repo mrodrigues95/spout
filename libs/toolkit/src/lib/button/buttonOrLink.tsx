@@ -153,7 +153,7 @@ export const ButtonOrLink = forwardRef<
             )}`
           : href!;
 
-      return <Link href={finalHref}>{content}</Link>;
+      return <Link href={finalHref} passHref>{content}</Link>;
     }
 
     return content;

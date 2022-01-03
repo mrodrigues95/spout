@@ -1,4 +1,4 @@
-﻿using API.Data.Entities;
+using API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -7,15 +7,24 @@ namespace API.Data.Configurations {
         public void Configure(EntityTypeBuilder<Classroom> builder) {
             builder.HasKey(c => c.Id);
 
+            builder.Property(c => c.Guid)
+                .IsRequired();
+
             builder.Property(c => c.Name)
-                .HasMaxLength(64);
+                .HasMaxLength(64)
+                .IsRequired();
+
+            builder.Property(c => c.StateId)
+                .IsRequired();
 
             builder.Property(c => c.CreatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("timezone('UTC', now())")
+                .IsRequired();
 
             builder
                 .Property(c => c.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("timezone('UTC', now())")
+                .IsRequired();
 
             builder.HasMany(c => c.Users)
                 .WithOne(uc => uc.Classroom!)
