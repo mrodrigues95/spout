@@ -26,7 +26,7 @@ import WelcomeHeader from './WelcomeHeader';
 
 export const DiscussionMessagesFragment = gql`
   fragment DiscussionMessages_discussion on Discussion {
-    messages(first: 50, after: $after, order: { id: DESC }) {
+    messages(first: 50, after: $after) {
       edges {
         node {
           ...Message_message

@@ -39,7 +39,7 @@ namespace API.Schema.Mutations.Discussions {
                 IsDiscussionEvent = false
             };
 
-            // Save files that are attached to this message.
+            // Save all files that are attached to this message.
             foreach (var fileId in input.FileIds) {
                 message.MessageFiles.Add(new MessageFile {
                     MessageId = message.Id,

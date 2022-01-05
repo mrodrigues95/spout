@@ -82,6 +82,8 @@ export const useFileUploadQueue = () => {
     setIsInFlight(true);
     setFileUploadQueue((prev) => [...prev, ...queue]);
 
+    // TODO: Figure out slow query times while generating SAS's or look into
+    // executing all of these uploads with `Promise.allSettled()`.
     for (const entry of queue) {
       // This file has already been handled in a previous transaction, ignore it.
       if (entry.isUploaded || entry.isError || !entry.isQueued) continue;

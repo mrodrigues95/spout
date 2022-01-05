@@ -14,7 +14,6 @@ namespace API.Schema.Queries.Files {
         [UseApplicationDbContext]
         [UsePaging(MaxPageSize = 50)]
         [UseFiltering]
-        [UseSorting]
         public IQueryable<File> GetFiles(
             [ScopedService] ApplicationDbContext ctx)
             => ctx.Files.OrderBy(f => f.Id);

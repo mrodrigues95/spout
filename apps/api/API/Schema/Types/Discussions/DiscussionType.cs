@@ -16,6 +16,10 @@ using API.Schema.Types.Messages;
 using API.Schema.Types.Users;
 using API.Schema.Queries.Discussions;
 using HotChocolate.Data.Filters;
+using HotChocolate.Types.Descriptors;
+using HotChocolate.Resolvers;
+using HotChocolate.Internal;
+using HotChocolate.Types.Relay;
 
 namespace API.Schema.Types.Discussions {
     public enum DiscussionEvent {
@@ -34,7 +38,7 @@ namespace API.Schema.Types.Discussions {
     }
 
     public class DiscussionType : ObjectType<Discussion> {
-        protected override void Configure(IObjectTypeDescriptor<Discussion> descriptor) {           
+        protected override void Configure(IObjectTypeDescriptor<Discussion> descriptor) {
             descriptor
                 .ImplementsNode()
                 .IdField(d => d.Id)
@@ -91,9 +95,8 @@ namespace API.Schema.Types.Discussions {
                 .Type<NonNullType<ListType<NonNullType<MessageType>>>>()
                 .UseDbContext<ApplicationDbContext>()
                 .UsePaging<NonNullType<MessageType>>(options: new PagingOptions { MaxPageSize = 50 })
-                .UseSorting()
                 .ResolveWith<DiscussionResolvers>(x =>
-                    x.GetMessagesAsync(default!, default!, default!, default!))
+                    x.GetMessagesAsync(default!, default!, default!, default!, default!, default!))
                 .Name("messages");
         }
 
@@ -110,22 +113,34 @@ namespace API.Schema.Types.Discussions {
                 CancellationToken cancellationToken) =>
                 await userById.LoadAsync(discussion.CreatedById, cancellationToken);
 
-            public async Task<IEnumerable<Message>> GetMessagesAsync(
+            public async Task<Connection<Message>> GetMessagesAsync(
                 [Parent] Discussion discussion,
-                [ScopedService] ApplicationDbContext ctx,
+                [Service] IIdSerializer serializer,
+                [ScopedService] ApplicationDbContext dbContext,
                 MessageByIdDataLoader messageById,
+                IResolverContext resolverCtx,
                 CancellationToken cancellationToken) {
-                // TODO: Paginate this.
-                // This will currently fetch all messages and chop the pages in memory but
-                // instead we should paginate the messages before passing it into the data loader.
-                // See: https://github.com/ChilliCream/graphql-workshop/blob/master/docs/6-adding-complex-filter-capabilities.md
-                int[] messageIds = await ctx.Discussions
+                var messageIdsQueryable = dbContext.Discussions
                     .Where(d => d.Id == discussion.Id)
                     .Include(d => d.Messages)
-                    .SelectMany(d => d.Messages.Select(m => m.Id))
-                    .ToArrayAsync(cancellationToken);
+                    .SelectMany(d => d.Messages.Select(m => m.Id));
 
-                return await messageById.LoadAsync(messageIds, cancellationToken);
+                var typeInspector = new DefaultTypeInspector();
+                IExtendedType sourceType = typeInspector.GetType(typeof(List<int>));
+
+                IPagingProvider pagingProvider = new QueryableCursorPagingProvider();
+                IPagingHandler pagingHandler = pagingProvider.CreateHandler(sourceType, default);
+
+                var connection = (Connection<int>)await pagingHandler.SliceAsync(
+                    resolverCtx, messageIdsQueryable);
+                var messageIds = connection.Edges.Select(e => e.Node).ToArray();
+
+                var messages = await messageById.LoadAsync(messageIds, cancellationToken);
+                var edges = messages.Select(message => new Edge<Message>(
+                    message, serializer.Serialize(default!, nameof(Message), message.Id))).ToList();
+
+                return new Connection<Message>(edges, connection.Info,
+                    ct => ValueTask.FromResult(0));
             }
         }
     }
