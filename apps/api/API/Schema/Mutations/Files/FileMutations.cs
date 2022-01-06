@@ -7,8 +7,6 @@ using API.Data;
 using API.Data.Entities;
 using API.Extensions;
 using API.Infrastructure;
-using API.Schema.Common;
-using API.Schema.Mutations.FileUploads;
 using API.Schema.Types.Files;
 using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
@@ -17,6 +15,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
+using API.Schema.Mutations.Files.Inputs;
+using API.Schema.Mutations.Files.Payloads;
+using API.Schema.Mutations.Files.Exceptions;
 
 namespace API.Schema.Mutations.Files {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -58,7 +59,9 @@ namespace API.Schema.Mutations.Files {
 
         [Authorize]
         [UseApplicationDbContext]
-        public async Task<GenerateUploadSASPayload> GenerateUploadSASAsync(
+        [Error(typeof(GenerateSignatureException))]
+        [Error(typeof(ParseSignatureException))]
+        public async Task<GenerateSASPayload> GenerateUploadSASAsync(
             GenerateUploadSASInput input,
             [GlobalState] int userId,
             [Service] IBlobService blob,
@@ -68,14 +71,12 @@ namespace API.Schema.Mutations.Files {
             var sas = await blob.GetBlobSasUri(blobName,
                 BlobSasPermissions.Write | BlobSasPermissions.Create);
             if (sas is null) {
-                return new GenerateUploadSASPayload(
-                    new UserError("Unable to generate signature.", "INVALID_SAS"));
+                throw new GenerateSignatureException();
             }
 
             var signature = ParseSignatureFromUri(sas);
             if (signature is null) {
-                return new GenerateUploadSASPayload(
-                new UserError("Unable to parse signature.", "INVALID_SIGNATURE"));
+                throw new ParseSignatureException();
             }
 
             var mimeType = input.MimeType;
@@ -101,12 +102,14 @@ namespace API.Schema.Mutations.Files {
             ctx.Files.Add(file);
             await ctx.SaveChangesAsync(cancellationToken);
 
-            return new GenerateUploadSASPayload(sas, file);
+            return new GenerateSASPayload(file, sas);
         }
 
         [Authorize]
         [UseApplicationDbContext]
-        public async Task<GenerateDownloadSASPayload> GenerateDownloadSASAsync(
+        [Error(typeof(FileNotFoundException))]
+        [Error(typeof(GenerateSignatureException))]
+        public async Task<GenerateSASPayload> GenerateDownloadSASAsync(
             GenerateDownloadSASInput input,
             [Service] IBlobService blob,
             [ScopedService] ApplicationDbContext ctx,
@@ -116,22 +119,23 @@ namespace API.Schema.Mutations.Files {
                 cancellationToken);
 
             if (file is null) {
-                return new GenerateDownloadSASPayload(new UserError(
-                    "File not found.", "FILE_NOT_FOUND"));
+                throw new FileNotFoundException();
             }
 
             var sas = await blob.GetBlobSasUri(file.BlobName!, BlobSasPermissions.Read);
             if (sas is null) {
-                return new GenerateDownloadSASPayload(
-                    new UserError("Unable to generate signature.", "INVALID_SAS"));
+                throw new GenerateSignatureException();
             }
 
-            return new GenerateDownloadSASPayload(sas, file);
+            return new GenerateSASPayload(file, sas);
         }
 
         [Authorize]
         [UseApplicationDbContext]
-        public async Task<CompleteUploadPayload> CompleteUploadAsync(
+        [Error(typeof(BlobNotFoundException))]
+        [Error(typeof(BlobPropertiesException))]
+        [Error(typeof(FileNotFoundException))]
+        public async Task<File?> CompleteUploadAsync(
             CompleteUploadInput input,
             [Service] IBlobService blob,
             [ScopedService] ApplicationDbContext ctx,
@@ -141,7 +145,7 @@ namespace API.Schema.Mutations.Files {
                 cancellationToken);
 
             if (file is null) {
-                return new CompleteUploadPayload(new UserError("File not found", "FILE_NOT_FOUND"));
+                throw new FileNotFoundException();
             }
 
             var blobClient = await blob.GetBlobClient(file.BlobName!);
@@ -149,8 +153,7 @@ namespace API.Schema.Mutations.Files {
                 file.UploadStatus = FileUploadStatus.ERROR;
                 file.UpdatedAt = DateTime.UtcNow;
                 await ctx.SaveChangesAsync(cancellationToken);
-                return new CompleteUploadPayload(
-                    new UserError("Blob not found.", "BLOB_NOT_FOUND"));
+                throw new BlobNotFoundException();
             }
 
             try {
@@ -163,20 +166,22 @@ namespace API.Schema.Mutations.Files {
                 file.UpdatedAt = DateTime.UtcNow;
                 await ctx.SaveChangesAsync(cancellationToken);
 
-                return new CompleteUploadPayload(file);
+                return file;
             } catch (Exception ex) {
                 _logger.LogError(ex, "Error getting blob properties.");
                 file.UploadStatus = FileUploadStatus.ERROR;
                 file.UpdatedAt = DateTime.UtcNow;
                 await ctx.SaveChangesAsync(cancellationToken);
-                return new CompleteUploadPayload(
-                    new UserError("Unable to retrieve blob properties.", "BLOB_ERROR"));
+                throw new BlobPropertiesException();
             }
         }
 
         [Authorize]
         [UseApplicationDbContext]
-        public async Task<DeleteFilePayload> DeleteFileAsync(
+        [Error(typeof(FileNotFoundException))]
+        [Error(typeof(BlobNotFoundException))]
+        [Error(typeof(BlobDeletionException))]
+        public async Task<File?> DeleteFileAsync(
             DeleteFileInput input,
             [Service] IBlobService blob,
             [ScopedService] ApplicationDbContext ctx,
@@ -186,7 +191,7 @@ namespace API.Schema.Mutations.Files {
                 cancellationToken);
 
             if (file is null) {
-                return new DeleteFilePayload(new UserError("File not found", "FILE_NOT_FOUND"));
+                throw new FileNotFoundException();
             }
 
             var blobClient = await blob.GetBlobClient(file.BlobName!);
@@ -194,28 +199,13 @@ namespace API.Schema.Mutations.Files {
                 file.UploadStatus = FileUploadStatus.IGNORED;
                 file.UpdatedAt = DateTime.UtcNow;
                 await ctx.SaveChangesAsync(cancellationToken);
-                return new DeleteFilePayload(
-                    new UserError("Blob not found.", "BLOB_NOT_FOUND"));
+                throw new BlobNotFoundException();
             }
 
+            bool success;
             try {
-                var success = await blobClient.DeleteIfExistsAsync(
+                success = await blobClient.DeleteIfExistsAsync(
                     DeleteSnapshotsOption.IncludeSnapshots);
-
-                if (success) {
-                    file.IsDeleted = true;
-                    file.Location = null;
-                    file.UpdatedAt = DateTime.UtcNow;
-                    file.DeletedAt = DateTime.UtcNow;
-                    await ctx.SaveChangesAsync(cancellationToken);
-                    return new DeleteFilePayload(file);
-                }
-
-                file.UploadStatus = FileUploadStatus.IGNORED;
-                file.UpdatedAt = DateTime.UtcNow;
-                await ctx.SaveChangesAsync(cancellationToken);
-                _logger.LogWarning("Unsuccessful blob deletion.", file);
-                return new DeleteFilePayload(new UserError("Unable to delete blob.", "BLOB_ERROR"));
             } catch (Exception ex) {
                 _logger.LogError(ex,
                     $"Error deleting blob for `FileId: ${file.Id}` - `Blob name: {file.BlobName}.`",
@@ -223,8 +213,23 @@ namespace API.Schema.Mutations.Files {
                 file.UploadStatus = FileUploadStatus.IGNORED;
                 file.UpdatedAt = DateTime.UtcNow;
                 await ctx.SaveChangesAsync(cancellationToken);
-                return new DeleteFilePayload(new UserError("Unable to delete blob.", "BLOB_ERROR"));
+                throw new BlobDeletionException();
             }
+
+            if (!success) {
+                file.UploadStatus = FileUploadStatus.IGNORED;
+                file.UpdatedAt = DateTime.UtcNow;
+                await ctx.SaveChangesAsync(cancellationToken);
+                _logger.LogWarning("Unsuccessful blob deletion.", file);
+                throw new BlobDeletionException();
+            }
+
+            file.IsDeleted = true;
+            file.Location = null;
+            file.UpdatedAt = DateTime.UtcNow;
+            file.DeletedAt = DateTime.UtcNow;
+            await ctx.SaveChangesAsync(cancellationToken);
+            return file;
         }
 
         private class Signature {

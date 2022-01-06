@@ -6,18 +6,20 @@ using HotChocolate;
 using HotChocolate.Subscriptions;
 using API.Extensions;
 using API.Data;
-using API.Schema.Common;
 using System.Threading;
 using HotChocolate.AspNetCore.Authorization;
 using API.Schema.Types.Discussions;
 using System;
+using API.Schema.Mutations.Discussions.Exceptions;
+using API.Schema.Mutations.Discussions.Inputs;
 
 namespace API.Schema.Mutations.Discussions {
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class DiscussionMutations {
         [Authorize]
         [UseApplicationDbContext]
-        public async Task<SendDiscussionMessagePayload> SendDiscussionMessageAsync(
+        [Error(typeof(DiscussionNotFoundException))]
+        public async Task<Message?> SendDiscussionMessageAsync(
             SendDiscussionMessageInput input,
             [GlobalState] int userId,
             [Service] ITopicEventSender sender,
@@ -28,8 +30,7 @@ namespace API.Schema.Mutations.Discussions {
                 cancellationToken);
 
             if (discussion is null) {
-                return new SendDiscussionMessagePayload(
-                  new UserError("Discussion not found.", "DISCUSSION_NOT_FOUND"));
+                throw new DiscussionNotFoundException();
             }
 
             var message = new Message {
@@ -55,12 +56,13 @@ namespace API.Schema.Mutations.Discussions {
               message.Id,
               cancellationToken);
 
-            return new SendDiscussionMessagePayload(message);
+            return message;
         }
 
         [Authorize]
         [UseApplicationDbContext]
-        public async Task<CreateDiscussionPayload> CreateDiscussionAsync(
+        [Error(typeof(ClassroomNotFoundException))]
+        public async Task<Discussion?> CreateDiscussionAsync(
             CreateDiscussionInput input,
             [GlobalState] int userId,
             [ScopedService] ApplicationDbContext ctx,
@@ -69,8 +71,9 @@ namespace API.Schema.Mutations.Discussions {
                 new object[] { input.ClassroomId },
                 cancellationToken);
 
-            if (classroom is null)
-                throw new GraphQLException("Classroom not found.");
+            if (classroom is null) {
+                throw new ClassroomNotFoundException();
+            }
 
             var discussion = new Discussion {
                 Name = input.Name.Trim(),
@@ -82,12 +85,13 @@ namespace API.Schema.Mutations.Discussions {
             classroom.Discussions.Add(discussion);
             await ctx.SaveChangesAsync(cancellationToken);
 
-            return new CreateDiscussionPayload(discussion);
+            return discussion;
         }
 
         [Authorize]
         [UseApplicationDbContext]
-        public async Task<UpdateDiscussionTopicPayload> UpdateDiscussionTopicAsync(
+        [Error(typeof(DiscussionNotFoundException))]
+        public async Task<Discussion?> UpdateDiscussionTopicAsync(
         UpdateDiscussionTopicInput input,
         [GlobalState] int userId,
         [Service] ITopicEventSender sender,
@@ -98,8 +102,7 @@ namespace API.Schema.Mutations.Discussions {
                 cancellationToken);
 
             if (discussion is null) {
-                return new UpdateDiscussionTopicPayload(
-                  new UserError("Discussion not found.", "DISCUSSION_NOT_FOUND"));
+                throw new DiscussionNotFoundException();
             }
 
             var message = new Message {
@@ -120,12 +123,13 @@ namespace API.Schema.Mutations.Discussions {
               message.Id,
               cancellationToken);
 
-            return new UpdateDiscussionTopicPayload(discussion);
+            return discussion;
         }
 
         [Authorize]
         [UseApplicationDbContext]
-        public async Task<UpdateDiscussionDescriptionPayload> UpdateDiscussionDescriptionAsync(
+        [Error(typeof(DiscussionNotFoundException))]
+        public async Task<Discussion?> UpdateDiscussionDescriptionAsync(
         UpdateDiscussionDescriptionInput input,
         [GlobalState] int userId,
         [Service] ITopicEventSender sender,
@@ -136,8 +140,7 @@ namespace API.Schema.Mutations.Discussions {
                 cancellationToken);
 
             if (discussion is null) {
-                return new UpdateDiscussionDescriptionPayload(
-                  new UserError("Discussion not found.", "DISCUSSION_NOT_FOUND"));
+                throw new DiscussionNotFoundException();
             }
 
             var message = new Message {
@@ -158,7 +161,7 @@ namespace API.Schema.Mutations.Discussions {
               message.Id,
               cancellationToken);
 
-            return new UpdateDiscussionDescriptionPayload(discussion);
+            return discussion;
         }
     }
 }

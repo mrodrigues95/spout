@@ -9,24 +9,35 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
-using API.Schema.Common;
 using HotChocolate.AspNetCore.Authorization;
 using API.Schema.Mutations.Sessions.Common;
 using API.Common.Enums;
 using API.Schema.Types.Users;
+using API.Schema.Mutations.Auth.Inputs;
+using API.Schema.Mutations.Auth.Payloads;
+using API.Schema.Mutations.Auth.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace API.Schema.Mutations.Auth {
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class AuthMutations {
+        private readonly ILogger<AuthMutations> _logger;
+
+        public AuthMutations(ILogger<AuthMutations> logger) {
+            _logger = logger;
+        }
+
         [UseApplicationDbContext]
+        [Error(typeof(SignUpNewUserException))]
         public async Task<AuthPayload> SignUpAsync(
             SignUpInput input,
             [ScopedService] ApplicationDbContext context,
             [Service] UserManager<User> userManager,
             [Service] SignInManager<User> signInManager,
-            CancellationToken cancellationToken) {
+            CancellationToken cancellationToken) {         
             if (await context.Users.AnyAsync(x => x.Email == input.Email || x.UserName == input.Email)) {
-                return new AuthPayload(new UserError("Email already exists.", "EMAIL_ALREADY_EXISTS"));
+                _logger.LogWarning("Email already exists.", input.Email);
+                throw new SignUpNewUserException();
             }
 
             var user = new User {
@@ -34,22 +45,32 @@ namespace API.Schema.Mutations.Auth {
                 UserName = input.Email,
                 Email = input.Email,
                 ProfileColor = RandomEnum.Of<UserProfileColor>(),
-                StateId = (int) Enums.State.Active
+                StateId = (int)Enums.State.Active
             };
 
             var createUser = await userManager.CreateAsync(user, input.Password);
-            if (!createUser.Succeeded) return new AuthPayload(new UserError("Unable to create new user.", "INVALID_USER"));
+            if (!createUser.Succeeded) {
+                _logger.LogError("Unable to create new user.", createUser, user);
+                throw new SignUpNewUserException();
+            }
 
             var loginUser = await signInManager.PasswordSignInAsync(user, input.Password, true, false);
-            if (!loginUser.Succeeded) return new AuthPayload(new UserError("Unable to sign in user.", "INVALID_USER"));
+            if (!loginUser.Succeeded) {
+                _logger.LogError("Unable to sign in user.", loginUser, user);
+                throw new SignUpNewUserException();
+            }
 
             var session = await SessionManagement.CreateSession(user.Id, context, cancellationToken);
-            if (session is null) return new AuthPayload(new UserError("Unable to refresh session", "SESSION_PROBLEM"));
+            if (session is null) {
+                _logger.LogError("Unable to refresh session.", user);
+                throw new SignUpNewUserException();
+            }
 
             return new AuthPayload(user, session.Session!, true);
         }
 
         [UseApplicationDbContext]
+        [Error(typeof(LoginUserException))]
         public async Task<AuthPayload> LoginAsync(
             LoginInput input,
             [ScopedService] ApplicationDbContext context,
@@ -58,17 +79,26 @@ namespace API.Schema.Mutations.Auth {
             [Service] IHttpContextAccessor httpContextAccessor,
             CancellationToken cancellationToken) {
             if (signInManager.IsSignedIn(httpContextAccessor.HttpContext?.User)) {
-                return new AuthPayload(new UserError("User is already signed in.", "SESSION_EXISTS"));
+                _logger.LogWarning("User is already signed in.",
+                    httpContextAccessor.HttpContext?.User);
+                throw new LoginUserException();
             }
 
             var user = await userManager.FindByEmailAsync(input.Email);
-            if (user is null) return new AuthPayload(new UserError("Unable to find user.", "USER_NOT_FOUND"));
+            if (user is null) {
+                throw new LoginUserException();
+            }
 
             var loginUser = await signInManager.PasswordSignInAsync(user, input.Password, true, false);
-            if (!loginUser.Succeeded) return new AuthPayload(new UserError("Invalid email address or password.", "BAD_USER_INPUT"));
+            if (!loginUser.Succeeded) {
+                throw new LoginUserException();
+            }
 
             var session = await SessionManagement.CreateSession(user.Id, context, cancellationToken);
-            if (session is null) return new AuthPayload(new UserError("Unable to refresh session", "SESSION_PROBLEM"));
+            if (session is null) {
+                _logger.LogError("Unable to refresh session.", user);
+                throw new LoginUserException();
+            }
 
             return new AuthPayload(user, session.Session, true);
         }

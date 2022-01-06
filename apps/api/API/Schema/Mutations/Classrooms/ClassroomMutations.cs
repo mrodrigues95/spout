@@ -12,14 +12,15 @@ using CSharpVitamins;
 using HotChocolate.AspNetCore.Authorization;
 using System.Linq;
 using System.Collections.Generic;
-using API.Schema.Common;
+using API.Schema.Mutations.Classrooms.Inputs;
+using API.Schema.Mutations.Classrooms.Exceptions;
 
 namespace API.Schema.Mutations.Classrooms {
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class ClassroomMutations {
         [Authorize]
         [UseApplicationDbContext]
-        public async Task<CreateClassroomPayload> CreateClassroomAsync(
+        public async Task<Classroom?> CreateClassroomAsync(
             CreateClassroomInput input,
             [GlobalState] int userId,
             [ScopedService] ApplicationDbContext ctx,
@@ -38,12 +39,14 @@ namespace API.Schema.Mutations.Classrooms {
             ctx.Classrooms.Add(classroom);
             await ctx.SaveChangesAsync(cancellationToken);
 
-            return new CreateClassroomPayload(classroom);
+            return classroom;
         }
 
         [Authorize]
         [UseApplicationDbContext]
-        public async Task<JoinClassroomPayload> JoinClassroomAsync(
+        [Error(typeof(ClassroomInviteExpiredException))]
+        [Error(typeof(UserAlreadyInClassroomException))]
+        public async Task<Classroom?> JoinClassroomAsync(
             JoinClassroomInput input,
             [GlobalState] int userId,
             [ScopedService] ApplicationDbContext ctx,
@@ -57,8 +60,7 @@ namespace API.Schema.Mutations.Classrooms {
                     && x.IsInviter, cancellationToken);
 
             if (!IsValid(classroomInvite?.Invite)) {
-                return new JoinClassroomPayload(
-                    new UserError("This invite has expired.", "INVITE_EXPIRED"));
+                throw new ClassroomInviteExpiredException();
             }
 
             var invite = classroomInvite!.Invite!;
@@ -66,8 +68,7 @@ namespace API.Schema.Mutations.Classrooms {
 
             var isAlreadyInClassroom = classroom.Users.Any(x => x.UserId == userId);
             if (isAlreadyInClassroom) {
-                return new JoinClassroomPayload(classroom,
-                    new UserError("User is already in classroom.", "USER_ALREADY_EXISTS"));
+                throw new UserAlreadyInClassroomException(classroom.Name!);
             }
 
             invite.Uses++;
@@ -90,12 +91,12 @@ namespace API.Schema.Mutations.Classrooms {
 
             await ctx.SaveChangesAsync(cancellationToken);
 
-            return new JoinClassroomPayload(classroom);
+            return classroom;
         }
 
         [Authorize]
         [UseApplicationDbContext]
-        public async Task<CreateClassroomInvitePayload> CreateClassroomInviteAsync(
+        public async Task<Invite> CreateClassroomInviteAsync(
             CreateClassroomInviteInput input,
             [GlobalState] int userId,
             [ScopedService] ApplicationDbContext ctx,
@@ -109,7 +110,7 @@ namespace API.Schema.Mutations.Classrooms {
                         && x.UserId == userId
                         && x.IsInviter, cancellationToken);
 
-                if (IsValid(classroomInvite?.Invite)) return new CreateClassroomInvitePayload(classroomInvite!.Invite!);
+                if (IsValid(classroomInvite?.Invite)) return classroomInvite!.Invite!;
             } else if (input.MaxAge is null && input.MaxUses is null) {
                 // Check if the user already has an existing invite created before creating a new one.
                 var classroomInvites = await ctx.ClassroomInvites
@@ -121,7 +122,7 @@ namespace API.Schema.Mutations.Classrooms {
                     .ToListAsync(cancellationToken);
 
                 var classroomInvite = ValidateClassroomInvites(classroomInvites);
-                if (classroomInvite != null) return new CreateClassroomInvitePayload(classroomInvite.Invite!);
+                if (classroomInvite != null) return classroomInvite!.Invite!;
             }
 
             // Set defaults (7 days).
@@ -154,7 +155,7 @@ namespace API.Schema.Mutations.Classrooms {
             ctx.Invites.Add(invite);
             await ctx.SaveChangesAsync(cancellationToken);
 
-            return new CreateClassroomInvitePayload(invite);
+            return invite;
         }
 
         /// <summary>

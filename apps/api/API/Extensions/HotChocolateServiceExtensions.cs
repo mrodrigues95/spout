@@ -88,7 +88,7 @@ namespace API.Extensions {
                 .AddHttpRequestInterceptor<CustomHttpRequestInterceptor>()
                 .AddDiagnosticEventListener<CustomDiagnosticEventListener>()
                 .AddFairyBread()
-                //.AddMutationConventions()
+                .AddMutationConventions()
                 .AddInMemorySubscriptions()
                 .AddFiltering()
                 .AddSorting()
