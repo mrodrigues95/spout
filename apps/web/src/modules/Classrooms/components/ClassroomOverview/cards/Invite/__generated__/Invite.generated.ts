@@ -9,9 +9,9 @@ export type CreateClassroomInviteMutation = (
   { __typename?: 'Mutation' }
   & { createClassroomInvite: (
     { __typename?: 'CreateClassroomInvitePayload' }
-    & { invite: (
+    & { invite?: Types.Maybe<(
       { __typename?: 'Invite' }
       & Pick<Types.Invite, 'id' | 'code' | 'uses' | 'maxUses' | 'maxAge' | 'expiresAt' | 'createdAt'>
-    ) }
+    )> }
   ) }
 );

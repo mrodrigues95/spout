@@ -77,7 +77,7 @@ export const resolveSession = async ({
     headers: req.headers as Record<string, string>,
   });
 
-  let session: Partial<Session> | null = null;
+  let session: Partial<Session> | null | undefined = null;
   const sessionId = req.session.sessionId;
 
   if (sessionId) {
@@ -103,7 +103,7 @@ export const resolveSession = async ({
 const fetchSession = async (
   client: ApolloClient<any>,
   sessionId: string
-): Promise<Partial<Session> | null> => {
+): Promise<Partial<Session> | null | undefined> => {
   try {
     const data = await client.query<SessionQuery, SessionQueryVariables>({
       query: gql`
@@ -130,9 +130,9 @@ const fetchSession = async (
 const refreshSession = async (
   client: ApolloClient<any>,
   sessionId: string
-): Promise<Partial<Session> | null> => {
+): Promise<Partial<Session> | null | undefined> => {
   try {
-    const data = await client.mutate<
+    const { data } = await client.mutate<
       RefreshSessionMutation,
       RefreshSessionMutationVariables
     >({
@@ -140,20 +140,22 @@ const refreshSession = async (
       mutation: gql`
         mutation RefreshSessionMutation($input: RefreshSessionInput!) {
           refreshSession(input: $input) {
-            session {
-              id
-              createdAt
-              updatedAt
-              expiresAt
+            authPayload {
+              session {
+                id
+                createdAt
+                updatedAt
+                expiresAt
+              }
             }
           }
         }
       `,
     });
 
-    return data.data?.refreshSession?.session || null;
+    return data?.refreshSession.authPayload?.session;
   } catch (error) {
-    console.log('[ERROR] -  refreshing client session: ', error);
+    console.log('[ERROR] - refreshing client session: ', error);
     return null;
   }
 };

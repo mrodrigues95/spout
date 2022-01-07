@@ -20,6 +20,7 @@ import {
   UpdateDiscussionTopicMutation,
   UpdateDiscussionTopicMutationVariables,
 } from './__generated__/TopicDescription.generated';
+import { useToast } from '../../../../../shared/components';
 
 type Content = string | null | undefined;
 
@@ -100,6 +101,7 @@ interface TopicProps {
 
 const Topic = ({ discussionId, topic }: TopicProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { handleError } = useToast();
 
   const form = useZodForm({
     schema: topicSchema,
@@ -138,8 +140,8 @@ const Topic = ({ discussionId, topic }: TopicProps) => {
             topic,
           },
         },
-      }),
-    [updateTopic, discussionId]
+      }).catch(() => handleError()),
+    [updateTopic, discussionId, handleError]
   );
 
   return (
@@ -196,6 +198,7 @@ interface DescriptionProps {
 
 const Description = ({ discussionId, description }: DescriptionProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { handleError } = useToast();  
 
   const form = useZodForm({
     schema: descriptionSchema,
@@ -234,8 +237,8 @@ const Description = ({ discussionId, description }: DescriptionProps) => {
             description,
           },
         },
-      }),
-    [updateDescription, discussionId]
+      }).catch(() => handleError()),
+    [updateDescription, discussionId, handleError]
   );
 
   return (

@@ -21,10 +21,6 @@ const mutation = gql`
       message {
         ...Message_message
       }
-      userErrors {
-        message
-        code
-      }
     }
   }
   ${MessageFragment}

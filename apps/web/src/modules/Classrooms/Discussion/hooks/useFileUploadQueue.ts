@@ -7,6 +7,7 @@ import {
 } from './__generated__/useFileUploadQueue.generated';
 import { useFileUpload } from '../../../../shared/hooks/files';
 import { FileFragment } from '../utils/fragments';
+import { useToast } from '../../../../shared/components';
 
 const mutation = gql`
   mutation DeleteFileMutation($input: DeleteFileInput!) {
@@ -14,9 +15,10 @@ const mutation = gql`
       file {
         ...File_file
       }
-      userErrors {
-        message
-        code
+      errors {
+        ... on Error {
+          message
+        }
       }
     }
   }
@@ -40,6 +42,7 @@ export const useFileUploadQueue = () => {
   const { upload: uploadFile } = useFileUpload();
   const [isInFlight, setIsInFlight] = useState(false);
   const [fileUploadQueue, setFileUploadQueue] = useState<FileUploadQueue[]>([]);
+  const { handleError } = useToast();
 
   const [deleteFile] = useMutation<
     DeleteFileMutation,
@@ -53,12 +56,13 @@ export const useFileUploadQueue = () => {
       ]);
 
       if (fileId) {
-        deleteFile({ variables: { input: { fileId } } }).catch((e) =>
-          console.error(`[Error deleting file]: ${e}`)
-        );
+        deleteFile({ variables: { input: { fileId } } }).catch((e) => {
+          handleError();
+          console.error(`[Error deleting file]: ${e}`);
+        });
       }
     },
-    [deleteFile]
+    [deleteFile, handleError]
   );
 
   const resetQueue = useCallback(() => {
@@ -66,72 +70,75 @@ export const useFileUploadQueue = () => {
     setIsInFlight(false);
   }, []);
 
-  const upload = useCallback(async (files: FileWithId[]) => {
-    const queue: FileUploadQueue[] = [];
-    for (const file of files) {
-      queue.push({
-        id: generateId(),
-        file,
-        isUploading: false,
-        isUploaded: false,
-        isError: false,
-        isQueued: true,
-      });
-    }
+  const upload = useCallback(
+    async (files: FileWithId[]) => {
+      const queue: FileUploadQueue[] = [];
+      for (const file of files) {
+        queue.push({
+          id: generateId(),
+          file,
+          isUploading: false,
+          isUploaded: false,
+          isError: false,
+          isQueued: true,
+        });
+      }
 
-    setIsInFlight(true);
-    setFileUploadQueue((prev) => [...prev, ...queue]);
+      setIsInFlight(true);
+      setFileUploadQueue((prev) => [...prev, ...queue]);
 
-    // TODO: Figure out slow query times while generating SAS's or look into
-    // executing all of these uploads with `Promise.allSettled()`.
-    for (const entry of queue) {
-      // This file has already been handled in a previous transaction, ignore it.
-      if (entry.isUploaded || entry.isError || !entry.isQueued) continue;
+      // TODO: Figure out slow query times while generating SAS's or look into
+      // executing all of these uploads with `Promise.allSettled()`.
+      for (const entry of queue) {
+        // This file has already been handled in a previous transaction, ignore it.
+        if (entry.isUploaded || entry.isError || !entry.isQueued) continue;
 
-      const status: FileUploadQueue = {
-        id: entry.id,
-        file: entry.file,
-        isUploading: true,
-        isUploaded: false,
-        isError: false,
-        isQueued: false,
-      };
+        const status: FileUploadQueue = {
+          id: entry.id,
+          file: entry.file,
+          isUploading: true,
+          isUploaded: false,
+          isError: false,
+          isQueued: false,
+        };
 
-      setFileUploadQueue((prev) => [
-        ...prev.filter((item) => item.id !== entry.id),
-        status,
-      ]);
+        setFileUploadQueue((prev) => [
+          ...prev.filter((item) => item.id !== entry.id),
+          status,
+        ]);
 
-      const { id: fileId } = (await uploadFile(entry.file)) || {};
+        const { id: fileId } = (await uploadFile(entry.file)) || {};
 
-      // Upload failed.
-      if (!fileId) {
+        // Upload failed.
+        if (!fileId) {
+          setFileUploadQueue((prev) => [
+            ...prev.filter((item) => item.id !== entry.id),
+            {
+              ...status,
+              isUploading: false,
+              isUploaded: false,
+              isError: true,
+            },
+          ]);
+          continue;
+        }
+
+        status.file.id = fileId;
         setFileUploadQueue((prev) => [
           ...prev.filter((item) => item.id !== entry.id),
           {
             ...status,
             isUploading: false,
-            isUploaded: false,
-            isError: true,
+            isUploaded: true,
+            isError: false,
           },
         ]);
-        continue;
       }
 
-      status.file.id = fileId;
-      setFileUploadQueue((prev) => [
-        ...prev.filter((item) => item.id !== entry.id),
-        {
-          ...status,
-          isUploading: false,
-          isUploaded: true,
-          isError: false,
-        },
-      ]);
-    }
-
-    setIsInFlight(false);
-  }, [uploadFile]);
+      setIsInFlight(false);
+    },
+    [uploadFile]
+  );
 
   const uploadedFiles = useMemo(
     () =>

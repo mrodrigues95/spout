@@ -13,9 +13,6 @@ export type SendDiscussionMessageMutation = (
     & { message?: Types.Maybe<(
       { __typename?: 'Message' }
       & Message_Message
-    )>, userErrors?: Types.Maybe<Array<(
-      { __typename?: 'UserError' }
-      & Pick<Types.UserError, 'message' | 'code'>
-    )>> }
+    )> }
   ) }
 );

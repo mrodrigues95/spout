@@ -26,7 +26,7 @@ import WelcomeHeader from './WelcomeHeader';
 
 export const DiscussionMessagesFragment = gql`
   fragment DiscussionMessages_discussion on Discussion {
-    messages(first: 50, after: $after) {
+    messages(last: 50, before: $before) {
       edges {
         node {
           ...Message_message
@@ -92,11 +92,11 @@ const DicussionMessages = ({
   const handleLoadMore = useCallback(async () => {
     const pageInfo = discussion.messages?.pageInfo;
 
-    if (pageInfo?.hasNextPage) {
+    if (pageInfo?.hasPreviousPage) {
       return fetchMore({
         variables: {
           discussionId: discussion.id,
-          after: discussion.messages?.pageInfo.endCursor,
+          before: discussion.messages?.pageInfo.startCursor,
         },
       }).then(({ data }) => data);
     }
@@ -159,8 +159,8 @@ const DicussionMessages = ({
         <DiscussionMessagesList
           discussionId={discussion.id}
           messages={messages}
-          hasNext={discussion.messages?.pageInfo.hasNextPage}
-          next={handleLoadMore}
+          hasPrevious={discussion.messages?.pageInfo.hasPreviousPage}
+          previous={handleLoadMore}
           header={<WelcomeHeader discussion={discussion} />}
         />
       </Card>

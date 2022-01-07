@@ -95,6 +95,7 @@ namespace API.Schema.Types.Discussions {
                 .Type<NonNullType<ListType<NonNullType<MessageType>>>>()
                 .UseDbContext<ApplicationDbContext>()
                 .UsePaging<NonNullType<MessageType>>(options: new PagingOptions { MaxPageSize = 50 })
+                .UseSorting()
                 .ResolveWith<DiscussionResolvers>(x =>
                     x.GetMessagesAsync(default!, default!, default!, default!, default!, default!))
                 .Name("messages");
@@ -113,34 +114,44 @@ namespace API.Schema.Types.Discussions {
                 CancellationToken cancellationToken) =>
                 await userById.LoadAsync(discussion.CreatedById, cancellationToken);
 
-            public async Task<Connection<Message>> GetMessagesAsync(
+
+            // TODO: This is not ordering properly.
+            public async Task<IEnumerable<Message>> GetMessagesAsync(
                 [Parent] Discussion discussion,
                 [Service] IIdSerializer serializer,
                 [ScopedService] ApplicationDbContext dbContext,
                 MessageByIdDataLoader messageById,
                 IResolverContext resolverCtx,
                 CancellationToken cancellationToken) {
-                var messageIdsQueryable = dbContext.Discussions
+                int[] messageIds = await dbContext.Discussions
                     .Where(d => d.Id == discussion.Id)
                     .Include(d => d.Messages)
-                    .SelectMany(d => d.Messages.Select(m => m.Id));
+                    .SelectMany(d => d.Messages.OrderByDescending(m => m.CreatedAt).Select(m => m.Id))
+                    .ToArrayAsync(cancellationToken);
 
-                var typeInspector = new DefaultTypeInspector();
-                IExtendedType sourceType = typeInspector.GetType(typeof(List<int>));
+                return await messageById.LoadAsync(messageIds, cancellationToken);
 
-                IPagingProvider pagingProvider = new QueryableCursorPagingProvider();
-                IPagingHandler pagingHandler = pagingProvider.CreateHandler(sourceType, default);
+                //var messageIdsQueryable = dbContext.Discussions
+                //    .Where(d => d.Id == discussion.Id)
+                //    .Include(d => d.Messages)
+                //    .SelectMany(d => d.Messages.Select(m => m.Id));
 
-                var connection = (Connection<int>)await pagingHandler.SliceAsync(
-                    resolverCtx, messageIdsQueryable);
-                var messageIds = connection.Edges.Select(e => e.Node).ToArray();
+                //var typeInspector = new DefaultTypeInspector();
+                //IExtendedType sourceType = typeInspector.GetType(typeof(List<int>));
 
-                var messages = await messageById.LoadAsync(messageIds, cancellationToken);
-                var edges = messages.Select(message => new Edge<Message>(
-                    message, serializer.Serialize(default!, nameof(Message), message.Id))).ToList();
+                //IPagingProvider pagingProvider = new QueryableCursorPagingProvider();
+                //IPagingHandler pagingHandler = pagingProvider.CreateHandler(sourceType, default);
 
-                return new Connection<Message>(edges, connection.Info,
-                    ct => ValueTask.FromResult(0));
+                //var connection = (Connection<int>)await pagingHandler.SliceAsync(
+                //    resolverCtx, messageIdsQueryable);
+                //var messageIds = connection.Edges.Select(e => e.Node).ToArray();
+
+                //var messages = await messageById.LoadAsync(messageIds, cancellationToken);
+                //var edges = messages.Select(message => new Edge<Message>(
+                //    message, serializer.Serialize(default!, nameof(Message), message.Id))).ToList();
+
+                //return new Connection<Message>(edges, connection.Info,
+                //    ct => ValueTask.FromResult(0));
             }
         }
     }

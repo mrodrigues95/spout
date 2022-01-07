@@ -9,13 +9,19 @@ import {
 const mutation = gql`
   mutation GenerateDownloadSASMutation($input: GenerateDownloadSASInput!) {
     generateDownloadSAS(input: $input) {
-      sas
-      file {
-        ...File_file
+      generateSASPayload {
+        sas
+        file {
+          ...File_file
+        }
       }
-      userErrors {
-        message
-        code
+      errors {
+        ... on FileNotFoundError {
+          message
+        }
+        ... on GenerateSignatureError {
+          message
+        }
       }
     }
   }
@@ -31,7 +37,7 @@ export const useFileDownload = () => {
   const generateDownloadSAS = useCallback(
     async (fileId: string) => {
       try {
-        const { data, errors } = await generate({
+        const { data } = await generate({
           variables: {
             input: {
               fileId,
@@ -39,11 +45,9 @@ export const useFileDownload = () => {
           },
         });
 
-        if (errors || data!.generateDownloadSAS.userErrors) {
-          return null;
-        }
+        if (data?.generateDownloadSAS.errors) return null;
 
-        const { sas, file } = data!.generateDownloadSAS!;
+        const { sas, file } = data!.generateDownloadSAS!.generateSASPayload!;
         return { sas, file };
       } catch (e) {
         console.error(`[Error generating download SAS]: ${e}`);

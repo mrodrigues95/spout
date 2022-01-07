@@ -11,10 +11,10 @@ export type CreateClassroomMutation = (
   { __typename?: 'Mutation' }
   & { createClassroom: (
     { __typename?: 'CreateClassroomPayload' }
-    & { classroom: (
+    & { classroom?: Types.Maybe<(
       { __typename?: 'Classroom' }
       & Pick<Types.Classroom, 'id' | 'name'>
-    ) }
+    )> }
   ) }
 );
 

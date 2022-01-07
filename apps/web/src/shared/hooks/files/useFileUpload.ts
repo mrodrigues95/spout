@@ -15,13 +15,19 @@ import { convertFileExtensionToEnumIndex } from '../../utils';
 const GenerateUploadSASMutation = gql`
   mutation GenerateUploadSASMutation($input: GenerateUploadSASInput!) {
     generateUploadSAS(input: $input) {
-      sas
-      file {
-        ...File_file
+      generateSASPayload {
+        sas
+        file {
+          ...File_file
+        }
       }
-      userErrors {
-        message
-        code
+      errors {
+        ... on GenerateSignatureError {
+          message
+        }
+        ... on ParseSignatureError {
+          message
+        }
       }
     }
   }
@@ -34,9 +40,10 @@ const CompleteUploadMutation = gql`
       file {
         ...File_file
       }
-      userErrors {
-        message
-        code
+      errors {
+        ... on Error {
+          message
+        }
       }
     }
   }
@@ -61,7 +68,7 @@ export const useFileUpload = () => {
       if (!index) return null;
 
       try {
-        const { data, errors } = await generate({
+        const { data } = await generate({
           variables: {
             input: {
               fileName: file.name,
@@ -72,11 +79,12 @@ export const useFileUpload = () => {
           },
         });
 
-        if (errors || data!.generateUploadSAS.userErrors) {
-          return null;
-        }
+        if (data?.generateUploadSAS.errors) return null;
 
-        const { sas, file: _file } = data!.generateUploadSAS!;
+        const {
+          sas,
+          file: _file,
+        } = data!.generateUploadSAS.generateSASPayload!;
         return { sas, file: _file };
       } catch (e) {
         console.error(`[Error generating SAS]: ${e}`);
@@ -100,7 +108,7 @@ export const useFileUpload = () => {
   const updateFile = useCallback(
     async (fileId: string) => {
       try {
-        const { data, errors } = await completeUpload({
+        const { data } = await completeUpload({
           variables: {
             input: {
               fileId,
@@ -108,11 +116,9 @@ export const useFileUpload = () => {
           },
         });
 
-        if (errors || data!.completeUpload.userErrors) {
-          return null;
-        }
+        if (data?.completeUpload.errors) return null;
 
-        const { file } = data!.completeUpload!;
+        const { file } = data!.completeUpload;
         return file;
       } catch (e) {
         console.error(`[Error updating file]: ${e}`);

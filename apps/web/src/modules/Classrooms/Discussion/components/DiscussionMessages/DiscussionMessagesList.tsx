@@ -60,8 +60,8 @@ const START_INDEX = 1000000;
 interface Props {
   discussionId: string;
   messages: { node: OptimisticMessageType | Message_Message }[];
-  next(): Promise<DiscussionQuery | null>;
-  hasNext?: boolean;
+  previous(): Promise<DiscussionQuery | null>;
+  hasPrevious?: boolean;
   header: ReactElement;
 }
 
@@ -71,8 +71,8 @@ interface Props {
 const DiscussionMessagesList = ({
   discussionId,
   messages,
-  hasNext,
-  next,
+  hasPrevious,
+  previous,
   header,
 }: Props) => {
   const { data } = useQuery<MeQuery>(
@@ -107,7 +107,7 @@ const DiscussionMessagesList = ({
     timeoutRef.current = window.setTimeout(async () => {
       const oldMessages = [...messages];
 
-      const data = await next();
+      const data = await previous();
       const itemsToPrepend = getItemsToPrepend(
         oldMessages,
         data?.discussionById.messages?.edges ?? []
@@ -118,7 +118,7 @@ const DiscussionMessagesList = ({
     }, 500);
 
     return false;
-  }, [next, messages]);
+  }, [previous, messages]);
 
   const optimisticMessages =
     useStore((state) => state.messagesByDiscussionId[discussionId]) ?? [];
@@ -132,7 +132,7 @@ const DiscussionMessagesList = ({
       overscan={{ main: 1200, reverse: 1200 }}
       firstItemIndex={firstItemIndex}
       initialTopMostItemIndex={items.length - 1}
-      startReached={hasNext ? prependItems : undefined}
+      startReached={hasPrevious ? prependItems : undefined}
       followOutput={(isAtBottom) => {
         const myMessages = optimisticMessages.some(
           (message) => message.createdBy.id === data!.me!.id

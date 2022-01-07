@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCog, faCommentDots, faHome } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCog,
+  faCommentDots,
+  faHome,
+} from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 import { object, string } from 'zod';
 import { gql, useMutation, useQuery } from '@apollo/client';
@@ -43,10 +47,9 @@ const CreateClassroom = () => {
     CreateClassroomMutation,
     CreateClassroomMutationVariables
   >(mutation, {
-    onError: (error) => handleError(error),
     onCompleted: ({ createClassroom }) => {
       setIsOpen(false);
-      router.push(`/classrooms/${createClassroom.classroom.id}`);
+      router.push(`/classrooms/${createClassroom!.classroom!.id}`);
     },
     refetchQueries: [query],
     awaitRefetchQueries: true,
@@ -72,7 +75,9 @@ const CreateClassroom = () => {
         <Form
           form={form}
           onSubmit={({ name }) =>
-            createClassroom({ variables: { input: { name } } })
+            createClassroom({ variables: { input: { name } } }).catch(() =>
+              handleError()
+            )
           }
         >
           <Modal.Content>
@@ -155,9 +160,7 @@ const Sidebar = () => {
           <VerticalNav.Item
             to="/messages"
             label="Messages"
-            icon={
-              <FontAwesomeIcon icon={faCommentDots} />
-            }
+            icon={<FontAwesomeIcon icon={faCommentDots} />}
           />
           <VerticalNav.Item
             to="/settings"

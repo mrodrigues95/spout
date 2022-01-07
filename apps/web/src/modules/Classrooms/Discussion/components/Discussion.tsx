@@ -10,7 +10,7 @@ import DiscussionMessages, {
 } from './DiscussionMessages';
 
 export const query = gql`
-  query DiscussionQuery($id: ID!, $after: String) {
+  query DiscussionQuery($id: ID!, $before: String) {
     discussionById(id: $id) {
       id
       name

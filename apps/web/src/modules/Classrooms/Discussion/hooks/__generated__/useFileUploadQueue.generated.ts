@@ -13,9 +13,15 @@ export type DeleteFileMutation = (
     & { file?: Types.Maybe<(
       { __typename?: 'File' }
       & File_File
-    )>, userErrors?: Types.Maybe<Array<(
-      { __typename?: 'UserError' }
-      & Pick<Types.UserError, 'message' | 'code'>
+    )>, errors?: Types.Maybe<Array<(
+      { __typename?: 'FileNotFoundError' }
+      & Pick<Types.FileNotFoundError, 'message'>
+    ) | (
+      { __typename?: 'BlobNotFoundError' }
+      & Pick<Types.BlobNotFoundError, 'message'>
+    ) | (
+      { __typename?: 'BlobDeletionError' }
+      & Pick<Types.BlobDeletionError, 'message'>
     )>> }
   ) }
 );

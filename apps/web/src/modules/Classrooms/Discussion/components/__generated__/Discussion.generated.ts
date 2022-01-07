@@ -4,7 +4,7 @@ import { ClassroomInfo_Classroom } from '../../../components/__generated__/ViewC
 import { DiscussionMessages_Discussion } from '../DiscussionMessages/__generated__/index.generated';
 export type DiscussionQueryVariables = Types.Exact<{
   id: Types.Scalars['ID'];
-  after?: Types.Maybe<Types.Scalars['String']>;
+  before?: Types.Maybe<Types.Scalars['String']>;
 }>;
 
 

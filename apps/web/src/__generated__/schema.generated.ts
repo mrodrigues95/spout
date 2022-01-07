@@ -32,8 +32,21 @@ export type AuthPayload = {
   user?: Maybe<User>;
   session?: Maybe<Session>;
   isLoggedIn: Scalars['Boolean'];
-  userErrors?: Maybe<Array<UserError>>;
-  query: Query;
+};
+
+export type BlobDeletionError = Error & {
+  __typename?: 'BlobDeletionError';
+  message: Scalars['String'];
+};
+
+export type BlobNotFoundError = Error & {
+  __typename?: 'BlobNotFoundError';
+  message: Scalars['String'];
+};
+
+export type BlobPropertiesError = Error & {
+  __typename?: 'BlobPropertiesError';
+  message: Scalars['String'];
 };
 
 export type BooleanOperationFilterInput = {
@@ -89,6 +102,11 @@ export type ClassroomInvite = {
   updatedAt: Scalars['DateTime'];
 };
 
+export type ClassroomInviteExpiredError = Error & {
+  __typename?: 'ClassroomInviteExpiredError';
+  message: Scalars['String'];
+};
+
 export type ClassroomInviteFilterInput = {
   and?: Maybe<Array<ClassroomInviteFilterInput>>;
   or?: Maybe<Array<ClassroomInviteFilterInput>>;
@@ -102,6 +120,11 @@ export type ClassroomInviteFilterInput = {
   isInvitee?: Maybe<BooleanOperationFilterInput>;
   usedAt?: Maybe<ComparableNullableOfDateTimeOperationFilterInput>;
   updatedAt?: Maybe<ComparableDateTimeOperationFilterInput>;
+};
+
+export type ClassroomNotFoundError = Error & {
+  __typename?: 'ClassroomNotFoundError';
+  message: Scalars['String'];
 };
 
 export type ClassroomUserFilterInput = {
@@ -251,6 +274,8 @@ export type ComparableNullableOfInt32OperationFilterInput = {
   nlte?: Maybe<Scalars['Int']>;
 };
 
+export type CompleteUploadError = BlobNotFoundError | BlobPropertiesError | FileNotFoundError;
+
 export type CompleteUploadInput = {
   fileId: Scalars['ID'];
 };
@@ -258,7 +283,7 @@ export type CompleteUploadInput = {
 export type CompleteUploadPayload = {
   __typename?: 'CompleteUploadPayload';
   file?: Maybe<File>;
-  userErrors?: Maybe<Array<UserError>>;
+  errors?: Maybe<Array<CompleteUploadError>>;
   query: Query;
 };
 
@@ -275,15 +300,17 @@ export type CreateClassroomInviteInput = {
 
 export type CreateClassroomInvitePayload = {
   __typename?: 'CreateClassroomInvitePayload';
-  invite: Invite;
+  invite?: Maybe<Invite>;
   query: Query;
 };
 
 export type CreateClassroomPayload = {
   __typename?: 'CreateClassroomPayload';
-  classroom: Classroom;
+  classroom?: Maybe<Classroom>;
   query: Query;
 };
+
+export type CreateDiscussionError = ClassroomNotFoundError;
 
 export type CreateDiscussionInput = {
   classroomId: Scalars['ID'];
@@ -292,7 +319,8 @@ export type CreateDiscussionInput = {
 
 export type CreateDiscussionPayload = {
   __typename?: 'CreateDiscussionPayload';
-  discussion: Discussion;
+  discussion?: Maybe<Discussion>;
+  errors?: Maybe<Array<CreateDiscussionError>>;
   query: Query;
 };
 
@@ -337,6 +365,8 @@ export type DelLogTypeFilterInput = {
   delLogs?: Maybe<ListFilterInputTypeOfDelLogFilterInput>;
 };
 
+export type DeleteFileError = FileNotFoundError | BlobNotFoundError | BlobDeletionError;
+
 export type DeleteFileInput = {
   fileId: Scalars['ID'];
 };
@@ -344,7 +374,7 @@ export type DeleteFileInput = {
 export type DeleteFilePayload = {
   __typename?: 'DeleteFilePayload';
   file?: Maybe<File>;
-  userErrors?: Maybe<Array<UserError>>;
+  errors?: Maybe<Array<DeleteFileError>>;
   query: Query;
 };
 
@@ -409,6 +439,15 @@ export type DiscussionMessageSubscriptionPayload = {
   messageId: Scalars['ID'];
 };
 
+export type DiscussionNotFoundError = Error & {
+  __typename?: 'DiscussionNotFoundError';
+  message: Scalars['String'];
+};
+
+export type Error = {
+  message: Scalars['String'];
+};
+
 export type File = Node & {
   __typename?: 'File';
   id: Scalars['ID'];
@@ -459,6 +498,11 @@ export type FileFilterInput = {
   messageFiles?: Maybe<ListFilterInputTypeOfMessageFileFilterInput>;
 };
 
+export type FileNotFoundError = Error & {
+  __typename?: 'FileNotFoundError';
+  message: Scalars['String'];
+};
+
 export enum FileUploadStatus {
   Queued = 'QUEUED',
   Completed = 'COMPLETED',
@@ -493,17 +537,31 @@ export type FilesEdge = {
   node: File;
 };
 
+export type GenerateDownloadSasError = FileNotFoundError | GenerateSignatureError;
+
 export type GenerateDownloadSasInput = {
   fileId: Scalars['ID'];
 };
 
 export type GenerateDownloadSasPayload = {
   __typename?: 'GenerateDownloadSASPayload';
-  sas?: Maybe<Scalars['URL']>;
-  file?: Maybe<File>;
-  userErrors?: Maybe<Array<UserError>>;
+  generateSASPayload?: Maybe<GenerateSasPayload>;
+  errors?: Maybe<Array<GenerateDownloadSasError>>;
   query: Query;
 };
+
+export type GenerateSasPayload = {
+  __typename?: 'GenerateSASPayload';
+  file: File;
+  sas: Scalars['URL'];
+};
+
+export type GenerateSignatureError = Error & {
+  __typename?: 'GenerateSignatureError';
+  message: Scalars['String'];
+};
+
+export type GenerateUploadSasError = GenerateSignatureError | ParseSignatureError;
 
 export type GenerateUploadSasInput = {
   fileName: Scalars['String'];
@@ -514,9 +572,8 @@ export type GenerateUploadSasInput = {
 
 export type GenerateUploadSasPayload = {
   __typename?: 'GenerateUploadSASPayload';
-  sas?: Maybe<Scalars['URL']>;
-  file?: Maybe<File>;
-  userErrors?: Maybe<Array<UserError>>;
+  generateSASPayload?: Maybe<GenerateSasPayload>;
+  errors?: Maybe<Array<GenerateUploadSasError>>;
   query: Query;
 };
 
@@ -554,6 +611,8 @@ export type InviteFilterInput = {
   logs?: Maybe<ListFilterInputTypeOfClassroomInviteFilterInput>;
 };
 
+export type JoinClassroomError = ClassroomInviteExpiredError | UserAlreadyInClassroomError;
+
 export type JoinClassroomInput = {
   code: Scalars['String'];
 };
@@ -561,7 +620,7 @@ export type JoinClassroomInput = {
 export type JoinClassroomPayload = {
   __typename?: 'JoinClassroomPayload';
   classroom?: Maybe<Classroom>;
-  userErrors?: Maybe<Array<UserError>>;
+  errors?: Maybe<Array<JoinClassroomError>>;
   query: Query;
 };
 
@@ -642,13 +701,33 @@ export type ListStringOperationFilterInput = {
   any?: Maybe<Scalars['Boolean']>;
 };
 
+export type LoginError = LoginUserError;
+
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
 };
 
+export type LoginPayload = {
+  __typename?: 'LoginPayload';
+  authPayload?: Maybe<AuthPayload>;
+  errors?: Maybe<Array<LoginError>>;
+  query: Query;
+};
+
+export type LoginUserError = Error & {
+  __typename?: 'LoginUserError';
+  message: Scalars['String'];
+};
+
 export type LogoutInput = {
   sessionId: Scalars['ID'];
+};
+
+export type LogoutPayload = {
+  __typename?: 'LogoutPayload';
+  authPayload?: Maybe<AuthPayload>;
+  query: Query;
 };
 
 
@@ -730,7 +809,7 @@ export type MessagesEdge = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  refreshSession: AuthPayload;
+  refreshSession: RefreshSessionPayload;
   createClassroom: CreateClassroomPayload;
   joinClassroom: JoinClassroomPayload;
   createClassroomInvite: CreateClassroomInvitePayload;
@@ -738,9 +817,9 @@ export type Mutation = {
   createDiscussion: CreateDiscussionPayload;
   updateDiscussionTopic: UpdateDiscussionTopicPayload;
   updateDiscussionDescription: UpdateDiscussionDescriptionPayload;
-  signUp: AuthPayload;
-  login: AuthPayload;
-  logout: AuthPayload;
+  signUp: SignUpPayload;
+  login: LoginPayload;
+  logout: LogoutPayload;
   generateUploadSAS: GenerateUploadSasPayload;
   generateDownloadSAS: GenerateDownloadSasPayload;
   completeUpload: CompleteUploadPayload;
@@ -847,6 +926,11 @@ export type PageInfo = {
   endCursor?: Maybe<Scalars['String']>;
 };
 
+export type ParseSignatureError = Error & {
+  __typename?: 'ParseSignatureError';
+  message: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   /** Fetches an object given its ID. */
@@ -916,9 +1000,20 @@ export type QueryFilesArgs = {
   where?: Maybe<FileFilterInput>;
 };
 
+export type RefreshSessionError = UserNotFoundError | SessionNotFoundError;
+
 export type RefreshSessionInput = {
   sessionId: Scalars['ID'];
 };
+
+export type RefreshSessionPayload = {
+  __typename?: 'RefreshSessionPayload';
+  authPayload?: Maybe<AuthPayload>;
+  errors?: Maybe<Array<RefreshSessionError>>;
+  query: Query;
+};
+
+export type SendDiscussionMessageError = DiscussionNotFoundError;
 
 export type SendDiscussionMessageInput = {
   discussionId: Scalars['ID'];
@@ -929,7 +1024,7 @@ export type SendDiscussionMessageInput = {
 export type SendDiscussionMessagePayload = {
   __typename?: 'SendDiscussionMessagePayload';
   message?: Maybe<Message>;
-  userErrors?: Maybe<Array<UserError>>;
+  errors?: Maybe<Array<SendDiscussionMessageError>>;
   query: Query;
 };
 
@@ -953,11 +1048,30 @@ export type SessionFilterInput = {
   updatedAt?: Maybe<ComparableDateTimeOperationFilterInput>;
 };
 
+export type SessionNotFoundError = Error & {
+  __typename?: 'SessionNotFoundError';
+  message: Scalars['String'];
+};
+
+
+export type SignUpError = SignUpNewUserError;
 
 export type SignUpInput = {
   name: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type SignUpNewUserError = Error & {
+  __typename?: 'SignUpNewUserError';
+  message: Scalars['String'];
+};
+
+export type SignUpPayload = {
+  __typename?: 'SignUpPayload';
+  authPayload?: Maybe<AuthPayload>;
+  errors?: Maybe<Array<SignUpError>>;
+  query: Query;
 };
 
 export type State = {
@@ -1010,6 +1124,8 @@ export type SubscriptionOnDiscussionMessageReceivedArgs = {
 
 
 
+export type UpdateDiscussionDescriptionError = DiscussionNotFoundError;
+
 export type UpdateDiscussionDescriptionInput = {
   discussionId: Scalars['ID'];
   description: Scalars['String'];
@@ -1018,9 +1134,11 @@ export type UpdateDiscussionDescriptionInput = {
 export type UpdateDiscussionDescriptionPayload = {
   __typename?: 'UpdateDiscussionDescriptionPayload';
   discussion?: Maybe<Discussion>;
-  userErrors?: Maybe<Array<UserError>>;
+  errors?: Maybe<Array<UpdateDiscussionDescriptionError>>;
   query: Query;
 };
+
+export type UpdateDiscussionTopicError = DiscussionNotFoundError;
 
 export type UpdateDiscussionTopicInput = {
   discussionId: Scalars['ID'];
@@ -1030,7 +1148,7 @@ export type UpdateDiscussionTopicInput = {
 export type UpdateDiscussionTopicPayload = {
   __typename?: 'UpdateDiscussionTopicPayload';
   discussion?: Maybe<Discussion>;
-  userErrors?: Maybe<Array<UserError>>;
+  errors?: Maybe<Array<UpdateDiscussionTopicError>>;
   query: Query;
 };
 
@@ -1107,10 +1225,9 @@ export type User = Node & {
   accessFailedCount: Scalars['Int'];
 };
 
-export type UserError = {
-  __typename?: 'UserError';
+export type UserAlreadyInClassroomError = Error & {
+  __typename?: 'UserAlreadyInClassroomError';
   message: Scalars['String'];
-  code: Scalars['String'];
 };
 
 export type UserFilterInput = {
@@ -1144,6 +1261,11 @@ export type UserFilterInput = {
   lockoutEnd?: Maybe<ComparableNullableOfDateTimeOffsetOperationFilterInput>;
   lockoutEnabled?: Maybe<BooleanOperationFilterInput>;
   accessFailedCount?: Maybe<ComparableInt32OperationFilterInput>;
+};
+
+export type UserNotFoundError = Error & {
+  __typename?: 'UserNotFoundError';
+  message: Scalars['String'];
 };
 
 export enum UserProfileColor {

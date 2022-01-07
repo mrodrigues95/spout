@@ -20,7 +20,7 @@ namespace API.Schema.Mutations.Classrooms {
     public class ClassroomMutations {
         [Authorize]
         [UseApplicationDbContext]
-        public async Task<Classroom?> CreateClassroomAsync(
+        public async Task<Classroom> CreateClassroomAsync(
             CreateClassroomInput input,
             [GlobalState] int userId,
             [ScopedService] ApplicationDbContext ctx,

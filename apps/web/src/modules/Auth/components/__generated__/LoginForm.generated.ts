@@ -8,13 +8,16 @@ export type LoginMutationVariables = Types.Exact<{
 export type LoginMutation = (
   { __typename?: 'Mutation' }
   & { login: (
-    { __typename?: 'AuthPayload' }
-    & { session?: Types.Maybe<(
-      { __typename?: 'Session' }
-      & Pick<Types.Session, 'id'>
-    )>, userErrors?: Types.Maybe<Array<(
-      { __typename?: 'UserError' }
-      & Pick<Types.UserError, 'message' | 'code'>
+    { __typename?: 'LoginPayload' }
+    & { authPayload?: Types.Maybe<(
+      { __typename?: 'AuthPayload' }
+      & { session?: Types.Maybe<(
+        { __typename?: 'Session' }
+        & Pick<Types.Session, 'id'>
+      )> }
+    )>, errors?: Types.Maybe<Array<(
+      { __typename?: 'LoginUserError' }
+      & Pick<Types.LoginUserError, 'message'>
     )>> }
   ) }
 );

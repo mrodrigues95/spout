@@ -7,7 +7,6 @@ import { useIsRedirecting } from '../../../shared/hooks/useIsRedirecting';
 import { useAuthRedirect, useInitializeSessionMutation } from '../hooks';
 import AuthError from './AuthError';
 import AuthCard from './AuthCard';
-import { UserError } from '../../../__generated__/schema.generated';
 import {
   SignUpMutation,
   SignUpMutationVariables,
@@ -16,12 +15,15 @@ import {
 const mutation = gql`
   mutation SignUpMutation($input: SignUpInput!) {
     signUp(input: $input) {
-      session {
-        id
+      authPayload {
+        session {
+          id
+        }
       }
-      userErrors {
-        message
-        code
+      errors {
+        ... on SignUpNewUserError {
+          message
+        }
       }
     }
   }
@@ -48,7 +50,7 @@ const SignUpForm = () => {
   const isRedirecting = useIsRedirecting();
   const init = useInitializeSessionMutation();
   const { handleError } = useToast();
-  const [signUpError, setSignUpError] = useState<Error | UserError>();
+  const [signUpError, setSignUpError] = useState<unknown>();
   const [signup] = useMutation<SignUpMutation, SignUpMutationVariables>(
     mutation
   );
@@ -74,20 +76,20 @@ const SignUpForm = () => {
     password,
   }: Zod.infer<typeof signUpSchema>) => {
     try {
-      const result = await signup({
+      const { data } = await signup({
         variables: { input: { name, email, password } },
       });
 
-      if (result.data?.signUp?.userErrors) {
-        setSignUpError(result.data?.signUp?.userErrors?.shift());
+      // TODO: Use generic errors here to prevent user enumeration.
+      if (data?.signUp.errors) {
+        setSignUpError(data!.signUp.errors!.shift());
         return;
       }
 
-      await init(result.data?.signUp?.session?.id!);
+      await init(data!.signUp.authPayload!.session!.id);
       authRedirect();
     } catch (error) {
-      handleError(error);
-      console.error(error.message);
+      handleError();
     }
   };
 

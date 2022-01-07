@@ -19,10 +19,13 @@ export type RefreshSessionMutationVariables = Types.Exact<{
 export type RefreshSessionMutation = (
   { __typename?: 'Mutation' }
   & { refreshSession: (
-    { __typename?: 'AuthPayload' }
-    & { session?: Types.Maybe<(
-      { __typename?: 'Session' }
-      & Pick<Types.Session, 'id' | 'createdAt' | 'updatedAt' | 'expiresAt'>
+    { __typename?: 'RefreshSessionPayload' }
+    & { authPayload?: Types.Maybe<(
+      { __typename?: 'AuthPayload' }
+      & { session?: Types.Maybe<(
+        { __typename?: 'Session' }
+        & Pick<Types.Session, 'id' | 'createdAt' | 'updatedAt' | 'expiresAt'>
+      )> }
     )> }
   ) }
 );

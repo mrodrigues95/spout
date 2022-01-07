@@ -10,13 +10,19 @@ export type GenerateDownloadSasMutation = (
   { __typename?: 'Mutation' }
   & { generateDownloadSAS: (
     { __typename?: 'GenerateDownloadSASPayload' }
-    & Pick<Types.GenerateDownloadSasPayload, 'sas'>
-    & { file?: Types.Maybe<(
-      { __typename?: 'File' }
-      & File_File
-    )>, userErrors?: Types.Maybe<Array<(
-      { __typename?: 'UserError' }
-      & Pick<Types.UserError, 'message' | 'code'>
+    & { generateSASPayload?: Types.Maybe<(
+      { __typename?: 'GenerateSASPayload' }
+      & Pick<Types.GenerateSasPayload, 'sas'>
+      & { file: (
+        { __typename?: 'File' }
+        & File_File
+      ) }
+    )>, errors?: Types.Maybe<Array<(
+      { __typename?: 'FileNotFoundError' }
+      & Pick<Types.FileNotFoundError, 'message'>
+    ) | (
+      { __typename?: 'GenerateSignatureError' }
+      & Pick<Types.GenerateSignatureError, 'message'>
     )>> }
   ) }
 );

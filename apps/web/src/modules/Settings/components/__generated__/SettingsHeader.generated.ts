@@ -8,7 +8,10 @@ export type LogoutMutationVariables = Types.Exact<{
 export type LogoutMutation = (
   { __typename?: 'Mutation' }
   & { logout: (
-    { __typename?: 'AuthPayload' }
-    & Pick<Types.AuthPayload, 'isLoggedIn'>
+    { __typename?: 'LogoutPayload' }
+    & { authPayload?: Types.Maybe<(
+      { __typename?: 'AuthPayload' }
+      & Pick<Types.AuthPayload, 'isLoggedIn'>
+    )> }
   ) }
 );

@@ -10,13 +10,19 @@ export type GenerateUploadSasMutation = (
   { __typename?: 'Mutation' }
   & { generateUploadSAS: (
     { __typename?: 'GenerateUploadSASPayload' }
-    & Pick<Types.GenerateUploadSasPayload, 'sas'>
-    & { file?: Types.Maybe<(
-      { __typename?: 'File' }
-      & File_File
-    )>, userErrors?: Types.Maybe<Array<(
-      { __typename?: 'UserError' }
-      & Pick<Types.UserError, 'message' | 'code'>
+    & { generateSASPayload?: Types.Maybe<(
+      { __typename?: 'GenerateSASPayload' }
+      & Pick<Types.GenerateSasPayload, 'sas'>
+      & { file: (
+        { __typename?: 'File' }
+        & File_File
+      ) }
+    )>, errors?: Types.Maybe<Array<(
+      { __typename?: 'GenerateSignatureError' }
+      & Pick<Types.GenerateSignatureError, 'message'>
+    ) | (
+      { __typename?: 'ParseSignatureError' }
+      & Pick<Types.ParseSignatureError, 'message'>
     )>> }
   ) }
 );
@@ -33,9 +39,15 @@ export type CompleteUploadMutation = (
     & { file?: Types.Maybe<(
       { __typename?: 'File' }
       & File_File
-    )>, userErrors?: Types.Maybe<Array<(
-      { __typename?: 'UserError' }
-      & Pick<Types.UserError, 'message' | 'code'>
+    )>, errors?: Types.Maybe<Array<(
+      { __typename?: 'BlobNotFoundError' }
+      & Pick<Types.BlobNotFoundError, 'message'>
+    ) | (
+      { __typename?: 'BlobPropertiesError' }
+      & Pick<Types.BlobPropertiesError, 'message'>
+    ) | (
+      { __typename?: 'FileNotFoundError' }
+      & Pick<Types.FileNotFoundError, 'message'>
     )>> }
   ) }
 );

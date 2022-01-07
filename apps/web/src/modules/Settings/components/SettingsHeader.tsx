@@ -9,7 +9,9 @@ import {
 const mutation = gql`
   mutation LogoutMutation($input: LogoutInput!) {
     logout(input: $input) {
-      isLoggedIn
+      authPayload {
+        isLoggedIn
+      }
     }
   }
 `;
