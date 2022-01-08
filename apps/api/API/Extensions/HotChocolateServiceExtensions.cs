@@ -19,6 +19,7 @@ using API.Schema.Types.Users;
 using HotChocolate;
 using HotChocolate.AspNetCore;
 using HotChocolate.Execution;
+using HotChocolate.Types.Pagination;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -92,8 +93,10 @@ namespace API.Extensions {
                 .AddInMemorySubscriptions()
                 .AddFiltering()
                 .AddSorting()
+                .AddProjections()
                 .AddGlobalObjectIdentification()
                 .AddQueryFieldToMutationPayloads()
+                .SetPagingOptions(new PagingOptions { MaxPageSize = 50 })
                 .ModifyRequestOptions(opts => {
                   opts.IncludeExceptionDetails = env == Environments.Development;
                 });

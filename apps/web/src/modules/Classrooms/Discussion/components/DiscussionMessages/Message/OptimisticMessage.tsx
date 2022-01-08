@@ -3,17 +3,18 @@ import { gql, useMutation } from '@apollo/client';
 import {
   OptimisticMessage as OptimisticMessageType,
   useStore,
-} from '../../utils/messagesStore';
-import { query as DiscussionQuery } from '../Discussion';
-import { DiscussionFilesQuery as _DiscussionFilesQuery } from '../DiscussionDetails/__generated__/Attachments.generated';
+} from '../../../utils/messagesStore';
+import { query as DiscussionQuery } from '../../Discussion';
+import { DiscussionFilesQuery as _DiscussionFilesQuery } from '../../DiscussionDetails/__generated__/Attachments.generated';
 import {
   SendDiscussionMessageMutation,
   SendDiscussionMessageMutationVariables,
-} from './__generated__/DiscussionOptimisticMessage.generated';
-import { updateMessagesQuery } from '../../utils/queryCache';
-import { MessageFragment } from '../../utils/fragments';
-import { DiscussionQuery as _DiscussionQuery } from '../__generated__/Discussion.generated';
-import DiscussionMessage from './DiscussionMessage';
+} from './__generated__/OptimisticMessage.generated';
+import { updateMessagesQuery } from '../../../utils/queryCache';
+import { MessageFragment } from '../../../utils/fragments';
+import { RecentMessages } from '../../../utils/messages';
+import Message from '.';
+import { DiscussionQuery as _DiscussionQuery } from '../../__generated__/Discussion.generated';
 
 const mutation = gql`
   mutation SendDiscussionMessageMutation($input: SendDiscussionMessageInput!) {
@@ -77,7 +78,7 @@ const OptimisticMessage = ({ discussionId, message }: Props) => {
             fileIds: message.attachmentIds,
           },
         },
-      }),
+      }).catch((e) => void e),
     [discussionId, sendMessage, message]
   );
 
@@ -88,7 +89,7 @@ const OptimisticMessage = ({ discussionId, message }: Props) => {
   }, [data, loading, error, send]);
 
   return (
-    <DiscussionMessage
+    <Message
       message={{ ...message, attachments: [] }}
       optimisticOpts={{ error, loading, retry: send }}
     />

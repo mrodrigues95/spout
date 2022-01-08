@@ -98,6 +98,7 @@ export const query = gql`
         messageFiles: { some: { message: { discussion: { id: { eq: $id } } } } }
         and: { isDeleted: { eq: false }, uploadStatus: { eq: COMPLETED } }
       }
+      order: { createdAt: DESC }
     ) {
       edges {
         node {
@@ -129,13 +130,8 @@ const Attachments = () => {
     skip: !router.isReady,
   });
 
-  // TODO: Make composer form
   const files = useMemo(
-    () =>
-      (data?.files?.edges ?? [])
-        .map((edge) => edge.node)
-        .sort((x, y) => getTime(x.createdAt) - getTime(y.createdAt))
-        .reverse(),
+    () => (data?.files?.edges ?? []).map((edge) => edge.node),
     [data?.files?.edges]
   );
 

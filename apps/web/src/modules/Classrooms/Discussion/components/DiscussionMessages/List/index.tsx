@@ -9,8 +9,8 @@ import React, {
 import { gql, useQuery } from '@apollo/client';
 import { Virtuoso } from 'react-virtuoso';
 import { Skeleton } from '@spout/toolkit';
-import { DiscussionQuery } from '../__generated__/Discussion.generated';
-import { Message_Message } from '../../utils/__generated__/fragments.generated';
+import { DiscussionQuery } from '../../__generated__/Discussion.generated';
+import { Message_Message } from '../../../utils/__generated__/fragments.generated';
 import {
   generateItems,
   getRecentMessages,
@@ -19,18 +19,18 @@ import {
   isDivider,
   isEvent,
   isOptimistic,
-} from '../../utils/messages';
+} from '../../../utils/messages';
 import {
   OptimisticMessage as OptimisticMessageType,
   useStore,
-} from '../../utils/messagesStore';
-import { MeQuery } from './__generated__/DiscussionMessagesList.generated';
-import { UserInfoFragment } from '../../utils/fragments';
-import { Card } from '../../../../../shared/components';
-import DiscussionOptimisticMessage from './DiscussionOptimisticMessage';
-import DiscussionMessageDivider from './DiscussionMessageDivider';
-import DiscussionMessage from './DiscussionMessage';
-import DiscussionMessageEvent from './DicussionMessageEvent';
+} from '../../../utils/messagesStore';
+import { MeQuery } from './__generated__/index.generated';
+import { UserInfoFragment } from '../../../utils/fragments';
+import { Card } from '../../../../../../shared/components';
+import OptimisticMessage from '../Message/OptimisticMessage';
+import MessageDivider from '../Message/Divider';
+import Message from '../Message/index';
+import Event from '../Message/Event';
 
 // Items to prepend should always be the page size but since
 // we are not using GroupedVirtuoso, we need to account for the
@@ -68,7 +68,7 @@ interface Props {
 // TODO: Dates seem to be out of order slightly when more than one user
 // is chatting. This might be because we are removing and updating cache
 // at the same time in OptimisticMessage.tsx.
-const DiscussionMessagesList = ({
+const List = ({
   discussionId,
   messages,
   hasPrevious,
@@ -146,24 +146,22 @@ const DiscussionMessagesList = ({
       }}
       itemContent={(_, item) => {
         if (isDivider(item)) {
-          return <DiscussionMessageDivider date={(item as Divider).date} />;
+          return <MessageDivider date={(item as Divider).date} />;
         }
 
         // Events are still considered a regular message, just styled differently.
         if (isEvent(item)) {
-          return (
-            <DiscussionMessageEvent messageEvent={item as Message_Message} />
-          );
+          return <Event messageEvent={item as Message_Message} />;
         }
 
         return isOptimistic(item) ? (
-          <DiscussionOptimisticMessage
+          <OptimisticMessage
             key={(item as OptimisticMessageType).optimisticId}
             message={item as OptimisticMessageType}
             discussionId={discussionId}
           />
         ) : (
-          <DiscussionMessage
+          <Message
             recentMessages={recentMessages}
             message={item as Message_Message}
           />
@@ -191,4 +189,4 @@ const DiscussionMessagesList = ({
   );
 };
 
-export default DiscussionMessagesList;
+export default List;

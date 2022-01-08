@@ -12,10 +12,11 @@ namespace API.Schema.Queries.Files {
     public class FileQueries {
         [Authorize]
         [UseApplicationDbContext]
-        [UsePaging(MaxPageSize = 50)]
+        [UsePaging]
         [UseFiltering]
+        [UseSorting]
         public IQueryable<File> GetFiles(
             [ScopedService] ApplicationDbContext ctx)
-            => ctx.Files.OrderBy(f => f.Id);
+            => ctx.Files;
     }
 }

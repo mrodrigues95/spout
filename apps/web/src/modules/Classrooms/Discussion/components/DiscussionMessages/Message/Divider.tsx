@@ -1,6 +1,6 @@
 import { isToday, isYesterday } from 'date-fns';
 
-const MessageDivider = ({ date }: { date: string }) => {
+const Divider = ({ date }: { date: string }) => {
   const _date = new Date(date);
 
   return (
@@ -19,4 +19,4 @@ const MessageDivider = ({ date }: { date: string }) => {
   );
 };
 
-export default MessageDivider;
+export default Divider;

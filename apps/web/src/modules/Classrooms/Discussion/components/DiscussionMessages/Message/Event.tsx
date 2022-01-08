@@ -3,16 +3,16 @@ import { Badge, Text } from '@spout/toolkit';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 import clsx from 'clsx';
-import { Card, Avatar } from '../../../../../shared/components';
-import { DiscussionEvent } from '../../../../../__generated__/schema.generated';
-import { Message_Message } from '../../utils/__generated__/fragments.generated';
-import { formatMessageDate } from '../../utils/dates';
+import { Card, Avatar } from '../../../../../../shared/components';
+import { DiscussionEvent } from '../../../../../../__generated__/schema.generated';
+import { Message_Message } from '../../../utils/__generated__/fragments.generated';
+import { formatMessageDate } from '../../../utils/dates';
 
 interface Props {
   messageEvent: Message_Message;
 }
 
-const DiscussionMessageEvent = ({ messageEvent }: Props) => {
+const Event = ({ messageEvent }: Props) => {
   const isTopic = messageEvent.discussionEvent === DiscussionEvent.ChangeTopic;
   const formattedDate = useMemo(
     () => formatMessageDate(messageEvent.createdAt, 'h:mm a'),
@@ -68,4 +68,4 @@ const DiscussionMessageEvent = ({ messageEvent }: Props) => {
   );
 };
 
-export default DiscussionMessageEvent;
+export default Event;

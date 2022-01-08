@@ -10,6 +10,8 @@ namespace API.Schema.Mutations.Discussions.Inputs {
 
     public class SendDiscussionMessageInputValidator : AbstractValidator<SendDiscussionMessageInput> {
         public SendDiscussionMessageInputValidator() {
+            RuleFor(x => x.Content).NotEmpty().Length(1, 2000);
+
             RuleFor(x => x.FileIds)
                 .Must(x => x.Length <= 10)
                 .WithMessage("File limit exceeded - cannot upload more than 10 files per message.");

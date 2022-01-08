@@ -8,21 +8,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Disclosure } from '@headlessui/react';
 import { Button, FileIcon, IconLink, Tooltip } from '@spout/toolkit';
 import clsx from 'clsx';
-import { formatBytesToHumanReadable } from '../../../../../shared/utils';
+import { formatBytesToHumanReadable } from '../../../../../../shared/utils';
 import {
   File_File,
   Message_Message,
-} from '../../utils/__generated__/fragments.generated';
+} from '../../../utils/__generated__/fragments.generated';
 
-interface DiscussionMessageAttachmentProps {
+interface AttachmentProps {
   isMyMessage: boolean;
   attachment: File_File;
 }
 
-const DiscussionMessageAttachment = ({
-  isMyMessage,
-  attachment,
-}: DiscussionMessageAttachmentProps) => {
+const Attachment = ({ isMyMessage, attachment }: AttachmentProps) => {
   const [isActive, setIsActive] = useState(false);
 
   return (
@@ -76,7 +73,7 @@ interface Props {
   attachments: Message_Message['attachments'];
 }
 
-const DiscussionMessageAttachments = ({ isMyMessage, attachments }: Props) => {
+const Attachments = ({ isMyMessage, attachments }: Props) => {
   return (
     <article
       className={clsx(
@@ -110,7 +107,7 @@ const DiscussionMessageAttachments = ({ isMyMessage, attachments }: Props) => {
                   role="list"
                 >
                   {attachments.map((attachment) => (
-                    <DiscussionMessageAttachment
+                    <Attachment
                       key={attachment.id}
                       isMyMessage={isMyMessage}
                       attachment={attachment}
@@ -126,4 +123,4 @@ const DiscussionMessageAttachments = ({ isMyMessage, attachments }: Props) => {
   );
 };
 
-export default DiscussionMessageAttachments;
+export default Attachments;

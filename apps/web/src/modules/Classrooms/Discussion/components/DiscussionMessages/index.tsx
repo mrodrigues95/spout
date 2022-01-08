@@ -9,24 +9,24 @@ import {
 } from '@apollo/client';
 import { Card } from '@spout/toolkit';
 import { MessageFragment, UserInfoFragment } from '../../utils/fragments';
+import {
+  updateMessagesQuery,
+  updateDiscussionFilesQuery,
+} from '../../utils/queryCache';
+import { useStore } from '../../utils/messagesStore';
 import { DiscussionQuery } from '../__generated__/Discussion.generated';
 import {
   MeQuery,
   OnDiscussionMessageReceived,
   OnDiscussionMessageReceivedVariables,
 } from '../__generated__/DiscussionMessages.generated';
-import {
-  updateMessagesQuery,
-  updateDiscussionFilesQuery,
-} from '../../utils/queryCache';
-import { useStore } from '../../utils/messagesStore';
 import DiscussionMessageComposer from './Composer';
-import DiscussionMessagesList from './DiscussionMessagesList';
-import WelcomeHeader from './WelcomeHeader';
+import DiscussionMessagesList from './List';
+import WelcomeHeader from './List/Header';
 
 export const DiscussionMessagesFragment = gql`
   fragment DiscussionMessages_discussion on Discussion {
-    messages(last: 50, before: $before) {
+    messages(last: 50, before: $before, order: { createdAt: ASC }) {
       edges {
         node {
           ...Message_message
@@ -134,8 +134,7 @@ const DicussionMessages = ({
     };
   }, [discussion.id, data, subscribeToMore, client]);
 
-  // Optimistic messages.
-  const messagesToSend = useStore(
+  const optimisticMessages = useStore(
     (state) => state.messagesByDiscussionId[discussion.id]
   );
 
@@ -145,12 +144,12 @@ const DicussionMessages = ({
       node: edge.node,
     }));
 
-    const messagesToSendEdges = (messagesToSend ?? []).map((message) => ({
+    const optimisticEdges = (optimisticMessages ?? []).map((message) => ({
       node: message,
     }));
 
-    return [...messagesToSendEdges, ...edges];
-  }, [discussion.messages?.edges, messagesToSend]);
+    return [...optimisticEdges, ...edges];
+  }, [discussion.messages?.edges, optimisticMessages]);
 
   return (
     <div className="flex flex-col flex-1 space-y-3">

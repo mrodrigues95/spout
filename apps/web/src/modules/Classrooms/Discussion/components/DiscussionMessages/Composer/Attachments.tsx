@@ -264,7 +264,6 @@ export const Attachments = ({
   ]);
 
   useEffect(() => {
-    // TODO: Can probably remove this once we use a form.
     if (shouldClearFiles) {
       resetQueue();
       setShouldClearFiles(false);

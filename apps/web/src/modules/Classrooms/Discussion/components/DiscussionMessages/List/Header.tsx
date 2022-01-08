@@ -6,9 +6,9 @@ import {
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import { Badge, Text } from '@spout/toolkit';
-import { getRandomAvatar } from '../../../../../shared/utils/getRandomAvatar';
-import { Image, Card } from '../../../../../shared/components';
-import { DiscussionQuery } from '../__generated__/Discussion.generated';
+import { getRandomAvatar } from '../../../../../../shared/utils/getRandomAvatar';
+import { Image, Card } from '../../../../../../shared/components';
+import { DiscussionQuery } from '../../__generated__/Discussion.generated';
 
 interface TopicOrDescriptionProps {
   content: string;
@@ -46,7 +46,7 @@ interface Props {
   discussion: DiscussionQuery['discussionById'];
 }
 
-const WelcomeHeader = ({ discussion }: Props) => {
+const Header = ({ discussion }: Props) => {
   return (
     <div className="px-4 py-6">
       <Card className="px-6 py-4 relative overflow-hidden rounded-md shadow-sm bg-white ring-1 ring-gray-900/5 space-y-4">
@@ -85,7 +85,7 @@ const WelcomeHeader = ({ discussion }: Props) => {
           />
           <Text weight="medium">
             <b className="text-gray-900">Invite others to this server</b> by
-            clicking on a share button when you're ready.
+            clicking on a share button when you&apos;re ready.
           </Text>
         </div>
       </Card>
@@ -93,4 +93,4 @@ const WelcomeHeader = ({ discussion }: Props) => {
   );
 };
 
-export default WelcomeHeader;
+export default Header;

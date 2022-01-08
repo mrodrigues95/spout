@@ -4,22 +4,21 @@ using System.Threading.Tasks;
 using System.Threading;
 using HotChocolate;
 using API.Data;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using HotChocolate.Types.Pagination;
 using API.Schema.Queries.Classrooms;
-using API.Schema.Queries.Messages;
 using API.Schema.Queries.Users;
 using API.Schema.Types.Classrooms;
 using API.Schema.Types.Messages;
 using API.Schema.Types.Users;
 using API.Schema.Queries.Discussions;
 using HotChocolate.Data.Filters;
-using HotChocolate.Types.Descriptors;
 using HotChocolate.Resolvers;
-using HotChocolate.Internal;
-using HotChocolate.Types.Relay;
+using HotChocolate.Data.Filters.Expressions;
+using HotChocolate.Data.Sorting.Expressions;
+using HotChocolate.Data.Projections.Expressions;
+using HotChocolate.Types.Pagination.Extensions;
 
 namespace API.Schema.Types.Discussions {
     public enum DiscussionEvent {
@@ -94,10 +93,11 @@ namespace API.Schema.Types.Discussions {
                 .Field(d => d.Messages)
                 .Type<NonNullType<ListType<NonNullType<MessageType>>>>()
                 .UseDbContext<ApplicationDbContext>()
-                .UsePaging<NonNullType<MessageType>>(options: new PagingOptions { MaxPageSize = 50 })
+                .UsePaging<NonNullType<MessageType>>()
+                .UseFiltering()
                 .UseSorting()
                 .ResolveWith<DiscussionResolvers>(x =>
-                    x.GetMessagesAsync(default!, default!, default!, default!, default!, default!))
+                    x.GetMessagesAsync(default!, default!, default!, default!))
                 .Name("messages");
         }
 
@@ -105,53 +105,32 @@ namespace API.Schema.Types.Discussions {
             public async Task<Classroom> GetClassroomAsync(
                 [Parent] Discussion discussion,
                 ClassroomByIdDataLoader classroomById,
-                CancellationToken cancellationToken) =>
-                await classroomById.LoadAsync(discussion.ClassroomId, cancellationToken);
+                CancellationToken cancellationToken)
+                => await classroomById.LoadAsync(discussion.ClassroomId, cancellationToken);
 
             public async Task<User> GetCreatedByAsync(
                 [Parent] Discussion discussion,
                 UserByIdDataLoader userById,
-                CancellationToken cancellationToken) =>
-                await userById.LoadAsync(discussion.CreatedById, cancellationToken);
+                CancellationToken cancellationToken)
+                => await userById.LoadAsync(discussion.CreatedById, cancellationToken);
 
-
-            // TODO: This is not ordering properly.
-            public async Task<IEnumerable<Message>> GetMessagesAsync(
+            public async Task<Connection<Message>> GetMessagesAsync(
                 [Parent] Discussion discussion,
-                [Service] IIdSerializer serializer,
                 [ScopedService] ApplicationDbContext dbContext,
-                MessageByIdDataLoader messageById,
                 IResolverContext resolverCtx,
                 CancellationToken cancellationToken) {
-                int[] messageIds = await dbContext.Discussions
+                var query = dbContext.Discussions
                     .Where(d => d.Id == discussion.Id)
                     .Include(d => d.Messages)
-                    .SelectMany(d => d.Messages.OrderByDescending(m => m.CreatedAt).Select(m => m.Id))
-                    .ToArrayAsync(cancellationToken);
+                    .SelectMany(d => d.Messages)
+                    .AsQueryable();
 
-                return await messageById.LoadAsync(messageIds, cancellationToken);
+                var connection = await query                
+                    .Filter(resolverCtx)
+                    .Sort(resolverCtx)
+                    .ApplyCursorPaginationAsync(resolverCtx, cancellationToken: cancellationToken);
 
-                //var messageIdsQueryable = dbContext.Discussions
-                //    .Where(d => d.Id == discussion.Id)
-                //    .Include(d => d.Messages)
-                //    .SelectMany(d => d.Messages.Select(m => m.Id));
-
-                //var typeInspector = new DefaultTypeInspector();
-                //IExtendedType sourceType = typeInspector.GetType(typeof(List<int>));
-
-                //IPagingProvider pagingProvider = new QueryableCursorPagingProvider();
-                //IPagingHandler pagingHandler = pagingProvider.CreateHandler(sourceType, default);
-
-                //var connection = (Connection<int>)await pagingHandler.SliceAsync(
-                //    resolverCtx, messageIdsQueryable);
-                //var messageIds = connection.Edges.Select(e => e.Node).ToArray();
-
-                //var messages = await messageById.LoadAsync(messageIds, cancellationToken);
-                //var edges = messages.Select(message => new Edge<Message>(
-                //    message, serializer.Serialize(default!, nameof(Message), message.Id))).ToList();
-
-                //return new Connection<Message>(edges, connection.Info,
-                //    ct => ValueTask.FromResult(0));
+                return connection;
             }
         }
     }

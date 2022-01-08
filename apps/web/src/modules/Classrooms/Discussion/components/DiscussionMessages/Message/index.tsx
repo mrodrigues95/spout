@@ -2,25 +2,22 @@ import { useMemo } from 'react';
 import { ApolloError, gql, useQuery } from '@apollo/client';
 import { Button } from '@spout/toolkit';
 import clsx from 'clsx';
-import { Avatar } from '../../../../../shared/components';
-import { Message_Message } from '../../utils/__generated__/fragments.generated';
-import { MeQuery } from './__generated__/DiscussionMessage.generated';
-import { formatMessageDate } from '../../utils/dates';
-import { UserInfoFragment } from '../../utils/fragments';
-import { RecentMessage, RecentMessages } from '../../utils/messages';
-import DiscussionMessageAttachments from './DiscussionMessageAttachments';
+import { Avatar } from '../../../../../../shared/components';
+import { Message_Message } from '../../../utils/__generated__/fragments.generated';
+import { MeQuery } from './__generated__/index.generated';
+import { formatMessageDate } from '../../../utils/dates';
+import { UserInfoFragment } from '../../../utils/fragments';
+import { RecentMessage, RecentMessages } from '../../../utils/messages';
+import Attachments from './Attachments';
+import Actions from './Actions';
 
-interface DiscussionMessageHeaderProps {
+interface HeaderProps {
   isMyMessage: boolean;
   name: string;
   date: string;
 }
 
-const DiscussionMessageHeader = ({
-  isMyMessage,
-  name,
-  date,
-}: DiscussionMessageHeaderProps) => {
+const Header = ({ isMyMessage, name, date }: HeaderProps) => {
   return (
     <div
       className={clsx(
@@ -67,12 +64,12 @@ const getMessageBorders = (
   return borders;
 };
 
-interface DiscussionMessageBodyProps extends Partial<RecentMessage> {
+interface BodyProps extends Partial<RecentMessage> {
   isMyMessage: boolean;
   optimisticOpts?: OptimisticOptions;
 }
 
-const DiscussionMessageBody = ({
+const Body = ({
   message,
   isMyMessage,
   isRecent,
@@ -80,7 +77,7 @@ const DiscussionMessageBody = ({
   isMiddleMessage,
   isLastMessage,
   optimisticOpts,
-}: DiscussionMessageBodyProps) => {
+}: BodyProps) => {
   const messageBorders = useMemo(
     () =>
       getMessageBorders(
@@ -117,7 +114,7 @@ const DiscussionMessageBody = ({
         </p>
       </div>
       {!!message!.attachments?.length && (
-        <DiscussionMessageAttachments
+        <Attachments
           attachments={message!.attachments}
           isMyMessage={isMyMessage}
         />
@@ -159,11 +156,7 @@ interface Props {
   optimisticOpts?: OptimisticOptions;
 }
 
-const DiscussionMessage = ({
-  message,
-  recentMessages,
-  optimisticOpts,
-}: Props) => {
+const Message = ({ message, recentMessages, optimisticOpts }: Props) => {
   const { data } = useQuery<MeQuery>(
     gql`
       query MeQuery {
@@ -196,7 +189,7 @@ const DiscussionMessage = ({
       return formatMessageDate(message.createdAt, 'h:mm a');
     }
     return formatMessageDate(message.createdAt);
-  }, [message]);
+  }, [isLastMessage, isMiddleMessage, isRecent, message.createdAt]);
 
   return (
     <div
@@ -208,7 +201,7 @@ const DiscussionMessage = ({
     >
       <div
         className={clsx(
-          'flex items-center space-x-2 px-4 group hover:bg-indigo-100/50',
+          'relative flex items-center space-x-2 px-4 group hover:bg-indigo-100/50',
           isMyMessage
             ? 'flex-row-reverse space-x-reverse'
             : 'flex-row space-x-2',
@@ -216,6 +209,7 @@ const DiscussionMessage = ({
           messagePadding
         )}
       >
+        <Actions isMyMessage={isMyMessage} isOptimistic={!!optimisticOpts} />
         <div className="flex items-center justify-center flex-shrink-0 mb-auto w-14">
           {!isRecent || isFirstMessage ? (
             <div className="rounded-md shadow-md">
@@ -238,13 +232,13 @@ const DiscussionMessage = ({
           )}
         >
           {(!isRecent || isFirstMessage) && (
-            <DiscussionMessageHeader
+            <Header
               isMyMessage={isMyMessage}
               name={message.createdBy.name}
               date={formattedDate}
             />
           )}
-          <DiscussionMessageBody
+          <Body
             message={message}
             optimisticOpts={optimisticOpts}
             isMyMessage={isMyMessage}
@@ -259,4 +253,4 @@ const DiscussionMessage = ({
   );
 };
 
-export default DiscussionMessage;
+export default Message;

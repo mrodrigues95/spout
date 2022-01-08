@@ -127,6 +127,19 @@ export type ClassroomNotFoundError = Error & {
   message: Scalars['String'];
 };
 
+export type ClassroomSortInput = {
+  id?: Maybe<SortEnumType>;
+  guid?: Maybe<SortEnumType>;
+  name?: Maybe<SortEnumType>;
+  stateId?: Maybe<SortEnumType>;
+  state?: Maybe<StateSortInput>;
+  delLogId?: Maybe<SortEnumType>;
+  delLog?: Maybe<DelLogSortInput>;
+  deletedAt?: Maybe<SortEnumType>;
+  createdAt?: Maybe<SortEnumType>;
+  updatedAt?: Maybe<SortEnumType>;
+};
+
 export type ClassroomUserFilterInput = {
   and?: Maybe<Array<ClassroomUserFilterInput>>;
   or?: Maybe<Array<ClassroomUserFilterInput>>;
@@ -350,6 +363,14 @@ export type DelLogFilterInput = {
   deletedMessages?: Maybe<ListFilterInputTypeOfMessageFilterInput>;
 };
 
+export type DelLogSortInput = {
+  id?: Maybe<SortEnumType>;
+  deletedForId?: Maybe<SortEnumType>;
+  deletedFor?: Maybe<DelLogTypeSortInput>;
+  createdAt?: Maybe<SortEnumType>;
+  updatedAt?: Maybe<SortEnumType>;
+};
+
 export type DelLogType = {
   __typename?: 'DelLogType';
   id: Scalars['Int'];
@@ -363,6 +384,11 @@ export type DelLogTypeFilterInput = {
   id?: Maybe<ComparableInt32OperationFilterInput>;
   type?: Maybe<StringOperationFilterInput>;
   delLogs?: Maybe<ListFilterInputTypeOfDelLogFilterInput>;
+};
+
+export type DelLogTypeSortInput = {
+  id?: Maybe<SortEnumType>;
+  type?: Maybe<SortEnumType>;
 };
 
 export type DeleteFileError = FileNotFoundError | BlobNotFoundError | BlobDeletionError;
@@ -402,6 +428,8 @@ export type DiscussionMessagesArgs = {
   after?: Maybe<Scalars['String']>;
   last?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['String']>;
+  where?: Maybe<MessageFilterInput>;
+  order?: Maybe<Array<MessageSortInput>>;
 };
 
 export enum DiscussionEvent {
@@ -442,6 +470,25 @@ export type DiscussionMessageSubscriptionPayload = {
 export type DiscussionNotFoundError = Error & {
   __typename?: 'DiscussionNotFoundError';
   message: Scalars['String'];
+};
+
+export type DiscussionSortInput = {
+  id?: Maybe<SortEnumType>;
+  guid?: Maybe<SortEnumType>;
+  name?: Maybe<SortEnumType>;
+  topic?: Maybe<SortEnumType>;
+  description?: Maybe<SortEnumType>;
+  classroomId?: Maybe<SortEnumType>;
+  classroom?: Maybe<ClassroomSortInput>;
+  createdById?: Maybe<SortEnumType>;
+  createdBy?: Maybe<UserSortInput>;
+  stateId?: Maybe<SortEnumType>;
+  state?: Maybe<StateSortInput>;
+  deletedAt?: Maybe<SortEnumType>;
+  delLogId?: Maybe<SortEnumType>;
+  delLog?: Maybe<DelLogSortInput>;
+  createdAt?: Maybe<SortEnumType>;
+  updatedAt?: Maybe<SortEnumType>;
 };
 
 export type Error = {
@@ -501,6 +548,29 @@ export type FileFilterInput = {
 export type FileNotFoundError = Error & {
   __typename?: 'FileNotFoundError';
   message: Scalars['String'];
+};
+
+export type FileSortInput = {
+  id?: Maybe<SortEnumType>;
+  uploadedById?: Maybe<SortEnumType>;
+  uploadedBy?: Maybe<UserSortInput>;
+  contentLength?: Maybe<SortEnumType>;
+  mimeType?: Maybe<SortEnumType>;
+  fileExtension?: Maybe<SortEnumType>;
+  uploadStatus?: Maybe<SortEnumType>;
+  sas?: Maybe<UriSortInput>;
+  signatureEncoded?: Maybe<SortEnumType>;
+  signatureDecoded?: Maybe<SortEnumType>;
+  containerName?: Maybe<SortEnumType>;
+  blobName?: Maybe<SortEnumType>;
+  name?: Maybe<SortEnumType>;
+  location?: Maybe<UriSortInput>;
+  eTag?: Maybe<SortEnumType>;
+  mD5?: Maybe<SortEnumType>;
+  isDeleted?: Maybe<SortEnumType>;
+  createdAt?: Maybe<SortEnumType>;
+  updatedAt?: Maybe<SortEnumType>;
+  deletedAt?: Maybe<SortEnumType>;
 };
 
 export enum FileUploadStatus {
@@ -787,6 +857,22 @@ export type MessageFilterInput = {
   messageFiles?: Maybe<ListFilterInputTypeOfMessageFileFilterInput>;
 };
 
+export type MessageSortInput = {
+  id?: Maybe<SortEnumType>;
+  content?: Maybe<SortEnumType>;
+  discussionId?: Maybe<SortEnumType>;
+  discussion?: Maybe<DiscussionSortInput>;
+  createdById?: Maybe<SortEnumType>;
+  createdBy?: Maybe<UserSortInput>;
+  isDiscussionEvent?: Maybe<SortEnumType>;
+  discussionEvent?: Maybe<SortEnumType>;
+  delLogId?: Maybe<SortEnumType>;
+  delLog?: Maybe<DelLogSortInput>;
+  createdAt?: Maybe<SortEnumType>;
+  updatedAt?: Maybe<SortEnumType>;
+  deletedAt?: Maybe<SortEnumType>;
+};
+
 /** A connection to a list of items. */
 export type MessagesConnection = {
   __typename?: 'MessagesConnection';
@@ -998,6 +1084,7 @@ export type QueryFilesArgs = {
   last?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['String']>;
   where?: Maybe<FileFilterInput>;
+  order?: Maybe<Array<FileSortInput>>;
 };
 
 export type RefreshSessionError = UserNotFoundError | SessionNotFoundError;
@@ -1074,6 +1161,11 @@ export type SignUpPayload = {
   query: Query;
 };
 
+export enum SortEnumType {
+  Asc = 'ASC',
+  Desc = 'DESC'
+}
+
 export type State = {
   __typename?: 'State';
   id: Scalars['Int'];
@@ -1095,6 +1187,13 @@ export type StateFilterInput = {
   users?: Maybe<ListFilterInputTypeOfUserFilterInput>;
   classrooms?: Maybe<ListFilterInputTypeOfClassroomFilterInput>;
   discussions?: Maybe<ListFilterInputTypeOfDiscussionFilterInput>;
+};
+
+export type StateSortInput = {
+  id?: Maybe<SortEnumType>;
+  status?: Maybe<SortEnumType>;
+  createdAt?: Maybe<SortEnumType>;
+  updatedAt?: Maybe<SortEnumType>;
 };
 
 export type StringOperationFilterInput = {
@@ -1194,6 +1293,30 @@ export type UriHostNameTypeOperationFilterInput = {
   nin?: Maybe<Array<UriHostNameType>>;
 };
 
+export type UriSortInput = {
+  absolutePath?: Maybe<SortEnumType>;
+  absoluteUri?: Maybe<SortEnumType>;
+  localPath?: Maybe<SortEnumType>;
+  authority?: Maybe<SortEnumType>;
+  hostNameType?: Maybe<SortEnumType>;
+  isDefaultPort?: Maybe<SortEnumType>;
+  isFile?: Maybe<SortEnumType>;
+  isLoopback?: Maybe<SortEnumType>;
+  pathAndQuery?: Maybe<SortEnumType>;
+  isUnc?: Maybe<SortEnumType>;
+  host?: Maybe<SortEnumType>;
+  port?: Maybe<SortEnumType>;
+  query?: Maybe<SortEnumType>;
+  fragment?: Maybe<SortEnumType>;
+  scheme?: Maybe<SortEnumType>;
+  originalString?: Maybe<SortEnumType>;
+  dnsSafeHost?: Maybe<SortEnumType>;
+  idnHost?: Maybe<SortEnumType>;
+  isAbsoluteUri?: Maybe<SortEnumType>;
+  userEscaped?: Maybe<SortEnumType>;
+  userInfo?: Maybe<SortEnumType>;
+};
+
 export type User = Node & {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -1283,6 +1406,32 @@ export type UserProfileColorOperationFilterInput = {
   neq?: Maybe<UserProfileColor>;
   in?: Maybe<Array<UserProfileColor>>;
   nin?: Maybe<Array<UserProfileColor>>;
+};
+
+export type UserSortInput = {
+  guid?: Maybe<SortEnumType>;
+  name?: Maybe<SortEnumType>;
+  email?: Maybe<SortEnumType>;
+  profileColor?: Maybe<SortEnumType>;
+  avatarUrl?: Maybe<SortEnumType>;
+  stateId?: Maybe<SortEnumType>;
+  state?: Maybe<StateSortInput>;
+  createdAt?: Maybe<SortEnumType>;
+  updatedAt?: Maybe<SortEnumType>;
+  id?: Maybe<SortEnumType>;
+  userName?: Maybe<SortEnumType>;
+  normalizedUserName?: Maybe<SortEnumType>;
+  normalizedEmail?: Maybe<SortEnumType>;
+  emailConfirmed?: Maybe<SortEnumType>;
+  passwordHash?: Maybe<SortEnumType>;
+  securityStamp?: Maybe<SortEnumType>;
+  concurrencyStamp?: Maybe<SortEnumType>;
+  phoneNumber?: Maybe<SortEnumType>;
+  phoneNumberConfirmed?: Maybe<SortEnumType>;
+  twoFactorEnabled?: Maybe<SortEnumType>;
+  lockoutEnd?: Maybe<SortEnumType>;
+  lockoutEnabled?: Maybe<SortEnumType>;
+  accessFailedCount?: Maybe<SortEnumType>;
 };
 
 export enum WhitelistedFileExtension {
