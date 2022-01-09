@@ -1,27 +1,17 @@
-import { createContext, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { FileRejection } from 'react-dropzone';
 import { gql, useQuery } from '@apollo/client';
 import clsx from 'clsx';
-import { FilePickerProps } from '@spout/toolkit';
 import { formatNewMessage } from '../../../utils/format';
 import { FileWithId } from '../../../hooks';
 import { UserInfoFragment } from '../../../utils/fragments';
-import { useStore } from '../../../utils/messagesStore';
+import { useStore } from '../../../utils/optimisticMessagesStore';
 import { MeQuery } from './__generated__/index.generated';
 import { DiscussionQuery } from '../../__generated__/Discussion.generated';
 import { Attachments } from './Attachments';
 import TextArea from '../../../../../../shared/components/ui/TextArea';
 import ComposerToolbar from './ComposerToolbar';
-
-interface ComposerContextType {
-  message: string;
-  isUploadingFiles: boolean;
-  onNewMessage: () => void;
-  onFilesAccepted: FilePickerProps['onDropAccepted'];
-  onFilesRejected: FilePickerProps['onDropRejected'];
-}
-
-export const ComposerContext = createContext<ComposerContextType | null>(null);
+import { ComposerToolbarProvider } from './ComposerToolbarProvider';
 
 interface Props {
   discussion: DiscussionQuery['discussionById'];
@@ -47,20 +37,19 @@ const Composer = ({ discussion }: Props) => {
   const [message, setMessage] = useState('');
   const [focused, setFocused] = useState(false);
 
-  const onNewMessage = () => {
+  const onNewMessage = useCallback(() => {
     if (isUploadingFiles) return;
+    if (!message.trim().length) return;
 
-    if (message.trim().length) {
-      add(
-        discussion.id,
-        formatNewMessage(message.trim()),
-        uploadedFiles,
-        data!.me!
-      );
-      setMessage('');
-      setShouldClearFiles(true);
-    }
-  };
+    add(
+      discussion.id,
+      formatNewMessage(message.trim()),
+      uploadedFiles,
+      data!.me!
+    );
+    setMessage('');
+    setShouldClearFiles(true);
+  }, [add, data, discussion.id, isUploadingFiles, message, uploadedFiles]);
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -111,17 +100,15 @@ const Composer = ({ discussion }: Props) => {
           setUploadedFiles={setUploadedFiles}
           setShouldClearFiles={setShouldClearFiles}
         />
-        <ComposerContext.Provider
-          value={{
-            message,
-            isUploadingFiles,
-            onNewMessage,
-            onFilesAccepted,
-            onFilesRejected,
-          }}
+        <ComposerToolbarProvider
+          message={message}
+          isUploadingFiles={isUploadingFiles}
+          onNewMessage={onNewMessage}
+          onFilesAccepted={onFilesAccepted}
+          onFilesRejected={onFilesRejected}
         >
           <ComposerToolbar />
-        </ComposerContext.Provider>
+        </ComposerToolbarProvider>
       </div>
     </div>
   );

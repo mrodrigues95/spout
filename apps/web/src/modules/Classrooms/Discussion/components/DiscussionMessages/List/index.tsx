@@ -23,7 +23,7 @@ import {
 import {
   OptimisticMessage as OptimisticMessageType,
   useStore,
-} from '../../../utils/messagesStore';
+} from '../../../utils/optimisticMessagesStore';
 import { MeQuery } from './__generated__/index.generated';
 import { UserInfoFragment } from '../../../utils/fragments';
 import { Card } from '../../../../../../shared/components';

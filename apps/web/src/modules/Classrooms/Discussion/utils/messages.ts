@@ -1,6 +1,6 @@
 import { differenceInMinutes, format } from 'date-fns';
 import { Message_Message } from './__generated__/fragments.generated';
-import { OptimisticMessage } from './messagesStore';
+import { OptimisticMessage } from './optimisticMessagesStore';
 import { getTime } from './dates';
 
 type Message = OptimisticMessage | Message_Message;

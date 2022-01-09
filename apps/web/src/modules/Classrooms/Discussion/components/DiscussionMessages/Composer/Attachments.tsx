@@ -23,7 +23,6 @@ import {
   FileWithId,
   useFileUploadQueue,
 } from '../../../hooks';
-import { ComposerContext } from '.';
 import {
   formatBytesToHumanReadable,
   getAcceptedFileExtensions,
@@ -31,9 +30,10 @@ import {
   MAX_FILE_SIZE,
   MIN_FILE_SIZE,
 } from '../../../../../../shared/utils';
+import { useComposerToolbar } from './ComposerToolbarProvider';
 
 export const UploadAttachments = () => {
-  const { onFilesAccepted, onFilesRejected } = useContext(ComposerContext)!;
+  const { onFilesAccepted, onFilesRejected } = useComposerToolbar()!;
 
   return (
     <FilePicker

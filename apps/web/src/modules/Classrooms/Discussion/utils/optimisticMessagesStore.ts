@@ -1,5 +1,5 @@
 import create from 'zustand';
-import { FileWithId } from './files';
+import { FileWithId } from '../hooks';
 import { Message_Message } from './__generated__/fragments.generated';
 import { UserInfo_User } from './__generated__/fragments.generated';
 
@@ -12,7 +12,7 @@ export interface OptimisticMessage
   attachmentIds: string[];
 }
 
-interface MessagesStore {
+interface OptimisticMessagesStore {
   messagesByDiscussionId: { [key: string]: OptimisticMessage[] };
   add: (
     discussionId: string,
@@ -25,7 +25,7 @@ interface MessagesStore {
 
 // TODO: Maybe we can store optimistic messages and live messages here as a way
 // to reduce renders and update the query cache?
-export const useStore = create<MessagesStore>((set) => ({
+export const useStore = create<OptimisticMessagesStore>((set) => ({
   messagesByDiscussionId: {},
   add: (
     discussionId: string,

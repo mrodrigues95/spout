@@ -13,7 +13,7 @@ import {
   updateMessagesQuery,
   updateDiscussionFilesQuery,
 } from '../../utils/queryCache';
-import { useStore } from '../../utils/messagesStore';
+import { useStore } from '../../utils/optimisticMessagesStore';
 import { DiscussionQuery } from '../__generated__/Discussion.generated';
 import {
   MeQuery,
@@ -138,7 +138,7 @@ const DicussionMessages = ({
     (state) => state.messagesByDiscussionId[discussion.id]
   );
 
-  // Combine optimistic messages with already fetched messages.
+  // Combine optimistic messages with the already fetched messages.
   const messages = useMemo(() => {
     const edges = (discussion.messages?.edges ?? []).map((edge) => ({
       node: edge.node,
