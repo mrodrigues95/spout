@@ -93,19 +93,19 @@ services:
       - traefik.http.routers.web-https.tls=true
       - traefik.http.services.web.loadbalancer.server.port=3000
 
-  web-compiler:
-    container_name: web-compiler
-    restart: unless-stopped
-    command: sh -c "sleep 30 && nx run web:codegen-watch"
-    build: .
-    working_dir: /workspace
-    volumes:
-      - ../:/workspace:rw
-    depends_on:
-      - web
-      - api
-    labels:
-      - traefik.enable=false
+  # web-compiler:
+  #   container_name: web-compiler
+  #   restart: unless-stopped
+  #   command: sh -c "sleep 30 && nx run web:codegen-watch"
+  #   build: .
+  #   working_dir: /workspace
+  #   volumes:
+  #     - ../:/workspace:rw
+  #   depends_on:
+  #     - web
+  #     - api
+  #   labels:
+  #     - traefik.enable=false
 
 volumes:
   pgdata: {}

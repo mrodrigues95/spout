@@ -1,19 +1,16 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { graphql, useMutation } from 'react-relay';
 import Zod, { object, string } from 'zod';
-import { gql, useMutation } from '@apollo/client';
 import { Form, useZodForm, Link } from '@spout/toolkit';
 import { Layout, useToast } from '../../../shared/components';
 import { useIsRedirecting } from '../../../shared/hooks/useIsRedirecting';
 import { useAuthRedirect, useInitializeSessionMutation } from '../hooks';
 import AuthCard from './AuthCard';
 import AuthError from './AuthError';
-import {
-  LoginMutation,
-  LoginMutationVariables,
-} from './__generated__/LoginForm.generated';
+import { LoginFormMutation } from './__generated__/LoginFormMutation.graphql';
 
-const mutation = gql`
-  mutation LoginMutation($input: LoginInput!) {
+const mutation = graphql`
+  mutation LoginFormMutation($input: LoginInput!) {
     login(input: $input) {
       authPayload {
         session {
@@ -35,12 +32,12 @@ const loginSchema = object({
 });
 
 const LoginForm = () => {
-  const authRedirect = useAuthRedirect();
+  // const authRedirect = useAuthRedirect();
   const isRedirecting = useIsRedirecting();
   const init = useInitializeSessionMutation();
   const [loginError, setLoginError] = useState<unknown>();
   const { handleError } = useToast();
-  const [login] = useMutation<LoginMutation, LoginMutationVariables>(mutation);
+  const [login, isInFlight] = useMutation<LoginFormMutation>(mutation);
 
   const form = useZodForm({
     schema: loginSchema,
@@ -57,26 +54,29 @@ const LoginForm = () => {
     </Link>
   );
 
+  const initializeIronSession = useCallback(
+    async (sessionId: string) => {
+      await init(sessionId);
+      // authRedirect();
+    },
+    [init]
+  );
+
   const onSubmit = async ({
     email,
     password,
   }: Zod.infer<typeof loginSchema>) => {
-    try {
-      const { data } = await login({
-        variables: { input: { email, password } },
-      });
-
-      // TODO: Use generic errors here to prevent user enumeration.
-      if (data?.login.errors) {
-        setLoginError(data!.login.errors!.shift());
-        return;
-      }
-
-      await init(data!.login.authPayload!.session!.id);
-      authRedirect();
-    } catch (error) {
-      handleError();
-    }
+    login({
+      variables: { input: { email, password } },
+      onError: () => handleError(),
+      onCompleted: (data) => {
+        if (data.login.errors) {
+          setLoginError(data.login.errors![0]);
+        } else {
+          // initializeIronSession(data.login.authPayload!.session!.id);
+        }
+      },
+    });
   };
 
   return (

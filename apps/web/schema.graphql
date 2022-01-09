@@ -1,0 +1,1400 @@
+"""
+The `@defer` directive may be provided for fragment spreads and inline fragments
+to inform the executor to delay the execution of the current fragment to
+indicate deprioritization of the current fragment. A query with `@defer`
+directive will cause the request to potentially return multiple responses, where
+non-deferred data is delivered in the initial response and data deferred is
+delivered in a subsequent response. `@include` and `@skip` take precedence over `@defer`.
+"""
+directive @defer(
+  """
+  If this argument label has a value other than null, it will be passed on to
+  the result of this defer directive. This label is intended to give client
+  applications a way to identify to which fragment a deferred result belongs to.
+  """
+  label: String
+
+  """Deferred when true."""
+  if: Boolean
+) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+"""
+The `@stream` directive may be provided for a field of `List` type so that the
+backend can leverage technology such as asynchronous iterators to provide a
+partial list in the initial response, and additional list items in subsequent
+responses. `@include` and `@skip` take precedence over `@stream`.
+"""
+directive @stream(
+  """
+  If this argument label has a value other than null, it will be passed on to
+  the result of this stream directive. This label is intended to give client
+  applications a way to identify to which fragment a streamed result belongs to.
+  """
+  label: String
+
+  """The initial elements that shall be send down to the consumer."""
+  initialCount: Int! = 0
+
+  """Streamed when true."""
+  if: Boolean
+) on FIELD
+
+directive @authorize(
+  """
+  The name of the authorization policy that determines access to the annotated resource.
+  """
+  policy: String
+
+  """Roles that are allowed to access the annotated resource."""
+  roles: [String!]
+
+  """
+  Defines when when the resolver shall be executed.By default the resolver is
+  executed after the policy has determined that the current user is allowed to
+  access the field.
+  """
+  apply: ApplyPolicy! = BEFORE_RESOLVER
+) on SCHEMA | OBJECT | FIELD_DEFINITION
+
+"""
+The `@specifiedBy` directive is used within the type system definition language
+to provide a URL for specifying the behavior of custom scalar definitions.
+"""
+directive @specifiedBy(
+  """
+  The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types.
+  """
+  url: String!
+) on SCALAR
+
+enum ApplyPolicy {
+  BEFORE_RESOLVER
+  AFTER_RESOLVER
+}
+
+type AuthPayload {
+  user: User
+  session: Session
+  isLoggedIn: Boolean!
+}
+
+type BlobDeletionError implements Error {
+  message: String!
+}
+
+type BlobNotFoundError implements Error {
+  message: String!
+}
+
+type BlobPropertiesError implements Error {
+  message: String!
+}
+
+input BooleanOperationFilterInput {
+  eq: Boolean
+  neq: Boolean
+}
+
+type Classroom implements Node {
+  id: ID!
+  guid: UUID!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  users: [User!]!
+  discussions: [Discussion!]!
+  state: State
+  delLogId: Int
+  delLog: DelLog
+  deletedAt: DateTime
+  invites: [ClassroomInvite!]!
+}
+
+input ClassroomFilterInput {
+  and: [ClassroomFilterInput!]
+  or: [ClassroomFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  guid: ComparableGuidOperationFilterInput
+  name: StringOperationFilterInput
+  stateId: ComparableInt32OperationFilterInput
+  state: StateFilterInput
+  delLogId: ComparableNullableOfInt32OperationFilterInput
+  delLog: DelLogFilterInput
+  deletedAt: ComparableNullableOfDateTimeOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+  discussions: ListFilterInputTypeOfDiscussionFilterInput
+  users: ListFilterInputTypeOfClassroomUserFilterInput
+  invites: ListFilterInputTypeOfClassroomInviteFilterInput
+}
+
+type ClassroomInvite {
+  inviteId: Int!
+  invite: Invite
+  userId: Int!
+  user: User
+  classroomId: Int!
+  classroom: Classroom
+  isInviter: Boolean!
+  isInvitee: Boolean!
+  usedAt: DateTime
+  updatedAt: DateTime!
+}
+
+type ClassroomInviteExpiredError implements Error {
+  message: String!
+}
+
+input ClassroomInviteFilterInput {
+  and: [ClassroomInviteFilterInput!]
+  or: [ClassroomInviteFilterInput!]
+  inviteId: ComparableInt32OperationFilterInput
+  invite: InviteFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UserFilterInput
+  classroomId: ComparableInt32OperationFilterInput
+  classroom: ClassroomFilterInput
+  isInviter: BooleanOperationFilterInput
+  isInvitee: BooleanOperationFilterInput
+  usedAt: ComparableNullableOfDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+}
+
+type ClassroomNotFoundError implements Error {
+  message: String!
+}
+
+input ClassroomSortInput {
+  id: SortEnumType
+  guid: SortEnumType
+  name: SortEnumType
+  stateId: SortEnumType
+  state: StateSortInput
+  delLogId: SortEnumType
+  delLog: DelLogSortInput
+  deletedAt: SortEnumType
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
+}
+
+input ClassroomUserFilterInput {
+  and: [ClassroomUserFilterInput!]
+  or: [ClassroomUserFilterInput!]
+  classroomId: ComparableInt32OperationFilterInput
+  classroom: ClassroomFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UserFilterInput
+  isCreator: BooleanOperationFilterInput
+  joinedAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+}
+
+input ComparableDateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime!]
+  nin: [DateTime!]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input ComparableGuidOperationFilterInput {
+  eq: UUID
+  neq: UUID
+  in: [UUID!]
+  nin: [UUID!]
+  gt: UUID
+  ngt: UUID
+  gte: UUID
+  ngte: UUID
+  lt: UUID
+  nlt: UUID
+  lte: UUID
+  nlte: UUID
+}
+
+input ComparableInt16OperationFilterInput {
+  eq: Short
+  neq: Short
+  in: [Short!]
+  nin: [Short!]
+  gt: Short
+  ngt: Short
+  gte: Short
+  ngte: Short
+  lt: Short
+  nlt: Short
+  lte: Short
+  nlte: Short
+}
+
+input ComparableInt32OperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int!]
+  nin: [Int!]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+input ComparableInt64OperationFilterInput {
+  eq: Long
+  neq: Long
+  in: [Long!]
+  nin: [Long!]
+  gt: Long
+  ngt: Long
+  gte: Long
+  ngte: Long
+  lt: Long
+  nlt: Long
+  lte: Long
+  nlte: Long
+}
+
+input ComparableNullableOfDateTimeOffsetOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime]
+  nin: [DateTime]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input ComparableNullableOfDateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime]
+  nin: [DateTime]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input ComparableNullableOfInt16OperationFilterInput {
+  eq: Short
+  neq: Short
+  in: [Short]
+  nin: [Short]
+  gt: Short
+  ngt: Short
+  gte: Short
+  ngte: Short
+  lt: Short
+  nlt: Short
+  lte: Short
+  nlte: Short
+}
+
+input ComparableNullableOfInt32OperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int]
+  nin: [Int]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+union CompleteUploadError = BlobNotFoundError | BlobPropertiesError | FileNotFoundError
+
+input CompleteUploadInput {
+  fileId: ID!
+}
+
+type CompleteUploadPayload {
+  file: File
+  errors: [CompleteUploadError!]
+  query: Query!
+}
+
+input CreateClassroomInput {
+  name: String!
+}
+
+input CreateClassroomInviteInput {
+  classroomId: ID!
+  code: String
+  maxAge: Int
+  maxUses: Short
+}
+
+type CreateClassroomInvitePayload {
+  invite: Invite
+  query: Query!
+}
+
+type CreateClassroomPayload {
+  classroom: Classroom
+  query: Query!
+}
+
+union CreateDiscussionError = ClassroomNotFoundError
+
+input CreateDiscussionInput {
+  classroomId: ID!
+  name: String!
+}
+
+type CreateDiscussionPayload {
+  discussion: Discussion
+  errors: [CreateDiscussionError!]
+  query: Query!
+}
+
+"""The `DateTime` scalar represents an ISO-8601 compliant date time type."""
+scalar DateTime
+
+union DeleteFileError = FileNotFoundError | BlobNotFoundError | BlobDeletionError
+
+input DeleteFileInput {
+  fileId: ID!
+}
+
+type DeleteFilePayload {
+  file: File
+  errors: [DeleteFileError!]
+  query: Query!
+}
+
+type DelLog {
+  id: Int!
+  deletedForId: Int!
+  deletedFor: DelLogType
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedClassrooms: [Classroom!]!
+  deletedDiscussions: [Discussion!]!
+  deletedMessages: [Message!]!
+}
+
+input DelLogFilterInput {
+  and: [DelLogFilterInput!]
+  or: [DelLogFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  deletedForId: ComparableInt32OperationFilterInput
+  deletedFor: DelLogTypeFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+  deletedClassrooms: ListFilterInputTypeOfClassroomFilterInput
+  deletedDiscussions: ListFilterInputTypeOfDiscussionFilterInput
+  deletedMessages: ListFilterInputTypeOfMessageFilterInput
+}
+
+input DelLogSortInput {
+  id: SortEnumType
+  deletedForId: SortEnumType
+  deletedFor: DelLogTypeSortInput
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
+}
+
+type DelLogType {
+  id: Int!
+  type: String!
+  delLogs: [DelLog!]!
+}
+
+input DelLogTypeFilterInput {
+  and: [DelLogTypeFilterInput!]
+  or: [DelLogTypeFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  type: StringOperationFilterInput
+  delLogs: ListFilterInputTypeOfDelLogFilterInput
+}
+
+input DelLogTypeSortInput {
+  id: SortEnumType
+  type: SortEnumType
+}
+
+type Discussion implements Node {
+  id: ID!
+  guid: UUID!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  createdBy: User!
+  classroom: Classroom!
+  messages(
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: MessageFilterInput
+    order: [MessageSortInput!]
+  ): MessagesConnection
+  topic: String
+  description: String
+  state: State
+  deletedAt: DateTime
+  delLogId: Int
+  delLog: DelLog
+}
+
+enum DiscussionEvent {
+  CHANGE_TOPIC
+  CHANGE_DESCRIPTION
+}
+
+input DiscussionFilterInput {
+  and: [DiscussionFilterInput!]
+  or: [DiscussionFilterInput!]
+  id: IdOperationFilterInput
+  guid: ComparableGuidOperationFilterInput
+  name: StringOperationFilterInput
+  topic: StringOperationFilterInput
+  description: StringOperationFilterInput
+  classroomId: ComparableInt32OperationFilterInput
+  classroom: ClassroomFilterInput
+  createdById: ComparableInt32OperationFilterInput
+  createdBy: UserFilterInput
+  stateId: ComparableInt32OperationFilterInput
+  state: StateFilterInput
+  deletedAt: ComparableNullableOfDateTimeOperationFilterInput
+  delLogId: ComparableNullableOfInt32OperationFilterInput
+  delLog: DelLogFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+  messages: ListFilterInputTypeOfMessageFilterInput
+}
+
+type DiscussionMessageSubscriptionPayload {
+  discussion: Discussion!
+  message: Message!
+  discussionId: ID!
+  messageId: ID!
+}
+
+type DiscussionNotFoundError implements Error {
+  message: String!
+}
+
+input DiscussionSortInput {
+  id: SortEnumType
+  guid: SortEnumType
+  name: SortEnumType
+  topic: SortEnumType
+  description: SortEnumType
+  classroomId: SortEnumType
+  classroom: ClassroomSortInput
+  createdById: SortEnumType
+  createdBy: UserSortInput
+  stateId: SortEnumType
+  state: StateSortInput
+  deletedAt: SortEnumType
+  delLogId: SortEnumType
+  delLog: DelLogSortInput
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
+}
+
+interface Error {
+  message: String!
+}
+
+type File implements Node {
+  id: ID!
+  uploadedBy: User!
+  contentLength: Long!
+  extension: WhitelistedFileExtension!
+  uploadStatus: FileUploadStatus!
+  sas: URL!
+  signatureEncoded: String!
+  signatureDecoded: String!
+  containerName: String!
+  blobName: String!
+  name: String!
+  isDeleted: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  mimeType: String
+  location: URL
+  eTag: String
+  mD5: String
+  deletedAt: DateTime
+  messageFiles: [MessageFile!]!
+}
+
+input FileFilterInput {
+  and: [FileFilterInput!]
+  or: [FileFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  uploadedById: ComparableInt32OperationFilterInput
+  uploadedBy: UserFilterInput
+  contentLength: ComparableInt64OperationFilterInput
+  mimeType: StringOperationFilterInput
+  fileExtension: WhitelistedFileExtensionOperationFilterInput
+  uploadStatus: FileUploadStatusOperationFilterInput
+  sas: UriFilterInput
+  signatureEncoded: StringOperationFilterInput
+  signatureDecoded: StringOperationFilterInput
+  containerName: StringOperationFilterInput
+  blobName: StringOperationFilterInput
+  name: StringOperationFilterInput
+  location: UriFilterInput
+  eTag: StringOperationFilterInput
+  mD5: StringOperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+  deletedAt: ComparableNullableOfDateTimeOperationFilterInput
+  messageFiles: ListFilterInputTypeOfMessageFileFilterInput
+}
+
+type FileNotFoundError implements Error {
+  message: String!
+}
+
+"""A connection to a list of items."""
+type FilesConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [FilesEdge!]
+
+  """A flattened list of the nodes."""
+  nodes: [File!]
+}
+
+"""An edge in a connection."""
+type FilesEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: File!
+}
+
+input FileSortInput {
+  id: SortEnumType
+  uploadedById: SortEnumType
+  uploadedBy: UserSortInput
+  contentLength: SortEnumType
+  mimeType: SortEnumType
+  fileExtension: SortEnumType
+  uploadStatus: SortEnumType
+  sas: UriSortInput
+  signatureEncoded: SortEnumType
+  signatureDecoded: SortEnumType
+  containerName: SortEnumType
+  blobName: SortEnumType
+  name: SortEnumType
+  location: UriSortInput
+  eTag: SortEnumType
+  mD5: SortEnumType
+  isDeleted: SortEnumType
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
+  deletedAt: SortEnumType
+}
+
+enum FileUploadStatus {
+  QUEUED
+  COMPLETED
+  ERROR
+  IGNORED
+}
+
+input FileUploadStatusOperationFilterInput {
+  eq: FileUploadStatus
+  neq: FileUploadStatus
+  in: [FileUploadStatus!]
+  nin: [FileUploadStatus!]
+}
+
+union GenerateDownloadSASError = FileNotFoundError | GenerateSignatureError
+
+input GenerateDownloadSASInput {
+  fileId: ID!
+}
+
+type GenerateDownloadSASPayload {
+  generateSASPayload: GenerateSASPayload
+  errors: [GenerateDownloadSASError!]
+  query: Query!
+}
+
+type GenerateSASPayload {
+  file: File!
+  sas: URL!
+}
+
+type GenerateSignatureError implements Error {
+  message: String!
+}
+
+union GenerateUploadSASError = GenerateSignatureError | ParseSignatureError
+
+input GenerateUploadSASInput {
+  fileName: String!
+  size: Long!
+  mimeType: String
+  fileExtension: WhitelistedFileExtension!
+}
+
+type GenerateUploadSASPayload {
+  generateSASPayload: GenerateSASPayload
+  errors: [GenerateUploadSASError!]
+  query: Query!
+}
+
+input IdOperationFilterInput {
+  eq: ID
+  neq: ID
+  in: [ID]
+  nin: [ID]
+}
+
+type Invite {
+  id: Int!
+  code: String!
+  uses: Short!
+  maxUses: Short
+  maxAge: Int
+  expiresAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  logs: [ClassroomInvite!]!
+}
+
+input InviteFilterInput {
+  and: [InviteFilterInput!]
+  or: [InviteFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  code: StringOperationFilterInput
+  uses: ComparableInt16OperationFilterInput
+  maxUses: ComparableNullableOfInt16OperationFilterInput
+  maxAge: ComparableNullableOfInt32OperationFilterInput
+  expiresAt: ComparableNullableOfDateTimeOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+  logs: ListFilterInputTypeOfClassroomInviteFilterInput
+}
+
+union JoinClassroomError = ClassroomInviteExpiredError | UserAlreadyInClassroomError
+
+input JoinClassroomInput {
+  code: String!
+}
+
+type JoinClassroomPayload {
+  classroom: Classroom
+  errors: [JoinClassroomError!]
+  query: Query!
+}
+
+input ListFilterInputTypeOfClassroomFilterInput {
+  all: ClassroomFilterInput
+  none: ClassroomFilterInput
+  some: ClassroomFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfClassroomInviteFilterInput {
+  all: ClassroomInviteFilterInput
+  none: ClassroomInviteFilterInput
+  some: ClassroomInviteFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfClassroomUserFilterInput {
+  all: ClassroomUserFilterInput
+  none: ClassroomUserFilterInput
+  some: ClassroomUserFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfDelLogFilterInput {
+  all: DelLogFilterInput
+  none: DelLogFilterInput
+  some: DelLogFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfDiscussionFilterInput {
+  all: DiscussionFilterInput
+  none: DiscussionFilterInput
+  some: DiscussionFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfFileFilterInput {
+  all: FileFilterInput
+  none: FileFilterInput
+  some: FileFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfMessageFileFilterInput {
+  all: MessageFileFilterInput
+  none: MessageFileFilterInput
+  some: MessageFileFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfMessageFilterInput {
+  all: MessageFilterInput
+  none: MessageFilterInput
+  some: MessageFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfSessionFilterInput {
+  all: SessionFilterInput
+  none: SessionFilterInput
+  some: SessionFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfUserFilterInput {
+  all: UserFilterInput
+  none: UserFilterInput
+  some: UserFilterInput
+  any: Boolean
+}
+
+input ListStringOperationFilterInput {
+  all: StringOperationFilterInput
+  none: StringOperationFilterInput
+  some: StringOperationFilterInput
+  any: Boolean
+}
+
+union LoginError = LoginUserError
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type LoginPayload {
+  authPayload: AuthPayload
+  errors: [LoginError!]
+  query: Query!
+}
+
+type LoginUserError implements Error {
+  message: String!
+}
+
+input LogoutInput {
+  sessionId: ID!
+}
+
+type LogoutPayload {
+  authPayload: AuthPayload
+  query: Query!
+}
+
+"""
+The `Long` scalar type represents non-fractional signed whole 64-bit numeric
+values. Long can represent values between -(2^63) and 2^63 - 1.
+"""
+scalar Long
+
+type Message implements Node {
+  id: ID!
+  content: String!
+  discussion: Discussion!
+  isDiscussionEvent: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  createdBy: User!
+  attachments: [File!]!
+  discussionEvent: DiscussionEvent
+  delLogId: Int
+  delLog: DelLog
+  deletedAt: DateTime
+}
+
+type MessageFile {
+  messageId: Int!
+  message: Message
+  fileId: Int!
+  file: File
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input MessageFileFilterInput {
+  and: [MessageFileFilterInput!]
+  or: [MessageFileFilterInput!]
+  messageId: ComparableInt32OperationFilterInput
+  message: MessageFilterInput
+  fileId: ComparableInt32OperationFilterInput
+  file: FileFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+}
+
+input MessageFilterInput {
+  and: [MessageFilterInput!]
+  or: [MessageFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  content: StringOperationFilterInput
+  discussionId: ComparableInt32OperationFilterInput
+  discussion: DiscussionFilterInput
+  createdById: ComparableInt32OperationFilterInput
+  createdBy: UserFilterInput
+  isDiscussionEvent: BooleanOperationFilterInput
+  discussionEvent: NullableOfDiscussionEventOperationFilterInput
+  delLogId: ComparableNullableOfInt32OperationFilterInput
+  delLog: DelLogFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+  deletedAt: ComparableNullableOfDateTimeOperationFilterInput
+  messageFiles: ListFilterInputTypeOfMessageFileFilterInput
+}
+
+"""A connection to a list of items."""
+type MessagesConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [MessagesEdge!]
+
+  """A flattened list of the nodes."""
+  nodes: [Message!]
+}
+
+"""An edge in a connection."""
+type MessagesEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: Message!
+}
+
+input MessageSortInput {
+  id: SortEnumType
+  content: SortEnumType
+  discussionId: SortEnumType
+  discussion: DiscussionSortInput
+  createdById: SortEnumType
+  createdBy: UserSortInput
+  isDiscussionEvent: SortEnumType
+  discussionEvent: SortEnumType
+  delLogId: SortEnumType
+  delLog: DelLogSortInput
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
+  deletedAt: SortEnumType
+}
+
+type Mutation {
+  refreshSession(input: RefreshSessionInput!): RefreshSessionPayload!
+  createClassroom(input: CreateClassroomInput!): CreateClassroomPayload!
+  joinClassroom(input: JoinClassroomInput!): JoinClassroomPayload!
+  createClassroomInvite(input: CreateClassroomInviteInput!): CreateClassroomInvitePayload!
+  sendDiscussionMessage(input: SendDiscussionMessageInput!): SendDiscussionMessagePayload!
+  createDiscussion(input: CreateDiscussionInput!): CreateDiscussionPayload!
+  updateDiscussionTopic(input: UpdateDiscussionTopicInput!): UpdateDiscussionTopicPayload!
+  updateDiscussionDescription(input: UpdateDiscussionDescriptionInput!): UpdateDiscussionDescriptionPayload!
+  signUp(input: SignUpInput!): SignUpPayload!
+  login(input: LoginInput!): LoginPayload!
+  logout(input: LogoutInput!): LogoutPayload!
+  generateUploadSAS(input: GenerateUploadSASInput!): GenerateUploadSASPayload!
+  generateDownloadSAS(input: GenerateDownloadSASInput!): GenerateDownloadSASPayload!
+  completeUpload(input: CompleteUploadInput!): CompleteUploadPayload!
+  deleteFile(input: DeleteFileInput!): DeleteFilePayload!
+}
+
+"""
+The node interface is implemented by entities that have a global unique identifier.
+"""
+interface Node {
+  id: ID!
+}
+
+input NullableOfDiscussionEventOperationFilterInput {
+  eq: DiscussionEvent
+  neq: DiscussionEvent
+  in: [DiscussionEvent]
+  nin: [DiscussionEvent]
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """
+  Indicates whether more edges exist following the set defined by the clients arguments.
+  """
+  hasNextPage: Boolean!
+
+  """
+  Indicates whether more edges exist prior the set defined by the clients arguments.
+  """
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+type ParseSignatureError implements Error {
+  message: String!
+}
+
+type Query {
+  """Fetches an object given its ID."""
+  node(
+    """ID of the object."""
+    id: ID!
+  ): Node
+
+  """Lookup nodes by a list of IDs."""
+  nodes(
+    """The list of node IDs."""
+    ids: [ID!]!
+  ): [Node]!
+  me: User
+  users: [User!]!
+  userById(id: ID!): User!
+  sessions: [Session!]!
+  sessionById(id: ID!): Session!
+  classrooms: [Classroom!]!
+  classroomById(id: ID!): Classroom!
+  classroomsById(ids: [ID!]!): [Classroom!]!
+  discussions: [Discussion!]!
+  discussionById(id: ID!): Discussion!
+  discussionsById(ids: [ID!]!): [Discussion!]!
+  files(
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: FileFilterInput
+    order: [FileSortInput!]
+  ): FilesConnection
+}
+
+union RefreshSessionError = UserNotFoundError | SessionNotFoundError
+
+input RefreshSessionInput {
+  sessionId: ID!
+}
+
+type RefreshSessionPayload {
+  authPayload: AuthPayload
+  errors: [RefreshSessionError!]
+  query: Query!
+}
+
+union SendDiscussionMessageError = DiscussionNotFoundError
+
+input SendDiscussionMessageInput {
+  discussionId: ID!
+  fileIds: [ID!]!
+  content: String!
+}
+
+type SendDiscussionMessagePayload {
+  message: Message
+  errors: [SendDiscussionMessageError!]
+  query: Query!
+}
+
+type Session implements Node {
+  id: ID!
+  user: User
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  expiresAt: DateTime!
+}
+
+input SessionFilterInput {
+  and: [SessionFilterInput!]
+  or: [SessionFilterInput!]
+  id: ComparableGuidOperationFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UserFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  expiresAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+}
+
+type SessionNotFoundError implements Error {
+  message: String!
+}
+
+"""
+The `Short` scalar type represents non-fractional signed whole 16-bit numeric
+values. Short can represent values between -(2^15) and 2^15 - 1.
+"""
+scalar Short
+
+union SignUpError = SignUpNewUserError
+
+input SignUpInput {
+  name: String!
+  email: String!
+  password: String!
+}
+
+type SignUpNewUserError implements Error {
+  message: String!
+}
+
+type SignUpPayload {
+  authPayload: AuthPayload
+  errors: [SignUpError!]
+  query: Query!
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+type State {
+  id: Int!
+  status: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  users: [User!]!
+  classrooms: [Classroom!]!
+  discussions: [Discussion!]!
+}
+
+input StateFilterInput {
+  and: [StateFilterInput!]
+  or: [StateFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  status: StringOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+  users: ListFilterInputTypeOfUserFilterInput
+  classrooms: ListFilterInputTypeOfClassroomFilterInput
+  discussions: ListFilterInputTypeOfDiscussionFilterInput
+}
+
+input StateSortInput {
+  id: SortEnumType
+  status: SortEnumType
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+type Subscription {
+  onDiscussionMessageReceived(discussionId: ID!): DiscussionMessageSubscriptionPayload!
+}
+
+union UpdateDiscussionDescriptionError = DiscussionNotFoundError
+
+input UpdateDiscussionDescriptionInput {
+  discussionId: ID!
+  description: String!
+}
+
+type UpdateDiscussionDescriptionPayload {
+  discussion: Discussion
+  errors: [UpdateDiscussionDescriptionError!]
+  query: Query!
+}
+
+union UpdateDiscussionTopicError = DiscussionNotFoundError
+
+input UpdateDiscussionTopicInput {
+  discussionId: ID!
+  topic: String!
+}
+
+type UpdateDiscussionTopicPayload {
+  discussion: Discussion
+  errors: [UpdateDiscussionTopicError!]
+  query: Query!
+}
+
+input UriFilterInput {
+  and: [UriFilterInput!]
+  or: [UriFilterInput!]
+  absolutePath: StringOperationFilterInput
+  absoluteUri: StringOperationFilterInput
+  localPath: StringOperationFilterInput
+  authority: StringOperationFilterInput
+  hostNameType: UriHostNameTypeOperationFilterInput
+  isDefaultPort: BooleanOperationFilterInput
+  isFile: BooleanOperationFilterInput
+  isLoopback: BooleanOperationFilterInput
+  pathAndQuery: StringOperationFilterInput
+  segments: ListStringOperationFilterInput
+  isUnc: BooleanOperationFilterInput
+  host: StringOperationFilterInput
+  port: ComparableInt32OperationFilterInput
+  query: StringOperationFilterInput
+  fragment: StringOperationFilterInput
+  scheme: StringOperationFilterInput
+  originalString: StringOperationFilterInput
+  dnsSafeHost: StringOperationFilterInput
+  idnHost: StringOperationFilterInput
+  isAbsoluteUri: BooleanOperationFilterInput
+  userEscaped: BooleanOperationFilterInput
+  userInfo: StringOperationFilterInput
+}
+
+enum UriHostNameType {
+  UNKNOWN
+  BASIC
+  DNS
+  I_PV4
+  I_PV6
+}
+
+input UriHostNameTypeOperationFilterInput {
+  eq: UriHostNameType
+  neq: UriHostNameType
+  in: [UriHostNameType!]
+  nin: [UriHostNameType!]
+}
+
+input UriSortInput {
+  absolutePath: SortEnumType
+  absoluteUri: SortEnumType
+  localPath: SortEnumType
+  authority: SortEnumType
+  hostNameType: SortEnumType
+  isDefaultPort: SortEnumType
+  isFile: SortEnumType
+  isLoopback: SortEnumType
+  pathAndQuery: SortEnumType
+  isUnc: SortEnumType
+  host: SortEnumType
+  port: SortEnumType
+  query: SortEnumType
+  fragment: SortEnumType
+  scheme: SortEnumType
+  originalString: SortEnumType
+  dnsSafeHost: SortEnumType
+  idnHost: SortEnumType
+  isAbsoluteUri: SortEnumType
+  userEscaped: SortEnumType
+  userInfo: SortEnumType
+}
+
+scalar URL
+
+type User implements Node {
+  id: ID!
+  guid: UUID!
+  name: String!
+  email: String!
+  profileColor: UserProfileColor!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  classrooms: [Classroom!]!
+  sessions: [Session!]!
+  avatarUrl: String
+  state: State
+  messages: [Message!]!
+  invites: [ClassroomInvite!]!
+  fileUploads: [File!]!
+  userName: String
+  normalizedUserName: String
+  normalizedEmail: String
+  emailConfirmed: Boolean!
+  passwordHash: String
+  securityStamp: String
+  concurrencyStamp: String
+  phoneNumber: String
+  phoneNumberConfirmed: Boolean!
+  twoFactorEnabled: Boolean!
+  lockoutEnd: DateTime
+  lockoutEnabled: Boolean!
+  accessFailedCount: Int!
+}
+
+type UserAlreadyInClassroomError implements Error {
+  message: String!
+}
+
+input UserFilterInput {
+  and: [UserFilterInput!]
+  or: [UserFilterInput!]
+  id: IdOperationFilterInput
+  guid: ComparableGuidOperationFilterInput
+  name: StringOperationFilterInput
+  email: StringOperationFilterInput
+  profileColor: UserProfileColorOperationFilterInput
+  avatarUrl: StringOperationFilterInput
+  stateId: ComparableInt32OperationFilterInput
+  state: StateFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+  sessions: ListFilterInputTypeOfSessionFilterInput
+  messages: ListFilterInputTypeOfMessageFilterInput
+  classrooms: ListFilterInputTypeOfClassroomUserFilterInput
+  invites: ListFilterInputTypeOfClassroomInviteFilterInput
+  fileUploads: ListFilterInputTypeOfFileFilterInput
+  userName: StringOperationFilterInput
+  normalizedUserName: StringOperationFilterInput
+  normalizedEmail: StringOperationFilterInput
+  emailConfirmed: BooleanOperationFilterInput
+  passwordHash: StringOperationFilterInput
+  securityStamp: StringOperationFilterInput
+  concurrencyStamp: StringOperationFilterInput
+  phoneNumber: StringOperationFilterInput
+  phoneNumberConfirmed: BooleanOperationFilterInput
+  twoFactorEnabled: BooleanOperationFilterInput
+  lockoutEnd: ComparableNullableOfDateTimeOffsetOperationFilterInput
+  lockoutEnabled: BooleanOperationFilterInput
+  accessFailedCount: ComparableInt32OperationFilterInput
+}
+
+type UserNotFoundError implements Error {
+  message: String!
+}
+
+enum UserProfileColor {
+  SKY
+  PINK
+  GREEN
+  PURPLE
+  ROSE
+  GRAY
+  ORANGE
+}
+
+input UserProfileColorOperationFilterInput {
+  eq: UserProfileColor
+  neq: UserProfileColor
+  in: [UserProfileColor!]
+  nin: [UserProfileColor!]
+}
+
+input UserSortInput {
+  guid: SortEnumType
+  name: SortEnumType
+  email: SortEnumType
+  profileColor: SortEnumType
+  avatarUrl: SortEnumType
+  stateId: SortEnumType
+  state: StateSortInput
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
+  id: SortEnumType
+  userName: SortEnumType
+  normalizedUserName: SortEnumType
+  normalizedEmail: SortEnumType
+  emailConfirmed: SortEnumType
+  passwordHash: SortEnumType
+  securityStamp: SortEnumType
+  concurrencyStamp: SortEnumType
+  phoneNumber: SortEnumType
+  phoneNumberConfirmed: SortEnumType
+  twoFactorEnabled: SortEnumType
+  lockoutEnd: SortEnumType
+  lockoutEnabled: SortEnumType
+  accessFailedCount: SortEnumType
+}
+
+scalar UUID
+
+enum WhitelistedFileExtension {
+  AAC
+  CSV
+  PDF
+  XLS
+  XLSX
+  PPT
+  PPTX
+  BMP
+  GIF
+  JPEG
+  JPG
+  JPE
+  PNG
+  TIFF
+  TIF
+  TXT
+  TEXT
+  RTF
+  DOC
+  DOCX
+  DOT
+  DOTX
+  DWG
+  DWF
+  DXF
+  MP3
+  MP4
+  WAV
+  AVI
+  MOV
+  MPEG
+  WMV
+  ZIP
+}
+
+input WhitelistedFileExtensionOperationFilterInput {
+  eq: WhitelistedFileExtension
+  neq: WhitelistedFileExtension
+  in: [WhitelistedFileExtension!]
+  nin: [WhitelistedFileExtension!]
+}
+

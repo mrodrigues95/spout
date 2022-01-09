@@ -7,10 +7,10 @@ import { useIsRedirecting } from '../../../shared/hooks/useIsRedirecting';
 import { useAuthRedirect, useInitializeSessionMutation } from '../hooks';
 import AuthError from './AuthError';
 import AuthCard from './AuthCard';
-import {
-  SignUpMutation,
-  SignUpMutationVariables,
-} from './__generated__/SignUpForm.generated';
+// import {
+//   SignUpMutation,
+//   SignUpMutationVariables,
+// } from './__generated__/SignUpForm.generated';
 
 const mutation = gql`
   mutation SignUpMutation($input: SignUpInput!) {
@@ -51,7 +51,7 @@ const SignUpForm = () => {
   const init = useInitializeSessionMutation();
   const { handleError } = useToast();
   const [signUpError, setSignUpError] = useState<unknown>();
-  const [signup] = useMutation<SignUpMutation, SignUpMutationVariables>(
+  const [signup] = useMutation(
     mutation
   );
 

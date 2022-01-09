@@ -85,7 +85,7 @@ namespace API.Extensions {
                 .AddType<WhitelistedFileExtensionType>();
 
             gql
-                .AddAuthorization()
+                //.AddAuthorization()
                 .AddHttpRequestInterceptor<CustomHttpRequestInterceptor>()
                 .AddDiagnosticEventListener<CustomDiagnosticEventListener>()
                 .AddFairyBread()

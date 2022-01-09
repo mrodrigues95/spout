@@ -50,6 +50,23 @@
       },
       "outputs": ["{options.outputFile}"]
     },
+    "compile": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "yarn run relay-compiler --src ./apps/web/src --schema ./apps/web/schema.graphql --exclude ['**/node_modules/**', '**/__generated__/**'] --extensions ['ts', 'tsx'] --language typescript"
+        ]
+      }
+    },
+    "get-schema": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "get-graphql-schema http://localhost:5000/api/graphql > schema.graphql"
+        ],
+        "cwd": "apps/web"
+      }
+    },
     "codegen-build": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
