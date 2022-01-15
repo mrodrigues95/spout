@@ -1,4 +1,4 @@
-﻿using API.Data;
+using API.Data;
 using API.Data.Entities;
 using API.Extensions;
 using HotChocolate;

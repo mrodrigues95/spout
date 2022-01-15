@@ -1,16 +1,11 @@
-import { gql, ApolloClient } from '@apollo/client';
+import { Environment, fetchQuery, graphql, commitMutation } from 'react-relay';
 import { IncomingMessage } from 'http';
 import { GetServerSidePropsContext } from 'next';
 import { IronSessionOptions } from 'iron-session';
 import { differenceInSeconds } from 'date-fns';
-import { createApolloClient } from './apollo';
-import { Session } from '../../__generated__/schema.generated';
-import {
-  RefreshSessionMutation,
-  RefreshSessionMutationVariables,
-  SessionQuery,
-  SessionQueryVariables,
-} from './__generated__/sessions.generated';
+import { createRelayEnvironment } from './relay';
+import { sessionsQuery } from './__generated__/sessionsQuery.graphql';
+import { sessionsMutation } from './__generated__/sessionsMutation.graphql';
 
 if (!process.env.IRON_SESSION_COOKIE_SECRET) {
   console.warn(
@@ -66,6 +61,8 @@ export const removeIronSession = async (req: IncomingMessage) => {
   return sessionId;
 };
 
+type Session = sessionsQuery['response']['sessionById'];
+
 const sessionCache = new WeakMap<IncomingMessage, Partial<Session> | null>();
 export const resolveSession = async ({
   req,
@@ -73,15 +70,15 @@ export const resolveSession = async ({
   // `sessionCache` allows us to safely call `resolveSession` multiple times a request.
   if (sessionCache.has(req)) return sessionCache.get(req);
 
-  const client = createApolloClient({
-    headers: req.headers as Record<string, string>,
+  const env = createRelayEnvironment(true, {
+    ...(req.headers as Record<string, string>),
   });
 
-  let session: Partial<Session> | null | undefined = null;
+  let session: Session | null | undefined = null;
   const sessionId = req.session.sessionId;
 
   if (sessionId) {
-    session = await fetchSession(client, sessionId);
+    session = await fetchSession(env, sessionId);
     if (!session) return destroy(req);
 
     // Renew the session if 50% of the session time has elapsed.
@@ -90,7 +87,7 @@ export const resolveSession = async ({
       0.5 * IRON_SESSION_TTL;
 
     if (shouldRefreshSession) {
-      session = await refreshSession(client, session.id!);
+      session = await refreshSession(env, session.id!);
       if (!session) return destroy(req);
       await create(req, session.id!);
     }
@@ -101,44 +98,39 @@ export const resolveSession = async ({
 };
 
 const fetchSession = async (
-  client: ApolloClient<any>,
+  env: Environment,
   sessionId: string
-): Promise<Partial<Session> | null | undefined> => {
-  try {
-    const data = await client.query<SessionQuery, SessionQueryVariables>({
-      query: gql`
-        query SessionQuery {
-          sessionById(
-            id: "${sessionId}"
-          ) {
-            id
-            createdAt
-            updatedAt
-            expiresAt
-          }
+): Promise<Session | null | undefined> => {
+  return await fetchQuery<sessionsQuery>(
+    env,
+    graphql`
+      query sessionsQuery($id: ID!) {
+        sessionById(id: $id) {
+          id
+          createdAt
+          updatedAt
+          expiresAt
         }
-      `,
+      }
+    `,
+    { id: sessionId }
+  )
+    .toPromise()
+    .then((resp) => resp?.sessionById)
+    .catch((err) => {
+      console.log('[ERROR] - fetching client session: ', err);
+      return null;
     });
-
-    return data.data.sessionById;
-  } catch (error) {
-    console.log('[ERROR] - fetching client session: ', error);
-    return null;
-  }
 };
 
 const refreshSession = async (
-  client: ApolloClient<any>,
+  env: Environment,
   sessionId: string
-): Promise<Partial<Session> | null | undefined> => {
-  try {
-    const { data } = await client.mutate<
-      RefreshSessionMutation,
-      RefreshSessionMutationVariables
-    >({
-      variables: { input: { sessionId } },
-      mutation: gql`
-        mutation RefreshSessionMutation($input: RefreshSessionInput!) {
+): Promise<Session | null | undefined> => {
+  const promise = new Promise<Session | null | undefined>((resolve, reject) => {
+    commitMutation<sessionsMutation>(env, {
+      mutation: graphql`
+        mutation sessionsMutation($input: RefreshSessionInput!) {
           refreshSession(input: $input) {
             authPayload {
               session {
@@ -148,14 +140,26 @@ const refreshSession = async (
                 expiresAt
               }
             }
+            errors {
+              ... on Error {
+                message
+              }
+            }
           }
         }
       `,
+      variables: { input: { sessionId } },
+      onError: (err) => {
+        console.error('[ERROR] - refreshing client session: ', err);
+        reject(err);
+      },
+      onCompleted: (resp) => {
+        const { authPayload, errors } = resp.refreshSession;
+        if (errors) resolve(null);
+        resolve(authPayload?.session);
+      },
     });
+  });
 
-    return data?.refreshSession.authPayload?.session;
-  } catch (error) {
-    console.log('[ERROR] - refreshing client session: ', error);
-    return null;
-  }
+  return await promise.then((session) => session).catch(() => null);
 };

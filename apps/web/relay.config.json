@@ -1,0 +1,9 @@
+{
+  "src": "apps/web/src",
+  "schema": "apps/web/schema.graphql",
+  "exclude": ["**/node_modules/**", "**/__generated__/**"],
+  "language": "typescript",
+  "customScalars": {
+    "DateTime": "string"
+  }
+}

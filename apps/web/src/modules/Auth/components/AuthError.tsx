@@ -1,8 +1,6 @@
-import { UserError } from '../../../__generated__/schema.generated';
-
 interface Props {
   title: string;
-  error?: Error | UserError;
+  error?: Error;
 }
 
 const AuthError = ({ title, error }: Props) => {

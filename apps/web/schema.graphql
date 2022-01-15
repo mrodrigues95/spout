@@ -101,6 +101,7 @@ type Classroom implements Node {
   name: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  createdBy: User!
   users: [User!]!
   discussions: [Discussion!]!
   state: State

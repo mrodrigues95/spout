@@ -10,6 +10,7 @@ export { default as InfiniteList } from './InfiniteList';
 export { default as Layout } from './Layout';
 export { default as Card } from './Card';
 export { default as Image } from './Image';
+export { default as ErrorBoundaryWithRetry } from './ErrorBoundaryWithRetry';
 
 export * from './Layout/Sidebar';
 

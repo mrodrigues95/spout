@@ -1,13 +1,18 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { graphql, useMutation } from 'react-relay';
 import Zod, { object, string } from 'zod';
 import { Form, useZodForm, Link } from '@spout/toolkit';
 import { Layout, useToast } from '../../../shared/components';
 import { useIsRedirecting } from '../../../shared/hooks/useIsRedirecting';
-import { useAuthRedirect, useInitializeSessionMutation } from '../hooks';
+import { useAuthRedirect, useInitializeIronSession } from '../hooks';
 import AuthCard from './AuthCard';
 import AuthError from './AuthError';
 import { LoginFormMutation } from './__generated__/LoginFormMutation.graphql';
+
+const loginSchema = object({
+  email: string().email({ message: '- Invalid email' }),
+  password: string().min(6, { message: '- Invalid password' }),
+});
 
 const mutation = graphql`
   mutation LoginFormMutation($input: LoginInput!) {
@@ -26,16 +31,11 @@ const mutation = graphql`
   }
 `;
 
-const loginSchema = object({
-  email: string().email({ message: '- Invalid email' }),
-  password: string().min(6, { message: '- Invalid password' }),
-});
-
 const LoginForm = () => {
-  // const authRedirect = useAuthRedirect();
+  const authRedirect = useAuthRedirect();
   const isRedirecting = useIsRedirecting();
-  const init = useInitializeSessionMutation();
-  const [loginError, setLoginError] = useState<unknown>();
+  const init = useInitializeIronSession();
+  const [loginError, setLoginError] = useState<Error>();
   const { handleError } = useToast();
   const [login, isInFlight] = useMutation<LoginFormMutation>(mutation);
 
@@ -54,14 +54,6 @@ const LoginForm = () => {
     </Link>
   );
 
-  const initializeIronSession = useCallback(
-    async (sessionId: string) => {
-      await init(sessionId);
-      // authRedirect();
-    },
-    [init]
-  );
-
   const onSubmit = async ({
     email,
     password,
@@ -71,9 +63,9 @@ const LoginForm = () => {
       onError: () => handleError(),
       onCompleted: (data) => {
         if (data.login.errors) {
-          setLoginError(data.login.errors![0]);
+          setLoginError(data.login.errors![0] as Error);
         } else {
-          // initializeIronSession(data.login.authPayload!.session!.id);
+          init(data.login.authPayload!.session!.id).then(authRedirect);
         }
       },
     });
@@ -108,7 +100,7 @@ const LoginForm = () => {
           />
           <div className="space-y-1">
             <p className="font-semibold">Forgot your password?</p>
-            <Form.SubmitButton disabled={isRedirecting} fullWidth>
+            <Form.SubmitButton disabled={isInFlight || isRedirecting} fullWidth>
               Login
             </Form.SubmitButton>
           </div>

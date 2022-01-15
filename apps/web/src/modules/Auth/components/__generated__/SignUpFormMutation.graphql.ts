@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c0404e1bc16ce92cc4d7efc3242c4370>>
+ * @generated SignedSource<<3ce744e30244f5ce629e974f718589bf>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,16 +9,17 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type LoginInput = {
+export type SignUpInput = {
+  name: string;
   email: string;
   password: string;
 };
-export type LoginFormMutation$variables = {
-  input: LoginInput;
+export type SignUpFormMutation$variables = {
+  input: SignUpInput;
 };
-export type LoginFormMutationVariables = LoginFormMutation$variables;
-export type LoginFormMutation$data = {
-  readonly login: {
+export type SignUpFormMutationVariables = SignUpFormMutation$variables;
+export type SignUpFormMutation$data = {
+  readonly signUp: {
     readonly authPayload: {
       readonly session: {
         readonly id: string;
@@ -29,10 +30,10 @@ export type LoginFormMutation$data = {
     }> | null;
   };
 };
-export type LoginFormMutationResponse = LoginFormMutation$data;
-export type LoginFormMutation = {
-  variables: LoginFormMutationVariables;
-  response: LoginFormMutation$data;
+export type SignUpFormMutationResponse = SignUpFormMutation$data;
+export type SignUpFormMutation = {
+  variables: SignUpFormMutationVariables;
+  response: SignUpFormMutation$data;
 };
 
 const node: ConcreteRequest = (function(){
@@ -90,7 +91,7 @@ v3 = {
       "storageKey": null
     }
   ],
-  "type": "LoginUserError",
+  "type": "SignUpNewUserError",
   "abstractKey": null
 };
 return {
@@ -98,14 +99,14 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "LoginFormMutation",
+    "name": "SignUpFormMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
-        "concreteType": "LoginPayload",
+        "concreteType": "SignUpPayload",
         "kind": "LinkedField",
-        "name": "login",
+        "name": "signUp",
         "plural": false,
         "selections": [
           (v2/*: any*/),
@@ -132,14 +133,14 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "LoginFormMutation",
+    "name": "SignUpFormMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
-        "concreteType": "LoginPayload",
+        "concreteType": "SignUpPayload",
         "kind": "LinkedField",
-        "name": "login",
+        "name": "signUp",
         "plural": false,
         "selections": [
           (v2/*: any*/),
@@ -168,16 +169,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "8673e7b4e2e8272dc495080809830424",
+    "cacheID": "2ea584099c7de354220dfb979dba7caa",
     "id": null,
     "metadata": {},
-    "name": "LoginFormMutation",
+    "name": "SignUpFormMutation",
     "operationKind": "mutation",
-    "text": "mutation LoginFormMutation(\n  $input: LoginInput!\n) {\n  login(input: $input) {\n    authPayload {\n      session {\n        id\n      }\n    }\n    errors {\n      __typename\n      ... on LoginUserError {\n        message\n      }\n    }\n  }\n}\n"
+    "text": "mutation SignUpFormMutation(\n  $input: SignUpInput!\n) {\n  signUp(input: $input) {\n    authPayload {\n      session {\n        id\n      }\n    }\n    errors {\n      __typename\n      ... on SignUpNewUserError {\n        message\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "0c0f936334dab866c37efa47d03b71bd";
+(node as any).hash = "cb093d89e433666749ced55a5c866e85";
 
 export default node;

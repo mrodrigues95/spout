@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c0404e1bc16ce92cc4d7efc3242c4370>>
+ * @generated SignedSource<<65a06ce61ce30c11c7d92dca91dd59b2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,19 +9,21 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type LoginInput = {
-  email: string;
-  password: string;
+export type RefreshSessionInput = {
+  sessionId: string;
 };
-export type LoginFormMutation$variables = {
-  input: LoginInput;
+export type sessionsMutation$variables = {
+  input: RefreshSessionInput;
 };
-export type LoginFormMutationVariables = LoginFormMutation$variables;
-export type LoginFormMutation$data = {
-  readonly login: {
+export type sessionsMutationVariables = sessionsMutation$variables;
+export type sessionsMutation$data = {
+  readonly refreshSession: {
     readonly authPayload: {
       readonly session: {
         readonly id: string;
+        readonly createdAt: string;
+        readonly updatedAt: string;
+        readonly expiresAt: string;
       } | null;
     } | null;
     readonly errors: ReadonlyArray<{
@@ -29,10 +31,10 @@ export type LoginFormMutation$data = {
     }> | null;
   };
 };
-export type LoginFormMutationResponse = LoginFormMutation$data;
-export type LoginFormMutation = {
-  variables: LoginFormMutationVariables;
-  response: LoginFormMutation$data;
+export type sessionsMutationResponse = sessionsMutation$data;
+export type sessionsMutation = {
+  variables: sessionsMutationVariables;
+  response: sessionsMutation$data;
 };
 
 const node: ConcreteRequest = (function(){
@@ -72,6 +74,27 @@ v2 = {
           "kind": "ScalarField",
           "name": "id",
           "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "createdAt",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "updatedAt",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "expiresAt",
+          "storageKey": null
         }
       ],
       "storageKey": null
@@ -90,22 +113,22 @@ v3 = {
       "storageKey": null
     }
   ],
-  "type": "LoginUserError",
-  "abstractKey": null
+  "type": "Error",
+  "abstractKey": "__isError"
 };
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "LoginFormMutation",
+    "name": "sessionsMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
-        "concreteType": "LoginPayload",
+        "concreteType": "RefreshSessionPayload",
         "kind": "LinkedField",
-        "name": "login",
+        "name": "refreshSession",
         "plural": false,
         "selections": [
           (v2/*: any*/),
@@ -132,14 +155,14 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "LoginFormMutation",
+    "name": "sessionsMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
-        "concreteType": "LoginPayload",
+        "concreteType": "RefreshSessionPayload",
         "kind": "LinkedField",
-        "name": "login",
+        "name": "refreshSession",
         "plural": false,
         "selections": [
           (v2/*: any*/),
@@ -168,16 +191,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "8673e7b4e2e8272dc495080809830424",
+    "cacheID": "c0ed22671864e393eac53dd56e67b8fd",
     "id": null,
     "metadata": {},
-    "name": "LoginFormMutation",
+    "name": "sessionsMutation",
     "operationKind": "mutation",
-    "text": "mutation LoginFormMutation(\n  $input: LoginInput!\n) {\n  login(input: $input) {\n    authPayload {\n      session {\n        id\n      }\n    }\n    errors {\n      __typename\n      ... on LoginUserError {\n        message\n      }\n    }\n  }\n}\n"
+    "text": "mutation sessionsMutation(\n  $input: RefreshSessionInput!\n) {\n  refreshSession(input: $input) {\n    authPayload {\n      session {\n        id\n        createdAt\n        updatedAt\n        expiresAt\n      }\n    }\n    errors {\n      __typename\n      ... on Error {\n        __isError: __typename\n        message\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "0c0f936334dab866c37efa47d03b71bd";
+(node as any).hash = "68eb7fd8637bfb7ae651485be7273f62";
 
 export default node;

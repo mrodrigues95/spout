@@ -18,8 +18,7 @@ const unauthRoute = async (
   }
 
   return {
-    props: {
-    },
+    props: {},
   };
 };
 
@@ -46,8 +45,7 @@ const authRoute = async (
   }
 
   return {
-    props: {
-    },
+    props: {},
   };
 };
 

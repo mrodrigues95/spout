@@ -1,17 +1,10 @@
-import { useApolloClient } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { useRelayEnvironment } from 'react-relay';
 
 export const useAuthRedirect = () => {
-  const client = useApolloClient();
   const router = useRouter();
 
-
   return () => {
-    // Once the auth state has changed, we know that the data in the Apollo store
-    // is likely no longer relevant, so we reset the entire store.
-    client.stop();
-    client.resetStore();
+    // TODO: Reset Relay env.
     router.push((router.query.redirect as string) ?? '/home');
   };
 };

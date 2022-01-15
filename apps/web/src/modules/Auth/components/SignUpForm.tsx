@@ -1,33 +1,13 @@
 import { useState } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { graphql, useMutation } from 'react-relay';
 import Zod, { object, string } from 'zod';
 import { Form, useZodForm, Link } from '@spout/toolkit';
 import { Layout, useToast } from '../../../shared/components';
 import { useIsRedirecting } from '../../../shared/hooks/useIsRedirecting';
-import { useAuthRedirect, useInitializeSessionMutation } from '../hooks';
+import { useAuthRedirect, useInitializeIronSession } from '../hooks';
 import AuthError from './AuthError';
 import AuthCard from './AuthCard';
-// import {
-//   SignUpMutation,
-//   SignUpMutationVariables,
-// } from './__generated__/SignUpForm.generated';
-
-const mutation = gql`
-  mutation SignUpMutation($input: SignUpInput!) {
-    signUp(input: $input) {
-      authPayload {
-        session {
-          id
-        }
-      }
-      errors {
-        ... on SignUpNewUserError {
-          message
-        }
-      }
-    }
-  }
-`;
+import { SignUpFormMutation } from './__generated__/SignUpFormMutation.graphql';
 
 const signUpSchema = object({
   name: string()
@@ -45,15 +25,30 @@ const signUpSchema = object({
   path: ['confirmPassword'],
 });
 
+const mutation = graphql`
+  mutation SignUpFormMutation($input: SignUpInput!) {
+    signUp(input: $input) {
+      authPayload {
+        session {
+          id
+        }
+      }
+      errors {
+        ... on SignUpNewUserError {
+          message
+        }
+      }
+    }
+  }
+`;
+
 const SignUpForm = () => {
   const authRedirect = useAuthRedirect();
   const isRedirecting = useIsRedirecting();
-  const init = useInitializeSessionMutation();
+  const init = useInitializeIronSession();
   const { handleError } = useToast();
-  const [signUpError, setSignUpError] = useState<unknown>();
-  const [signup] = useMutation(
-    mutation
-  );
+  const [signUpError, setSignUpError] = useState<Error>();
+  const [signUp, isInFlight] = useMutation<SignUpFormMutation>(mutation);
 
   const form = useZodForm({
     schema: signUpSchema,
@@ -75,22 +70,17 @@ const SignUpForm = () => {
     email,
     password,
   }: Zod.infer<typeof signUpSchema>) => {
-    try {
-      const { data } = await signup({
-        variables: { input: { name, email, password } },
-      });
-
-      // TODO: Use generic errors here to prevent user enumeration.
-      if (data?.signUp.errors) {
-        setSignUpError(data!.signUp.errors!.shift());
-        return;
-      }
-
-      await init(data!.signUp.authPayload!.session!.id);
-      authRedirect();
-    } catch (error) {
-      handleError();
-    }
+    signUp({
+      variables: { input: { name, email, password } },
+      onError: () => handleError(),
+      onCompleted: (data) => {
+        if (data.signUp.errors) {
+          setSignUpError(data.signUp.errors![0] as Error);
+        } else {
+          init(data.signUp.authPayload!.session!.id).then(authRedirect);
+        }
+      },
+    });
   };
 
   return (
@@ -131,7 +121,7 @@ const SignUpForm = () => {
             type="password"
             {...form.register('confirmPassword')}
           />
-          <Form.SubmitButton disabled={isRedirecting}>
+          <Form.SubmitButton disabled={isInFlight || isRedirecting}>
             Sign Up
           </Form.SubmitButton>
         </Form>

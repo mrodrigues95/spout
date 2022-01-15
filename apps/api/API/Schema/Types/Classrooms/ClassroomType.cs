@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Discussions;
 using API.Schema.Queries.Users;
+using API.Schema.Types.Users;
 
 namespace API.Schema.Types.Classrooms {
     public class ClassroomType : ObjectType<Classroom> {
@@ -42,6 +43,12 @@ namespace API.Schema.Types.Classrooms {
                 .Type<NonNullType<DateTimeType>>();
 
             descriptor
+                .Field("createdBy")
+                .Type<NonNullType<UserType>>()
+                .ResolveWith<ClassroomResolvers>(x => x.GetCreatedByAsync(default!, default!, default!, default!, default!))
+                .UseDbContext<ApplicationDbContext>();
+
+            descriptor
                 .Field(c => c.Users)
                 .ResolveWith<ClassroomResolvers>(x => x.GetUsersAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
@@ -55,6 +62,23 @@ namespace API.Schema.Types.Classrooms {
         }
 
         private class ClassroomResolvers {
+            public async Task<User> GetCreatedByAsync(
+            [Parent] Classroom classroom,
+            [ScopedService] ApplicationDbContext dbContext,
+            [GlobalState] int userId,
+            UserByIdDataLoader userById,
+            CancellationToken cancellationToken) {
+                var id = await dbContext.ClassroomUsers
+                    .Where(cu => cu.IsCreator == true &&
+                        cu.UserId == userId &&
+                        cu.ClassroomId == classroom.Id)
+                    .Include(cu => cu.User)
+                    .Select(cu => cu.UserId)
+                    .SingleOrDefaultAsync();
+
+                return await userById.LoadAsync(id, cancellationToken);
+            }
+
             public async Task<IEnumerable<User>> GetUsersAsync(
                 [Parent] Classroom classroom,
                 [ScopedService] ApplicationDbContext dbContext,
