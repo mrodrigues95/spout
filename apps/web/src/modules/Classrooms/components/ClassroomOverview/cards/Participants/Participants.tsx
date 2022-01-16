@@ -2,13 +2,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@spout/toolkit';
 import { ClassroomContentCard } from '../ClassroomCard';
-import { Classroom_Classroom } from '../../../__generated__/ViewClassroom.generated';
 
-interface Props {
-  classroom: Classroom_Classroom;
-}
-
-const Participants = ({ classroom }: Props) => {
+const Participants = () => {
   return (
     <ClassroomContentCard
       title="Participants"

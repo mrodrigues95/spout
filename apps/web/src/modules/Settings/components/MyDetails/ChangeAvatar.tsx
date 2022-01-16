@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
-import { gql, useMutation, useQuery } from '@apollo/client';
 import {
   FilePicker,
   FileType,
@@ -11,13 +10,7 @@ import {
   Button,
   PhotoCropper,
 } from '@spout/toolkit';
-import { UserInfoFragment } from '../../../Classrooms/Discussion/utils/fragments';
 import { useToast } from '../../../../shared/components';
-import {
-  MeQuery,
-  UpdateAvatar,
-  UpdateAvatarVariables,
-} from './__generated__/ChangeAvatar.generated';
 
 // const mutation = gql`
 //   mutation UpdateAvatar($input: UpdateAvatarInput!) {
@@ -34,22 +27,11 @@ import {
 //   ${UserInfoFragment}
 // `;
 
-// TODO: Move this to a common place, we use this query in a lot of areas.
-const query = gql`
-  query MeQuery {
-    me {
-      ...UserInfo_user
-    }
-  }
-  ${UserInfoFragment}
-`;
-
 const ChangeAvatar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [files, setFiles] = useState<FileType[]>([]);
   const [cropper, setCropper] = useState<Cropper>();
   const { handleError } = useToast();
-  const { data } = useQuery<MeQuery>(query, { fetchPolicy: 'cache-only' });
   // const [updateAvatar, updateAvatarResult] = useMutation<
   //   UpdateAvatar,
   //   UpdateAvatarVariables
@@ -148,9 +130,9 @@ const ChangeAvatar = () => {
           </FilePicker>
         </div>
         <figcaption className="mt-5 font-bold text-xl sm:text-2xl">
-          {data!.me!.name} 😀
+          test 😀
         </figcaption>
-        <span className="text-gray-500 font-semibold">{data!.me!.email}</span>
+        <span className="text-gray-500 font-semibold">test@test.com</span>
       </figure>
     </>
   );

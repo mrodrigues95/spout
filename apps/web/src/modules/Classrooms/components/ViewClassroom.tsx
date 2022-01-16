@@ -1,53 +1,49 @@
-import { gql, useQuery } from '@apollo/client';
+import { graphql, useLazyLoadQuery } from 'react-relay';
+import { useRouter } from 'next/router';
 import { Layout, Container } from '../../../shared/components';
-import { ClassroomQuery } from './__generated__/ViewClassroom.generated';
-import ClassroomOverview from './ClassroomOverview';
-import { UserInfoFragment } from '../Discussion/utils/fragments';
+import ClassroomOverviewProvider from './ClassroomOverview/ClassroomOverviewProvider';
+import DiscussionsNavigation from './ClassroomOverview/DiscussionsNavigation';
+import { ViewClassroomQuery } from './__generated__/ViewClassroomQuery.graphql';
 
-export const ClassroomInfoFragment = gql`
-  fragment ClassroomInfo_classroom on Classroom {
-    id
-    name
-    users {
-      ...UserInfo_user
-    }
-    discussions {
-      id
-      name
-    }
-  }
-  ${UserInfoFragment}
-`;
-
-const query = gql`
-  query ClassroomQuery($id: ID!) {
+const query = graphql`
+  query ViewClassroomQuery($id: ID!) {
     classroomById(id: $id) {
-      ...ClassroomInfo_classroom
+      name
+      ...DiscussionsNavigation_discussions
     }
   }
-  ${ClassroomInfoFragment}
 `;
 
-interface Props {
-  classroomId: string;
-}
-
-const ViewClassroom = ({ classroomId }: Props) => {
-  const { data, loading, error, refetch } = useQuery<ClassroomQuery>(query, {
-    variables: { id: classroomId },
+const ViewClassroom = () => {
+  const router = useRouter();
+  const data = useLazyLoadQuery<ViewClassroomQuery>(query, {
+    id: router.query.classroomId as string,
   });
 
-  const title = data?.classroomById.name ?? 'Classroom';
+  const title = 'test';
 
   return (
     <Layout title={title}>
-      <Container
-        title={title}
-        isLoading={loading}
-        isError={error}
-        refetch={refetch}
-      >
-        {data && <ClassroomOverview classroom={data.classroomById} />}
+      <Container title={title} isLoading={false} isError={false}>
+        <ClassroomOverviewProvider>
+          <DiscussionsNavigation classroom={data.classroomById} />
+          {/* <div className="flex mt-3 space-x-3">
+            <div className="flex-1 space-y-3">
+              <div className="flex space-x-3">
+                <Settings />
+                <Invite classroom={classroom} />
+              </div>
+              <div>
+                <Announcements />
+              </div>
+              <div className="flex space-x-3">
+                <Upcoming />
+                <Instructor classroom={classroom} />
+              </div>
+            </div>
+            <Participants classroom={classroom} />
+          </div> */}
+        </ClassroomOverviewProvider>
       </Container>
     </Layout>
   );

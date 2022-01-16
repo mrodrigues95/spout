@@ -1,13 +1,10 @@
-import { gql, useMutation } from '@apollo/client';
+import { graphql, useMutation } from 'react-relay';
 import { Button } from '@spout/toolkit';
 import { useAuthRedirect } from '../../Auth';
-import {
-  LogoutMutation,
-  LogoutMutationVariables,
-} from './__generated__/SettingsHeader.generated';
+import { SettingsHeaderMutation } from './__generated__/SettingsHeaderMutation.graphql';
 
-const mutation = gql`
-  mutation LogoutMutation($input: LogoutInput!) {
+const mutation = graphql`
+  mutation SettingsHeaderMutation($input: LogoutInput!) {
     logout(input: $input) {
       authPayload {
         isLoggedIn
@@ -18,19 +15,14 @@ const mutation = gql`
 
 const SettingsHeader = () => {
   const authRedirect = useAuthRedirect();
-  const [logout] = useMutation<LogoutMutation, LogoutMutationVariables>(
-    mutation,
-    {
-      onCompleted: authRedirect,
-    }
-  );
+  const [logout] = useMutation<SettingsHeaderMutation>(mutation);
 
   const removeSession = async () => {
     const response = await fetch('/api/sessions/remove', {
       method: 'POST',
     });
     const sessionId = await response.json();
-    logout({ variables: { input: { sessionId } } });
+    logout({ variables: { input: { sessionId } }, onCompleted: authRedirect });
   };
 
   return (

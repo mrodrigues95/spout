@@ -1,9 +1,10 @@
 import { ComponentProps } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { HorizontalNavigation, Button, Link, Tooltip } from '@spout/toolkit';
 import clsx from 'clsx';
-import { Classroom_Classroom } from '../__generated__/ViewClassroom.generated';
+import { DiscussionsNavigation_discussions$key } from './__generated__/DiscussionsNavigation_discussions.graphql';
 
 const HorizontalNavigationSeparator = () => {
   return <span className="ml-2 -mr-2 border border-gray-400 opacity-50 h-5" />;
@@ -27,11 +28,23 @@ const HorziontalNavigationItem = ({
   );
 };
 
+const fragment = graphql`
+  fragment DiscussionsNavigation_discussions on Classroom {
+    id
+    discussions {
+      id
+      name
+    }
+  }
+`;
+
 interface Props {
-  classroom: Classroom_Classroom;
+  classroom: DiscussionsNavigation_discussions$key;
 }
 
 const DiscussionsNavigation = ({ classroom }: Props) => {
+  const data = useFragment(fragment, classroom);
+
   return (
     <HorizontalNavigation as="nav" className="py-2" hideScroll>
       <ul className="flex items-center justify-center px-1.5 space-x-2">
@@ -46,12 +59,12 @@ const DiscussionsNavigation = ({ classroom }: Props) => {
           </Tooltip>
           <HorizontalNavigationSeparator />
         </HorziontalNavigationItem>
-        {classroom.discussions.map((discussion) => (
+        {data.discussions.map((discussion) => (
           <HorziontalNavigationItem key={discussion.id}>
             <Tooltip label={discussion.name}>
               <Link
                 key={discussion.id}
-                href={`/classrooms/${classroom.id}/${discussion.id}`}
+                href={`/classrooms/${data.id}/${discussion.id}`}
                 className="flex-1 h-full p-4 bg-indigo-400 text-white select-none outline-none rounded-100 transition-all duration-150 ease-in-out hover:rounded-2xl focus:ring focus:ring-offset-2 focus:ring-offset-white focus:rounded-2xl"
                 variant="unstyled"
                 onMouseDown={(e) => e.preventDefault()}
