@@ -15,6 +15,14 @@
         "production": {}
       }
     },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/web"],
+      "options": {
+        "jestConfig": "apps/web/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
     "dev": {
       "executor": "@nrwl/next:server",
       "options": {
@@ -33,14 +41,6 @@
       "executor": "@nrwl/next:export",
       "options": {
         "buildTarget": "web:build:production"
-      }
-    },
-    "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/web"],
-      "options": {
-        "jestConfig": "apps/web/jest.config.js",
-        "passWithNoTests": true
       }
     },
     "lint": {

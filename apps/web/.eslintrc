@@ -4,11 +4,13 @@
     "es2021": true,
     "node": true
   },
+  "plugins": ["relay"],
   "extends": [
     "plugin:@nrwl/nx/react-typescript",
-    "../../.eslintrc.json",
+    "plugin:relay/recommended",
     "next",
-    "next/core-web-vitals"
+    "next/core-web-vitals",
+    "../../.eslintrc.json"
   ],
   "ignorePatterns": ["!**/*"],
   "overrides": [
@@ -25,5 +27,7 @@
       "rules": {}
     }
   ],
-  "rules": {}
+  "rules": {
+    "relay/generated-flow-types": "off"
+  }
 }

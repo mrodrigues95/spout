@@ -9,7 +9,7 @@ import { sessionsMutation } from './__generated__/sessionsMutation.graphql';
 
 if (!process.env.IRON_SESSION_COOKIE_SECRET) {
   console.warn(
-    'No `IRON_SESSION_COOKIE_SECRET` environment variable was set. This can cause production errors.'
+    'No `IRON_SESSION_COOKIE_SECRET` environment variable was set. This can cause production errors.',
   );
 }
 
@@ -18,7 +18,7 @@ if (!process.env.IRON_SESSION_COOKIE_SECRET) {
 // NOTE: The duration is meant to match the backend Identity cookie duration, which is 7 days.
 const IRON_SESSION_TTL = 7 * 24 * 3600;
 
-export const sessionOptions: IronSessionOptions = {
+export const SESSION_OPTIONS: IronSessionOptions = {
   password: {
     1: process.env.IRON_SESSION_COOKIE_SECRET as string,
   },
@@ -50,7 +50,7 @@ const destroy = (req: IncomingMessage) => {
 
 export const createIronSession = async (
   req: IncomingMessage,
-  sessionId: string
+  sessionId: string,
 ) => {
   return await create(req, sessionId);
 };
@@ -99,7 +99,7 @@ export const resolveSession = async ({
 
 const fetchSession = async (
   env: Environment,
-  sessionId: string
+  sessionId: string,
 ): Promise<Session | null | undefined> => {
   return await fetchQuery<sessionsQuery>(
     env,
@@ -113,7 +113,7 @@ const fetchSession = async (
         }
       }
     `,
-    { id: sessionId }
+    { id: sessionId },
   )
     .toPromise()
     .then((resp) => resp?.sessionById)
@@ -125,7 +125,7 @@ const fetchSession = async (
 
 const refreshSession = async (
   env: Environment,
-  sessionId: string
+  sessionId: string,
 ): Promise<Session | null | undefined> => {
   const promise = new Promise<Session | null | undefined>((resolve, reject) => {
     commitMutation<sessionsMutation>(env, {

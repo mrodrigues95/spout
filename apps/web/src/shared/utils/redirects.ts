@@ -1,10 +1,10 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { withIronSessionSsr } from 'iron-session/next';
-import { resolveSession, sessionOptions } from './sessions';
+import { resolveSession, SESSION_OPTIONS } from './sessions';
 
 const unauthRoute = async (
   ctx: GetServerSidePropsContext,
-  redirect = '/home'
+  redirect = '/home',
 ) => {
   const session = await resolveSession(ctx);
 
@@ -24,12 +24,12 @@ const unauthRoute = async (
 
 export const unauthenticatedRoute = withIronSessionSsr(
   unauthRoute,
-  sessionOptions
+  SESSION_OPTIONS,
 );
 
 const authRoute = async (
   ctx: GetServerSidePropsContext,
-  redirect = '/auth/signup'
+  redirect = '/auth/signup',
 ): Promise<GetServerSidePropsResult<Record<string, unknown>>> => {
   const session = await resolveSession(ctx);
 
@@ -37,7 +37,7 @@ const authRoute = async (
     return {
       redirect: {
         destination: `${redirect}?redirect=${encodeURIComponent(
-          ctx.resolvedUrl
+          ctx.resolvedUrl,
         )}`,
         permanent: false,
       },
@@ -49,4 +49,7 @@ const authRoute = async (
   };
 };
 
-export const authenticatedRoute = withIronSessionSsr(authRoute, sessionOptions);
+export const authenticatedRoute = withIronSessionSsr(
+  authRoute,
+  SESSION_OPTIONS,
+);

@@ -1,10 +1,11 @@
 import { useRouter } from 'next/router';
+import { useCallback } from 'react';
 
 export const useAuthRedirect = () => {
   const router = useRouter();
 
-  return () => {
-    // TODO: Reset Relay env.
+  // TODO: Reset relay env.
+  return useCallback(() => {
     router.push((router.query.redirect as string) ?? '/home');
-  };
+  }, [router]);
 };

@@ -27,12 +27,13 @@ import DiscussionOptimisticMessage from '../DiscussionMessage/DiscussionOptimist
 
 const discussionFragment = graphql`
   fragment DiscussionMessagesList_discussion on Discussion
-    @argumentDefinitions(count: { type: "Int!" }, cursor: { type: "String" })
-    @refetchable(queryName: "DiscussionMessagesListPaginationQuery") {
+  @argumentDefinitions(count: { type: "Int!" }, cursor: { type: "String" })
+  @refetchable(queryName: "DiscussionMessagesListPaginationQuery") {
     id
     ...DiscussionMessagesListHeader_discussion
     messages(last: $count, before: $cursor, order: { createdAt: ASC })
       @connection(key: "DiscussionMessagesList_discussion_messages") {
+      # eslint-disable-next-line relay/unused-fields
       edges {
         node {
           id
@@ -82,12 +83,8 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
   const { isMounted } = useIsMounted();
   const nodes = useConnection(discussion.messages);
 
-  const {
-    firstItemIndex,
-    items,
-    recentMessages,
-    optimisticMessages,
-  } = useDiscussionMessages(discussion.id, nodes);
+  const { firstItemIndex, items, recentMessages, optimisticMessages } =
+    useDiscussionMessages(discussion.id, nodes);
 
   useDiscussionMessagesSubscription(discussion.id, me.id);
 
@@ -99,7 +96,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
 
   const followOutput = useCallback(
     (isAtBottom) => (optimisticMessages.length || isAtBottom ? 'auto' : false),
-    [optimisticMessages.length]
+    [optimisticMessages.length],
   );
 
   const itemContent = useCallback(
@@ -124,7 +121,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
         />
       );
     },
-    [discussion.id, me, recentMessages]
+    [discussion.id, me, recentMessages],
   );
 
   const components = useMemo(
@@ -132,8 +129,8 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
       Header: () =>
         hasPrevious ? (
           <div className="px-4 py-6">
-            <Card className="p-3 flex w-full rounded-md shadow-sm bg-white ring-1 ring-gray-900/5 space-x-2">
-              <Skeleton className="w-10 h-10 rounded-full" />
+            <Card className="flex w-full space-x-2 rounded-md bg-white p-3 shadow-sm ring-1 ring-gray-900/5">
+              <Skeleton className="h-10 w-10 rounded-full" />
               <Skeleton.Stack className="flex-1">
                 <Skeleton className="h-3 w-1/2" />
                 <Skeleton className="h-3 w-2/3" />
@@ -146,7 +143,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
         ),
       Footer: () => <div className="pt-2" />,
     }),
-    [discussion, hasPrevious]
+    [discussion, hasPrevious],
   );
 
   // TODO: Create a 'Jump to Present' footer.
