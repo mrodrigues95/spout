@@ -2,17 +2,23 @@ import { useMemo } from 'react';
 import {
   Environment,
   FetchFunction,
+  GraphQLResponse,
   Network,
+  Observable,
+  PayloadData,
   RecordSource,
+  RequestParameters,
   Store,
+  SubscribeFunction,
+  Variables,
 } from 'relay-runtime';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 type Headers = Record<string, any>;
 
 const getFetchFn = (headers: Headers = {}): FetchFunction => {
-  return async (operation, variables, _cacheConfig, _uploadables) => {
-
+  return async (operation, variables) => {
     const fetchOpts: RequestInit = {
       method: 'POST',
       credentials: 'include',
@@ -44,12 +50,33 @@ const getFetchFn = (headers: Headers = {}): FetchFunction => {
   };
 };
 
+const getSubscribeFn = (): SubscribeFunction => {
+  return (request, variables) => {
+    const subscriptionClient = new SubscriptionClient(
+      'wss://spout.dev/api/graphql',
+      {
+        reconnect: true,
+        lazy: true,
+      }
+    );
+
+    const subscribeObservable = subscriptionClient.request({
+      query: request.text ?? undefined,
+      operationName: request.name,
+      variables,
+    });
+
+    // @ts-ignore: TODO: Figure out these types.
+    return Observable.from<GraphQLResponse>(subscribeObservable);
+  };
+};
+
 export const createRelayEnvironment = (
   isServer = false,
   headers: Headers = {}
 ) => {
   // TODO: Pass in headers.
-  const network = Network.create(getFetchFn(headers));
+  const network = Network.create(getFetchFn(headers), getSubscribeFn());
   const source = new RecordSource();
   const store = new Store(source, {
     // This property tells Relay to not immediately clear its cache when the user

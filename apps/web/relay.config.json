@@ -4,6 +4,7 @@
   "exclude": ["**/node_modules/**", "**/__generated__/**"],
   "language": "typescript",
   "customScalars": {
-    "DateTime": "string"
+    "DateTime": "string",
+    "URL": "string"
   }
 }

@@ -1,7 +1,7 @@
 module.exports = {
   swcMinify: true,
   experimental: {
-    concurrentFeatures: true,
+    concurrentFeatures: false,
   },
   // Enable fast refresh to work inside WSL2.
   webpackDevMiddleware: (config) => {

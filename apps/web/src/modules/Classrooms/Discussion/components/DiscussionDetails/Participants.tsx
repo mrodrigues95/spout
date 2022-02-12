@@ -1,16 +1,30 @@
+import { graphql, useFragment } from 'react-relay';
 import { Button } from '@spout/toolkit';
 import { Avatar } from '../../../../../shared/components';
-import { ClassroomInfo_Classroom } from '../../../components/__generated__/ViewClassroom.generated';
+import { Participants_classroom$key } from './__generated__/Participants_classroom.graphql';
+
+const fragment = graphql`
+  fragment Participants_classroom on Classroom {
+    users {
+      id
+      avatarUrl
+      name
+      profileColor
+    }
+  }
+`;
 
 interface Props {
-  users: ClassroomInfo_Classroom['users'];
+  classroom: Participants_classroom$key;
 }
 
-const Participants = ({ users }: Props) => {
+const Participants = ({ classroom }: Props) => {
+  const data = useFragment(fragment, classroom);
+
   return (
     <div className="absolute inset-0 overflow-auto">
       <ul className="space-y-3">
-        {users.map((user) => (
+        {data.users.map((user) => (
           <li key={user.id}>
             <Button className="space-x-3" variant="ghost" size="sm" fullWidth>
               <Avatar

@@ -1,13 +1,24 @@
 import { differenceInMinutes, format } from 'date-fns';
-import { Message_Message } from './__generated__/fragments.generated';
-import { OptimisticMessage } from './optimisticMessagesStore';
 import { getTime } from './dates';
+import { DiscussionMessagesList_discussion$data } from '../components/DiscussionMessages/DiscussionMessagesList/__generated__/DiscussionMessagesList_discussion.graphql';
 
-type Message = OptimisticMessage | Message_Message;
-type Messages = Message[];
+export type BaseDiscussionMessage = NonNullable<
+  NonNullable<DiscussionMessagesList_discussion$data['messages']>['edges']
+>[number]['node'];
 
-interface GroupedMessages {
-  [date: string]: Messages;
+export interface OptimisticDiscussionMessage
+  extends Omit<BaseDiscussionMessage, 'attachments'> {
+  optimisticId: number;
+  attachmentIds: string[];
+  isSent: boolean;
+}
+
+export type DiscussionMessage =
+  | BaseDiscussionMessage
+  | OptimisticDiscussionMessage;
+
+interface GroupedDiscussionMessages {
+  [date: string]: DiscussionMessage[];
 }
 
 /**
@@ -17,8 +28,10 @@ interface GroupedMessages {
  * @param messages The array of messages that require grouping.
  * @returns An object containing messages groups which is indexed by `date`.
  */
-export const group = (messages: Messages): GroupedMessages =>
-  messages.reduce((acc: GroupedMessages, message) => {
+export const group = (
+  messages: DiscussionMessage[]
+): GroupedDiscussionMessages =>
+  messages.reduce((acc: GroupedDiscussionMessages, message) => {
     const createdAt = format(new Date(message.createdAt), 'MMM d, yyyy');
     return { ...acc, [createdAt]: [...(acc[createdAt] || []), message] };
   }, {});
@@ -29,7 +42,7 @@ export const group = (messages: Messages): GroupedMessages =>
  * @param groups The groups of messages that require sorting.
  * @returns A sorted map which is keyed by `date`.
  */
-const sort = (groups: GroupedMessages) => {
+const sort = (groups: GroupedDiscussionMessages) => {
   const days = { ...groups };
 
   Object.entries(days).forEach(([_, messages]) =>
@@ -42,7 +55,10 @@ const sort = (groups: GroupedMessages) => {
     .sort((x, y) => getTime(x) - getTime(y))
     .reverse()
     .reduce(
-      (acc: GroupedMessages, day) => ({ ...acc, [day]: [...days[day]] }),
+      (acc: GroupedDiscussionMessages, day) => ({
+        ...acc,
+        [day]: [...days[day]],
+      }),
       {}
     );
 
@@ -56,7 +72,7 @@ const sort = (groups: GroupedMessages) => {
  * @param messages The array of messages that require normalization.
  * @returns A sorted map which is keyed by `date`.
  */
-const normalize = (messages: Messages) => {
+const normalize = (messages: DiscussionMessage[]) => {
   const groups = group(messages);
   return sort(groups);
 };
@@ -67,7 +83,7 @@ export interface Divider {
   type: string;
 }
 
-export type Item = Message | Divider;
+export type Item = DiscussionMessage | OptimisticDiscussionMessage | Divider;
 
 /**
  * Normalizes the messages by calling `normalize()` and then flattens the map
@@ -76,7 +92,7 @@ export type Item = Message | Divider;
  * @param messages The array of messages that require normalization.
  * @returns An array of items.
  */
-export const generateItems = (messages: Messages): Item[] => {
+export const generateItems = (messages: DiscussionMessage[]): Item[] => {
   const days = normalize(messages);
 
   const items: Item[] = [];
@@ -88,19 +104,18 @@ export const generateItems = (messages: Messages): Item[] => {
 };
 
 export const isOptimistic = (item: Item) =>
-  'optimisticId' in item && item.optimisticId < 0;
+  Boolean('optimisticId' in item && item.optimisticId && item.optimisticId < 0);
 
 export const isDivider = (item: Item) =>
   'type' in item && item.type === 'divider';
 
 export const isEvent = (item: Item) =>
-  'isDiscussionEvent' in item && item.discussionEvent;
+  'isDiscussionEvent' in item && !!item.discussionEvent;
 
-const isMessage = (item: Item) =>
-  !(isOptimistic(item) || isDivider(item) || isEvent(item));
+const isMessage = (item: Item) => !(isDivider(item) || isEvent(item));
 
 export interface RecentMessage {
-  message: Message_Message;
+  message: DiscussionMessage;
   isBefore: string | null;
   isAfter: string | null;
   isRecent: boolean;
@@ -127,7 +142,7 @@ export const getRecentMessages = (items: Item[]) => {
     return differenceInMinutes(new Date(d1), new Date(d2)) < 5;
   };
 
-  const isCreatedByUser = (m1: Message_Message, m2: Message_Message) => {
+  const isCreatedByUser = (m1: DiscussionMessage, m2: DiscussionMessage) => {
     return m1.createdBy.id === m2.createdBy.id;
   };
 
@@ -138,7 +153,7 @@ export const getRecentMessages = (items: Item[]) => {
     if (!prevItem && !nextItem) return acc;
     if (!isMessage(item)) return acc;
 
-    const currentMessage = item as Message_Message;
+    const currentMessage = item as DiscussionMessage;
     const rm: RecentMessage = {
       message: currentMessage,
       isBefore: null,
@@ -150,8 +165,7 @@ export const getRecentMessages = (items: Item[]) => {
     };
 
     if (prevItem && isMessage(prevItem)) {
-      const prevMessage = prevItem as Message_Message;
-
+      const prevMessage = prevItem as DiscussionMessage;
       if (
         isCreatedByUser(prevMessage, currentMessage) &&
         isRecent(currentMessage.createdAt, prevMessage.createdAt)
@@ -162,8 +176,7 @@ export const getRecentMessages = (items: Item[]) => {
     }
 
     if (nextItem && isMessage(nextItem)) {
-      const nextMessage = nextItem as Message_Message;
-
+      const nextMessage = nextItem as DiscussionMessage;
       if (
         isCreatedByUser(nextMessage, currentMessage) &&
         isRecent(nextMessage.createdAt, currentMessage.createdAt)

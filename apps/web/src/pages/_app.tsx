@@ -9,7 +9,8 @@ import 'cropperjs/dist/cropper.css';
 import '../styles.css';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
-  // TODO: Properly hydrate the client.
+  // TODO: Properly hydrate the client when fetching on the server.
+  // See: https://github.com/vercel/next.js/blob/canary/examples/with-relay-modern/pages/index.js
   const environment = useEnvironment({});
 
   return (

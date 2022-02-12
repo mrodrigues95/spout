@@ -2,7 +2,7 @@ import {
   Avatar as SPAvatar,
   AvatarProps as SPAvatarProps,
 } from '@spout/toolkit';
-import { UserProfileColor } from '../../../../../src/__generated__/schema.generated';
+import { UserProfileColor } from '../../../../modules/Classrooms/Discussion/components/DiscussionDetails/__generated__/Participants_classroom.graphql';
 
 interface Props extends SPAvatarProps {
   profileColor: UserProfileColor;

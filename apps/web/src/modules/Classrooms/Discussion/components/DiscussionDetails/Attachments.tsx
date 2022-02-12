@@ -1,5 +1,10 @@
-import { forwardRef, useEffect, useMemo } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { forwardRef, useMemo } from 'react';
+import {
+  graphql,
+  useFragment,
+  useLazyLoadQuery,
+  usePaginationFragment,
+} from 'react-relay';
 import { useRouter } from 'next/router';
 import { Components, Virtuoso } from 'react-virtuoso';
 import { format } from 'date-fns';
@@ -10,33 +15,43 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 import { FileIcon, IconLink, Spinner, Text, Tooltip } from '@spout/toolkit';
-import { FileFragment } from '../../utils/fragments';
-import {
-  DiscussionFilesQuery,
-  DiscussionFilesQueryVariables,
-} from './__generated__/Attachments.generated';
-import {
-  Avatar,
-  EmptyFallback,
-  ErrorFallback,
-} from '../../../../../shared/components/ui';
+import { Avatar, EmptyFallback } from '../../../../../shared/components/ui';
 import { formatBytesToHumanReadable } from '../../../../../shared/utils';
-import { File_File } from '../../utils/__generated__/fragments.generated';
-import { getTime } from '../../utils/dates';
+import { AttachmentsQuery } from './__generated__/AttachmentsQuery.graphql';
+import { Attachments_files$key } from './__generated__/Attachments_files.graphql';
+import { Attachments_attachment$key } from './__generated__/Attachments_attachment.graphql';
 
 interface AttachmentProps {
   index: number;
-  file: File_File;
+  file: Attachments_attachment$key;
 }
 
 const Attachment = ({ index, file }: AttachmentProps) => {
+  const data = useFragment(
+    graphql`
+      fragment Attachments_attachment on File {
+        name
+        contentLength
+        extension
+        location
+        createdAt
+        uploadedBy {
+          name
+          avatarUrl
+          profileColor
+        }
+      }
+    `,
+    file
+  );
+
   const isOdd = index % 2 === 0;
 
   return (
     <div className={clsx('p-2 space-y-3', isOdd ? 'bg-gray-100' : 'bg-white')}>
       <div className="flex flex-grow-0 justify-between space-x-2">
         <div className="inline-flex items-center space-x-2 min-w-0">
-          <FileIcon fileName={file.name} size="2x" />
+          <FileIcon fileName={data.name} size="2x" />
           <div className="min-w-0">
             <Text
               weight="semibold"
@@ -44,11 +59,11 @@ const Attachment = ({ index, file }: AttachmentProps) => {
               truncate
               className="text-gray-900 -mb-1"
             >
-              {file.name}
+              {data.name}
             </Text>
             <Text size="xs" color="muted" truncate as="span">
-              {formatBytesToHumanReadable(file.contentLength)} -{' '}
-              {file.extension}
+              {formatBytesToHumanReadable(data.contentLength)} -{' '}
+              {data.extension}
             </Text>
           </div>
         </div>
@@ -61,7 +76,7 @@ const Attachment = ({ index, file }: AttachmentProps) => {
             rel="noreferrer"
             target="_blank"
             icon={<FontAwesomeIcon icon={faExternalLinkAlt} />}
-            href={file.location!}
+            href={data.location!}
           />
         </Tooltip>
       </div>
@@ -71,17 +86,17 @@ const Attachment = ({ index, file }: AttachmentProps) => {
           className="text-gray-900 flex-shrink-0"
           weight="semibold"
         >
-          {format(new Date(file.createdAt), 'MMM d, yyyy')}
+          {format(new Date(data.createdAt), 'MMM d, yyyy')}
         </Text>
         <div className="inline-flex items-center space-x-1 min-w-0 ">
           <Avatar
-            src={file.uploadedBy.avatarUrl}
-            name={file.uploadedBy.name}
-            profileColor={file.uploadedBy.profileColor}
+            src={data.uploadedBy.avatarUrl}
+            name={data.uploadedBy.name}
+            profileColor={data.uploadedBy.profileColor}
             size="xs"
           />
           <Text size="xs" weight="medium" truncate>
-            {file.uploadedBy.name}
+            {data.uploadedBy.name}
           </Text>
         </div>
       </div>
@@ -89,78 +104,67 @@ const Attachment = ({ index, file }: AttachmentProps) => {
   );
 };
 
-export const query = gql`
-  query DiscussionFilesQuery($id: ID!, $before: String) {
-    files(
-      last: 50
-      before: $before
-      where: {
-        messageFiles: { some: { message: { discussion: { id: { eq: $id } } } } }
-        and: { isDeleted: { eq: false }, uploadStatus: { eq: COMPLETED } }
-      }
-      order: { createdAt: DESC }
-    ) {
-      edges {
-        node {
-          ...File_file
+interface AttachmentsListProps {
+  files: Attachments_files$key;
+}
+
+const AttachmentsList = ({ ...props }: AttachmentsListProps) => {
+  const {
+    data,
+    loadPrevious,
+    hasPrevious,
+    isLoadingPrevious,
+  } = usePaginationFragment(
+    graphql`
+      fragment Attachments_files on Query
+        @argumentDefinitions(
+          id: { type: "ID!" }
+          count: { type: "Int!" }
+          cursor: { type: "String" }
+        )
+        @refetchable(queryName: "AttachmentsPaginationQuery") {
+        files(
+          last: $count
+          before: $cursor
+          where: {
+            messageFiles: {
+              some: { message: { discussion: { id: { eq: $id } } } }
+            }
+            and: { isDeleted: { eq: false }, uploadStatus: { eq: COMPLETED } }
+          }
+          order: { createdAt: DESC }
+        ) @connection(key: "Attachments_file_files") {
+          edges {
+            node {
+              ...Attachments_attachment
+            }
+          }
+          pageInfo {
+            startCursor
+          }
         }
       }
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
-    }
-  }
-  ${FileFragment}
-`;
-
-const Attachments = () => {
-  const router = useRouter();
-  const { data, loading, error, refetch, fetchMore } = useQuery<
-    DiscussionFilesQuery,
-    DiscussionFilesQueryVariables
-  >(query, {
-    variables: {
-      id: router.query.discussionId as string,
-    },
-    notifyOnNetworkStatusChange: true,
-    fetchPolicy: 'cache-and-network',
-    skip: !router.isReady,
-  });
-
-  const files = useMemo(
-    () => (data?.files?.edges ?? []).map((edge) => edge.node),
-    [data?.files?.edges]
+    `,
+    props.files
   );
 
-  if (error) return <ErrorFallback action={refetch} />;
+  const files = useMemo(
+    () => (data.files?.edges ?? []).map((edge) => edge.node),
+    [data.files?.edges]
+  );
 
   if (!files.length) {
     return <EmptyFallback icon={<FontAwesomeIcon icon={faFolderOpen} />} />;
   }
 
-  const pageInfo = data?.files?.pageInfo;
-
   return (
     <Virtuoso
       data={files}
-      endReached={
-        pageInfo?.hasPreviousPage
-          ? () =>
-              fetchMore({
-                variables: {
-                  id: router.query.discussionId as string,
-                  before: pageInfo.startCursor,
-                },
-              })
-          : undefined
-      }
+      endReached={hasPrevious ? () => loadPrevious(50) : undefined}
       itemContent={(index, file) => <Attachment index={index} file={file} />}
       components={{
         Footer: () =>
-          loading ? (
+          isLoadingPrevious ? (
             <Spinner
               className="py-4"
               variant="circle"
@@ -188,6 +192,22 @@ const Attachments = () => {
       className="overflow-x-hidden rounded-md"
     />
   );
+};
+
+// TODO: Refresh attachments when a file is uploaded.
+const Attachments = () => {
+  const router = useRouter();
+  const data = useLazyLoadQuery<AttachmentsQuery>(
+    graphql`
+      query AttachmentsQuery($id: ID!, $count: Int!, $cursor: String) {
+        ...Attachments_files @arguments(id: $id, count: $count, cursor: $cursor)
+      }
+    `,
+    { id: router.query.discussionId as string, count: 50 },
+    { fetchPolicy: 'store-and-network' }
+  );
+
+  return <AttachmentsList files={data} />;
 };
 
 export default Attachments;

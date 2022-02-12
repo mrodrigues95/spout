@@ -1,24 +1,31 @@
-import { gql, useMutation } from '@apollo/client';
 import { useCallback } from 'react';
+import { graphql, useMutation } from 'react-relay';
 import { getFileExtensionFromFileName } from '@spout/toolkit';
-import { FileFragment } from '../../../modules/Classrooms/Discussion/utils/fragments';
-import {
-  GenerateUploadSasMutation as _GenerateUploadSasMutation,
-  GenerateUploadSasMutationVariables as _GenerateUploadSasMutationVariables,
-  CompleteUploadMutation as _CompleteUploadMutation,
-  CompleteUploadMutationVariables as _CompleteUploadMutationVariables,
-} from './__generated__/useFileUpload.generated';
 import { WhitelistedFileExtension } from '../../../__generated__/schema.generated';
 import { useBlob } from './useBlob';
 import { convertFileExtensionToEnumIndex } from '../../utils';
+import {
+  useFileUploadGenerateUploadSASMutation,
+  useFileUploadGenerateUploadSASMutation$data,
+} from './__generated__/useFileUploadGenerateUploadSASMutation.graphql';
+import {
+  useFileUploadCompleteUploadMutation,
+  useFileUploadCompleteUploadMutation$data,
+} from './__generated__/useFileUploadCompleteUploadMutation.graphql';
 
-const GenerateUploadSASMutation = gql`
-  mutation GenerateUploadSASMutation($input: GenerateUploadSASInput!) {
+const GenerateUploadSASMutation = graphql`
+  mutation useFileUploadGenerateUploadSASMutation(
+    $input: GenerateUploadSASInput!
+  ) {
     generateUploadSAS(input: $input) {
       generateSASPayload {
         sas
         file {
-          ...File_file
+          id
+          location
+          name
+          contentLength
+          extension
         }
       }
       errors {
@@ -31,14 +38,17 @@ const GenerateUploadSASMutation = gql`
       }
     }
   }
-  ${FileFragment}
 `;
 
-const CompleteUploadMutation = gql`
-  mutation CompleteUploadMutation($input: CompleteUploadInput!) {
+const CompleteUploadMutation = graphql`
+  mutation useFileUploadCompleteUploadMutation($input: CompleteUploadInput!) {
     completeUpload(input: $input) {
       file {
-        ...File_file
+        id
+        location
+        name
+        contentLength
+        extension
       }
       errors {
         ... on Error {
@@ -47,28 +57,28 @@ const CompleteUploadMutation = gql`
       }
     }
   }
-  ${FileFragment}
 `;
 
 export const useFileUpload = () => {
   const blob = useBlob();
-  const [generate] = useMutation<
-    _GenerateUploadSasMutation,
-    _GenerateUploadSasMutationVariables
-  >(GenerateUploadSASMutation);
-  const [completeUpload] = useMutation<
-    _CompleteUploadMutation,
-    _CompleteUploadMutationVariables
-  >(CompleteUploadMutation);
+  const [generate] = useMutation<useFileUploadGenerateUploadSASMutation>(
+    GenerateUploadSASMutation
+  );
+  const [completeUpload] = useMutation<useFileUploadCompleteUploadMutation>(
+    CompleteUploadMutation
+  );
 
   const generateUploadSAS = useCallback(
-    async (file: File) => {
+    (file: File) => {
       const { ext } = getFileExtensionFromFileName(file.name);
       const index = convertFileExtensionToEnumIndex(ext);
       if (!index) return null;
 
-      try {
-        const { data } = await generate({
+      return new Promise<
+        | useFileUploadGenerateUploadSASMutation$data['generateUploadSAS']['generateSASPayload']
+        | null
+      >((resolve) => {
+        generate({
           variables: {
             input: {
               fileName: file.name,
@@ -77,19 +87,21 @@ export const useFileUpload = () => {
               fileExtension: WhitelistedFileExtension[index],
             },
           },
+          onCompleted: (data) => {
+            if (data.generateUploadSAS.errors) resolve(null);
+
+            const {
+              sas,
+              file: _file,
+            } = data.generateUploadSAS.generateSASPayload!;
+            resolve({ sas, file: _file });
+          },
+          onError: (e) => {
+            console.error('[Error generating SAS]: ', e);
+            resolve(null);
+          },
         });
-
-        if (data?.generateUploadSAS.errors) return null;
-
-        const {
-          sas,
-          file: _file,
-        } = data!.generateUploadSAS.generateSASPayload!;
-        return { sas, file: _file };
-      } catch (e) {
-        console.error(`[Error generating SAS]: ${e}`);
-        return null;
-      }
+      });
     },
     [generate]
   );
@@ -106,24 +118,27 @@ export const useFileUpload = () => {
   );
 
   const updateFile = useCallback(
-    async (fileId: string) => {
-      try {
-        const { data } = await completeUpload({
+    (fileId: string) => {
+      return new Promise<
+        | useFileUploadCompleteUploadMutation$data['completeUpload']['file']
+        | null
+      >((resolve) => {
+        completeUpload({
           variables: {
             input: {
               fileId,
             },
           },
+          onCompleted: (data) => {
+            if (data.completeUpload.errors) resolve(null);
+            resolve(data.completeUpload.file!);
+          },
+          onError: (e) => {
+            console.error('[Error updating file]: ', e);
+            resolve(null);
+          },
         });
-
-        if (data?.completeUpload.errors) return null;
-
-        const { file } = data!.completeUpload;
-        return file;
-      } catch (e) {
-        console.error(`[Error updating file]: ${e}`);
-        return null;
-      }
+      });
     },
     [completeUpload]
   );
@@ -133,6 +148,7 @@ export const useFileUpload = () => {
   // 2. The SAS then needs to be consumed.
   // 3. A third and final request is made to the api in order to
   //    update the file record in the database and mark the upload as complete.
+  // TODO: Can probably improve this drastically with Azure Functions.
   const upload = useCallback(
     async (file: File) => {
       const { sas, file: _file } = (await generateUploadSAS(file)) || {};

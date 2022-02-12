@@ -1,19 +1,15 @@
 import { useCallback, useMemo, useState } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { graphql, useMutation } from 'react-relay';
 import { generateId } from '@spout/toolkit';
-import {
-  DeleteFileMutation,
-  DeleteFileMutationVariables,
-} from './__generated__/useFileUploadQueue.generated';
 import { useFileUpload } from '../../../../shared/hooks/files';
-import { FileFragment } from '../utils/fragments';
 import { useToast } from '../../../../shared/components';
+import { useFileUploadQueueMutation } from './__generated__/useFileUploadQueueMutation.graphql';
 
-const mutation = gql`
-  mutation DeleteFileMutation($input: DeleteFileInput!) {
+const mutation = graphql`
+  mutation useFileUploadQueueMutation($input: DeleteFileInput!) {
     deleteFile(input: $input) {
       file {
-        ...File_file
+        id
       }
       errors {
         ... on Error {
@@ -22,7 +18,6 @@ const mutation = gql`
       }
     }
   }
-  ${FileFragment}
 `;
 
 export interface FileWithId extends File {
@@ -44,10 +39,7 @@ export const useFileUploadQueue = () => {
   const [fileUploadQueue, setFileUploadQueue] = useState<FileUploadQueue[]>([]);
   const { handleError } = useToast();
 
-  const [deleteFile] = useMutation<
-    DeleteFileMutation,
-    DeleteFileMutationVariables
-  >(mutation);
+  const [deleteFile] = useMutation<useFileUploadQueueMutation>(mutation);
 
   const removeFromQueue = useCallback(
     (queueId: number, fileId?: FileWithId['id']) => {
@@ -56,9 +48,12 @@ export const useFileUploadQueue = () => {
       ]);
 
       if (fileId) {
-        deleteFile({ variables: { input: { fileId } } }).catch((e) => {
-          handleError();
-          console.error(`[Error deleting file]: ${e}`);
+        deleteFile({
+          variables: { input: { fileId } },
+          onError: () => {
+            handleError();
+            console.error('Error deleting file for id: ', fileId);
+          },
         });
       }
     },

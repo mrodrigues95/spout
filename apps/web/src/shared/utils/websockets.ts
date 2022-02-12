@@ -1,16 +1,16 @@
-import { WebSocketLink } from '@apollo/client/link/ws';
+// import { WebSocketLink } from '@apollo/client/link/ws';
 
-// TODO: This should use the graphql-ws instead once Hot Chocolate
-// implements support for graphql-ws.
-export const createWSLink = () => {
-  return new WebSocketLink({
-    uri: 'wss://spout.dev/api/graphql',
-    options: {
-      reconnect: true,
-      lazy: true,
-    },
-  });
-};
+// // TODO: This should use the graphql-ws instead once Hot Chocolate
+// // implements support for graphql-ws.
+// export const createWSLink = () => {
+//   return new WebSocketLink({
+//     uri: 'wss://spout.dev/api/graphql',
+//     options: {
+//       reconnect: true,
+//       lazy: true,
+//     },
+//   });
+// };
 
 // class WebSocketLink extends ApolloLink {
 //   private client: Client;

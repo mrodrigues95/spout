@@ -1,5 +1,4 @@
 import { ComponentProps } from 'react';
-import { ApolloError } from '@apollo/client';
 import { Spinner } from '@spout/toolkit';
 import { VoidIllustration } from '@spout/assets/illustrations';
 import clsx from 'clsx';
@@ -9,7 +8,7 @@ interface ContainerProps extends ComponentProps<'div'> {
   title: string;
   horizontal?: boolean;
   isLoading?: boolean;
-  isError?: boolean | ApolloError;
+  isError?: boolean;
   refetch?: ErrorFallbackProps['action'];
 }
 

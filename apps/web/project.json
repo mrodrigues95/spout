@@ -53,9 +53,7 @@
     "compile": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "commands": [
-          "yarn run relay-compiler apps/web/relay.config.json"
-        ]
+        "commands": ["yarn run relay-compiler apps/web/relay.config.json"]
       }
     },
     "get-schema": {
@@ -64,6 +62,13 @@
         "commands": [
           "get-graphql-schema http://localhost:5000/api/graphql > schema.graphql"
         ],
+        "cwd": "apps/web"
+      }
+    },
+    "clean": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["trash ./src/**/__generated__/**"],
         "cwd": "apps/web"
       }
     }

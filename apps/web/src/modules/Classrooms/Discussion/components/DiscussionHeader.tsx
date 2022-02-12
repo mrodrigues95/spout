@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -9,42 +10,54 @@ import {
   faThumbtack,
 } from '@fortawesome/free-solid-svg-icons';
 import { Title, Select, IconButton, Tooltip } from '@spout/toolkit';
-import { DiscussionQuery } from './__generated__/Discussion.generated';
+import { DiscussionHeader_discussion$key } from './__generated__/DiscussionHeader_discussion.graphql';
+
+const fragment = graphql`
+  fragment DiscussionHeader_discussion on Discussion {
+    id
+    name
+    classroom {
+      id
+      discussions {
+        id
+        name
+      }
+    }
+  }
+`;
 
 interface Props {
-  discussion: DiscussionQuery['discussionById'];
+  discussion: DiscussionHeader_discussion$key;
 }
 
 const DiscussionHeader = ({ discussion }: Props) => {
+  const data = useFragment(fragment, discussion);
+
   const router = useRouter();
-  const [selectedDiscussionId, setSelectedDiscussionId] = useState(
-    discussion.id
-  );
+  const [selectedDiscussionId, setSelectedDiscussionId] = useState(data.id);
 
   useEffect(() => {
-    if (selectedDiscussionId !== discussion.id) {
-      router.push(
-        `/classrooms/${discussion.classroom.id}/${selectedDiscussionId}`
-      );
+    if (selectedDiscussionId !== data.id) {
+      router.push(`/classrooms/${data.classroom.id}/${selectedDiscussionId}`);
     }
-  }, [discussion.classroom.id, discussion.id, router, selectedDiscussionId]);
+  }, [data.classroom.id, data.id, router, selectedDiscussionId]);
 
-  const discussions = [
-    ...(discussion.classroom.discussions ?? []),
-  ].sort((d1, d2) => d1.name.localeCompare(d2.name));
+  const discussions = [...(data.classroom.discussions ?? [])].sort((d1, d2) =>
+    d1.name.localeCompare(d2.name)
+  );
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex-1">
         <Title as="h1" variant="h4">
-          # {discussion.name}
+          # {data.name}
         </Title>
       </div>
       <div className="flex items-center space-x-2">
         <Select value={selectedDiscussionId} onChange={setSelectedDiscussionId}>
           <Select.Button
             className="w-72"
-            label={discussion.name}
+            label={data.name}
             icon={<FontAwesomeIcon icon={faChevronDown} size="xs" />}
           />
           <Select.Options>
