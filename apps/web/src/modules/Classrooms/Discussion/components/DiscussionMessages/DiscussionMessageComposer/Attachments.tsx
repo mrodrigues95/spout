@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FileRejection, ErrorCode as DropzoneErrorCode } from 'react-dropzone';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -25,10 +25,10 @@ import {
 } from '../../../hooks';
 import {
   formatBytesToHumanReadable,
-  getAcceptedFileExtensions,
   MAX_FILES_PER_UPLOAD,
   MAX_FILE_SIZE,
   MIN_FILE_SIZE,
+  WHITELISTED_EXTENSIONS,
 } from '../../../../../../shared/utils';
 import { useComposerToolbar } from './ComposerToolbarProvider';
 
@@ -37,7 +37,7 @@ export const UploadAttachments = () => {
 
   return (
     <FilePicker
-      accept={[...getAcceptedFileExtensions()]}
+      accept={[...WHITELISTED_EXTENSIONS]}
       onDropAccepted={onFilesAccepted}
       onDropRejected={onFilesRejected}
       minSize={MIN_FILE_SIZE}
@@ -52,7 +52,7 @@ export const UploadAttachments = () => {
             buttonOrLinkStyles.active,
             buttonOrLinkStyles.variant['ghost'],
             buttonOrLinkStyles.scheme['gray']['ghost'],
-            buttonOrLinkStyles.size['icon'].sm
+            buttonOrLinkStyles.size['icon'].sm,
           )}
           aria-label="Select attachments to upload"
         >
@@ -103,8 +103,8 @@ const Attachment = ({
   const fileExtension = getFileExtensionFromFileName(file.name).toKey();
 
   return (
-    <li className="relative flex w-48 p-3 rounded-md shadow-md ring-1 ring-gray-900/10">
-      <div className="inline-flex absolute -top-1.5 -right-1.5 bg-white">
+    <li className="relative flex w-48 rounded-md p-3 shadow-md ring-1 ring-gray-900/10">
+      <div className="absolute -top-1.5 -right-1.5 inline-flex bg-white">
         <Tooltip
           label="Remove File"
           onOpen={() => setIsFocused(true)}
@@ -116,25 +116,25 @@ const Attachment = ({
             disabled={isQueued || isUploading}
             onClick={() => removeFromQueue(id, file.id)}
             className={clsx(
-              'inline-flex items-center justify-center z-10 rounded-sm shadow-lg',
+              'z-10 inline-flex items-center justify-center rounded-sm shadow-lg',
               'transition duration-150 ease-in-out',
-              'focus:outline-none focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-current',
+              'focus:outline-none focus:ring focus:ring-current focus:ring-offset-2 focus:ring-offset-white',
               'disabled:pointer-events-none disabled:opacity-70',
               isFocused || isError
                 ? 'text-red-700'
                 : isUploaded
                 ? 'text-green-700'
-                : null
+                : null,
             )}
           >
             {icon}
           </button>
         </Tooltip>
       </div>
-      <FileIcon ext={fileExtension} className="text-3xl mt-1.5 mr-2" />
-      <div className="flex-1 min-w-0">
-        <p className="font-medium truncate">{file.name}</p>
-        <p className="text-gray-500 truncate text-sm">
+      <FileIcon ext={fileExtension} className="mt-1.5 mr-2 text-3xl" />
+      <div className="min-w-0 flex-1">
+        <p className="truncate font-medium">{file.name}</p>
+        <p className="truncate text-sm text-gray-500">
           {formatBytesToHumanReadable(file.size)} -{' '}
           {fileExtension.toUpperCase()}
         </p>
@@ -181,11 +181,11 @@ const RejectedOrErrorAttachment = ({
   const fileExtension = getFileExtensionFromFileName(file.name).toKey();
 
   return (
-    <li className="relative flex p-3 rounded-md shadow-sm ring-1 ring-gray-900/10">
-      <FileIcon ext={fileExtension} className="text-3xl mt-1.5 mr-2" />
-      <div className="flex-1 min-w-0">
-        <p className="font-medium truncate">{file.name}</p>
-        <p className="text-gray-500 truncate text-sm">
+    <li className="relative flex rounded-md p-3 shadow-sm ring-1 ring-gray-900/10">
+      <FileIcon ext={fileExtension} className="mt-1.5 mr-2 text-3xl" />
+      <div className="min-w-0 flex-1">
+        <p className="truncate font-medium">{file.name}</p>
+        <p className="truncate text-sm text-gray-500">
           {formatBytesToHumanReadable(file.size)} -{' '}
           {fileExtension.toUpperCase()}
         </p>
@@ -232,7 +232,7 @@ export const Attachments = ({
 
   const rejectedOrErrorAttachments = useMemo(
     () => [...rejectedFiles, ...errorFiles],
-    [rejectedFiles, errorFiles]
+    [rejectedFiles, errorFiles],
   );
 
   useEffect(() => {
@@ -280,7 +280,7 @@ export const Attachments = ({
 
   const files = useMemo(
     () => [...queue.files.sort((a, b) => (a.id > b.id ? 1 : -1))],
-    [queue.files]
+    [queue.files],
   );
 
   // TODO: Get image/video previews working.
@@ -295,7 +295,7 @@ export const Attachments = ({
             dismiss
           />
           <Modal.Body className="max-h-80">
-            <ul className="space-y-3 h-full p-2 overflow-y-auto overflow-x-hidden">
+            <ul className="h-full space-y-3 overflow-y-auto overflow-x-hidden p-2">
               {rejectedOrErrorAttachments.map((rejectedAttachment) => (
                 <RejectedOrErrorAttachment
                   key={`${
@@ -314,7 +314,7 @@ export const Attachments = ({
         </Modal.Content>
       </Modal>
       {!!files.length && (
-        <ul className="flex flex-wrap py-2 gap-3" role="list">
+        <ul className="flex flex-wrap gap-3 py-2" role="list">
           {files.map((file) => (
             <Attachment
               key={file.id}

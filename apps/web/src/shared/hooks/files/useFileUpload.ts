@@ -1,9 +1,8 @@
 import { useCallback } from 'react';
 import { graphql, useMutation } from 'react-relay';
 import { getFileExtensionFromFileName } from '@spout/toolkit';
-import { WhitelistedFileExtension } from '../../../__generated__/schema.generated';
 import { useBlob } from './useBlob';
-import { convertFileExtensionToEnumIndex } from '../../utils';
+import { validateWhitelistedExtension } from '../../utils';
 import {
   useFileUploadGenerateUploadSASMutation,
   useFileUploadGenerateUploadSASMutation$data,
@@ -62,17 +61,17 @@ const CompleteUploadMutation = graphql`
 export const useFileUpload = () => {
   const blob = useBlob();
   const [generate] = useMutation<useFileUploadGenerateUploadSASMutation>(
-    GenerateUploadSASMutation
+    GenerateUploadSASMutation,
   );
   const [completeUpload] = useMutation<useFileUploadCompleteUploadMutation>(
-    CompleteUploadMutation
+    CompleteUploadMutation,
   );
 
   const generateUploadSAS = useCallback(
     (file: File) => {
       const { ext } = getFileExtensionFromFileName(file.name);
-      const index = convertFileExtensionToEnumIndex(ext);
-      if (!index) return null;
+      const whitelistedExt = validateWhitelistedExtension(ext);
+      if (!whitelistedExt) return null;
 
       return new Promise<
         | useFileUploadGenerateUploadSASMutation$data['generateUploadSAS']['generateSASPayload']
@@ -84,16 +83,14 @@ export const useFileUpload = () => {
               fileName: file.name,
               size: file.size,
               mimeType: file.type,
-              fileExtension: WhitelistedFileExtension[index],
+              fileExtension: whitelistedExt,
             },
           },
           onCompleted: (data) => {
             if (data.generateUploadSAS.errors) resolve(null);
 
-            const {
-              sas,
-              file: _file,
-            } = data.generateUploadSAS.generateSASPayload!;
+            const { sas, file: _file } =
+              data.generateUploadSAS.generateSASPayload!;
             resolve({ sas, file: _file });
           },
           onError: (e) => {
@@ -103,7 +100,7 @@ export const useFileUpload = () => {
         });
       });
     },
-    [generate]
+    [generate],
   );
 
   const uploadBlob = useCallback(
@@ -114,7 +111,7 @@ export const useFileUpload = () => {
         return null;
       }
     },
-    [blob]
+    [blob],
   );
 
   const updateFile = useCallback(
@@ -140,7 +137,7 @@ export const useFileUpload = () => {
         });
       });
     },
-    [completeUpload]
+    [completeUpload],
   );
 
   // Uploading files is a three step process where:
@@ -161,7 +158,7 @@ export const useFileUpload = () => {
       return _file;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [generateUploadSAS, updateFile]
+    [generateUploadSAS, updateFile],
   );
 
   return { upload };

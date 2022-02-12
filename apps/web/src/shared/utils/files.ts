@@ -1,45 +1,56 @@
-import { WhitelistedFileExtension } from '../../__generated__/schema.generated';
+import { WhitelistedFileExtension } from '../hooks/files/__generated__/useFileUploadGenerateUploadSASMutation.graphql';
 
 export const MAX_FILES_PER_UPLOAD = 10;
 export const MIN_FILE_SIZE = 1;
+
+// TODO: We should just throw specific errors and handle them correctly
+// on the client when dealing with large files or blacklisted extensions.
 export const MAX_FILE_SIZE = 8388608; // 8MB (8388608 bytes).
+export const WHITELISTED_EXTENSIONS: WhitelistedFileExtension[] = [
+  'AAC',
+  'AVI',
+  'BMP',
+  'CSV',
+  'DOC',
+  'DOCX',
+  'DOT',
+  'DOTX',
+  'DWF',
+  'DWG',
+  'DXF',
+  'GIF',
+  'JPE',
+  'JPEG',
+  'JPG',
+  'MOV',
+  'MP3',
+  'MP4',
+  'MPEG',
+  'PDF',
+  'PNG',
+  'PPT',
+  'PPTX',
+  'RTF',
+  'TEXT',
+  'TIF',
+  'TIFF',
+  'TXT',
+  'WAV',
+  'WMV',
+  'XLS',
+  'XLSX',
+  'ZIP',
+];
 
-export const getAcceptedFileExtensions = () => {
-  const acceptedFileExtensions: string[] = [];
+export const validateWhitelistedExtension = (ext: string) => {
+  const extension = ext.toUpperCase() as WhitelistedFileExtension;
 
-  for (const ext in WhitelistedFileExtension) {
-    const prefix = '.';
-    const accepted = `${prefix}${ext.toLowerCase()}`;
-    acceptedFileExtensions.push(accepted);
-  }
-
-  return acceptedFileExtensions;
-};
-
-/**
- * Gets the `WhitelistedFileExtension` key for the given `ext`, if it exists.
- * 
- * `ext` can either be prefixed with or without a `.`
- * 
- * This is mainly used to convert raw file extension strings into a suitable
- * payload value for GraphQL mutations.
- * 
- * @param ext The file extension.
- * @returns A `WhitelistedFileExtension` key or `null` if no index is found.
- */
-export const convertFileExtensionToEnumIndex = (ext: string) => {
-  // If the extension is prefixed with '.', strip it first.
-  const extension = ext.startsWith('.') ? ext.replace('.', '') : ext;
-
-  // Capitlize the first letter so we can index it on the enum.
-  const extensionIndex = extension.replace(/^./, (str) => str.toUpperCase());
-
-  if (!(extensionIndex in WhitelistedFileExtension)) {
+  if (!WHITELISTED_EXTENSIONS.includes(extension)) {
     console.warn(`${ext} is not a whitelisted file extension.`);
     return null;
   }
 
-  return extensionIndex as keyof typeof WhitelistedFileExtension;
+  return extension;
 };
 
 const units = [

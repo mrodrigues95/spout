@@ -17,7 +17,6 @@ using HotChocolate.Data.Filters;
 using HotChocolate.Resolvers;
 using HotChocolate.Data.Filters.Expressions;
 using HotChocolate.Data.Sorting.Expressions;
-using HotChocolate.Data.Projections.Expressions;
 using HotChocolate.Types.Pagination.Extensions;
 
 namespace API.Schema.Types.Discussions {

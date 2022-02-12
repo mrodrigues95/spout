@@ -13,7 +13,6 @@ namespace API.Schema.Mutations.Files.Inputs {
             // Max file size can only be 8MB.
             RuleFor(x => x.Size).GreaterThan(0).LessThanOrEqualTo((long)FileSize._8MB);
             RuleFor(x => x.FileName).NotEmpty().Length(1, 255);
-            ;
         }
     }
 }
