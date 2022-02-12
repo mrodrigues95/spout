@@ -18,7 +18,9 @@ const unauthRoute = async (
   }
 
   return {
-    props: {},
+    props: {
+      shouldResetEnv: true,
+    },
   };
 };
 
@@ -45,7 +47,9 @@ const authRoute = async (
   }
 
   return {
-    props: {},
+    props: {
+      shouldResetEnv: false,
+    },
   };
 };
 

@@ -5,12 +5,9 @@ import {
   GraphQLResponse,
   Network,
   Observable,
-  PayloadData,
   RecordSource,
-  RequestParameters,
   Store,
   SubscribeFunction,
-  Variables,
 } from 'relay-runtime';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
@@ -57,7 +54,7 @@ const getSubscribeFn = (): SubscribeFunction => {
       {
         reconnect: true,
         lazy: true,
-      }
+      },
     );
 
     const subscribeObservable = subscriptionClient.request({
@@ -73,7 +70,7 @@ const getSubscribeFn = (): SubscribeFunction => {
 
 export const createRelayEnvironment = (
   isServer = false,
-  headers: Headers = {}
+  headers: Headers = {},
 ) => {
   // TODO: Pass in headers.
   const network = Network.create(getFetchFn(headers), getSubscribeFn());
@@ -92,27 +89,32 @@ export const createRelayEnvironment = (
 let relayEnvironment: Environment | null;
 
 // TODO: Enable strict mode.
-export const initRelayEnvironment = (records?: RecordMap) => {
+export const initRelayEnvironment = (
+  records?: RecordMap,
+  shouldResetEnv?: boolean,
+) => {
   // For SSG and SSR, always create a new Relay environment.
   const isServer = typeof window === 'undefined';
   if (isServer) return createRelayEnvironment(isServer);
 
-  const environment = relayEnvironment ?? createRelayEnvironment(isServer);
+  // This will reset when the user logs in/out.
+  if (shouldResetEnv || !relayEnvironment) {
+    relayEnvironment = createRelayEnvironment();
+  }
 
   // Hydrate the client.
-  if (records) environment.getStore().publish(new RecordSource(records));
-
-  // Create the Relay environment once in the client.
-  if (!relayEnvironment) relayEnvironment = environment;
+  if (records) relayEnvironment.getStore().publish(new RecordSource(records));
 
   return relayEnvironment;
 };
 
-export const useEnvironment = (records?: RecordMap) => {
-  const store = useMemo(() => initRelayEnvironment(records), [records]);
+export const useEnvironment = (
+  records?: RecordMap,
+  shouldResetEnv?: boolean,
+) => {
+  const store = useMemo(
+    () => initRelayEnvironment(records, shouldResetEnv),
+    [records, shouldResetEnv],
+  );
   return store;
-};
-
-export const resetEnvironment = () => {
-  relayEnvironment = null;
 };
