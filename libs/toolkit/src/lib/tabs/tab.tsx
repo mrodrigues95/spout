@@ -17,7 +17,7 @@ export const Tab = ({ className, children, ...props }: TabProps) => {
           selected
             ? VARIANTS[variant].tab.active
             : VARIANTS[variant].tab.inactive,
-          className
+          className,
         )
       }
       {...props}

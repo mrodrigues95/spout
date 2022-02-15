@@ -1,4 +1,4 @@
-export {}
+export {};
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faLaughBeam } from '@fortawesome/free-solid-svg-icons';
 // import { ClassroomContentCard } from '../ClassroomCard';

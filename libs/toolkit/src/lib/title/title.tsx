@@ -19,16 +19,18 @@ export const Title = <T extends Title = 'h1'>({
 
   return (
     <Component
-      className={twMerge(clsx(
-        'text-gray-900 font-bold',
-        variant === 'h1' && 'text-4xl',
-        variant === 'h2' && 'text-3xl',
-        variant === 'h3' && 'text-xl',
-        variant === 'h4' && 'text-lg',
-        variant === 'h5' && 'text-base',
-        variant === 'h6' && 'text-sm',
-        className
-      ))}
+      className={twMerge(
+        clsx(
+          'font-bold text-gray-900',
+          variant === 'h1' && 'text-4xl',
+          variant === 'h2' && 'text-3xl',
+          variant === 'h3' && 'text-xl',
+          variant === 'h4' && 'text-lg',
+          variant === 'h5' && 'text-base',
+          variant === 'h6' && 'text-sm',
+          className,
+        ),
+      )}
       {...props}
     />
   );

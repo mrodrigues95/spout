@@ -8,7 +8,7 @@ import {
   OptimisticMessagesStore,
   useStore,
 } from '../../../utils/optimisticMessagesStore';
-import { Attachments } from './Attachments';
+import { ComposerAttachments } from './ComposerAttachments';
 import TextArea from '../../../../../../shared/components/ui/TextArea';
 import ComposerToolbar from './ComposerToolbar';
 import { ComposerToolbarProvider } from './ComposerToolbarProvider';
@@ -78,22 +78,22 @@ const DiscussionMessageComposer = ({ ...props }: Props) => {
 
   const onFilesAccepted = useCallback(
     (files: File[]) => setAcceptedFiles(files),
-    []
+    [],
   );
 
   const onFilesRejected = useCallback(
     (files: FileRejection[]) => setRejectedFiles(files),
-    []
+    [],
   );
 
   return (
     <div
       className={clsx(
-        'flex items-center justify-between h-full p-3 pointer-events-auto bg-white border-2 rounded-md transition ease-in-out duration-150',
-        focused ? 'border-transparent ring-2 ring-black' : 'border-gray-200'
+        'pointer-events-auto flex h-full items-center justify-between rounded-md border-2 bg-white p-3 transition duration-150 ease-in-out',
+        focused ? 'border-transparent ring-2 ring-black' : 'border-gray-200',
       )}
     >
-      <div className="flex flex-col w-full space-y-3">
+      <div className="flex w-full flex-col space-y-3">
         <TextArea
           placeholder={`Message #${discussion.name.trim()}`}
           value={message}
@@ -105,7 +105,7 @@ const DiscussionMessageComposer = ({ ...props }: Props) => {
           className="p-0"
           maxRows={5}
         />
-        <Attachments
+        <ComposerAttachments
           acceptedFiles={acceptedFiles}
           rejectedFiles={rejectedFiles}
           shouldClearFiles={shouldClearFiles}

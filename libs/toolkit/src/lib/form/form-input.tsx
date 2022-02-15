@@ -9,14 +9,14 @@ export interface FormInputProps extends ComponentProps<'input'> {
 export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
   ({ label, type = 'text', className, ...props }, ref) => {
     return (
-      <label className="flex flex-col justify-center items-start space-y-1">
+      <label className="flex flex-col items-start justify-center space-y-1">
         <span className="font-semibold">
           {label} <FieldError name={props.name} />
         </span>
         <input
           className={clsx(
-            'w-full border-none outline-none bg-gray-100 text-black rounded-md placeholder-shown:font-normal font-medium transition ease-in-out duration-200 focus:ring-2 focus:ring-black',
-            className
+            'outline-none w-full rounded-md border-none bg-gray-100 font-medium text-black transition duration-200 ease-in-out placeholder-shown:font-normal focus:ring-2 focus:ring-black',
+            className,
           )}
           type={type}
           ref={ref}
@@ -24,5 +24,5 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
         />
       </label>
     );
-  }
+  },
 );

@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import { IconButton, Spinner, Tooltip } from '@spout/toolkit';
-import { UploadAttachments } from './Attachments';
+import { UploadAttachments } from './ComposerAttachments';
 import { useComposerToolbar } from './ComposerToolbarProvider';
 
 const ComposerToolbar = () => {

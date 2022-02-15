@@ -12,7 +12,7 @@ import { format, isToday, isYesterday } from 'date-fns';
  */
 export const formatMessageDate = (
   date: string | Date,
-  customFormat?: string
+  customFormat?: string,
 ): string => {
   const _date = new Date(date);
 

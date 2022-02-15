@@ -27,7 +27,7 @@ const DiscussionMessageHeader = ({
     <div
       className={clsx(
         'flex items-center space-x-2',
-        isMyMessage ? 'flex-row-reverse space-x-reverse' : 'flex-row'
+        isMyMessage ? 'flex-row-reverse space-x-reverse' : 'flex-row',
       )}
     >
       <span className="font-semibold text-gray-900">
@@ -45,7 +45,7 @@ const getMessageBorders = (
     isLastMessage,
     isRecent,
   }: Partial<RecentMessage>,
-  isMyMessage: boolean
+  isMyMessage: boolean,
 ) => {
   const borders: string[] = [];
 
@@ -87,9 +87,9 @@ const DiscussionMessageBody = ({
     () =>
       getMessageBorders(
         { isRecent, isFirstMessage, isMiddleMessage, isLastMessage },
-        isMyMessage
+        isMyMessage,
       ),
-    [isRecent, isFirstMessage, isMiddleMessage, isLastMessage, isMyMessage]
+    [isRecent, isFirstMessage, isMiddleMessage, isLastMessage, isMyMessage],
   );
 
   const isOptimistic = !!optimisticOpts;
@@ -97,24 +97,24 @@ const DiscussionMessageBody = ({
   return (
     <div
       className={clsx(
-        'flex flex-col p-3 text-sm space-y-4',
+        'flex flex-col space-y-4 p-3 text-sm',
         isMyMessage
           ? 'bg-blue-600 shadow-md'
-          : 'bg-white ring-1 ring-gray-900/5 shadow-sm',
+          : 'bg-white shadow-sm ring-1 ring-gray-900/5',
         optimisticOpts?.error ? 'text-red-600' : 'text-black',
-        messageBorders.join(' ')
+        messageBorders.join(' '),
       )}
     >
       <div
         className={clsx(
           'flex',
-          isMyMessage ? 'items-end justify-end' : 'items-start justify-start'
+          isMyMessage ? 'items-end justify-end' : 'items-start justify-start',
         )}
       >
         <p
           className={clsx(
-            'break-words text-sm whitespace-pre-line font-medium ',
-            isMyMessage ? 'text-white' : 'text-gray-900'
+            'whitespace-pre-line break-words text-sm font-medium ',
+            isMyMessage ? 'text-white' : 'text-gray-900',
           )}
         >
           {message!.content.trim()}
@@ -130,7 +130,7 @@ const DiscussionMessageBody = ({
         <Button
           type="button"
           variant="unstyled"
-          className="font-medium focus:outline-none"
+          className="focus:outline-none font-medium"
           onClick={() => optimisticOpts.retry()}
         >
           Failed to send message. Click to try again.
@@ -182,7 +182,7 @@ const DiscussionMessage = ({
         isMiddleMessage,
         isLastMessage,
       }),
-    [isFirstMessage, isMiddleMessage, isLastMessage]
+    [isFirstMessage, isMiddleMessage, isLastMessage],
   );
 
   const formattedDate = useMemo(() => {
@@ -197,21 +197,21 @@ const DiscussionMessage = ({
       className={clsx(
         !isRecent && 'py-1',
         isFirstMessage && 'pt-1',
-        isLastMessage && 'pb-1'
+        isLastMessage && 'pb-1',
       )}
     >
       <div
         className={clsx(
-          'relative flex items-center space-x-2 px-4 group hover:bg-indigo-100/50',
+          'group relative flex items-center space-x-2 px-4 hover:bg-indigo-100/50',
           isMyMessage
             ? 'flex-row-reverse space-x-reverse'
             : 'flex-row space-x-2',
           optimisticOpts?.loading ? 'opacity-50' : 'opacity-100',
-          messagePadding
+          messagePadding,
         )}
       >
         {/* <Actions isMyMessage={isMyMessage} isOptimistic={!!optimisticOpts} /> */}
-        <div className="flex items-center justify-center flex-shrink-0 mb-auto w-14">
+        <div className="mb-auto flex w-14 flex-shrink-0 items-center justify-center">
           {!isRecent || isFirstMessage ? (
             <div className="rounded-md shadow-md">
               <Avatar
@@ -221,15 +221,15 @@ const DiscussionMessage = ({
               />
             </div>
           ) : (
-            <span className="hidden group-hover:inline-block text-xs font-medium text-gray-500">
+            <span className="hidden text-xs font-medium text-gray-500 group-hover:inline-block">
               {formattedDate}
             </span>
           )}
         </div>
         <div
           className={clsx(
-            'relative flex flex-col max-w-[75%] space-y-1',
-            isMyMessage ? 'items-end' : 'items-start'
+            'relative flex max-w-[75%] flex-col space-y-1',
+            isMyMessage ? 'items-end' : 'items-start',
           )}
         >
           {(!isRecent || isFirstMessage) && (

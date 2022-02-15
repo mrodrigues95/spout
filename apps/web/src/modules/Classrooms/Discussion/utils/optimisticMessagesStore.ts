@@ -7,12 +7,12 @@ const getOptimisticId = () => optimisticId--;
 const findMessageIndex = (
   discussionId: string,
   optimisticMessageId: number,
-  state: OptimisticMessagesStore
+  state: OptimisticMessagesStore,
 ) => {
   const messages = state.messagesByDiscussionId[discussionId];
   return messages.findIndex(
     (message: OptimisticDiscussionMessage) =>
-      message.optimisticId === optimisticMessageId
+      message.optimisticId === optimisticMessageId,
   );
 };
 
@@ -27,13 +27,13 @@ export interface OptimisticMessagesStore {
     }: Pick<
       OptimisticDiscussionMessage,
       'content' | 'attachmentIds' | 'createdBy'
-    >
+    >,
   ) => void;
   remove: (discussionId: string, optimisticMessageId: number) => void;
   markIsSent: (
     discussionId: string,
     optimisticMessageId: number,
-    isSent: boolean
+    isSent: boolean,
   ) => void;
 }
 
@@ -48,7 +48,7 @@ export const useStore = create<OptimisticMessagesStore>((set) => ({
     }: Pick<
       OptimisticDiscussionMessage,
       'content' | 'attachmentIds' | 'createdBy'
-    >
+    >,
   ) =>
     set((state) => {
       // Initialize an empty array if this is a new discussion.
@@ -79,7 +79,7 @@ export const useStore = create<OptimisticMessagesStore>((set) => ({
   markIsSent: (
     discussionId: string,
     optimisticMessageId: number,
-    isSent: boolean
+    isSent: boolean,
   ) =>
     set((state) => {
       if (!state.messagesByDiscussionId[discussionId]) {
@@ -119,7 +119,7 @@ export const useStore = create<OptimisticMessagesStore>((set) => ({
 
       // Remove it.
       const messages = state.messagesByDiscussionId[discussionId].filter(
-        (_, i) => i !== index
+        (_, i) => i !== index,
       );
 
       console.log('Successfully removed optimistic message from store');

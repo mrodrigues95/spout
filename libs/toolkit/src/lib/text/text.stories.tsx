@@ -20,7 +20,9 @@ const Template: Story<TextProps> = () => {
       <Text casing="uppercase">Uppercase text</Text>
       <Text casing="capitalize">Capitalized text</Text>
       <Text color="muted">Muted text</Text>
-      <Text variant="subtitle" truncate>Subtitle text</Text>
+      <Text variant="subtitle" truncate>
+        Subtitle text
+      </Text>
     </>
   );
 };

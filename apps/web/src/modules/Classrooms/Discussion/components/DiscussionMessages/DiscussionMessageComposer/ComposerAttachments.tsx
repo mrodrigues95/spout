@@ -37,7 +37,7 @@ export const UploadAttachments = () => {
 
   return (
     <FilePicker
-      accept={[...WHITELISTED_EXTENSIONS]}
+      accept={[...WHITELISTED_EXTENSIONS].map((ext) => `.${ext.toLowerCase()}`)}
       onDropAccepted={onFilesAccepted}
       onDropRejected={onFilesRejected}
       minSize={MIN_FILE_SIZE}
@@ -77,11 +77,11 @@ const getIcon = ({
   return null;
 };
 
-interface AttachmentProps extends FileUploadQueue {
+interface ComposerAttachmentProps extends FileUploadQueue {
   removeFromQueue: ReturnType<typeof useFileUploadQueue>['removeFromQueue'];
 }
 
-const Attachment = ({
+const ComposerAttachment = ({
   id,
   file,
   isQueued,
@@ -89,7 +89,7 @@ const Attachment = ({
   isUploaded,
   isUploading,
   removeFromQueue,
-}: AttachmentProps) => {
+}: ComposerAttachmentProps) => {
   const [isFocused, setIsFocused] = useState(false);
 
   const icon = getIcon({
@@ -206,7 +206,7 @@ interface AttachmentsProps {
   setShouldClearFiles: (value: boolean) => void;
 }
 
-export const Attachments = ({
+export const ComposerAttachments = ({
   acceptedFiles,
   rejectedFiles: _rejectedFiles,
   setIsUploadingFiles,
@@ -316,7 +316,7 @@ export const Attachments = ({
       {!!files.length && (
         <ul className="flex flex-wrap gap-3 py-2" role="list">
           {files.map((file) => (
-            <Attachment
+            <ComposerAttachment
               key={file.id}
               removeFromQueue={removeFromQueue}
               {...file}

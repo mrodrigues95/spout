@@ -17,7 +17,7 @@ import SidebarClassrooms, {
 
 const Sidebar = () => {
   return (
-    <aside className="fixed inset-y-0 left-0 overflow-y-auto flex flex-col z-20 p-5 space-y-8 w-72">
+    <aside className="fixed inset-y-0 left-0 z-20 flex w-72 flex-col space-y-8 overflow-y-auto p-5">
       <div className="flex items-center space-x-4">
         <Image src={getRandomAvatar()} alt="Spout" rounded />
         <span className="text-lg font-bold">spout</span>

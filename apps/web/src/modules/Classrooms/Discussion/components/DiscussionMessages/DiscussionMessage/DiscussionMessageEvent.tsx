@@ -16,12 +16,12 @@ const DiscussionMessageEvent = ({ event }: Props) => {
 
   const formattedDate = useMemo(
     () => formatMessageDate(event.createdAt, 'h:mm a'),
-    [event]
+    [event],
   );
 
   return (
-    <div className="inline-flex items-center justify-center py-2 px-4 w-full">
-      <Card className="flex flex-col p-3 max-w-[75%] rounded-md shadow-sm bg-white ring-1 ring-gray-900/5 space-y-4">
+    <div className="inline-flex w-full items-center justify-center py-2 px-4">
+      <Card className="flex max-w-[75%] flex-col space-y-4 rounded-md bg-white p-3 shadow-sm ring-1 ring-gray-900/5">
         <div className="flex items-center space-x-2">
           <div className="inline-flex items-center space-x-2">
             <Avatar
@@ -33,7 +33,7 @@ const DiscussionMessageEvent = ({ event }: Props) => {
             <Badge scheme="green">@{event.createdBy.name}</Badge>
           </div>
           <div className="inline-flex items-center space-x-2">
-            <Text className="text-gray-900 italic" size="sm" weight="medium">
+            <Text className="italic text-gray-900" size="sm" weight="medium">
               changed the
             </Text>
             <FontAwesomeIcon
@@ -43,7 +43,7 @@ const DiscussionMessageEvent = ({ event }: Props) => {
             <Text
               className={clsx(
                 '!ml-1',
-                isTopic ? 'text-pink-500' : 'text-sky-500'
+                isTopic ? 'text-pink-500' : 'text-sky-500',
               )}
               weight="bold"
               casing="uppercase"
@@ -57,7 +57,7 @@ const DiscussionMessageEvent = ({ event }: Props) => {
           </div>
         </div>
         <Text
-          className="text-gray-900 break-words whitespace-pre-line"
+          className="whitespace-pre-line break-words text-gray-900"
           weight="medium"
           size="sm"
         >

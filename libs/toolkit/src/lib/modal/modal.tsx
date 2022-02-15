@@ -61,7 +61,7 @@ export const Modal = ({
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
           as="div"
-          className="z-50 fixed inset-0 flex items-center justify-center"
+          className="fixed inset-0 z-50 flex items-center justify-center"
           onClose={onClose}
           initialFocus={initialFocus}
           {...props}

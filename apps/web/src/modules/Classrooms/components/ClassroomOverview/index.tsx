@@ -18,7 +18,7 @@ const ClassroomOverview = ({ classroom }: Props) => {
   return (
     <ClassroomOverviewProvider>
       <DiscussionsNavigation classroom={classroom} />
-      <div className="flex mt-3 space-x-3">
+      <div className="mt-3 flex space-x-3">
         <div className="flex-1 space-y-3">
           <div className="flex space-x-3">
             <Settings />

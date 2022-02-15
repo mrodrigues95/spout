@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, forwardRef } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
-import { Virtuoso } from 'react-virtuoso';
+import { Components, Virtuoso } from 'react-virtuoso';
 import { Skeleton } from '@spout/toolkit';
 import {
   Divider,
@@ -25,10 +25,49 @@ import DiscussionMessage from '../DiscussionMessage';
 import DiscussionMessageEvent from '../DiscussionMessage/DiscussionMessageEvent';
 import DiscussionOptimisticMessage from '../DiscussionMessage/DiscussionOptimisticMessage';
 
+interface VirtuosoContext {
+  hasPrevious: boolean;
+  discussion: any;
+}
+
+const components: Components<VirtuosoContext> = {
+  Header: ({ context: { hasPrevious, discussion } = {} }) =>
+    hasPrevious ? (
+      <div className="px-4 py-6">
+        <Card className="flex w-full space-x-2 rounded-md bg-white p-3 shadow-sm ring-1 ring-gray-900/5">
+          <Skeleton className="h-10 w-10 rounded-full" />
+          <Skeleton.Stack className="flex-1">
+            <Skeleton className="h-3 w-1/2" />
+            <Skeleton className="h-3 w-2/3" />
+            <Skeleton className="h-3 w-5/6" />
+          </Skeleton.Stack>
+        </Card>
+      </div>
+    ) : (
+      <DiscussionMessagesListHeader discussion={discussion} />
+    ),
+  List: forwardRef(function List(props, ref) {
+    return (
+      <ul
+        {...props}
+        // @ts-ignore: `Virtuoso/List` interface is not polymorphic and expects a `div`.
+        ref={ref}
+        role="list"
+      />
+    );
+  }) as Components<VirtuosoContext>['List'],
+  Item: ({ children, ...props }) => (
+    <li {...props} role="listitem">
+      {children}
+    </li>
+  ),
+  Footer: () => <div className="pt-2" />,
+};
+
 const discussionFragment = graphql`
   fragment DiscussionMessagesList_discussion on Discussion
-  @argumentDefinitions(count: { type: "Int!" }, cursor: { type: "String" })
-  @refetchable(queryName: "DiscussionMessagesListPaginationQuery") {
+    @argumentDefinitions(count: { type: "Int!" }, cursor: { type: "String" })
+    @refetchable(queryName: "DiscussionMessagesListPaginationQuery") {
     id
     ...DiscussionMessagesListHeader_discussion
     messages(last: $count, before: $cursor, order: { createdAt: ASC })
@@ -83,8 +122,12 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
   const { isMounted } = useIsMounted();
   const nodes = useConnection(discussion.messages);
 
-  const { firstItemIndex, items, recentMessages, optimisticMessages } =
-    useDiscussionMessages(discussion.id, nodes);
+  const {
+    firstItemIndex,
+    items,
+    recentMessages,
+    optimisticMessages,
+  } = useDiscussionMessages(discussion.id, nodes);
 
   useDiscussionMessagesSubscription(discussion.id, me.id);
 
@@ -96,7 +139,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
 
   const followOutput = useCallback(
     (isAtBottom) => (optimisticMessages.length || isAtBottom ? 'auto' : false),
-    [optimisticMessages.length],
+    [optimisticMessages.length]
   );
 
   const itemContent = useCallback(
@@ -121,34 +164,13 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
         />
       );
     },
-    [discussion.id, me, recentMessages],
-  );
-
-  const components = useMemo(
-    () => ({
-      Header: () =>
-        hasPrevious ? (
-          <div className="px-4 py-6">
-            <Card className="flex w-full space-x-2 rounded-md bg-white p-3 shadow-sm ring-1 ring-gray-900/5">
-              <Skeleton className="h-10 w-10 rounded-full" />
-              <Skeleton.Stack className="flex-1">
-                <Skeleton className="h-3 w-1/2" />
-                <Skeleton className="h-3 w-2/3" />
-                <Skeleton className="h-3 w-5/6" />
-              </Skeleton.Stack>
-            </Card>
-          </div>
-        ) : (
-          <DiscussionMessagesListHeader discussion={discussion} />
-        ),
-      Footer: () => <div className="pt-2" />,
-    }),
-    [discussion, hasPrevious],
+    [discussion.id, me, recentMessages]
   );
 
   // TODO: Create a 'Jump to Present' footer.
   return (
     <Virtuoso
+      context={{ hasPrevious, discussion }}
       data={items}
       totalCount={items.length}
       overscan={{ main: 1200, reverse: 1200 }}

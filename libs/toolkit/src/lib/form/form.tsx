@@ -44,7 +44,7 @@ export function FieldError({ name }: FieldErrorProps) {
   if (!error) return null;
 
   return (
-    <span className="text-sm text-red-600 italic font-medium" role="alert">
+    <span className="text-sm font-medium italic text-red-600" role="alert">
       {error.message}
     </span>
   );

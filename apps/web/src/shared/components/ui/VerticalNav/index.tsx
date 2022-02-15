@@ -14,8 +14,8 @@ const VerticalNavGroupHeader = ({
   actions,
 }: VerticalNavGroupHeaderProps) => {
   return (
-    <div className="flex items-center px-4 space-x-4 mb-3">
-      <Title as="h5" className="text-gray-900 text-xs tracking-wider uppercase">
+    <div className="mb-3 flex items-center space-x-4 px-4">
+      <Title as="h5" className="text-xs uppercase tracking-wider text-gray-900">
         {title}
       </Title>
       {actions}
@@ -78,14 +78,14 @@ const VerticalNavItem = ({
           size="sm"
           className={twMerge(
             clsx(
-              'text-sm space-x-4 group',
+              'group space-x-4 text-sm',
               selected ? 'text-gray-900' : 'text-gray-600',
-              className
-            )
+              className,
+            ),
           )}
         >
           {icon}
-          <span className="flex-1 truncate min-w-0">{label}</span>
+          <span className="min-w-0 flex-1 truncate">{label}</span>
         </Link>
       )}
     </li>

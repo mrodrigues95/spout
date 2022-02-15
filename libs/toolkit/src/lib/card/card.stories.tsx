@@ -7,7 +7,7 @@ export default {
 } as Meta;
 
 const Template: Story<CardProps> = (args) => (
-  <Card {...args} className="shadow rounded-md p-4">
+  <Card {...args} className="rounded-md p-4 shadow">
     <h1>This is a card</h1>
   </Card>
 );

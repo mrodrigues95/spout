@@ -29,7 +29,7 @@ const Template: Story<SelectProps> = () => {
         icon={
           <FontAwesomeIcon
             icon={faChevronRight}
-            className="w-5 h-5 text-black transform -rotate-90"
+            className="h-5 w-5 -rotate-90 transform text-black"
           />
         }
       />

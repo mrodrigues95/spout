@@ -19,7 +19,7 @@ export const IconLink = forwardRef<
       variant = 'ghost',
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
       <Link
@@ -34,5 +34,5 @@ export const IconLink = forwardRef<
         {icon}
       </Link>
     );
-  }
+  },
 );

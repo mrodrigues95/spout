@@ -13,7 +13,7 @@
 }
 
 body {
-  @apply antialiased font-sans;
+  @apply font-sans antialiased;
 }
 
 form {
@@ -25,5 +25,5 @@ form {
 }
 
 #nprogress .bar {
-  @apply bg-green-600 fixed z-50 top-0 left-0 w-full h-0.5;
+  @apply fixed top-0 left-0 z-50 h-0.5 w-full bg-green-600;
 }

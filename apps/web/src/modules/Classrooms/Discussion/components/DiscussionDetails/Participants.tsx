@@ -33,7 +33,7 @@ const Participants = ({ classroom }: Props) => {
                 profileColor={user.profileColor}
                 size="sm"
               />
-              <span className="flex-1 truncate min-w-0">{user.name}</span>
+              <span className="min-w-0 flex-1 truncate">{user.name}</span>
             </Button>
           </li>
         ))}

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cddf02eb06afa7e3235a857a625049b4>>
+ * @generated SignedSource<<f5cddde69c623508f7119c8264aa708b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,6 +19,7 @@ export type ViewDiscussionQueryVariables = ViewDiscussionQuery$variables;
 export type ViewDiscussionQuery$data = {
   readonly discussionById: {
     readonly id: string;
+    readonly name: string;
     readonly " $fragmentSpreads": FragmentRefs<"DiscussionHeader_discussion" | "DiscussionDetails_discussion" | "DiscussionMessagesList_discussion" | "DiscussionMessageComposer_discussion">;
   };
   readonly me: {
@@ -127,6 +128,7 @@ return {
         "plural": false,
         "selections": [
           (v4/*: any*/),
+          (v5/*: any*/),
           {
             "args": null,
             "kind": "FragmentSpread",
@@ -433,16 +435,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "69e0d1c37af1ef585c6ede47919c2208",
+    "cacheID": "1a73eae587594b6709bb252e28f83a03",
     "id": null,
     "metadata": {},
     "name": "ViewDiscussionQuery",
     "operationKind": "query",
-    "text": "query ViewDiscussionQuery(\n  $id: ID!\n  $count: Int!\n  $cursor: String\n) {\n  discussionById(id: $id) {\n    id\n    ...DiscussionHeader_discussion\n    ...DiscussionDetails_discussion\n    ...DiscussionMessagesList_discussion_1G22uz\n    ...DiscussionMessageComposer_discussion\n  }\n  me {\n    ...DiscussionMessagesList_user\n    ...DiscussionMessageComposer_user\n    id\n  }\n}\n\nfragment Description_discussion on Discussion {\n  id\n  description\n}\n\nfragment DiscussionDetails_discussion on Discussion {\n  name\n  ...Topic_discussion\n  ...Description_discussion\n  classroom {\n    name\n    ...Participants_classroom\n    id\n  }\n}\n\nfragment DiscussionHeader_discussion on Discussion {\n  id\n  name\n  classroom {\n    id\n    discussions {\n      id\n      name\n    }\n  }\n}\n\nfragment DiscussionMessageComposer_discussion on Discussion {\n  id\n  name\n}\n\nfragment DiscussionMessageComposer_user on User {\n  id\n  name\n  avatarUrl\n  profileColor\n}\n\nfragment DiscussionMessagesListHeader_discussion on Discussion {\n  name\n  topic\n  description\n}\n\nfragment DiscussionMessagesList_discussion_1G22uz on Discussion {\n  id\n  ...DiscussionMessagesListHeader_discussion\n  messages(last: $count, before: $cursor, order: {createdAt: ASC}) {\n    edges {\n      node {\n        id\n        content\n        createdAt\n        isDiscussionEvent\n        discussionEvent\n        attachments {\n          id\n          location\n          name\n          contentLength\n          extension\n        }\n        createdBy {\n          id\n          name\n          avatarUrl\n          profileColor\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n\nfragment DiscussionMessagesList_user on User {\n  id\n}\n\nfragment Participants_classroom on Classroom {\n  users {\n    id\n    avatarUrl\n    name\n    profileColor\n  }\n}\n\nfragment Topic_discussion on Discussion {\n  id\n  topic\n}\n"
+    "text": "query ViewDiscussionQuery(\n  $id: ID!\n  $count: Int!\n  $cursor: String\n) {\n  discussionById(id: $id) {\n    id\n    name\n    ...DiscussionHeader_discussion\n    ...DiscussionDetails_discussion\n    ...DiscussionMessagesList_discussion_1G22uz\n    ...DiscussionMessageComposer_discussion\n  }\n  me {\n    ...DiscussionMessagesList_user\n    ...DiscussionMessageComposer_user\n    id\n  }\n}\n\nfragment Description_discussion on Discussion {\n  id\n  description\n}\n\nfragment DiscussionDetails_discussion on Discussion {\n  name\n  ...Topic_discussion\n  ...Description_discussion\n  classroom {\n    name\n    ...Participants_classroom\n    id\n  }\n}\n\nfragment DiscussionHeader_discussion on Discussion {\n  id\n  name\n  classroom {\n    id\n    discussions {\n      id\n      name\n    }\n  }\n}\n\nfragment DiscussionMessageComposer_discussion on Discussion {\n  id\n  name\n}\n\nfragment DiscussionMessageComposer_user on User {\n  id\n  name\n  avatarUrl\n  profileColor\n}\n\nfragment DiscussionMessagesListHeader_discussion on Discussion {\n  name\n  topic\n  description\n}\n\nfragment DiscussionMessagesList_discussion_1G22uz on Discussion {\n  id\n  ...DiscussionMessagesListHeader_discussion\n  messages(last: $count, before: $cursor, order: {createdAt: ASC}) {\n    edges {\n      node {\n        id\n        content\n        createdAt\n        isDiscussionEvent\n        discussionEvent\n        attachments {\n          id\n          location\n          name\n          contentLength\n          extension\n        }\n        createdBy {\n          id\n          name\n          avatarUrl\n          profileColor\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n\nfragment DiscussionMessagesList_user on User {\n  id\n}\n\nfragment Participants_classroom on Classroom {\n  users {\n    id\n    avatarUrl\n    name\n    profileColor\n  }\n}\n\nfragment Topic_discussion on Discussion {\n  id\n  topic\n}\n"
   }
 };
 })();
 
-(node as any).hash = "55ae314541d8d532c9d0bf901faf888b";
+(node as any).hash = "c30791d5751479f4ddbb8a52900df8d6";
 
 export default node;

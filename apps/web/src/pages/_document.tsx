@@ -14,7 +14,7 @@ interface Props {
 
 class MyDocument extends Document<Props> {
   static async getInitialProps(
-    ctx: DocumentContext
+    ctx: DocumentContext,
   ): Promise<DocumentInitialProps> {
     const initialProps = await Document.getInitialProps(ctx);
     return initialProps;

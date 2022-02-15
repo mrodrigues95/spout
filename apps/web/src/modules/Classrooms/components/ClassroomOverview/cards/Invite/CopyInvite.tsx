@@ -84,7 +84,7 @@ const CopyInvite = ({ invite }: Props) => {
     <>
       <div
         className={clsx(
-          'flex items-center justify-center pl-3 pr-1 py-1 rounded-md ring-2 ring-black ring-opacity-5 transition ease-in-out duration-150 hover:ring-opacity-100',
+          'flex items-center justify-center rounded-md py-1 pl-3 pr-1 ring-2 ring-black ring-opacity-5 transition duration-150 ease-in-out hover:ring-opacity-100',
           isFocused
             ? 'ring-purple-600 ring-opacity-100'
             : 'ring-black ring-opacity-5',
@@ -97,7 +97,7 @@ const CopyInvite = ({ invite }: Props) => {
           <input
             ref={inputRef}
             type="text"
-            className="pl-0 py-0 w-full text-black font-semibold border-none truncate focus:outline-none focus:ring-0"
+            className="focus:outline-none w-full truncate border-none py-0 pl-0 font-semibold text-black focus:ring-0"
             value={`${process.env.NEXT_PUBLIC_APP_URL}/${invite.code}`}
             onFocus={(e) => {
               e.target.select();
@@ -113,14 +113,14 @@ const CopyInvite = ({ invite }: Props) => {
           scheme="purple"
           className={clsx(
             isCopied &&
-              '!bg-green-600 !text-white hover:!bg-green-700 active:!bg-green-800 !ring-transparent !transition-colors',
+              '!bg-green-600 !text-white !ring-transparent !transition-colors hover:!bg-green-700 active:!bg-green-800',
           )}
           onClick={onCopy}
         >
           {isCopied ? 'Copied' : 'Copy'}
         </Button>
       </div>
-      <p className="mt-1 text-gray-500 font-medium text-sm">
+      <p className="mt-1 text-sm font-medium text-gray-500">
         {getExpiresMessage(invite)}
       </p>
     </>

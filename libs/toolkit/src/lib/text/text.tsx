@@ -28,8 +28,8 @@ const STYLES = {
   },
   variant: {
     default: '',
-    subtitle: 'text-sm font-semibold uppercase text-gray-700'
-  }
+    subtitle: 'text-sm font-semibold uppercase text-gray-700',
+  },
 } as const;
 
 interface Props<T extends ElementType> {
@@ -68,8 +68,8 @@ export const Text = <T extends ElementType = 'p'>({
           STYLES.weight[weight],
           STYLES.variant[variant],
           truncate && 'truncate',
-          className
-        )
+          className,
+        ),
       )}
       {...props}
     />

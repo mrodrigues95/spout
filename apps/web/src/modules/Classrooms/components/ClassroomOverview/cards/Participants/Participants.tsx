@@ -10,7 +10,9 @@ const Participants = () => {
       icon={<FontAwesomeIcon icon={faUsers} className="text-blue-800" />}
       description="TODO"
     >
-      <Button variant="ghost" fullWidth>d</Button>
+      <Button variant="ghost" fullWidth>
+        d
+      </Button>
     </ClassroomContentCard>
   );
 };

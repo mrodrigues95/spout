@@ -24,8 +24,8 @@ const Attachment = ({ isMyMessage, attachment }: AttachmentProps) => {
   return (
     <li
       className={clsx(
-        'relative flex p-3 rounded-md bg-white max-w-[12rem] select-none',
-        isMyMessage ? 'shadow-lg' : 'shadow-sm ring-1 ring-gray-900/10'
+        'relative flex max-w-[12rem] select-none rounded-md bg-white p-3',
+        isMyMessage ? 'shadow-lg' : 'shadow-sm ring-1 ring-gray-900/10',
       )}
       onMouseEnter={() => setIsActive(true)}
       onMouseLeave={() => setIsActive(false)}
@@ -33,8 +33,8 @@ const Attachment = ({ isMyMessage, attachment }: AttachmentProps) => {
       {isActive && (
         <div
           className={clsx(
-            'inline-flex absolute -top-1.5 -right-1.5 rounded-md',
-            isMyMessage && 'bg-blue-700 '
+            'absolute -top-1.5 -right-1.5 inline-flex rounded-md',
+            isMyMessage && 'bg-blue-700 ',
           )}
         >
           <Tooltip label="View Attachment">
@@ -42,7 +42,7 @@ const Attachment = ({ isMyMessage, attachment }: AttachmentProps) => {
               className={clsx(
                 'z-10',
                 isMyMessage &&
-                  'text-white bg-blue-700 focus:bg-blue-800 focus:ring hover:bg-blue-800 hover:text-white focus:text-white'
+                  'bg-blue-700 text-white hover:bg-blue-800 hover:text-white focus:bg-blue-800 focus:text-white focus:ring',
               )}
               variant="light"
               size="xs"
@@ -55,10 +55,10 @@ const Attachment = ({ isMyMessage, attachment }: AttachmentProps) => {
           </Tooltip>
         </div>
       )}
-      <FileIcon fileName={attachment.name} className="text-3xl mt-1.5 mr-2" />
-      <div className="flex-1 min-w-0">
-        <p className="font-medium truncate">{attachment.name}</p>
-        <p className="text-gray-500 truncate text-sm">
+      <FileIcon fileName={attachment.name} className="mt-1.5 mr-2 text-3xl" />
+      <div className="min-w-0 flex-1">
+        <p className="truncate font-medium">{attachment.name}</p>
+        <p className="truncate text-sm text-gray-500">
           {formatBytesToHumanReadable(attachment.contentLength)} -{' '}
           {attachment.extension}
         </p>
@@ -79,7 +79,7 @@ const Attachments = ({ isMyMessage, attachments }: Props) => {
     <article
       className={clsx(
         'flex flex-col',
-        isMyMessage ? 'items-end' : 'items-start'
+        isMyMessage ? 'items-end' : 'items-start',
       )}
     >
       <Disclosure>
@@ -90,7 +90,7 @@ const Attachments = ({ isMyMessage, attachments }: Props) => {
               className={clsx(
                 'space-x-2 uppercase',
                 isMyMessage &&
-                  'bg-blue-700 text-white focus:bg-blue-800 focus:ring hover:bg-blue-800 hover:text-white focus:text-white'
+                  'bg-blue-700 text-white hover:bg-blue-800 hover:text-white focus:bg-blue-800 focus:text-white focus:ring',
               )}
               variant="light"
               size="xs"
@@ -102,8 +102,8 @@ const Attachments = ({ isMyMessage, attachments }: Props) => {
               <Disclosure.Panel className="mt-2">
                 <ul
                   className={clsx(
-                    'flex flex-wrap py-2 gap-3',
-                    isMyMessage ? 'justify-end' : 'justify-start'
+                    'flex flex-wrap gap-3 py-2',
+                    isMyMessage ? 'justify-end' : 'justify-start',
                   )}
                   role="list"
                 >

@@ -12,10 +12,10 @@ const Search = forwardRef<HTMLInputElement, Props>(({ ...props }, ref) => {
   return (
     <div className="relative flex w-full justify-end">
       {isSmall ? (
-        <span className="absolute right-0 inset-y-0 flex items-center pr-4">
+        <span className="absolute inset-y-0 right-0 flex items-center pr-4">
           <FontAwesomeIcon
             icon={faSearch}
-            className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400"
+            className="h-4 w-4 text-gray-400 sm:h-5 sm:w-5"
           />
         </span>
       ) : (
@@ -27,12 +27,12 @@ const Search = forwardRef<HTMLInputElement, Props>(({ ...props }, ref) => {
         >
           <FontAwesomeIcon
             icon={faSearch}
-            className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400"
+            className="h-4 w-4 text-gray-400 sm:h-5 sm:w-5"
           />
         </Button>
       )}
       <input
-        className="hidden w-full pr-12 pl-4 h-12 border-none outline-none tracking-wide rounded-2xl font-bold bg-gray-100 placeholder-medium placeholder-gray-400 text-black text-sm items-center transition-all ease-in-out duration-300 sm:inline-flex focus:ring-2 focus:ring-gray-900"
+        className="outline-none placeholder-medium hidden h-12 w-full items-center rounded-2xl border-none bg-gray-100 pr-12 pl-4 text-sm font-bold tracking-wide text-black placeholder-gray-400 transition-all duration-300 ease-in-out focus:ring-2 focus:ring-gray-900 sm:inline-flex"
         aria-hidden={!isSmall}
         aria-label="Search"
         ref={ref}

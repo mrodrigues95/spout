@@ -59,7 +59,7 @@ const InviteSettings = ({ control }: Props) => {
               icon={
                 <FontAwesomeIcon
                   icon={faChevronCircleRight}
-                  className="w-5 h-5 text-black"
+                  className="h-5 w-5 text-black"
                 />
               }
             />
@@ -88,7 +88,7 @@ const InviteSettings = ({ control }: Props) => {
               icon={
                 <FontAwesomeIcon
                   icon={faChevronCircleRight}
-                  className="w-5 h-5 text-black"
+                  className="h-5 w-5 text-black"
                 />
               }
             />

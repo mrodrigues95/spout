@@ -49,17 +49,17 @@ const DiscussionDetails = ({ discussion }: Props) => {
         ),
       },
     ],
-    [data.classroom]
+    [data.classroom],
   );
 
   return (
-    <div className="flex flex-col w-72 space-y-8">
+    <section className="flex w-72 flex-col space-y-8 pl-5">
       <div className="flex flex-col items-center">
         <Image src={getRandomAvatar()} alt="" size="xl" rounded />
         <Title className="mt-2" as="h2" variant="h4">
           {data.name}
         </Title>
-        <Title as="h3" variant="h6" className="text-gray-700 font-semibold">
+        <Title as="h3" variant="h6" className="font-semibold text-gray-700">
           {data.classroom.name}
         </Title>
       </div>
@@ -85,7 +85,7 @@ const DiscussionDetails = ({ discussion }: Props) => {
           </Tabs.Panels>
         </Tabs>
       </div>
-    </div>
+    </section>
   );
 };
 

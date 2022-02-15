@@ -121,11 +121,7 @@ export const useFileUpload = () => {
         | null
       >((resolve) => {
         completeUpload({
-          variables: {
-            input: {
-              fileId,
-            },
-          },
+          variables: { input: { fileId } },
           onCompleted: (data) => {
             if (data.completeUpload.errors) resolve(null);
             resolve(data.completeUpload.file!);

@@ -51,7 +51,7 @@ const ChangeAvatar = () => {
     // cropper?.getCroppedCanvas().toBlob((blob) => {
     //   updateAvatar({ variables: { input: { file: blob } } });
     // }),
-    [cropper]
+    [cropper],
   );
 
   const onFileSelected = useCallback((acceptedFiles: File[]) => {
@@ -59,7 +59,7 @@ const ChangeAvatar = () => {
       acceptedFiles.map((file) => ({
         ...file,
         preview: URL.createObjectURL(file),
-      }))
+      })),
     );
     setIsOpen(true);
   }, []);
@@ -86,7 +86,7 @@ const ChangeAvatar = () => {
                 <PhotoCropper
                   image={files[0].preview!}
                   setCropper={setCropper}
-                  className="h-full max-w-md mx-auto"
+                  className="mx-auto h-full max-w-md"
                 />
               )}
             </Modal.Body>
@@ -110,7 +110,7 @@ const ChangeAvatar = () => {
           </Modal.Content>
         </Form>
       </Modal>
-      <figure className="flex flex-col flex-1 items-center justify-center">
+      <figure className="flex flex-1 flex-col items-center justify-center">
         <div className="relative">
           {/* <Avatar
             src={data!.me!.avatarUrl ?? getRandomAvatar()}
@@ -119,20 +119,20 @@ const ChangeAvatar = () => {
           /> */}
           <FilePicker onDrop={onFileSelected}>
             <FilePicker.Button
-              className="absolute right-0 bottom-0 mr-1 bg-indigo-400 rounded-full shadow-lg outline-none md:mr-4 md:mb-1 lg:mr-6 focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-red-600"
+              className="outline-none absolute right-0 bottom-0 mr-1 rounded-full bg-indigo-400 shadow-lg focus:ring focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-white md:mr-4 md:mb-1 lg:mr-6"
               aria-label="Change profile photo"
             >
               <FontAwesomeIcon
                 icon={faPlus}
-                className="w-4 h-4 text-white sm:w-6 sm:h-6 lg:w-8 lg:h-8"
+                className="h-4 w-4 text-white sm:h-6 sm:w-6 lg:h-8 lg:w-8"
               />
             </FilePicker.Button>
           </FilePicker>
         </div>
-        <figcaption className="mt-5 font-bold text-xl sm:text-2xl">
+        <figcaption className="mt-5 text-xl font-bold sm:text-2xl">
           test 😀
         </figcaption>
-        <span className="text-gray-500 font-semibold">test@test.com</span>
+        <span className="font-semibold text-gray-500">test@test.com</span>
       </figure>
     </>
   );
