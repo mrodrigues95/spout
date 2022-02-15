@@ -1,6 +1,6 @@
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useRouter } from 'next/router';
-import { Layout, Container } from '../../../shared/components';
+import { Layout } from '../../../shared/components';
 import ClassroomOverviewProvider from './ClassroomOverview/ClassroomOverviewProvider';
 import DiscussionsNavigation from './ClassroomOverview/DiscussionsNavigation';
 import { ViewClassroomQuery } from './__generated__/ViewClassroomQuery.graphql';
@@ -24,10 +24,11 @@ const ViewClassroom = () => {
 
   return (
     <Layout title={title}>
-      <Container title={title} isLoading={false} isError={false}>
-        <ClassroomOverviewProvider>
+      <ClassroomOverviewProvider>
+        <div>
           <DiscussionsNavigation classroom={data.classroomById} />
-          {/* <div className="flex mt-3 space-x-3">
+        </div>
+        {/* <div className="flex mt-3 space-x-3">
             <div className="flex-1 space-y-3">
               <div className="flex space-x-3">
                 <Settings />
@@ -43,8 +44,7 @@ const ViewClassroom = () => {
             </div>
             <Participants classroom={classroom} />
           </div> */}
-        </ClassroomOverviewProvider>
-      </Container>
+      </ClassroomOverviewProvider>
     </Layout>
   );
 };

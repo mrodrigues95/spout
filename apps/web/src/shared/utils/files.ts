@@ -6,7 +6,7 @@ export const MIN_FILE_SIZE = 1;
 // TODO: We should just throw specific errors and handle them correctly
 // on the client when dealing with large files or blacklisted extensions.
 export const MAX_FILE_SIZE = 8388608; // 8MB (8388608 bytes).
-export const WHITELISTED_EXTENSIONS: WhitelistedFileExtension[] = [
+export const WHITELISTED_EXTENSIONS = new Set<WhitelistedFileExtension>([
   'AAC',
   'AVI',
   'BMP',
@@ -40,12 +40,12 @@ export const WHITELISTED_EXTENSIONS: WhitelistedFileExtension[] = [
   'XLS',
   'XLSX',
   'ZIP',
-];
+]);
 
 export const validateWhitelistedExtension = (ext: string) => {
   const extension = ext.toUpperCase() as WhitelistedFileExtension;
 
-  if (!WHITELISTED_EXTENSIONS.includes(extension)) {
+  if (!WHITELISTED_EXTENSIONS.has(extension)) {
     console.warn(`${ext} is not a whitelisted file extension.`);
     return null;
   }

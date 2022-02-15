@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, forwardRef, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
-import { Virtuoso } from 'react-virtuoso';
+import { Components, Virtuoso } from 'react-virtuoso';
 import { Skeleton } from '@spout/toolkit';
 import {
   Divider,
@@ -124,7 +124,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
     [discussion.id, me, recentMessages],
   );
 
-  const components = useMemo(
+  const components: Components = useMemo(
     () => ({
       Header: () =>
         hasPrevious ? (
@@ -141,12 +141,28 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
         ) : (
           <DiscussionMessagesListHeader discussion={discussion} />
         ),
+      List: forwardRef(function List(props, ref) {
+        return (
+          <ol
+            {...props}
+            // @ts-ignore: `Virtuoso/List` interface is not polymorphic and expects a `div`.
+            ref={ref}
+            role="list"
+          />
+        );
+      }) as Components['List'],
+      Item: ({ children, ...props }) => (
+        <li {...props} role="listitem">
+          {children}
+        </li>
+      ),
       Footer: () => <div className="pt-2" />,
     }),
-    [discussion, hasPrevious],
+    [hasPrevious, discussion],
   );
 
   // TODO: Create a 'Jump to Present' footer.
+  // TODO: Use new `context` prop to memoize `components` properly.
   return (
     <Virtuoso
       data={items}

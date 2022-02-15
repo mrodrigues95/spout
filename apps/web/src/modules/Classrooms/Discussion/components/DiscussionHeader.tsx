@@ -43,11 +43,11 @@ const DiscussionHeader = ({ discussion }: Props) => {
   }, [data.classroom.id, data.id, router, selectedDiscussionId]);
 
   const discussions = [...(data.classroom.discussions ?? [])].sort((d1, d2) =>
-    d1.name.localeCompare(d2.name)
+    d1.name.localeCompare(d2.name),
   );
 
   return (
-    <div className="flex items-center justify-between">
+    <article className="flex items-center justify-between">
       <div className="flex-1">
         <Title as="h1" variant="h4">
           # {data.name}
@@ -84,7 +84,7 @@ const DiscussionHeader = ({ discussion }: Props) => {
             icon={
               <FontAwesomeIcon
                 icon={faThumbtack}
-                className="transform rotate-45"
+                className="rotate-45 transform"
               />
             }
             className="text-gray-500"
@@ -101,7 +101,7 @@ const DiscussionHeader = ({ discussion }: Props) => {
           />
         </Tooltip>
       </div>
-    </div>
+    </article>
   );
 };
 

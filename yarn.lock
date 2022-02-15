@@ -15378,10 +15378,10 @@ react-textarea-autosize@^8.3.0, react-textarea-autosize@^8.3.2:
     use-composed-ref "^1.0.0"
     use-latest "^1.0.0"
 
-react-virtuoso@^2.3.1:
-  version "2.3.1"
-  resolved "https://registry.npmjs.org/react-virtuoso/-/react-virtuoso-2.3.1.tgz"
-  integrity sha512-Y5qsh5xaGvMAN7S2LOm0n5Hg5gl76GEFSNzD/LNSR6Bm8UFncmEwIKEqp7lJMyM9aLrFV67Ap4rA0JL63Eb/uw==
+react-virtuoso@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-2.7.0.tgz#f2b231812bf0c9aee677e1f609fed8c5f48da70b"
+  integrity sha512-HjBP74dFLliPo3ZIxNqjby+CgUBHupMom7yvG0IVIdtgcHt0xuTG3QXICS8PfYy9G9rXF6p57uD13DwxRNRflg==
   dependencies:
     "@virtuoso.dev/react-urx" "^0.2.12"
     "@virtuoso.dev/urx" "^0.2.12"
