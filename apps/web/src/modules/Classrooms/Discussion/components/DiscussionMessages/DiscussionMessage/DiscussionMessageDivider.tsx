@@ -10,7 +10,7 @@ const DiscussionMessageDivider = ({ date }: { date: string }) => {
         <div className="w-full border-t-2 border-indigo-100"></div>
       </div>
       <div className="relative flex justify-center">
-        <span className="px-2 py-1 my-2 font-bold text-xs text-gray-900 bg-indigo-100 rounded-full">
+        <span className="my-2 rounded-full bg-indigo-100 px-2 py-1 text-xs font-bold text-gray-900">
           {isToday(_date) && 'Today'}
           {isYesterday(_date) && 'Yesterday'}
           {!isToday(_date) && !isYesterday(_date) && date}

@@ -57,7 +57,7 @@ export const useFileUploadQueue = () => {
         });
       }
     },
-    [deleteFile, handleError]
+    [deleteFile, handleError],
   );
 
   const resetQueue = useCallback(() => {
@@ -132,23 +132,23 @@ export const useFileUploadQueue = () => {
 
       setIsInFlight(false);
     },
-    [uploadFile]
+    [uploadFile],
   );
 
   const uploadedFiles = useMemo(
     () =>
       [...fileUploadQueue.filter((queue) => queue.isUploaded)].map(
-        (queue) => queue.file
+        (queue) => queue.file,
       ),
-    [fileUploadQueue]
+    [fileUploadQueue],
   );
 
   const errorFiles = useMemo(
     () =>
       [...fileUploadQueue.filter((queue) => queue.isError)].map(
-        (queue) => queue.file
+        (queue) => queue.file,
       ),
-    [fileUploadQueue]
+    [fileUploadQueue],
   );
 
   return {

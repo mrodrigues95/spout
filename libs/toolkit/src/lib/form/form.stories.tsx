@@ -20,7 +20,7 @@ export const Primary: Story<FormProps> = () => {
 
   return (
     <Form
-      className="flex flex-col w-full"
+      className="flex w-full flex-col"
       form={form}
       onSubmit={() => console.log('Submitted!')}
     >

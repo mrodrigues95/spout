@@ -18,8 +18,8 @@ export const SelectOption = ({
     <Listbox.Option
       className={({ active }) =>
         clsx(
-          'cursor-pointer select-none relative py-2 pl-10 pr-4',
-          active ? 'bg-gray-100' : 'bg-white'
+          'relative cursor-pointer select-none py-2 pl-10 pr-4',
+          active ? 'bg-gray-100' : 'bg-white',
         )
       }
       value={value}
@@ -32,7 +32,7 @@ export const SelectOption = ({
             <span
               className={clsx(
                 'absolute inset-y-0 left-0 flex items-center pl-3',
-                active ? 'text-gray-600' : 'text-gray-600'
+                active ? 'text-gray-600' : 'text-gray-600',
               )}
             >
               {selectedIcon}

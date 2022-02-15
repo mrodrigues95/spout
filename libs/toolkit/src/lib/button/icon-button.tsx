@@ -13,7 +13,7 @@ export const IconButton = forwardRef<
 >(
   (
     { icon, 'aria-label': ariaLabel, size = 'sm', variant = 'ghost', ...props },
-    ref
+    ref,
   ) => {
     return (
       <Button
@@ -27,5 +27,5 @@ export const IconButton = forwardRef<
         {icon}
       </Button>
     );
-  }
+  },
 );

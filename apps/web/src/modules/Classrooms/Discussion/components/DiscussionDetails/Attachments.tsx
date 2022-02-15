@@ -42,22 +42,22 @@ const Attachment = ({ index, file }: AttachmentProps) => {
         }
       }
     `,
-    file
+    file,
   );
 
   const isOdd = index % 2 === 0;
 
   return (
-    <div className={clsx('p-2 space-y-3', isOdd ? 'bg-gray-100' : 'bg-white')}>
+    <div className={clsx('space-y-3 p-2', isOdd ? 'bg-gray-100' : 'bg-white')}>
       <div className="flex flex-grow-0 justify-between space-x-2">
-        <div className="inline-flex items-center space-x-2 min-w-0">
+        <div className="inline-flex min-w-0 items-center space-x-2">
           <FileIcon fileName={data.name} size="2x" />
           <div className="min-w-0">
             <Text
               weight="semibold"
               size="sm"
               truncate
-              className="text-gray-900 -mb-1"
+              className="-mb-1 text-gray-900"
             >
               {data.name}
             </Text>
@@ -83,12 +83,12 @@ const Attachment = ({ index, file }: AttachmentProps) => {
       <div className="flex items-center justify-between space-x-2">
         <Text
           size="xs"
-          className="text-gray-900 flex-shrink-0"
+          className="flex-shrink-0 text-gray-900"
           weight="semibold"
         >
           {format(new Date(data.createdAt), 'MMM d, yyyy')}
         </Text>
-        <div className="inline-flex items-center space-x-1 min-w-0 ">
+        <div className="inline-flex min-w-0 items-center space-x-1 ">
           <Avatar
             src={data.uploadedBy.avatarUrl}
             name={data.uploadedBy.name}
@@ -109,48 +109,44 @@ interface AttachmentsListProps {
 }
 
 const AttachmentsList = ({ ...props }: AttachmentsListProps) => {
-  const {
-    data,
-    loadPrevious,
-    hasPrevious,
-    isLoadingPrevious,
-  } = usePaginationFragment(
-    graphql`
-      fragment Attachments_files on Query
+  const { data, loadPrevious, hasPrevious, isLoadingPrevious } =
+    usePaginationFragment(
+      graphql`
+        fragment Attachments_files on Query
         @argumentDefinitions(
           id: { type: "ID!" }
           count: { type: "Int!" }
           cursor: { type: "String" }
         )
         @refetchable(queryName: "AttachmentsPaginationQuery") {
-        files(
-          last: $count
-          before: $cursor
-          where: {
-            messageFiles: {
-              some: { message: { discussion: { id: { eq: $id } } } }
+          files(
+            last: $count
+            before: $cursor
+            where: {
+              messageFiles: {
+                some: { message: { discussion: { id: { eq: $id } } } }
+              }
+              and: { isDeleted: { eq: false }, uploadStatus: { eq: COMPLETED } }
             }
-            and: { isDeleted: { eq: false }, uploadStatus: { eq: COMPLETED } }
-          }
-          order: { createdAt: DESC }
-        ) @connection(key: "Attachments_file_files") {
-          edges {
-            node {
-              ...Attachments_attachment
+            order: { createdAt: DESC }
+          ) @connection(key: "Attachments_file_files") {
+            edges {
+              node {
+                ...Attachments_attachment
+              }
             }
-          }
-          pageInfo {
-            startCursor
+            pageInfo {
+              startCursor
+            }
           }
         }
-      }
-    `,
-    props.files
-  );
+      `,
+      props.files,
+    );
 
   const files = useMemo(
     () => (data.files?.edges ?? []).map((edge) => edge.node),
-    [data.files?.edges]
+    [data.files?.edges],
   );
 
   if (!files.length) {
@@ -204,7 +200,7 @@ const Attachments = () => {
       }
     `,
     { id: router.query.discussionId as string, count: 50 },
-    { fetchPolicy: 'store-and-network' }
+    { fetchPolicy: 'store-and-network' },
   );
 
   return <AttachmentsList files={data} />;

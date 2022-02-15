@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 export const usePreviousEffect = <TDeps extends readonly unknown[]>(
   effect: (deps: TDeps) => ReturnType<typeof useEffect>,
-  deps: TDeps
+  deps: TDeps,
 ) => {
   const previousDepsRef = useRef<TDeps>(deps);
 

@@ -30,9 +30,8 @@ const CreateClassroom = () => {
   const isRedirecting = useIsRedirecting();
   const { handleError } = useToast();
   const [isOpen, setIsOpen] = useState(false);
-  const [createClassroom, isInFlight] = useMutation<CreateClassroomMutation>(
-    mutation
-  );
+  const [createClassroom, isInFlight] =
+    useMutation<CreateClassroomMutation>(mutation);
 
   const form = useZodForm({
     schema,
@@ -49,7 +48,7 @@ const CreateClassroom = () => {
         },
       });
     },
-    [createClassroom, handleError, router]
+    [createClassroom, handleError, router],
   );
 
   return (
@@ -58,7 +57,7 @@ const CreateClassroom = () => {
         size="xs"
         variant="light"
         scheme="orange"
-        className="uppercase rounded"
+        className="rounded uppercase"
         onClick={() => setIsOpen(true)}
       >
         Create

@@ -60,7 +60,7 @@ const DiscussionMessagesListHeader = ({ discussion }: Props) => {
 
   return (
     <div className="px-4 py-6">
-      <Card className="px-6 py-4 relative overflow-hidden rounded-md shadow-sm bg-white ring-1 ring-gray-900/5 space-y-4">
+      <Card className="relative space-y-4 overflow-hidden rounded-md bg-white px-6 py-4 shadow-sm ring-1 ring-gray-900/5">
         <div className="space-y-4">
           <div className="flex items-center">
             <Image src={getRandomAvatar()} alt="" />
@@ -88,7 +88,7 @@ const DiscussionMessagesListHeader = ({ discussion }: Props) => {
             </div>
           )}
         </div>
-        <div className="flex items-center justify-center space-x-6 w-full">
+        <div className="flex w-full items-center justify-center space-x-6">
           <FontAwesomeIcon
             icon={faUserPlus}
             size="2x"

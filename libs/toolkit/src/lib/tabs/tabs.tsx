@@ -10,8 +10,7 @@ import { TabProvider } from './tab-provider';
 export const VARIANTS = {
   default: {
     tab: {
-      base:
-        'relative inline-flex items-center justify-center px-3 py-2.5 text-sm font-semibold border-b-2 outline-none',
+      base: 'relative inline-flex items-center justify-center px-3 py-2.5 text-sm font-semibold border-b-2 outline-none',
       active:
         'text-orange-500 border-current hover:text-orange-500 focus:ring-2 ring-offset-2 ring-offset-blue-400 ring-white',
       inactive: 'text-gray-900 border-transparent',
@@ -44,7 +43,7 @@ export const Tabs = ({
       <HeadlessTab.Group
         as="div"
         manual
-        className={clsx('flex flex-col flex-1', className)}
+        className={clsx('flex flex-1 flex-col', className)}
       >
         {children}
       </HeadlessTab.Group>

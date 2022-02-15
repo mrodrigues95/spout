@@ -27,15 +27,15 @@ export const SelectButton = ({
     <Listbox.Button
       className={twMerge(
         clsx(
-          'relative w-full py-1 pl-2 pr-10 ring-2 ring-black ring-opacity-5 text-left text-sm bg-white rounded cursor-default transition ease-in-out duration-150',
-          'hover:ring-opacity-100 focus:outline-none focus-visible:ring-opacity-100',
-          className
-        )
+          'relative w-full cursor-default rounded bg-white py-1 pl-2 pr-10 text-left text-sm ring-2 ring-black ring-opacity-5 transition duration-150 ease-in-out',
+          'focus:outline-none hover:ring-opacity-100 focus-visible:ring-opacity-100',
+          className,
+        ),
       )}
     >
       <span className={clsx('block truncate', labelVariant)}>{label}</span>
       {icon && (
-        <span className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
+        <span className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3">
           {icon}
         </span>
       )}

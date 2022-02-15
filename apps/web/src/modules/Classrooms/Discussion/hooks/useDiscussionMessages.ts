@@ -11,21 +11,22 @@ const START_INDEX = 1000000;
 
 export const useDiscussionMessages = (
   discussionId: string,
-  nodes: DiscussionMessage[]
+  nodes: DiscussionMessage[],
 ) => {
   const [firstItemIndex, setFirstItemIndex] = useState(START_INDEX);
   const [items, setItems] = useState<Item[]>([]);
 
   const optimisticMessages = useStore(
-    useCallback((state) => state.messagesByDiscussionId[discussionId] || [], [
-      discussionId,
-    ])
+    useCallback(
+      (state) => state.messagesByDiscussionId[discussionId] || [],
+      [discussionId],
+    ),
   );
 
-  const messages = useMemo(() => nodes.concat(optimisticMessages), [
-    nodes,
-    optimisticMessages,
-  ]);
+  const messages = useMemo(
+    () => nodes.concat(optimisticMessages),
+    [nodes, optimisticMessages],
+  );
 
   const recentMessages = useMemo(() => getRecentMessages(items), [items]);
 

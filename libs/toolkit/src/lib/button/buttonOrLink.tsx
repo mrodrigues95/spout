@@ -5,8 +5,7 @@ import Link from 'next/link';
 import clsx from 'clsx';
 
 const STYLES = {
-  base:
-    'relative inline-flex items-center justify-center tracking-wide select-none text-left font-semibold outline-none rounded-md transition duration-150 ease-in-out',
+  base: 'relative inline-flex items-center justify-center tracking-wide select-none text-left font-semibold outline-none rounded-md transition duration-150 ease-in-out',
   active:
     'focus:outline-none focus:ring focus:ring-offset-white focus:ring-offset-2',
   disabled: 'disabled:opacity-60 disabled:pointer-events-none',
@@ -39,7 +38,8 @@ const STYLES = {
       solid: 'text-white bg-gray-900 focus:ring hover:bg-gray-700',
       light:
         'text-gray-700 bg-gray-100 focus:bg-gray-200 focus:ring focus:text-gray-900 hover:text-gray-900 hover:bg-gray-200',
-      ghost: 'text-gray-700 focus:bg-gray-100 focus:ring focus:text-gray-900 hover:text-gray-900 hover:bg-gray-100',
+      ghost:
+        'text-gray-700 focus:bg-gray-100 focus:ring focus:text-gray-900 hover:text-gray-900 hover:bg-gray-100',
       outline: 'text-gray-900 focus:bg-gray-200 focus:ring hover:bg-gray-100',
       link: 'text-gray-900 bg-white ring-transparent',
     },
@@ -118,7 +118,7 @@ export const ButtonOrLink = forwardRef<
       className,
       ...props
     },
-    ref
+    ref,
   ) => {
     const router = useRouter();
     const isLink = typeof href !== 'undefined';
@@ -134,7 +134,7 @@ export const ButtonOrLink = forwardRef<
             STYLES.variant[variant],
             STYLES.scheme[scheme][variant],
             isIcon ? STYLES.size['icon'][size] : STYLES.size['regular'][size],
-            fullWidth && 'w-full'
+            fullWidth && 'w-full',
           );
 
     const content = (
@@ -149,13 +149,17 @@ export const ButtonOrLink = forwardRef<
       const finalHref =
         preserveRedirect && router.query.redirect
           ? `${href!}?redirect=${encodeURIComponent(
-              router.query.redirect as string
+              router.query.redirect as string,
             )}`
           : href!;
 
-      return <Link href={finalHref} passHref>{content}</Link>;
+      return (
+        <Link href={finalHref} passHref>
+          {content}
+        </Link>
+      );
     }
 
     return content;
-  }
+  },
 );

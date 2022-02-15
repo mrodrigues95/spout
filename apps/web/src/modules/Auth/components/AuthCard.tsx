@@ -9,10 +9,10 @@ interface Props {
 
 const AuthCard = ({ title, subtitle, action, children }: Props) => {
   return (
-    <section className="flex flex-1 items-center justify-center mx-auto w-full max-w-xl">
-      <div className="flex flex-col items-center justify-center h-96 p-4 rounded-xl w-full space-y-2">
-        <div className="inline-flex flex-col items-center justify-center mb-5 space-y-2">
-          <h1 className="font-bold text-2xl">{title}</h1>
+    <section className="mx-auto flex w-full max-w-xl flex-1 items-center justify-center">
+      <div className="flex h-96 w-full flex-col items-center justify-center space-y-2 rounded-xl p-4">
+        <div className="mb-5 inline-flex flex-col items-center justify-center space-y-2">
+          <h1 className="text-2xl font-bold">{title}</h1>
           {subtitle && (
             <h2 className="font-medium text-gray-400">
               Use the form below to login
@@ -21,7 +21,7 @@ const AuthCard = ({ title, subtitle, action, children }: Props) => {
         </div>
         {children}
         <div className="w-full text-sm font-medium">
-          <span className="text-gray-500 mr-1">{action.description}</span>
+          <span className="mr-1 text-gray-500">{action.description}</span>
           {action.link}
         </div>
       </div>

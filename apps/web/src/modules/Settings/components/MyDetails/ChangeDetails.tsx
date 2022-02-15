@@ -3,7 +3,7 @@ import { Card } from '../../../../shared/components';
 
 const ChangeDetails = () => {
   return (
-    <Card className="shadow-container flex-1 mr-4 space-y-4">
+    <Card className="mr-4 flex-1 space-y-4 shadow-container">
       <div className="flex justify-between">
         <div>
           <Text as="span" variant="subtitle">

@@ -27,8 +27,8 @@ import DiscussionOptimisticMessage from '../DiscussionMessage/DiscussionOptimist
 
 const discussionFragment = graphql`
   fragment DiscussionMessagesList_discussion on Discussion
-  @argumentDefinitions(count: { type: "Int!" }, cursor: { type: "String" })
-  @refetchable(queryName: "DiscussionMessagesListPaginationQuery") {
+    @argumentDefinitions(count: { type: "Int!" }, cursor: { type: "String" })
+    @refetchable(queryName: "DiscussionMessagesListPaginationQuery") {
     id
     ...DiscussionMessagesListHeader_discussion
     messages(last: $count, before: $cursor, order: { createdAt: ASC })
@@ -83,8 +83,12 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
   const { isMounted } = useIsMounted();
   const nodes = useConnection(discussion.messages);
 
-  const { firstItemIndex, items, recentMessages, optimisticMessages } =
-    useDiscussionMessages(discussion.id, nodes);
+  const {
+    firstItemIndex,
+    items,
+    recentMessages,
+    optimisticMessages,
+  } = useDiscussionMessages(discussion.id, nodes);
 
   useDiscussionMessagesSubscription(discussion.id, me.id);
 
@@ -96,7 +100,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
 
   const followOutput = useCallback(
     (isAtBottom) => (optimisticMessages.length || isAtBottom ? 'auto' : false),
-    [optimisticMessages.length],
+    [optimisticMessages.length]
   );
 
   const itemContent = useCallback(
@@ -165,6 +169,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
   // TODO: Use new `context` prop to memoize `components` properly.
   return (
     <Virtuoso
+      context={{ hasPrevious, discussion }}
       data={items}
       totalCount={items.length}
       overscan={{ main: 1200, reverse: 1200 }}

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 export const useThrottle = <T extends any[]>(
   fn: (...args: T) => void,
-  interval = 300
+  interval = 300,
 ): [(...args: T) => void, boolean] => {
   const [ready, setReady] = useState(true);
   const timerRef = useRef<number | undefined>(undefined);
@@ -14,7 +14,7 @@ export const useThrottle = <T extends any[]>(
       setReady(false);
       fn(...args);
     },
-    [ready, fn]
+    [ready, fn],
   );
 
   useEffect(() => {

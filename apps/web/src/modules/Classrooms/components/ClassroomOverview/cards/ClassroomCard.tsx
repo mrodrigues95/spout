@@ -48,8 +48,8 @@ export const ClassroomActionCard = ({
       as={ButtonOrLink}
       variant="unstyled"
       className={clsx(
-        'relative w-full bg-white text-left select-none transition duration-150 ease-in-out hover:transform hover:-translate-y-0.5 active:translate-y-0.5 focus:outline-none focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-gray-900',
-        className
+        'focus:outline-none relative w-full select-none bg-white text-left transition duration-150 ease-in-out hover:-translate-y-0.5 hover:transform focus:ring focus:ring-gray-900 focus:ring-offset-2 focus:ring-offset-white active:translate-y-0.5',
+        className,
       )}
       {...props}
     >

@@ -25,7 +25,7 @@ export const useSendDiscussionMessageMutation = () => {
   const sendDiscussionMessage = useCallback(
     (
       { discussionId, content, fileIds }: SendDiscussionMessageInput,
-      creatorId: string
+      creatorId: string,
     ) =>
       commit({
         variables: { input: { discussionId, content, fileIds } },
@@ -34,7 +34,7 @@ export const useSendDiscussionMessageMutation = () => {
           const discussionRecord = store.get(discussionId);
           if (!discussionRecord) {
             throw new Error(
-              `Unable to get discussion record for discussionId: ${discussionId}`
+              `Unable to get discussion record for discussionId: ${discussionId}`,
             );
           }
 
@@ -42,7 +42,7 @@ export const useSendDiscussionMessageMutation = () => {
           const userRecord = store.get(creatorId);
           if (!userRecord) {
             throw new Error(
-              `Unable to get user record for userId: ${creatorId}`
+              `Unable to get user record for userId: ${creatorId}`,
             );
           }
 
@@ -62,7 +62,7 @@ export const useSendDiscussionMessageMutation = () => {
           newDiscussionMessageRecord.setValue(null, 'discussionEvent');
           newDiscussionMessageRecord.setValue(
             new Date().toISOString(),
-            'createdAt'
+            'createdAt',
           );
           newDiscussionMessageRecord.setLinkedRecord(userRecord, 'createdBy');
 
@@ -71,7 +71,7 @@ export const useSendDiscussionMessageMutation = () => {
             store,
             conn,
             newDiscussionMessageRecord,
-            'MessagesEdge'
+            'MessagesEdge',
           );
           ConnectionHandler.insertEdgeAfter(conn, newEdge);
         },
@@ -102,7 +102,7 @@ export const useSendDiscussionMessageMutation = () => {
         //   ConnectionHandler.insertEdgeAfter(conn, newEdge);
         // },
       }),
-    [commit]
+    [commit],
   );
 
   return { sendDiscussionMessage };

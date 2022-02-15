@@ -13,7 +13,7 @@ const Template: Story<AvatarProps> = (args) => (
 export const Primary = Template.bind({});
 Primary.args = {
   src: 'https://bit.ly/ryan-florence',
-  name: 'Ryan Florence'
+  name: 'Ryan Florence',
 };
 
 export const Initials = Template.bind({});

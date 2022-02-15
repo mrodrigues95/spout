@@ -58,7 +58,7 @@ const SignUpForm = () => {
     <Link
       href="/auth/login"
       variant="link"
-      className="text-green-600 font-semibold"
+      className="font-semibold text-green-600"
       preserveRedirect
     >
       Login.
@@ -92,7 +92,7 @@ const SignUpForm = () => {
           link: loginLink,
         }}
       >
-        <Form form={form} onSubmit={onSubmit} className="flex flex-col w-full">
+        <Form form={form} onSubmit={onSubmit} className="flex w-full flex-col">
           <AuthError title="Sign Up failed." error={signUpError} />
           <Form.Input
             label="Name"

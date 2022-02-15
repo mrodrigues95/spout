@@ -10,7 +10,7 @@ interface ComposerToolbarContextType {
 }
 
 const ComposerToolbarContext = createContext<ComposerToolbarContextType | null>(
-  null
+  null,
 );
 
 interface Props extends ComposerToolbarContextType {
@@ -33,7 +33,7 @@ export const ComposerToolbarProvider = ({
       onFilesAccepted,
       onFilesRejected,
     }),
-    [isUploadingFiles, message, onFilesAccepted, onFilesRejected, onNewMessage]
+    [isUploadingFiles, message, onFilesAccepted, onFilesRejected, onNewMessage],
   );
 
   return (

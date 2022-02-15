@@ -8,7 +8,7 @@ import { SidebarClassroomsQuery } from './__generated__/SidebarClassroomsQuery.g
 
 export const SidebarClassroomsSkeleton = () => {
   const stack = (
-    <Skeleton.Stack className="pl-4 mt-2">
+    <Skeleton.Stack className="mt-2 pl-4">
       <Skeleton className="h-3 w-1/2" />
       <Skeleton className="h-3 w-2/3" />
       <Skeleton className="h-3 w-full" />
@@ -43,7 +43,7 @@ const SidebarClassrooms = ({ fetchKey }: Props) => {
       }
     `,
     {},
-    { fetchKey }
+    { fetchKey },
   );
 
   return (

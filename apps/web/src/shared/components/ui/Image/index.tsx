@@ -25,7 +25,7 @@ const ImageFallback = ({ fallback, rounded }: ImageFallbackProps) => {
     <div
       className={clsx(
         'absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-500',
-        rounded ? 'rounded-full' : 'rounded-md'
+        rounded ? 'rounded-full' : 'rounded-md',
       )}
     >
       {fallback ? fallback : <FontAwesomeIcon icon={faImage} />}
@@ -56,7 +56,7 @@ const Image = ({
         className={clsx(
           'relative',
           rounded ? 'rounded-full' : 'rounded-md',
-          SIZES[size]
+          SIZES[size],
         )}
       >
         {error ? (

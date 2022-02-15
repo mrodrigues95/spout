@@ -13,7 +13,7 @@ export const ModalFooter = ({
   return (
     <div
       className={clsx(
-        'flex items-center justify-end px-6 py-4 space-x-2 bg-gray-50 rounded-b-md',
+        'flex items-center justify-end space-x-2 rounded-b-md bg-gray-50 px-6 py-4',
         className,
       )}
       {...props}

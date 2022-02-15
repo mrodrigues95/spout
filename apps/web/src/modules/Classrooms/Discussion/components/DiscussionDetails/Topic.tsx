@@ -28,7 +28,7 @@ export const Item = ({ label, content, onClick }: ItemProps) => {
 
   const item = (
     <Component
-      className="relative w-full flex items-center justify-between space-x-4"
+      className="relative flex w-full items-center justify-between space-x-4"
       {...(content && {
         variant: 'unstyled',
         'aria-labelledby': `spout-details-label-${generateId()}`,
@@ -54,7 +54,7 @@ export const Item = ({ label, content, onClick }: ItemProps) => {
           size="xs"
           variant="light"
           scheme="orange"
-          className="uppercase rounded"
+          className="rounded uppercase"
           onClick={onClick}
         >
           Edit
@@ -69,7 +69,7 @@ export const Item = ({ label, content, onClick }: ItemProps) => {
         <Tooltip
           label={content}
           placement="left-start"
-          className="block max-w-[40rem] max-h-[40rem] p-2 rounded-md shadow-md bg-white ring-1 ring-gray-900/5 break-words whitespace-pre-line"
+          className="block max-h-[40rem] max-w-[40rem] whitespace-pre-line break-words rounded-md bg-white p-2 shadow-md ring-1 ring-gray-900/5"
           unstyled
         >
           {item}
@@ -135,7 +135,7 @@ const Topic = ({ discussion }: Props) => {
           setIsOpen(false);
         },
       }),
-    [updateTopic, data.id, form, handleError]
+    [updateTopic, data.id, form, handleError],
   );
 
   return (

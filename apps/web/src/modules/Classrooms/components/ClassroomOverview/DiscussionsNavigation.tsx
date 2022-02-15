@@ -7,7 +7,7 @@ import clsx from 'clsx';
 import { DiscussionsNavigation_discussions$key } from './__generated__/DiscussionsNavigation_discussions.graphql';
 
 const HorizontalNavigationSeparator = () => {
-  return <span className="ml-2 -mr-2 border border-gray-400 opacity-50 h-5" />;
+  return <span className="ml-2 -mr-2 h-5 border border-gray-400 opacity-50" />;
 };
 
 interface HorziontalNavigationItemProps extends ComponentProps<'li'> {}
@@ -19,8 +19,8 @@ const HorziontalNavigationItem = ({
   return (
     <li
       className={clsx(
-        'inline-flex items-center justify-center h-full w-16',
-        className
+        'inline-flex h-full w-16 items-center justify-center',
+        className,
       )}
     >
       {children}
@@ -47,11 +47,11 @@ const DiscussionsNavigation = ({ classroom }: Props) => {
 
   return (
     <HorizontalNavigation as="nav" className="py-2" hideScroll>
-      <ul className="flex items-center justify-center px-1.5 space-x-2">
+      <ul className="flex items-center justify-center space-x-2 px-1.5">
         <HorziontalNavigationItem className="mr-2">
           <Tooltip label="Create Discussion">
             <Button
-              className="flex-1 h-full p-4 bg-indigo-400 text-white select-none outline-none rounded-100 transition-all duration-150 ease-in-out hover:rounded-2xl focus:ring focus:ring-offset-2 focus:ring-offset-white focus:rounded-2xl"
+              className="outline-none h-full flex-1 select-none rounded-100 bg-indigo-400 p-4 text-white transition-all duration-150 ease-in-out hover:rounded-2xl focus:rounded-2xl focus:ring focus:ring-offset-2 focus:ring-offset-white"
               variant="unstyled"
             >
               <FontAwesomeIcon icon={faPlus} />
@@ -65,7 +65,7 @@ const DiscussionsNavigation = ({ classroom }: Props) => {
               <Link
                 key={discussion.id}
                 href={`/classrooms/${data.id}/${discussion.id}`}
-                className="flex-1 h-full p-4 bg-indigo-400 text-white select-none outline-none rounded-100 transition-all duration-150 ease-in-out hover:rounded-2xl focus:ring focus:ring-offset-2 focus:ring-offset-white focus:rounded-2xl"
+                className="outline-none h-full flex-1 select-none rounded-100 bg-indigo-400 p-4 text-white transition-all duration-150 ease-in-out hover:rounded-2xl focus:rounded-2xl focus:ring focus:ring-offset-2 focus:ring-offset-white"
                 variant="unstyled"
                 onMouseDown={(e) => e.preventDefault()}
               >

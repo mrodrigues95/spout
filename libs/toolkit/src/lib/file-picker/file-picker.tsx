@@ -33,7 +33,7 @@ const Button = forwardRef<HTMLSpanElement, ButtonProps>(
         {...props}
       />
     );
-  }
+  },
 );
 
 interface FilePickerContextType {

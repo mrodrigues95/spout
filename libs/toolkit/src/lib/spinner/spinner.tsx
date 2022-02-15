@@ -9,7 +9,7 @@ const STYLES = {
     sm: 'h-4 w-4',
     md: 'h-6 w-6',
     lg: 'h-8 w-8',
-    xl: 'h-10 w-10'
+    xl: 'h-10 w-10',
   },
   scheme: {
     black: 'text-black',
@@ -46,7 +46,7 @@ export const Spinner = ({
       className={clsx(
         'flex items-center',
         center && 'justify-center',
-        className
+        className,
       )}
       role="status"
       {...props}
@@ -55,7 +55,7 @@ export const Spinner = ({
         className={clsx(
           variant === 'circle' && 'animate-spin',
           STYLES.size[size],
-          STYLES.scheme[scheme]
+          STYLES.scheme[scheme],
         )}
       />
       <span className="sr-only">{srLabel}</span>

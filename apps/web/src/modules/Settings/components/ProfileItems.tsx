@@ -42,7 +42,7 @@ const ProfileItem = ({
         <div className="inline-flex items-center justify-center">
           <div
             className={clsx(
-              'relative w-12 h-12 rounded-full',
+              'relative h-12 w-12 rounded-full',
               variants[colour],
             )}
           >
@@ -51,16 +51,16 @@ const ProfileItem = ({
             </span>
           </div>
         </div>
-        <div className="flex-1 ml-3">
+        <div className="ml-3 flex-1">
           <div>
             <span
               id={titleId}
-              className="font-bold text-md text-gray-900 sm:text-xl"
+              className="text-md font-bold text-gray-900 sm:text-xl"
             >
               {title}
             </span>
           </div>
-          <p id={descId} className="font-medium text-sm text-gray-500">
+          <p id={descId} className="text-sm font-medium text-gray-500">
             {description}
           </p>
         </div>

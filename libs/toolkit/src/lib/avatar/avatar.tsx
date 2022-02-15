@@ -96,11 +96,11 @@ export const Avatar = ({
   return (
     <span
       className={clsx(
-        'relative inline-flex items-center justify-center flex-shrink-0 text-center uppercase font-semibold border-transparent',
+        'relative inline-flex flex-shrink-0 items-center justify-center border-transparent text-center font-semibold uppercase',
         rounded ? 'rounded-full' : 'rounded-md',
         STYLES.size[size],
         STYLES.scheme[scheme],
-        className
+        className,
       )}
       {...props}
     >
