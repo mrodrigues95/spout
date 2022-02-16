@@ -28,9 +28,10 @@ const fragment = graphql`
 
 interface Props {
   discussion: DiscussionHeader_discussion$key;
+  setShowDetails: () => void;
 }
 
-const DiscussionHeader = ({ discussion }: Props) => {
+const DiscussionHeader = ({ discussion, setShowDetails }: Props) => {
   const data = useFragment(fragment, discussion);
 
   const router = useRouter();
@@ -98,6 +99,7 @@ const DiscussionHeader = ({ discussion }: Props) => {
             className="text-blue-500 hover:text-blue-700 focus:text-blue-700"
             aria-label="Show discussion details"
             size="md"
+            onClick={setShowDetails}
           />
         </Tooltip>
       </div>

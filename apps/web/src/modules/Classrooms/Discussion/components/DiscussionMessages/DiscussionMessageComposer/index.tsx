@@ -71,11 +71,6 @@ const DiscussionMessageComposer = ({ ...props }: Props) => {
     }
   };
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    // If the user wants to enter a new line, they must use SHIFT+ENTER.
-    if (e.target.value !== '\n') setMessage(e.target.value);
-  };
-
   const onFilesAccepted = useCallback(
     (files: File[]) => setAcceptedFiles(files),
     [],
@@ -98,7 +93,7 @@ const DiscussionMessageComposer = ({ ...props }: Props) => {
           placeholder={`Message #${discussion.name.trim()}`}
           value={message}
           aria-label="Enter message"
-          onChange={handleOnChange}
+          onChange={(e) => setMessage(e.target.value)}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           onKeyPress={handleKeyPress}

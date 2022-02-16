@@ -1,6 +1,6 @@
-import React, { useCallback, forwardRef, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
-import { Components, Virtuoso } from 'react-virtuoso';
+import { Components, ScrollSeekConfiguration, Virtuoso } from 'react-virtuoso';
 import { Skeleton } from '@spout/toolkit';
 import {
   Divider,
@@ -85,9 +85,8 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
 
   const {
     firstItemIndex,
-    items,
-    recentMessages,
-    optimisticMessages,
+    data: { items, recentMessages },
+    hasOptimisticMessages,
   } = useDiscussionMessages(discussion.id, nodes);
 
   useDiscussionMessagesSubscription(discussion.id, me.id);
@@ -96,36 +95,39 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
     if (isMounted.current && hasPrevious && !isLoadingPrevious) {
       loadPrevious(50);
     }
+
+    return false;
   }, [isMounted, hasPrevious, isLoadingPrevious, loadPrevious]);
 
   const followOutput = useCallback(
-    (isAtBottom) => (optimisticMessages.length || isAtBottom ? 'auto' : false),
-    [optimisticMessages.length]
+    (isAtBottom) => (hasOptimisticMessages || isAtBottom ? 'auto' : false),
+    [hasOptimisticMessages]
   );
 
   const itemContent = useCallback(
     (_, item: Item) => {
-      return isDivider(item) ? (
-        <DiscussionMessageDivider date={(item as Divider).date} />
-      ) : isEvent(item) ? (
-        // Events are considered as regular messages but styled different.
-        <DiscussionMessageEvent event={item as TDiscussionMessage} />
-      ) : isOptimistic(item) ? (
-        <DiscussionOptimisticMessage
-          discussionId={discussion.id}
-          recentMessages={recentMessages}
-          message={item as TOptimisticDiscussionMessage}
-          me={me}
-        />
-      ) : (
-        <DiscussionMessage
-          recentMessages={recentMessages}
-          message={item as TDiscussionMessage}
-          me={me}
-        />
-      );
+      return <div style={{ height: 200, color: 'red' }}>Placeholder 23</div>
+      // return isDivider(item) ? (
+      //   <DiscussionMessageDivider date={(item as Divider).date} />
+      // ) : isEvent(item) ? (
+      //   // Events are considered as regular messages but styled different.
+      //   <DiscussionMessageEvent event={item as TDiscussionMessage} />
+      // ) : isOptimistic(item) ? (
+      //   <DiscussionOptimisticMessage
+      //     discussionId={discussion.id}
+      //     recentMessages={recentMessages}
+      //     message={item as TOptimisticDiscussionMessage}
+      //     me={me}
+      //   />
+      // ) : (
+      //   <DiscussionMessage
+      //     recentMessages={recentMessages}
+      //     message={item as TDiscussionMessage}
+      //     me={me}
+      //   />
+      // );
     },
-    [discussion.id, me, recentMessages],
+    [discussion.id, me, recentMessages]
   );
 
   const components: Components = useMemo(
@@ -145,40 +147,35 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
         ) : (
           <DiscussionMessagesListHeader discussion={discussion} />
         ),
-      List: forwardRef(function List(props, ref) {
-        return (
-          <ol
-            {...props}
-            // @ts-ignore: `Virtuoso/List` interface is not polymorphic and expects a `div`.
-            ref={ref}
-            role="list"
-          />
-        );
-      }) as Components['List'],
-      Item: ({ children, ...props }) => (
-        <li {...props} role="listitem">
-          {children}
-        </li>
+      ScrollSeekPlaceholder: ({ height, index }) => (
+        <div style={{ height, color: 'red' }}>Placeholder {index}</div>
       ),
       Footer: () => <div className="pt-2" />,
     }),
-    [hasPrevious, discussion],
+    [hasPrevious, discussion]
+  );
+
+  const scrollSeekConfiguration: ScrollSeekConfiguration = useMemo(
+    () => ({
+      enter: (velocity) => Math.abs(velocity) > 750,
+      exit: (velocity) => Math.abs(velocity) < 100,
+    }),
+    []
   );
 
   // TODO: Create a 'Jump to Present' footer.
   // TODO: Use new `context` prop to memoize `components` properly.
   return (
     <Virtuoso
-      context={{ hasPrevious, discussion }}
       data={items}
-      totalCount={items.length}
-      overscan={{ main: 1200, reverse: 1200 }}
+      increaseViewportBy={{ top: 300, bottom: 100 }}
       firstItemIndex={Math.max(0, firstItemIndex)}
       initialTopMostItemIndex={items.length - 1}
       startReached={startReached}
       itemContent={itemContent}
       components={components}
       followOutput={followOutput}
+      scrollSeekConfiguration={scrollSeekConfiguration}
     />
   );
 };

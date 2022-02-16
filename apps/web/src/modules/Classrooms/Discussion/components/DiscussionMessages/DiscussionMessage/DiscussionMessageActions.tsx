@@ -2,20 +2,23 @@ import { faPen, faThumbtack, faLaugh } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconButton, Tooltip } from '@spout/toolkit';
 import clsx from 'clsx';
+import { useDiscussionMessage } from './DiscussionMessageProvider';
 
-interface Props {
-  isMyMessage: boolean;
-  isOptimistic: boolean;
-}
+const DiscussionMessageActions = () => {
+  const {
+    isMyMessage,
+    isOptimistic,
+    isEditing,
+    setIsEditing,
+  } = useDiscussionMessage()!;
 
-const DiscussionMessageActions = ({ isMyMessage, isOptimistic }: Props) => {
-  if (isOptimistic) return null;
+  if (isOptimistic || isEditing) return null;
 
   return (
     <div
       className={clsx(
         'absolute -top-2 z-10 hidden px-4 group-hover:block',
-        isMyMessage ? 'left-0' : 'right-0',
+        isMyMessage ? 'left-0' : 'right-0'
       )}
     >
       <ul className="flex items-center space-x-1 rounded-md bg-white p-1 shadow-md ring-1 ring-gray-900/5">
@@ -35,6 +38,7 @@ const DiscussionMessageActions = ({ isMyMessage, isOptimistic }: Props) => {
                 aria-label="Edit Message"
                 className="text-gray-500"
                 icon={<FontAwesomeIcon icon={faPen} />}
+                onClick={() => setIsEditing(true)}
               />
             </Tooltip>
           </li>

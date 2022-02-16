@@ -4,39 +4,49 @@ import {
   generateItems,
   getRecentMessages,
   Item,
+  RecentMessages,
 } from '../utils/messages';
 import { useStore } from '../utils/optimisticMessagesStore';
+
+interface DiscussionMessagesListData {
+  items: Item[];
+  recentMessages: RecentMessages;
+}
 
 const START_INDEX = 1000000;
 
 export const useDiscussionMessages = (
   discussionId: string,
-  nodes: DiscussionMessage[],
+  nodes: DiscussionMessage[]
 ) => {
   const [firstItemIndex, setFirstItemIndex] = useState(START_INDEX);
-  const [items, setItems] = useState<Item[]>([]);
+  const [data, setData] = useState<DiscussionMessagesListData>({
+    items: [],
+    recentMessages: {},
+  });
 
   const optimisticMessages = useStore(
-    useCallback(
-      (state) => state.messagesByDiscussionId[discussionId] || [],
-      [discussionId],
-    ),
+    useCallback((state) => state.messagesByDiscussionId[discussionId] || [], [
+      discussionId,
+    ])
   );
 
-  const messages = useMemo(
-    () => nodes.concat(optimisticMessages),
-    [nodes, optimisticMessages],
-  );
+  const messages = useMemo(() => nodes.concat(optimisticMessages), [
+    nodes,
+    optimisticMessages,
+  ]);
 
-  const recentMessages = useMemo(() => getRecentMessages(items), [items]);
+  const hasOptimisticMessages = useMemo(() => !!optimisticMessages.length, [
+    optimisticMessages.length,
+  ]);
 
   useEffect(() => {
-    // `items` need to be handled in state rather than memoized in order for
-    // `followOutput` to work properly.
     const items = generateItems(messages);
-    setItems(items);
+    const recentMessages = getRecentMessages(items);
+
+    setData({ items, recentMessages });
     setFirstItemIndex(START_INDEX - items.length);
   }, [messages]);
 
-  return { firstItemIndex, items, recentMessages, optimisticMessages };
+  return { data, firstItemIndex, hasOptimisticMessages };
 };

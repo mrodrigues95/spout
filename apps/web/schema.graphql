@@ -14,9 +14,7 @@ directive @defer(
   """
   label: String
 
-  """
-  Deferred when true.
-  """
+  """Deferred when true."""
   if: Boolean
 ) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 
@@ -34,14 +32,10 @@ directive @stream(
   """
   label: String
 
-  """
-  The initial elements that shall be send down to the consumer.
-  """
+  """The initial elements that shall be send down to the consumer."""
   initialCount: Int! = 0
 
-  """
-  Streamed when true.
-  """
+  """Streamed when true."""
   if: Boolean
 ) on FIELD
 
@@ -51,9 +45,7 @@ directive @authorize(
   """
   policy: String
 
-  """
-  Roles that are allowed to access the annotated resource.
-  """
+  """Roles that are allowed to access the annotated resource."""
   roles: [String!]
 
   """
@@ -333,10 +325,7 @@ input ComparableNullableOfInt32OperationFilterInput {
   nlte: Int
 }
 
-union CompleteUploadError =
-    BlobNotFoundError
-  | BlobPropertiesError
-  | FileNotFoundError
+union CompleteUploadError = BlobNotFoundError | BlobPropertiesError | FileNotFoundError
 
 input CompleteUploadInput {
   fileId: ID!
@@ -382,15 +371,10 @@ type CreateDiscussionPayload {
   query: Query!
 }
 
-"""
-The `DateTime` scalar represents an ISO-8601 compliant date time type.
-"""
+"""The `DateTime` scalar represents an ISO-8601 compliant date time type."""
 scalar DateTime
 
-union DeleteFileError =
-    FileNotFoundError
-  | BlobNotFoundError
-  | BlobDeletionError
+union DeleteFileError = FileNotFoundError | BlobNotFoundError | BlobDeletionError
 
 input DeleteFileInput {
   fileId: ID!
@@ -462,19 +446,13 @@ type Discussion implements Node {
   createdBy: User!
   classroom: Classroom!
   messages(
-    """
-    Returns the first _n_ elements from the list.
-    """
+    """Returns the first _n_ elements from the list."""
     first: Int
 
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
+    """Returns the elements in the list that come after the specified cursor."""
     after: String
 
-    """
-    Returns the last _n_ elements from the list.
-    """
+    """Returns the last _n_ elements from the list."""
     last: Int
 
     """
@@ -517,6 +495,10 @@ input DiscussionFilterInput {
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
   messages: ListFilterInputTypeOfMessageFilterInput
+}
+
+type DiscussionMessageNotFoundError implements Error {
+  message: String!
 }
 
 type DiscussionMessageSubscriptionPayload {
@@ -606,38 +588,24 @@ type FileNotFoundError implements Error {
   message: String!
 }
 
-"""
-A connection to a list of items.
-"""
+"""A connection to a list of items."""
 type FilesConnection {
-  """
-  Information to aid in pagination.
-  """
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
 
-  """
-  A list of edges.
-  """
+  """A list of edges."""
   edges: [FilesEdge!]
 
-  """
-  A flattened list of the nodes.
-  """
+  """A flattened list of the nodes."""
   nodes: [File!]
 }
 
-"""
-An edge in a connection.
-"""
+"""An edge in a connection."""
 type FilesEdge {
-  """
-  A cursor for use in pagination.
-  """
+  """A cursor for use in pagination."""
   cursor: String!
 
-  """
-  The item at the end of the edge.
-  """
+  """The item at the end of the edge."""
   node: File!
 }
 
@@ -747,9 +715,7 @@ input InviteFilterInput {
   logs: ListFilterInputTypeOfClassroomInviteFilterInput
 }
 
-union JoinClassroomError =
-    ClassroomInviteExpiredError
-  | UserAlreadyInClassroomError
+union JoinClassroomError = ClassroomInviteExpiredError | UserAlreadyInClassroomError
 
 input JoinClassroomInput {
   code: String!
@@ -924,38 +890,24 @@ input MessageFilterInput {
   messageFiles: ListFilterInputTypeOfMessageFileFilterInput
 }
 
-"""
-A connection to a list of items.
-"""
+"""A connection to a list of items."""
 type MessagesConnection {
-  """
-  Information to aid in pagination.
-  """
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
 
-  """
-  A list of edges.
-  """
+  """A list of edges."""
   edges: [MessagesEdge!]
 
-  """
-  A flattened list of the nodes.
-  """
+  """A flattened list of the nodes."""
   nodes: [Message!]
 }
 
-"""
-An edge in a connection.
-"""
+"""An edge in a connection."""
 type MessagesEdge {
-  """
-  A cursor for use in pagination.
-  """
+  """A cursor for use in pagination."""
   cursor: String!
 
-  """
-  The item at the end of the edge.
-  """
+  """The item at the end of the edge."""
   node: Message!
 }
 
@@ -979,26 +931,17 @@ type Mutation {
   refreshSession(input: RefreshSessionInput!): RefreshSessionPayload!
   createClassroom(input: CreateClassroomInput!): CreateClassroomPayload!
   joinClassroom(input: JoinClassroomInput!): JoinClassroomPayload!
-  createClassroomInvite(
-    input: CreateClassroomInviteInput!
-  ): CreateClassroomInvitePayload!
-  sendDiscussionMessage(
-    input: SendDiscussionMessageInput!
-  ): SendDiscussionMessagePayload!
+  createClassroomInvite(input: CreateClassroomInviteInput!): CreateClassroomInvitePayload!
+  sendDiscussionMessage(input: SendDiscussionMessageInput!): SendDiscussionMessagePayload!
+  updateDiscussionMessage(input: UpdateDiscussionMessageInput!): UpdateDiscussionMessagePayload!
   createDiscussion(input: CreateDiscussionInput!): CreateDiscussionPayload!
-  updateDiscussionTopic(
-    input: UpdateDiscussionTopicInput!
-  ): UpdateDiscussionTopicPayload!
-  updateDiscussionDescription(
-    input: UpdateDiscussionDescriptionInput!
-  ): UpdateDiscussionDescriptionPayload!
+  updateDiscussionTopic(input: UpdateDiscussionTopicInput!): UpdateDiscussionTopicPayload!
+  updateDiscussionDescription(input: UpdateDiscussionDescriptionInput!): UpdateDiscussionDescriptionPayload!
   signUp(input: SignUpInput!): SignUpPayload!
   login(input: LoginInput!): LoginPayload!
   logout(input: LogoutInput!): LogoutPayload!
   generateUploadSAS(input: GenerateUploadSASInput!): GenerateUploadSASPayload!
-  generateDownloadSAS(
-    input: GenerateDownloadSASInput!
-  ): GenerateDownloadSASPayload!
+  generateDownloadSAS(input: GenerateDownloadSASInput!): GenerateDownloadSASPayload!
   completeUpload(input: CompleteUploadInput!): CompleteUploadPayload!
   deleteFile(input: DeleteFileInput!): DeleteFilePayload!
 }
@@ -1017,9 +960,7 @@ input NullableOfDiscussionEventOperationFilterInput {
   nin: [DiscussionEvent]
 }
 
-"""
-Information about pagination in a connection.
-"""
+"""Information about pagination in a connection."""
 type PageInfo {
   """
   Indicates whether more edges exist following the set defined by the clients arguments.
@@ -1031,14 +972,10 @@ type PageInfo {
   """
   hasPreviousPage: Boolean!
 
-  """
-  When paginating backwards, the cursor to continue.
-  """
+  """When paginating backwards, the cursor to continue."""
   startCursor: String
 
-  """
-  When paginating forwards, the cursor to continue.
-  """
+  """When paginating forwards, the cursor to continue."""
   endCursor: String
 }
 
@@ -1047,23 +984,15 @@ type ParseSignatureError implements Error {
 }
 
 type Query {
-  """
-  Fetches an object given its ID.
-  """
+  """Fetches an object given its ID."""
   node(
-    """
-    ID of the object.
-    """
+    """ID of the object."""
     id: ID!
   ): Node
 
-  """
-  Lookup nodes by a list of IDs.
-  """
+  """Lookup nodes by a list of IDs."""
   nodes(
-    """
-    The list of node IDs.
-    """
+    """The list of node IDs."""
     ids: [ID!]!
   ): [Node]!
   me: User
@@ -1078,19 +1007,13 @@ type Query {
   discussionById(id: ID!): Discussion!
   discussionsById(ids: [ID!]!): [Discussion!]!
   files(
-    """
-    Returns the first _n_ elements from the list.
-    """
+    """Returns the first _n_ elements from the list."""
     first: Int
 
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
+    """Returns the elements in the list that come after the specified cursor."""
     after: String
 
-    """
-    Returns the last _n_ elements from the list.
-    """
+    """Returns the last _n_ elements from the list."""
     last: Int
 
     """
@@ -1225,9 +1148,7 @@ input StringOperationFilterInput {
 }
 
 type Subscription {
-  onDiscussionMessageReceived(
-    discussionId: ID!
-  ): DiscussionMessageSubscriptionPayload!
+  onDiscussionMessageReceived(discussionId: ID!): DiscussionMessageSubscriptionPayload!
 }
 
 union UpdateDiscussionDescriptionError = DiscussionNotFoundError
@@ -1240,6 +1161,19 @@ input UpdateDiscussionDescriptionInput {
 type UpdateDiscussionDescriptionPayload {
   discussion: Discussion
   errors: [UpdateDiscussionDescriptionError!]
+  query: Query!
+}
+
+union UpdateDiscussionMessageError = DiscussionMessageNotFoundError
+
+input UpdateDiscussionMessageInput {
+  messageId: ID!
+  content: String!
+}
+
+type UpdateDiscussionMessagePayload {
+  message: Message
+  errors: [UpdateDiscussionMessageError!]
   query: Query!
 }
 
@@ -1482,3 +1416,4 @@ input WhitelistedFileExtensionOperationFilterInput {
   in: [WhitelistedFileExtension!]
   nin: [WhitelistedFileExtension!]
 }
+

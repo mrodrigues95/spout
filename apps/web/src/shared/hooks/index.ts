@@ -6,3 +6,4 @@ export * from './useThrottle';
 export * from './useIsMounted';
 export * from './files';
 export * from './useConnection';
+export * from './useKeyboardEvent';

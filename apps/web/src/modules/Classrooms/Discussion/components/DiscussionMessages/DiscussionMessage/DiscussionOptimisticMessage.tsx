@@ -98,7 +98,7 @@ const DiscussionOptimisticMessage = ({
   }, [send]);
 
   const opts = useMemo(
-    () => ({ error: hasError, loading: isInFlight, retry: send }),
+    () => ({ hasError, loading: isInFlight, retry: send }),
     [hasError, isInFlight, send],
   );
 
@@ -106,7 +106,7 @@ const DiscussionOptimisticMessage = ({
     <DiscussionMessage
       message={{ ...message, attachments: [] }}
       me={me}
-      optimisticOpts={opts}
+      optimisticMessageOpts={opts}
       recentMessages={recentMessages}
     />
   );

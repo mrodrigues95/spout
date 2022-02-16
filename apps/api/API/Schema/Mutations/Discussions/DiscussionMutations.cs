@@ -61,6 +61,28 @@ namespace API.Schema.Mutations.Discussions {
 
         [Authorize]
         [UseApplicationDbContext]
+        [Error(typeof(DiscussionMessageNotFoundException))]
+        public async Task<Message?> UpdateDiscussionMessageAsync(
+            UpdateDiscussionMessageInput input,
+            [ScopedService] ApplicationDbContext ctx,
+            CancellationToken cancellationToken) {
+            var message = await ctx.Messages.FindAsync(
+                new object[] { input.MessageId },
+                cancellationToken);
+
+            if (message is null) {
+                throw new DiscussionMessageNotFoundException();
+            }
+
+            message.Content = input.Content;
+            message.UpdatedAt = DateTime.UtcNow;
+            await ctx.SaveChangesAsync(cancellationToken);
+
+            return message;
+        }
+
+        [Authorize]
+        [UseApplicationDbContext]
         [Error(typeof(ClassroomNotFoundException))]
         public async Task<Discussion?> CreateDiscussionAsync(
             CreateDiscussionInput input,

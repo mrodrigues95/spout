@@ -65,12 +65,7 @@ export const Form = <T extends FieldValues>({
   return (
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} {...props}>
-        <fieldset
-          className="flex flex-col space-y-4"
-          disabled={form.formState.isSubmitting}
-        >
-          {children}
-        </fieldset>
+        <fieldset className="flex flex-col space-y-4">{children}</fieldset>
       </form>
     </FormProvider>
   );

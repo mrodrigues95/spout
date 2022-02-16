@@ -7,6 +7,7 @@ import DiscussionDetails from './DiscussionDetails';
 import DiscussionMessagesList from './DiscussionMessages/DiscussionMessagesList';
 import DiscussionMessageComposer from './DiscussionMessages/DiscussionMessageComposer';
 import { ViewDiscussionQuery } from './__generated__/ViewDiscussionQuery.graphql';
+import { useState } from 'react';
 
 export const query = graphql`
   query ViewDiscussionQuery($id: ID!, $count: Int!, $cursor: String) {
@@ -38,14 +39,19 @@ const ViewDiscussion = ({ fetchKey }: Props) => {
       id: router.query.discussionId as string,
       count: 50,
     },
-    { fetchPolicy: 'store-and-network', fetchKey },
+    { fetchPolicy: 'store-and-network', fetchKey }
   );
+
+  const [showDetails, setShowDetails] = useState(true);
 
   return (
     <>
       <NextSeo title={data.discussionById.name} />
       <section className="flex flex-1 flex-col space-y-4">
-        <DiscussionHeader discussion={data.discussionById} />
+        <DiscussionHeader
+          discussion={data.discussionById}
+          setShowDetails={() => setShowDetails((prev) => !prev)}
+        />
         <article className="flex flex-1 flex-col space-y-3">
           <Card className="relative flex flex-1 flex-col rounded-xl bg-indigo-50/40 p-0">
             <div className="bg-messages absolute inset-0 h-full w-full opacity-[7%]" />
@@ -63,7 +69,7 @@ const ViewDiscussion = ({ fetchKey }: Props) => {
           </Card>
         </article>
       </section>
-      <DiscussionDetails discussion={data.discussionById} />
+      {showDetails && <DiscussionDetails discussion={data.discussionById} />}
     </>
   );
 };
