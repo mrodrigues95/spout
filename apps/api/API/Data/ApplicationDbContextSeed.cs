@@ -171,9 +171,10 @@ namespace API.Data {
 
             foreach (Classroom classroom in classrooms) {
                 var r = new Random();
+                var discussionCount = r.Next(1, 10);
 
                 // Create a random number of discussions for this classroom.
-                for (int i = 1; i < r.Next(1, 5); i++) {
+                for (int i = 0; i < discussionCount; ++i) {
                     var randomUser = classroom.Users
                         .OrderBy(cu => r.NextDouble())
                         .First()
@@ -198,7 +199,7 @@ namespace API.Data {
 
             foreach (Discussion discussion in discussions) {
                 var r = new Random();
-                var messageCount = r.Next(0, 200);
+                var messageCount = r.Next(0, 1000);
 
                 // Generate a random range of messages for this discussion.
                 for (int i = 0; i < messageCount; ++i) {

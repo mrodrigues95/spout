@@ -59,48 +59,46 @@ const DiscussionMessagesListHeader = ({ discussion }: Props) => {
   const data = useFragment(fragment, discussion);
 
   return (
-    <div className="px-4 py-6">
-      <Card className="relative space-y-4 overflow-hidden rounded-md bg-white px-6 py-4 shadow-sm ring-1 ring-gray-900/5">
-        <div className="space-y-4">
-          <div className="flex items-center">
-            <Image src={getRandomAvatar()} alt="" />
-            <Text className="mx-2" weight="semibold">
-              Welcome to
-            </Text>
-            <Badge scheme="green"># {data.name}</Badge>
-          </div>
-          {(data.topic || data.description) && (
-            <div className="space-y-2">
-              {data.topic && (
-                <TopicOrDescription
-                  content={data.topic}
-                  icon={faCommentAlt}
-                  label="Topic"
-                />
-              )}
-              {data.description && (
-                <TopicOrDescription
-                  content={data.description}
-                  icon={faPencilAlt}
-                  label="Description"
-                />
-              )}
-            </div>
-          )}
-        </div>
-        <div className="flex w-full items-center justify-center space-x-6">
-          <FontAwesomeIcon
-            icon={faUserPlus}
-            size="2x"
-            className="text-indigo-400"
-          />
-          <Text weight="medium">
-            <b className="text-gray-900">Invite others to this server</b> by
-            clicking on a share button when you&apos;re ready.
+    <Card className="relative space-y-4 overflow-hidden rounded-md bg-white px-6 py-4 shadow-sm ring-1 ring-gray-900/5">
+      <div className="space-y-4">
+        <div className="flex items-center">
+          <Image src={getRandomAvatar()} alt="" />
+          <Text className="mx-2" weight="semibold">
+            Welcome to
           </Text>
+          <Badge scheme="green"># {data.name}</Badge>
         </div>
-      </Card>
-    </div>
+        {(data.topic || data.description) && (
+          <div className="space-y-2">
+            {data.topic && (
+              <TopicOrDescription
+                content={data.topic}
+                icon={faCommentAlt}
+                label="Topic"
+              />
+            )}
+            {data.description && (
+              <TopicOrDescription
+                content={data.description}
+                icon={faPencilAlt}
+                label="Description"
+              />
+            )}
+          </div>
+        )}
+      </div>
+      <div className="flex w-full items-center justify-center space-x-6">
+        <FontAwesomeIcon
+          icon={faUserPlus}
+          size="2x"
+          className="text-indigo-400"
+        />
+        <Text weight="medium">
+          <b className="text-gray-900">Invite others to this server</b> by
+          clicking on a share button when you&apos;re ready.
+        </Text>
+      </div>
+    </Card>
   );
 };
 

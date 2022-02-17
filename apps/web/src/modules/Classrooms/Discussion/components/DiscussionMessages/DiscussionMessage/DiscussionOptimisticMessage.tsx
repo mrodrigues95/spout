@@ -65,13 +65,6 @@ const DiscussionOptimisticMessage = ({
     useMutation<DiscussionOptimisticMessageMutation>(mutation);
 
   const send = useCallback(() => {
-    // The timing between when mutations are considered complete and when the
-    // subscription updates is super sensitive. This means its possible for the mutation
-    // to fire multiple times depending on the current render cycle so to avoid
-    // that we optimistically mark this message as sent on the first request.
-    // If it fails, the user still has the option to re-send the message manually.
-    // markIsSent(discussionId, message.optimisticId!, true);
-
     sendMessage({
       variables: {
         input: {

@@ -1,30 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   DiscussionMessage,
   generateItems,
-  getRecentMessages,
-  Item,
-  RecentMessages,
+  getMyRecentMessages,
 } from '../utils/messages';
 import { useStore } from '../utils/optimisticMessagesStore';
-
-interface DiscussionMessagesListData {
-  items: Item[];
-  recentMessages: RecentMessages;
-}
-
-const START_INDEX = 1000000;
 
 export const useDiscussionMessages = (
   discussionId: string,
   nodes: DiscussionMessage[]
 ) => {
-  const [firstItemIndex, setFirstItemIndex] = useState(START_INDEX);
-  const [data, setData] = useState<DiscussionMessagesListData>({
-    items: [],
-    recentMessages: {},
-  });
-
   const optimisticMessages = useStore(
     useCallback((state) => state.messagesByDiscussionId[discussionId] || [], [
       discussionId,
@@ -36,17 +21,12 @@ export const useDiscussionMessages = (
     optimisticMessages,
   ]);
 
-  const hasOptimisticMessages = useMemo(() => !!optimisticMessages.length, [
-    optimisticMessages.length,
-  ]);
-
-  useEffect(() => {
+  const data = useMemo(() => {
     const items = generateItems(messages);
-    const recentMessages = getRecentMessages(items);
+    const recentMessages = getMyRecentMessages(items);
 
-    setData({ items, recentMessages });
-    setFirstItemIndex(START_INDEX - items.length);
+    return { items, recentMessages };
   }, [messages]);
 
-  return { data, firstItemIndex, hasOptimisticMessages };
+  return { data };
 };

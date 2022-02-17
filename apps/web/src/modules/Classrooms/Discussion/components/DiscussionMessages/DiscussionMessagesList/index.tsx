@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
-import { Components, ScrollSeekConfiguration, Virtuoso } from 'react-virtuoso';
+import { Components, ItemContent, Virtuoso } from 'react-virtuoso';
 import { Skeleton } from '@spout/toolkit';
 import {
   Divider,
@@ -11,10 +11,11 @@ import {
   OptimisticDiscussionMessage as TOptimisticDiscussionMessage,
   Item,
 } from '../../../utils/messages';
-import { useIsMounted, useConnection } from '../../../../../../shared/hooks';
+import { useConnection } from '../../../../../../shared/hooks';
 import {
   useDiscussionMessages,
   useDiscussionMessagesSubscription,
+  usePrependDiscussionItems,
 } from '../../../hooks';
 import { Card } from '../../../../../../shared/components';
 import { DiscussionMessagesList_user$key } from './__generated__/DiscussionMessagesList_user.graphql';
@@ -24,6 +25,7 @@ import DiscussionMessageDivider from '../DiscussionMessage/DiscussionMessageDivi
 import DiscussionMessage from '../DiscussionMessage';
 import DiscussionMessageEvent from '../DiscussionMessage/DiscussionMessageEvent';
 import DiscussionOptimisticMessage from '../DiscussionMessage/DiscussionOptimisticMessage';
+import { useShouldForceScrollToBottom } from '../../../hooks/useShouldForceScrollToBottom';
 
 const discussionFragment = graphql`
   fragment DiscussionMessagesList_discussion on Discussion
@@ -80,102 +82,98 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
     isLoadingPrevious,
   } = usePaginationFragment(discussionFragment, props.discussion);
 
-  const { isMounted } = useIsMounted();
   const nodes = useConnection(discussion.messages);
 
   const {
-    firstItemIndex,
     data: { items, recentMessages },
-    hasOptimisticMessages,
   } = useDiscussionMessages(discussion.id, nodes);
 
+  const numItemsPrepended = usePrependDiscussionItems(items);
+  
   useDiscussionMessagesSubscription(discussion.id, me.id);
 
   const startReached = useCallback(() => {
-    if (isMounted.current && hasPrevious && !isLoadingPrevious) {
-      loadPrevious(50);
-    }
+    if (!isLoadingPrevious && hasPrevious) loadPrevious(50);
+  }, [hasPrevious, isLoadingPrevious, loadPrevious]);
 
-    return false;
-  }, [isMounted, hasPrevious, isLoadingPrevious, loadPrevious]);
-
-  const followOutput = useCallback(
-    (isAtBottom) => (hasOptimisticMessages || isAtBottom ? 'auto' : false),
-    [hasOptimisticMessages]
+  const shouldForceScrollToBottom = useShouldForceScrollToBottom(
+    discussion.id,
+    me.id,
+    items
   );
 
-  const itemContent = useCallback(
-    (_, item: Item) => {
-      return <div style={{ height: 200, color: 'red' }}>Placeholder 23</div>
-      // return isDivider(item) ? (
-      //   <DiscussionMessageDivider date={(item as Divider).date} />
-      // ) : isEvent(item) ? (
-      //   // Events are considered as regular messages but styled different.
-      //   <DiscussionMessageEvent event={item as TDiscussionMessage} />
-      // ) : isOptimistic(item) ? (
-      //   <DiscussionOptimisticMessage
-      //     discussionId={discussion.id}
-      //     recentMessages={recentMessages}
-      //     message={item as TOptimisticDiscussionMessage}
-      //     me={me}
-      //   />
-      // ) : (
-      //   <DiscussionMessage
-      //     recentMessages={recentMessages}
-      //     message={item as TDiscussionMessage}
-      //     me={me}
-      //   />
-      // );
+  const followOutput = useCallback(
+    (isAtBottom) => {
+      if (shouldForceScrollToBottom()) return isAtBottom ? 'smooth' : 'auto';
+
+      // A message from another user has been received - don't scroll to bottom unless already there.
+      return isAtBottom ? 'smooth' : false;
+    },
+    [shouldForceScrollToBottom]
+  );
+
+  const itemContent: ItemContent<Item, unknown> = useCallback(
+    (_, item) => {
+      return isDivider(item) ? (
+        <DiscussionMessageDivider date={(item as Divider).date} />
+      ) : isEvent(item) ? (
+        // Events are considered as regular messages but styled different.
+        <DiscussionMessageEvent event={item as TDiscussionMessage} />
+      ) : isOptimistic(item) ? (
+        <DiscussionOptimisticMessage
+          discussionId={discussion.id}
+          recentMessages={recentMessages}
+          message={item as TOptimisticDiscussionMessage}
+          me={me}
+        />
+      ) : (
+        <DiscussionMessage
+          recentMessages={recentMessages}
+          message={item as TDiscussionMessage}
+          me={me}
+        />
+      );
     },
     [discussion.id, me, recentMessages]
   );
 
   const components: Components = useMemo(
     () => ({
-      Header: () =>
-        hasPrevious ? (
-          <div className="px-4 py-6">
+      Header: () => (
+        <div className="px-4 py-6 h-42">
+          {hasPrevious || isLoadingPrevious ? (
             <Card className="flex w-full space-x-2 rounded-md bg-white p-3 shadow-sm ring-1 ring-gray-900/5">
               <Skeleton className="h-10 w-10 rounded-full" />
-              <Skeleton.Stack className="flex-1">
+              <Skeleton.Stack vertical className="flex-1">
                 <Skeleton className="h-3 w-1/2" />
                 <Skeleton className="h-3 w-2/3" />
                 <Skeleton className="h-3 w-5/6" />
               </Skeleton.Stack>
             </Card>
-          </div>
-        ) : (
-          <DiscussionMessagesListHeader discussion={discussion} />
-        ),
-      ScrollSeekPlaceholder: ({ height, index }) => (
-        <div style={{ height, color: 'red' }}>Placeholder {index}</div>
+          ) : (
+            <DiscussionMessagesListHeader discussion={discussion} />
+          )}
+        </div>
       ),
       Footer: () => <div className="pt-2" />,
     }),
-    [hasPrevious, discussion]
-  );
-
-  const scrollSeekConfiguration: ScrollSeekConfiguration = useMemo(
-    () => ({
-      enter: (velocity) => Math.abs(velocity) > 750,
-      exit: (velocity) => Math.abs(velocity) < 100,
-    }),
-    []
+    [hasPrevious, isLoadingPrevious, discussion]
   );
 
   // TODO: Create a 'Jump to Present' footer.
-  // TODO: Use new `context` prop to memoize `components` properly.
   return (
     <Virtuoso
       data={items}
-      increaseViewportBy={{ top: 300, bottom: 100 }}
-      firstItemIndex={Math.max(0, firstItemIndex)}
-      initialTopMostItemIndex={items.length - 1}
-      startReached={startReached}
+      totalCount={items.length}
+      firstItemIndex={Math.max(0, numItemsPrepended)}
+      initialTopMostItemIndex={items.length ? items.length - 1 : 0}
       itemContent={itemContent}
       components={components}
       followOutput={followOutput}
-      scrollSeekConfiguration={scrollSeekConfiguration}
+      startReached={startReached}
+      overscan={0}
+      increaseViewportBy={{ top: 800, bottom: 200 }}
+      style={{ overflowX: 'hidden' }}
     />
   );
 };

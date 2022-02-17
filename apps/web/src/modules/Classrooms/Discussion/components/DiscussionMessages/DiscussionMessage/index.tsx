@@ -160,7 +160,6 @@ const getVerticalMessagePaddingStyles = ({
 };
 
 const DiscussionMessage = () => {
-  // TODO: Would it be better to keep state outside Virtuoso?
   const {
     message,
     recentMessage,

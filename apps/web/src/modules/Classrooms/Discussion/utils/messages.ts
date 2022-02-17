@@ -29,7 +29,7 @@ interface GroupedDiscussionMessages {
  * @returns An object containing messages groups which is indexed by `date`.
  */
 export const group = (
-  messages: DiscussionMessage[],
+  messages: DiscussionMessage[]
 ): GroupedDiscussionMessages =>
   messages.reduce((acc: GroupedDiscussionMessages, message) => {
     const createdAt = format(new Date(message.createdAt), 'MMM d, yyyy');
@@ -48,7 +48,7 @@ const sort = (groups: GroupedDiscussionMessages) => {
   Object.entries(days).forEach(([_, messages]) =>
     messages
       .sort((x, y) => getTime(x.createdAt) - getTime(y.createdAt))
-      .reverse(),
+      .reverse()
   );
 
   const sortedDays = Object.keys(days)
@@ -59,7 +59,7 @@ const sort = (groups: GroupedDiscussionMessages) => {
         ...acc,
         [day]: [...days[day]],
       }),
-      {},
+      {}
     );
 
   // Returning a map gurantees sort order is respected when being iterated on.
@@ -112,7 +112,7 @@ export const isDivider = (item: Item) =>
 export const isEvent = (item: Item) =>
   'isDiscussionEvent' in item && !!item.discussionEvent;
 
-const isMessage = (item: Item) => !(isDivider(item) || isEvent(item));
+export const isMessage = (item: Item) => !(isDivider(item) || isEvent(item));
 
 export interface RecentMessage {
   message: DiscussionMessage;
@@ -136,7 +136,7 @@ export type RecentMessages = Record<string, RecentMessage>;
  * @param items An array of `items`.
  * @returns An `object` containing recently grouped messages.
  */
-export const getRecentMessages = (items: Item[]) => {
+export const getMyRecentMessages = (items: Item[]) => {
   // Validate that the messages are within a five minute threshold of eachother.
   const isRecent = (d1: string, d2: string) => {
     return differenceInMinutes(new Date(d1), new Date(d2)) < 5;

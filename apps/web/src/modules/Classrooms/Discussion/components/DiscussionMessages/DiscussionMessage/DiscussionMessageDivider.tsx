@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { isToday, isYesterday } from 'date-fns';
 
 const DiscussionMessageDivider = ({ date }: { date: string }) => {
@@ -20,4 +19,4 @@ const DiscussionMessageDivider = ({ date }: { date: string }) => {
   );
 };
 
-export default memo(DiscussionMessageDivider);
+export default DiscussionMessageDivider;
