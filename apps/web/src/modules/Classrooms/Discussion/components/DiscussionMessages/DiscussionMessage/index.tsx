@@ -22,7 +22,7 @@ const DiscussionMessageHeader = () => {
 
   const { isFirstMessage, isRecent } = recentMessage;
 
-  if (isRecent || !isFirstMessage) return null;
+  if (isRecent && !isFirstMessage) return null;
 
   return (
     <div
@@ -32,7 +32,7 @@ const DiscussionMessageHeader = () => {
       )}
     >
       <span className="font-semibold text-gray-900">
-        {isMyMessage ? 'You' : message.createdBy}
+        {isMyMessage ? 'You' : message.createdBy.name}
       </span>
       <span className="text-xs font-medium text-gray-500">
         {formattedCreatedAt}
@@ -160,6 +160,7 @@ const getVerticalMessagePaddingStyles = ({
 };
 
 const DiscussionMessage = () => {
+  // TODO: Would it be better to keep state outside Virtuoso?
   const {
     message,
     recentMessage,
