@@ -38,6 +38,11 @@ namespace API.Schema.Types.Messages {
                 .Ignore();
 
             descriptor
+                .Field(m => m.PinnedById)
+                .Type<IntType>()
+                .Ignore();
+
+            descriptor
                 .Field(m => m.Discussion)
                 .Type<NonNullType<DiscussionType>>();
 
@@ -61,6 +66,13 @@ namespace API.Schema.Types.Messages {
                 .Name("createdBy");
 
             descriptor
+                .Field(m => m.PinnedBy)
+                .Type<UserType>()
+                .ResolveWith<MessageResolvers>(x =>
+                    x.GetPinnedByAsync(default!, default!, default!))
+                .Name("pinnedBy");
+
+            descriptor
                 .Field(m => m.MessageFiles)
                 .Type<NonNullType<ListType<NonNullType<FileType>>>>()
                 .UseDbContext<ApplicationDbContext>()
@@ -75,6 +87,14 @@ namespace API.Schema.Types.Messages {
             UserByIdDataLoader userById,
             CancellationToken cancellationToken)
             => await userById.LoadAsync(message.CreatedById, cancellationToken);
+
+            public async Task<User?> GetPinnedByAsync(
+            [Parent] Message message,
+            UserByIdDataLoader userById,
+            CancellationToken cancellationToken)
+            => message.PinnedById is null
+                ? null
+                : await userById.LoadAsync(message.PinnedById.Value, cancellationToken);
 
             public async Task<IEnumerable<File>> GetAttachmentsAsync(
                 [Parent] Message message,

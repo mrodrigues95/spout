@@ -14,6 +14,8 @@ namespace API.Data.Entities {
         public Discussion? Discussion { get; set; }
         public int CreatedById { get; set; }
         public User? CreatedBy { get; set; }
+        public int? PinnedById { get; set; }
+        public User? PinnedBy { get; set; }
         public bool IsDiscussionEvent { get; set; }
         public DiscussionEvent? DiscussionEvent { get; set; }
         public int? DelLogId { get; set; }

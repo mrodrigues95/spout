@@ -844,6 +844,7 @@ type Message implements Node {
   createdAt: DateTime!
   updatedAt: DateTime!
   createdBy: User!
+  pinnedBy: User
   attachments: [File!]!
   discussionEvent: DiscussionEvent
   delLogId: Int
@@ -880,6 +881,8 @@ input MessageFilterInput {
   discussion: DiscussionFilterInput
   createdById: ComparableInt32OperationFilterInput
   createdBy: UserFilterInput
+  pinnedById: ComparableNullableOfInt32OperationFilterInput
+  pinnedBy: UserFilterInput
   isDiscussionEvent: BooleanOperationFilterInput
   discussionEvent: NullableOfDiscussionEventOperationFilterInput
   delLogId: ComparableNullableOfInt32OperationFilterInput
@@ -918,6 +921,8 @@ input MessageSortInput {
   discussion: DiscussionSortInput
   createdById: SortEnumType
   createdBy: UserSortInput
+  pinnedById: SortEnumType
+  pinnedBy: UserSortInput
   isDiscussionEvent: SortEnumType
   discussionEvent: SortEnumType
   delLogId: SortEnumType
@@ -934,6 +939,7 @@ type Mutation {
   createClassroomInvite(input: CreateClassroomInviteInput!): CreateClassroomInvitePayload!
   sendDiscussionMessage(input: SendDiscussionMessageInput!): SendDiscussionMessagePayload!
   updateDiscussionMessage(input: UpdateDiscussionMessageInput!): UpdateDiscussionMessagePayload!
+  pinOrUnpinDiscussionMessage(input: PinOrUnpinDiscussionMessageInput!): PinOrUnpinDiscussionMessagePayload!
   createDiscussion(input: CreateDiscussionInput!): CreateDiscussionPayload!
   updateDiscussionTopic(input: UpdateDiscussionTopicInput!): UpdateDiscussionTopicPayload!
   updateDiscussionDescription(input: UpdateDiscussionDescriptionInput!): UpdateDiscussionDescriptionPayload!
@@ -981,6 +987,18 @@ type PageInfo {
 
 type ParseSignatureError implements Error {
   message: String!
+}
+
+union PinOrUnpinDiscussionMessageError = DiscussionMessageNotFoundError
+
+input PinOrUnpinDiscussionMessageInput {
+  messageId: ID!
+}
+
+type PinOrUnpinDiscussionMessagePayload {
+  message: Message
+  errors: [PinOrUnpinDiscussionMessageError!]
+  query: Query!
 }
 
 type Query {
@@ -1271,6 +1289,7 @@ type User implements Node {
   avatarUrl: String
   state: State
   messages: [Message!]!
+  pinnedMessages: [Message!]!
   invites: [ClassroomInvite!]!
   fileUploads: [File!]!
   userName: String
@@ -1307,6 +1326,7 @@ input UserFilterInput {
   updatedAt: ComparableDateTimeOperationFilterInput
   sessions: ListFilterInputTypeOfSessionFilterInput
   messages: ListFilterInputTypeOfMessageFilterInput
+  pinnedMessages: ListFilterInputTypeOfMessageFilterInput
   classrooms: ListFilterInputTypeOfClassroomUserFilterInput
   invites: ListFilterInputTypeOfClassroomInviteFilterInput
   fileUploads: ListFilterInputTypeOfFileFilterInput

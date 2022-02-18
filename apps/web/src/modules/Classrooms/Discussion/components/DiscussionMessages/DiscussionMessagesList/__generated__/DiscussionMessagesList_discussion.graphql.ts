@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<781b7c71c3e4026c6d7fc1f0327f36fa>>
+ * @generated SignedSource<<407d1fed6236edf484b24edc580cbc0c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -36,6 +36,10 @@ export type DiscussionMessagesList_discussion$data = {
           readonly avatarUrl: string | null;
           readonly profileColor: UserProfileColor;
         };
+        readonly pinnedBy: {
+          readonly id: string;
+          readonly name: string;
+        } | null;
       };
     }> | null;
   } | null;
@@ -238,6 +242,19 @@ return {
                 {
                   "alias": null,
                   "args": null,
+                  "concreteType": "User",
+                  "kind": "LinkedField",
+                  "name": "pinnedBy",
+                  "plural": false,
+                  "selections": [
+                    (v1/*: any*/),
+                    (v2/*: any*/)
+                  ],
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
                   "kind": "ScalarField",
                   "name": "__typename",
                   "storageKey": null
@@ -289,6 +306,6 @@ return {
 };
 })();
 
-(node as any).hash = "6dcfdcaf6522acc0ab452aa1228863fd";
+(node as any).hash = "a9cbb65408c4cfb08bb53d5e657464f5";
 
 export default node;

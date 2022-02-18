@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f5cddde69c623508f7119c8264aa708b>>
+ * @generated SignedSource<<1c0c7060e9849f6414d70a68a3fbfda3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -69,21 +69,25 @@ v5 = {
   "name": "name",
   "storageKey": null
 },
-v6 = {
+v6 = [
+  (v4/*: any*/),
+  (v5/*: any*/)
+],
+v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "avatarUrl",
   "storageKey": null
 },
-v7 = {
+v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "profileColor",
   "storageKey": null
 },
-v8 = [
+v9 = [
   {
     "kind": "Variable",
     "name": "before",
@@ -102,11 +106,11 @@ v8 = [
     }
   }
 ],
-v9 = [
+v10 = [
   (v4/*: any*/),
   (v5/*: any*/),
-  (v6/*: any*/),
-  (v7/*: any*/)
+  (v7/*: any*/),
+  (v8/*: any*/)
 ];
 return {
   "fragment": {
@@ -224,10 +228,7 @@ return {
                 "kind": "LinkedField",
                 "name": "discussions",
                 "plural": true,
-                "selections": [
-                  (v4/*: any*/),
-                  (v5/*: any*/)
-                ],
+                "selections": (v6/*: any*/),
                 "storageKey": null
               },
               (v5/*: any*/),
@@ -240,9 +241,9 @@ return {
                 "plural": true,
                 "selections": [
                   (v4/*: any*/),
-                  (v6/*: any*/),
+                  (v7/*: any*/),
                   (v5/*: any*/),
-                  (v7/*: any*/)
+                  (v8/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -265,7 +266,7 @@ return {
           },
           {
             "alias": null,
-            "args": (v8/*: any*/),
+            "args": (v9/*: any*/),
             "concreteType": "MessagesConnection",
             "kind": "LinkedField",
             "name": "messages",
@@ -357,7 +358,17 @@ return {
                         "kind": "LinkedField",
                         "name": "createdBy",
                         "plural": false,
-                        "selections": (v9/*: any*/),
+                        "selections": (v10/*: any*/),
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "User",
+                        "kind": "LinkedField",
+                        "name": "pinnedBy",
+                        "plural": false,
+                        "selections": (v6/*: any*/),
                         "storageKey": null
                       },
                       {
@@ -410,7 +421,7 @@ return {
           },
           {
             "alias": null,
-            "args": (v8/*: any*/),
+            "args": (v9/*: any*/),
             "filters": [
               "order"
             ],
@@ -429,18 +440,18 @@ return {
         "kind": "LinkedField",
         "name": "me",
         "plural": false,
-        "selections": (v9/*: any*/),
+        "selections": (v10/*: any*/),
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "1a73eae587594b6709bb252e28f83a03",
+    "cacheID": "d9871411f4972731800d495cace02902",
     "id": null,
     "metadata": {},
     "name": "ViewDiscussionQuery",
     "operationKind": "query",
-    "text": "query ViewDiscussionQuery(\n  $id: ID!\n  $count: Int!\n  $cursor: String\n) {\n  discussionById(id: $id) {\n    id\n    name\n    ...DiscussionHeader_discussion\n    ...DiscussionDetails_discussion\n    ...DiscussionMessagesList_discussion_1G22uz\n    ...DiscussionMessageComposer_discussion\n  }\n  me {\n    ...DiscussionMessagesList_user\n    ...DiscussionMessageComposer_user\n    id\n  }\n}\n\nfragment Description_discussion on Discussion {\n  id\n  description\n}\n\nfragment DiscussionDetails_discussion on Discussion {\n  name\n  ...Topic_discussion\n  ...Description_discussion\n  classroom {\n    name\n    ...Participants_classroom\n    id\n  }\n}\n\nfragment DiscussionHeader_discussion on Discussion {\n  id\n  name\n  classroom {\n    id\n    discussions {\n      id\n      name\n    }\n  }\n}\n\nfragment DiscussionMessageComposer_discussion on Discussion {\n  id\n  name\n}\n\nfragment DiscussionMessageComposer_user on User {\n  id\n  name\n  avatarUrl\n  profileColor\n}\n\nfragment DiscussionMessagesListHeader_discussion on Discussion {\n  name\n  topic\n  description\n}\n\nfragment DiscussionMessagesList_discussion_1G22uz on Discussion {\n  id\n  ...DiscussionMessagesListHeader_discussion\n  messages(last: $count, before: $cursor, order: {createdAt: ASC}) {\n    edges {\n      node {\n        id\n        content\n        createdAt\n        isDiscussionEvent\n        discussionEvent\n        attachments {\n          id\n          location\n          name\n          contentLength\n          extension\n        }\n        createdBy {\n          id\n          name\n          avatarUrl\n          profileColor\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n\nfragment DiscussionMessagesList_user on User {\n  id\n}\n\nfragment Participants_classroom on Classroom {\n  users {\n    id\n    avatarUrl\n    name\n    profileColor\n  }\n}\n\nfragment Topic_discussion on Discussion {\n  id\n  topic\n}\n"
+    "text": "query ViewDiscussionQuery(\n  $id: ID!\n  $count: Int!\n  $cursor: String\n) {\n  discussionById(id: $id) {\n    id\n    name\n    ...DiscussionHeader_discussion\n    ...DiscussionDetails_discussion\n    ...DiscussionMessagesList_discussion_1G22uz\n    ...DiscussionMessageComposer_discussion\n  }\n  me {\n    ...DiscussionMessagesList_user\n    ...DiscussionMessageComposer_user\n    id\n  }\n}\n\nfragment Description_discussion on Discussion {\n  id\n  description\n}\n\nfragment DiscussionDetails_discussion on Discussion {\n  name\n  ...Topic_discussion\n  ...Description_discussion\n  classroom {\n    name\n    ...Participants_classroom\n    id\n  }\n}\n\nfragment DiscussionHeader_discussion on Discussion {\n  id\n  name\n  classroom {\n    id\n    discussions {\n      id\n      name\n    }\n  }\n}\n\nfragment DiscussionMessageComposer_discussion on Discussion {\n  id\n  name\n}\n\nfragment DiscussionMessageComposer_user on User {\n  id\n  name\n  avatarUrl\n  profileColor\n}\n\nfragment DiscussionMessagesListHeader_discussion on Discussion {\n  name\n  topic\n  description\n}\n\nfragment DiscussionMessagesList_discussion_1G22uz on Discussion {\n  id\n  ...DiscussionMessagesListHeader_discussion\n  messages(last: $count, before: $cursor, order: {createdAt: ASC}) {\n    edges {\n      node {\n        id\n        content\n        createdAt\n        isDiscussionEvent\n        discussionEvent\n        attachments {\n          id\n          location\n          name\n          contentLength\n          extension\n        }\n        createdBy {\n          id\n          name\n          avatarUrl\n          profileColor\n        }\n        pinnedBy {\n          id\n          name\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n\nfragment DiscussionMessagesList_user on User {\n  id\n  name\n  avatarUrl\n  profileColor\n}\n\nfragment Participants_classroom on Classroom {\n  users {\n    id\n    avatarUrl\n    name\n    profileColor\n  }\n}\n\nfragment Topic_discussion on Discussion {\n  id\n  topic\n}\n"
   }
 };
 })();

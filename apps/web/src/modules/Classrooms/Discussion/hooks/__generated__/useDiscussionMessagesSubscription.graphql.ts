@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d29dddd2f268d1c01adb8118def5a1e2>>
+ * @generated SignedSource<<f3917bd6224493ab8185b069e1d1628c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -37,6 +37,10 @@ export type useDiscussionMessagesSubscription$data = {
         readonly avatarUrl: string | null;
         readonly profileColor: UserProfileColor;
       };
+      readonly pinnedBy: {
+        readonly id: string;
+        readonly name: string;
+      } | null;
     };
   };
 };
@@ -180,6 +184,19 @@ v3 = [
               }
             ],
             "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "User",
+            "kind": "LinkedField",
+            "name": "pinnedBy",
+            "plural": false,
+            "selections": [
+              (v1/*: any*/),
+              (v2/*: any*/)
+            ],
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -206,18 +223,18 @@ return {
     "selections": (v3/*: any*/)
   },
   "params": {
-    "cacheID": "0069a1fb4d435e97fafcada5b9188d86",
+    "cacheID": "6bb6b4ab129aa52d6e5bacd3344b18cf",
     "id": null,
     "metadata": {
       "subscriptionName": "onDiscussionMessageReceived"
     },
     "name": "useDiscussionMessagesSubscription",
     "operationKind": "subscription",
-    "text": "subscription useDiscussionMessagesSubscription(\n  $discussionId: ID!\n) {\n  onDiscussionMessageReceived(discussionId: $discussionId) {\n    message {\n      id\n      content\n      createdAt\n      isDiscussionEvent\n      discussionEvent\n      attachments {\n        id\n        location\n        name\n        contentLength\n        extension\n      }\n      createdBy {\n        id\n        name\n        avatarUrl\n        profileColor\n      }\n    }\n  }\n}\n"
+    "text": "subscription useDiscussionMessagesSubscription(\n  $discussionId: ID!\n) {\n  onDiscussionMessageReceived(discussionId: $discussionId) {\n    message {\n      id\n      content\n      createdAt\n      isDiscussionEvent\n      discussionEvent\n      attachments {\n        id\n        location\n        name\n        contentLength\n        extension\n      }\n      createdBy {\n        id\n        name\n        avatarUrl\n        profileColor\n      }\n      pinnedBy {\n        id\n        name\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "4a3dc75e418a42ed7f870b40834de643";
+(node as any).hash = "72c8eaa95703a5d314b30665ea61d7be";
 
 export default node;

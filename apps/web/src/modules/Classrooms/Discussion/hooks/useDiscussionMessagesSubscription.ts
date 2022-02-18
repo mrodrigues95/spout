@@ -29,6 +29,10 @@ const subscription = graphql`
           avatarUrl
           profileColor
         }
+        pinnedBy {
+          id
+          name
+        }
       }
     }
   }
@@ -37,13 +41,13 @@ const subscription = graphql`
 export const sharedUpdater = (
   store: RecordSourceSelectorProxy,
   discussionId: string,
-  message: RecordProxy,
+  message: RecordProxy
 ) => {
   // Get the discussion.
   const discussionRecord = store.get(discussionId);
   if (!discussionRecord) {
     throw new Error(
-      `Unable to get discussion record for discussionId: ${discussionId}`,
+      `Unable to get discussion record for discussionId: ${discussionId}`
     );
   }
 
@@ -59,39 +63,38 @@ export const sharedUpdater = (
     store,
     conn,
     message,
-    'MessagesEdge',
+    'MessagesEdge'
   );
   ConnectionHandler.insertEdgeAfter(conn, newEdge);
 };
 
 export const useDiscussionMessagesSubscription = (
   discussionId: string,
-  creatorId: string,
+  creatorId: string
 ) => {
-  const config: GraphQLSubscriptionConfig<useDiscussionMessagesSubscriptionType> =
-    useMemo(
-      () => ({
-        variables: { discussionId },
-        subscription,
-        updater: (store) => {
-          const message = store
-            .getRootField('onDiscussionMessageReceived')
-            .getLinkedRecord('message');
+  const config: GraphQLSubscriptionConfig<useDiscussionMessagesSubscriptionType> = useMemo(
+    () => ({
+      variables: { discussionId },
+      subscription,
+      updater: (store) => {
+        const message = store
+          .getRootField('onDiscussionMessageReceived')
+          .getLinkedRecord('message');
 
-          const isEvent = message.getValue('isDiscussionEvent');
-          const isMyMessage =
-            message.getLinkedRecord('createdBy').getValue('id') === creatorId;
-          const shouldIgnore = !isEvent && isMyMessage;
+        const isEvent = message.getValue('isDiscussionEvent');
+        const isMyMessage =
+          message.getLinkedRecord('createdBy').getValue('id') === creatorId;
+        const shouldIgnore = !isEvent && isMyMessage;
 
-          // Messages (not events) created by the same user are handled within
-          // the mutation instead.
-          if (shouldIgnore) return;
+        // Messages (not events) created by the same user are handled within
+        // the mutation instead.
+        if (shouldIgnore) return;
 
-          sharedUpdater(store, discussionId, message);
-        },
-      }),
-      [discussionId, creatorId],
-    );
+        sharedUpdater(store, discussionId, message);
+      },
+    }),
+    [discussionId, creatorId]
+  );
 
   useSubscription<useDiscussionMessagesSubscriptionType>(config);
 };

@@ -1,10 +1,8 @@
 import { useCallback } from 'react';
-import { graphql, useMutation } from 'react-relay';
 import Zod, { object, string } from 'zod';
 import { useController } from 'react-hook-form';
 import { Form, useZodForm, Button } from '@spout/toolkit';
 import { useDiscussionMessage } from './DiscussionMessageProvider';
-import { EditDiscussionMessageMutation } from './__generated__/EditDiscussionMessageMutation.graphql';
 import { useKeyboardEvent } from '../../../../../../shared/hooks';
 
 const messageSchema = object({
@@ -16,26 +14,16 @@ const messageSchema = object({
   path: ['message'],
 });
 
-const mutation = graphql`
-  mutation EditDiscussionMessageMutation(
-    $input: UpdateDiscussionMessageInput!
-  ) {
-    updateDiscussionMessage(input: $input) {
-      message {
-        id
-        content
-      }
-    }
-  }
-`;
-
 const EditDiscussionMessage = () => {
-  const { message, setIsEditing } = useDiscussionMessage()!;
-  const [updateMessage] = useMutation<EditDiscussionMessageMutation>(mutation);
+  const {
+    data: { message },
+    actions: { edit },
+    state: { setIsEditing },
+  } = useDiscussionMessage()!;
 
   const form = useZodForm({
     schema: messageSchema,
-    defaultValues: { message: message.content },
+    defaultValues: { message: message.content.trim() },
   });
 
   const { field } = useController({
@@ -44,18 +32,11 @@ const EditDiscussionMessage = () => {
   });
 
   const onSubmit = useCallback(
-    (data: Zod.infer<typeof messageSchema>) => {
-      updateMessage({
-        variables: { input: { messageId: message.id, content: data.message } },
-        optimisticResponse: {
-          updateDiscussionMessage: {
-            message: { id: message.id, content: data.message },
-          },
-        },
-      });
+    ({ message: updatedMessage }: Zod.infer<typeof messageSchema>) => {
+      edit(updatedMessage);
       setIsEditing(false);
     },
-    [message.id, updateMessage, setIsEditing]
+    [edit, setIsEditing]
   );
 
   useKeyboardEvent('Escape', () => setIsEditing(false));

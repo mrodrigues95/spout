@@ -1,3 +1,4 @@
+/* eslint-disable relay/unused-fields */
 import React, { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import { Components, ItemContent, Virtuoso } from 'react-virtuoso';
@@ -35,7 +36,6 @@ const discussionFragment = graphql`
     ...DiscussionMessagesListHeader_discussion
     messages(last: $count, before: $cursor, order: { createdAt: ASC })
       @connection(key: "DiscussionMessagesList_discussion_messages") {
-      # eslint-disable-next-line relay/unused-fields
       edges {
         node {
           id
@@ -56,6 +56,10 @@ const discussionFragment = graphql`
             avatarUrl
             profileColor
           }
+          pinnedBy {
+            id
+            name
+          }
         }
       }
     }
@@ -65,6 +69,9 @@ const discussionFragment = graphql`
 const meFragment = graphql`
   fragment DiscussionMessagesList_user on User {
     id
+    name
+    avatarUrl
+    profileColor
   }
 `;
 
@@ -89,7 +96,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
   } = useDiscussionMessages(discussion.id, nodes);
 
   const numItemsPrepended = usePrependDiscussionItems(items);
-  
+
   useDiscussionMessagesSubscription(discussion.id, me.id);
 
   const startReached = useCallback(() => {

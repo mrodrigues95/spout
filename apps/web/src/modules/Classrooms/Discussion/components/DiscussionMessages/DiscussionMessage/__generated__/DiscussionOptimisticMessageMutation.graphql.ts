@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1e07b8d5b2ffde943f21fd631f34da79>>
+ * @generated SignedSource<<ec31fa1fc9668ebd550e26a57355f334>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -42,6 +42,10 @@ export type DiscussionOptimisticMessageMutation$data = {
         readonly avatarUrl: string | null;
         readonly profileColor: UserProfileColor;
       };
+      readonly pinnedBy: {
+        readonly id: string;
+        readonly name: string;
+      } | null;
     } | null;
   };
 };
@@ -185,6 +189,19 @@ v3 = [
               }
             ],
             "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "User",
+            "kind": "LinkedField",
+            "name": "pinnedBy",
+            "plural": false,
+            "selections": [
+              (v1/*: any*/),
+              (v2/*: any*/)
+            ],
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -211,16 +228,16 @@ return {
     "selections": (v3/*: any*/)
   },
   "params": {
-    "cacheID": "b1a332c276784ac54a400f4194f0858b",
+    "cacheID": "27448dbb0661602d42059c23cced3674",
     "id": null,
     "metadata": {},
     "name": "DiscussionOptimisticMessageMutation",
     "operationKind": "mutation",
-    "text": "mutation DiscussionOptimisticMessageMutation(\n  $input: SendDiscussionMessageInput!\n) {\n  sendDiscussionMessage(input: $input) {\n    message {\n      id\n      content\n      createdAt\n      isDiscussionEvent\n      discussionEvent\n      attachments {\n        id\n        location\n        name\n        contentLength\n        extension\n      }\n      createdBy {\n        id\n        name\n        avatarUrl\n        profileColor\n      }\n    }\n  }\n}\n"
+    "text": "mutation DiscussionOptimisticMessageMutation(\n  $input: SendDiscussionMessageInput!\n) {\n  sendDiscussionMessage(input: $input) {\n    message {\n      id\n      content\n      createdAt\n      isDiscussionEvent\n      discussionEvent\n      attachments {\n        id\n        location\n        name\n        contentLength\n        extension\n      }\n      createdBy {\n        id\n        name\n        avatarUrl\n        profileColor\n      }\n      pinnedBy {\n        id\n        name\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "d51151c1d4011bfce7a3fc16ae7253c9";
+(node as any).hash = "14eb1c6056eef75ded98add3c6513405";
 
 export default node;

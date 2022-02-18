@@ -58,7 +58,7 @@ const DiscussionMessageAttachment = ({
           </Tooltip>
         </div>
       )}
-      <FileIcon fileName={attachment.name} className="mt-1.5 mr-2 text-3xl" />
+      <FileIcon fileName={attachment.name} className="pt-1.5 mr-2 text-3xl" />
       <div className="min-w-0 flex-1">
         <p className="truncate font-medium">{attachment.name}</p>
         <p className="truncate text-sm text-gray-500">
@@ -81,7 +81,7 @@ const DiscussionMessageAttachments = ({ isMyMessage, attachments }: Props) => {
   return (
     <article
       className={clsx(
-        'flex flex-col',
+        'flex flex-col pt-4',
         isMyMessage ? 'items-end' : 'items-start',
       )}
     >
@@ -102,7 +102,7 @@ const DiscussionMessageAttachments = ({ isMyMessage, attachments }: Props) => {
               <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} />
             </Disclosure.Button>
             {open && (
-              <Disclosure.Panel className="mt-2">
+              <Disclosure.Panel>
                 <ul
                   className={clsx(
                     'flex flex-wrap gap-3 py-2',

@@ -21,8 +21,8 @@ const DiscussionMessageEvent = ({ event }: Props) => {
 
   return (
     <div className="inline-flex w-full items-center justify-center py-2 px-4">
-      <Card className="flex max-w-[75%] flex-col space-y-4 rounded-md bg-white p-3 shadow-sm ring-1 ring-gray-900/5">
-        <div className="flex items-center space-x-2">
+      <Card className="flex max-w-[75%] flex-col rounded-md bg-white p-3 shadow-sm ring-1 ring-gray-900/5">
+        <div className="flex items-center space-x-2 pb-4">
           <div className="inline-flex items-center space-x-2">
             <Avatar
               src={event.createdBy.avatarUrl}

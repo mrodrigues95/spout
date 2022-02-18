@@ -12,6 +12,7 @@ using API.Schema.Types.Discussions;
 using System;
 using API.Schema.Mutations.Discussions.Exceptions;
 using API.Schema.Mutations.Discussions.Inputs;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Schema.Mutations.Discussions {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -75,6 +76,35 @@ namespace API.Schema.Mutations.Discussions {
             }
 
             message.Content = input.Content;
+            message.UpdatedAt = DateTime.UtcNow;
+            await ctx.SaveChangesAsync(cancellationToken);
+
+            return message;
+        }
+
+        [Authorize]
+        [UseApplicationDbContext]
+        [Error(typeof(DiscussionMessageNotFoundException))]
+        public async Task<Message?> PinOrUnpinDiscussionMessageAsync(
+            PinOrUnpinDiscussionMessageInput input,
+            [ScopedService] ApplicationDbContext ctx,
+            [GlobalState] int userId,
+            CancellationToken cancellationToken) {
+            var message = await ctx.Messages.FindAsync(
+                new object[] { input.MessageId },
+                cancellationToken);
+
+            if (message is null) {
+                throw new DiscussionMessageNotFoundException();
+            }
+
+            // Toggle pinned.
+            if (message.PinnedById is null) {
+                message.PinnedById = userId;
+            } else {
+                message.PinnedById = null;
+            }
+
             message.UpdatedAt = DateTime.UtcNow;
             await ctx.SaveChangesAsync(cancellationToken);
 

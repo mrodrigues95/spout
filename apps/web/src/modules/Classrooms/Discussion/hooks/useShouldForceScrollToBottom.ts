@@ -21,6 +21,8 @@ export const useShouldForceScrollToBottom = (
     const prevItem = items[items.length - 1];
     const hasOptimisticMessages = !!optimisticMessages.length;
 
+    // TODO: Handle discussion events as well, at the moment this
+    // ignores new events sent by the same user.
     if (
       !isMessage(prevItem) ||
       !hasOptimisticMessages ||

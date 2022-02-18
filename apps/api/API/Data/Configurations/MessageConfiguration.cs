@@ -10,6 +10,9 @@ namespace API.Data.Configurations {
             builder.Property(m => m.CreatedById)
                 .IsRequired();
 
+            builder.Property(m => m.PinnedById)
+                .IsRequired(false);
+
             builder.Property(m => m.DiscussionId)
                 .IsRequired();
 
@@ -36,7 +39,13 @@ namespace API.Data.Configurations {
 
             builder.HasOne(m => m.CreatedBy)
                 .WithMany(u => u!.Messages)
-                .HasForeignKey(m => m.CreatedById);
+                .HasForeignKey(m => m.CreatedById)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(m => m.PinnedBy)
+                .WithMany(u => u!.PinnedMessages)
+                .HasForeignKey(m => m.PinnedById)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(m => m.Discussion)
                 .WithMany(d => d!.Messages)

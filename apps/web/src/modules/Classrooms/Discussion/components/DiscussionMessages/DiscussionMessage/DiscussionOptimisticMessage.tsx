@@ -6,6 +6,7 @@ import {
 } from '../../../utils/optimisticMessagesStore';
 import { sharedUpdater } from '../../../hooks/useDiscussionMessagesSubscription';
 import {
+  Me,
   OptimisticDiscussionMessage,
   RecentMessages,
 } from '../../../utils/messages';
@@ -36,6 +37,10 @@ const mutation = graphql`
           avatarUrl
           profileColor
         }
+        pinnedBy {
+          id
+          name
+        }
       }
     }
   }
@@ -44,7 +49,7 @@ const mutation = graphql`
 interface Props {
   discussionId: string;
   message: OptimisticDiscussionMessage;
-  me: { id: string };
+  me: Me;
   recentMessages?: RecentMessages;
 }
 
@@ -61,8 +66,9 @@ const DiscussionOptimisticMessage = ({
 }: Props) => {
   const [hasError, setHasError] = useState(false);
   const { remove } = useStore(selector);
-  const [sendMessage, isInFlight] =
-    useMutation<DiscussionOptimisticMessageMutation>(mutation);
+  const [sendMessage, isInFlight] = useMutation<
+    DiscussionOptimisticMessageMutation
+  >(mutation);
 
   const send = useCallback(() => {
     sendMessage({
@@ -90,10 +96,11 @@ const DiscussionOptimisticMessage = ({
     send();
   }, [send]);
 
-  const opts = useMemo(
-    () => ({ hasError, loading: isInFlight, retry: send }),
-    [hasError, isInFlight, send],
-  );
+  const opts = useMemo(() => ({ hasError, loading: isInFlight, retry: send }), [
+    hasError,
+    isInFlight,
+    send,
+  ]);
 
   return (
     <DiscussionMessage

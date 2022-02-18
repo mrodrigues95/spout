@@ -1,5 +1,7 @@
 import { memo, useMemo } from 'react';
-import { Button } from '@spout/toolkit';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faThumbtack } from '@fortawesome/free-solid-svg-icons';
+import { Button, Text } from '@spout/toolkit';
 import clsx from 'clsx';
 import { Avatar } from '../../../../../../shared/components';
 import { BaseDiscussionMessage, RecentMessage } from '../../../utils/messages';
@@ -14,10 +16,7 @@ import EditDiscussionMessage from './EditDiscussionMessage';
 
 const DiscussionMessageHeader = () => {
   const {
-    message,
-    recentMessage,
-    formattedCreatedAt,
-    isMyMessage,
+    data: { message, recentMessage, formattedCreatedAt, isMyMessage },
   } = useDiscussionMessage()!;
 
   const { isFirstMessage, isRecent } = recentMessage;
@@ -27,7 +26,7 @@ const DiscussionMessageHeader = () => {
   return (
     <div
       className={clsx(
-        'flex items-center space-x-2',
+        'flex items-center space-x-2 pb-1',
         isMyMessage ? 'flex-row-reverse space-x-reverse' : 'flex-row'
       )}
     >
@@ -74,12 +73,14 @@ const getMessageBorderStyles = (
 
 const DiscussionMessageBody = () => {
   const {
-    message,
-    recentMessage,
-    isMyMessage,
-    isEditing,
-    isOptimistic,
-    optimisticMessageOpts,
+    data: {
+      message,
+      recentMessage,
+      isMyMessage,
+      isOptimistic,
+      optimisticMessageOpts,
+    },
+    state: { isEditing },
   } = useDiscussionMessage()!;
 
   const {
@@ -101,7 +102,7 @@ const DiscussionMessageBody = () => {
   return (
     <div
       className={clsx(
-        'flex flex-col space-y-4 p-3 text-sm',
+        'flex flex-col p-3 text-sm',
         isMyMessage
           ? 'bg-blue-600 shadow-md'
           : 'bg-white shadow-sm ring-1 ring-gray-900/5',
@@ -138,7 +139,7 @@ const DiscussionMessageBody = () => {
         <Button
           type="button"
           variant="unstyled"
-          className="focus:outline-none font-medium"
+          className="focus:outline-none font-medium pt-4"
           onClick={() => optimisticMessageOpts.retry()}
         >
           Failed to send message. Click to try again.
@@ -161,11 +162,14 @@ const getVerticalMessagePaddingStyles = ({
 
 const DiscussionMessage = () => {
   const {
-    message,
-    recentMessage,
-    formattedCreatedAt,
-    isMyMessage,
-    optimisticMessageOpts,
+    data: {
+      message,
+      recentMessage,
+      formattedCreatedAt,
+      isPinned,
+      isMyMessage,
+      optimisticMessageOpts,
+    },
   } = useDiscussionMessage()!;
 
   const {
@@ -195,7 +199,8 @@ const DiscussionMessage = () => {
     >
       <div
         className={clsx(
-          'flex relative group items-center space-x-2 px-4 hover:bg-indigo-100/50',
+          'flex relative group items-baseline space-x-2 px-4 hover:bg-indigo-100/50',
+          isPinned && 'bg-indigo-100/50',
           isMyMessage ? 'flex-row-reverse space-x-reverse' : 'flex-row',
           optimisticMessageOpts?.loading ? 'opacity-50' : 'opacity-100',
           paddingStyles
@@ -204,7 +209,7 @@ const DiscussionMessage = () => {
         <div>
           <DiscussionMessageActions />
         </div>
-        <div className="mb-auto flex w-14 flex-shrink-0 items-center justify-center">
+        <div className="flex w-14 flex-shrink-0 items-center justify-center">
           {!isRecent || isFirstMessage ? (
             <div className="rounded-md shadow-md">
               <Avatar
@@ -221,12 +226,36 @@ const DiscussionMessage = () => {
         </div>
         <div
           className={clsx(
-            'flex max-w-[75%] flex-col space-y-1',
+            'flex max-w-[75%] flex-col',
             isMyMessage ? 'items-end' : 'items-start'
           )}
         >
           <DiscussionMessageHeader />
           <DiscussionMessageBody />
+          {isPinned && (
+            <div
+              className={clsx(
+                'flex items-center space-x-2',
+                isMyMessage ? '-mr-4 flex-row' : 'flex-row-reverse space-x-reverse -ml-4'
+              )}
+            >
+              <Text
+                as="span"
+                size="xs"
+                weight="semibold"
+                className="text-red-600"
+              >
+                Pinned by {message.pinnedBy!.name}
+              </Text>
+              <span className="text-red-600">
+                <FontAwesomeIcon
+                  icon={faThumbtack}
+                  size="xs"
+                  className="rotate-45 transform"
+                />
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -236,10 +265,8 @@ const DiscussionMessage = () => {
 interface Props
   extends Pick<
     DiscussionMessageProviderProps,
-    'message' | 'optimisticMessageOpts' | 'recentMessages'
-  > {
-  me: { id: string };
-}
+    'message' | 'optimisticMessageOpts' | 'recentMessages' | 'me'
+  > {}
 
 const DiscussionMessageWithProvider = ({
   message,
@@ -255,6 +282,7 @@ const DiscussionMessageWithProvider = ({
   return (
     <DiscussionMessageProvider
       message={message}
+      me={me}
       optimisticMessageOpts={optimisticMessageOpts}
       isMyMessage={isMyMessage}
       recentMessages={recentMessages}
