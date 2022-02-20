@@ -14,7 +14,11 @@
     "default": {
       "runner": "@nrwl/nx-cloud",
       "options": {
-        "cacheableOperations": ["build", "lint", "test"],
+        "cacheableOperations": [
+          "build",
+          "lint",
+          "test"
+        ],
         "accessToken": "YmM2MTNkMDQtYzVjNS00YTc5LTk3ZDEtYmYwZjQ3MWJkYjVmfHJlYWQtd3JpdGU=",
         "parallel": 1
       }
@@ -28,7 +32,9 @@
       }
     ]
   },
-  "plugins": ["@nx-dotnet/core"],
+  "plugins": [
+    "@nx-dotnet/core"
+  ],
   "cli": {
     "defaultCollection": "@nrwl/next",
     "packageManager": "npm"
