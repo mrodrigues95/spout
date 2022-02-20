@@ -14,8 +14,8 @@ import {
   Tooltip,
 } from '@spout/toolkit';
 import { useToast } from '../../../../../shared/components';
-import { TopicMutation } from './__generated__/TopicMutation.graphql';
-import { Topic_discussion$key } from './__generated__/Topic_discussion.graphql';
+import { TopicMutation } from '../../../../../__generated__/TopicMutation.graphql';
+import { Topic_discussion$key } from '../../../../../__generated__/Topic_discussion.graphql';
 
 interface ItemProps {
   label: 'Topic' | 'Description';

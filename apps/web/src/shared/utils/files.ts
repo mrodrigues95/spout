@@ -1,4 +1,4 @@
-import { WhitelistedFileExtension } from '../hooks/files/__generated__/useFileUploadGenerateUploadSASMutation.graphql';
+import { WhitelistedFileExtension } from '../../__generated__/useFileUploadGenerateUploadSASMutation.graphql';
 
 export const MAX_FILES_PER_UPLOAD = 10;
 export const MIN_FILE_SIZE = 1;

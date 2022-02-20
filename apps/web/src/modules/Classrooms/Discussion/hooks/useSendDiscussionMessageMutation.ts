@@ -3,7 +3,7 @@ import { ConnectionHandler, graphql, useMutation } from 'react-relay';
 import {
   SendDiscussionMessageInput,
   useSendDiscussionMessageMutation as useSendDiscussionMessageMutationType,
-} from './__generated__/useSendDiscussionMessageMutation.graphql';
+} from '../../../../__generated__/useSendDiscussionMessageMutation.graphql';
 
 const mutation = graphql`
   mutation useSendDiscussionMessageMutation(

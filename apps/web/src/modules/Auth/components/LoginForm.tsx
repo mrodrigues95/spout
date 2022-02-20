@@ -7,7 +7,7 @@ import { useIsRedirecting } from '../../../shared/hooks/useIsRedirecting';
 import { useAuthRedirect, useInitializeIronSession } from '../hooks';
 import AuthCard from './AuthCard';
 import AuthError from './AuthError';
-import { LoginFormMutation } from './__generated__/LoginFormMutation.graphql';
+import { LoginFormMutation } from '../../../__generated__/LoginFormMutation.graphql';
 
 const loginSchema = object({
   email: string().email({ message: '- Invalid email' }),

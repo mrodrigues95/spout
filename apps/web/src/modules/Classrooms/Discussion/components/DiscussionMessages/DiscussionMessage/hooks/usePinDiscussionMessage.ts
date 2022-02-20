@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useMutation, graphql } from 'react-relay';
 import { DiscussionMessage, Me } from '../../../../utils/messages';
-import { usePinDiscussionMessageMutation } from './__generated__/usePinDiscussionMessageMutation.graphql';
+import { usePinDiscussionMessageMutation } from '../../../../../../../__generated__/usePinDiscussionMessageMutation.graphql';
 
 const mutation = graphql`
   mutation usePinDiscussionMessageMutation($input: PinDiscussionMessageInput!) {

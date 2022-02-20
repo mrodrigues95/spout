@@ -9,7 +9,7 @@ import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { Card, Avatar, Quote } from '../../../../../../shared/components';
 import { formatMessageDate } from '../../../utils/dates';
 import { DiscussionMessage } from '../../../utils/messages';
-import { MessageEvent } from './__generated__/DiscussionOptimisticMessageMutation.graphql';
+import { MessageEvent } from '../../../../../../__generated__/DiscussionOptimisticMessageMutation.graphql';
 
 interface PinnedOrUnpinnedEventMessageProps {
   message: DiscussionMessage;
@@ -23,7 +23,7 @@ const PinnedOrUnpinnedEventMessage = ({
   if (!parentMessage) {
     console.warn(
       'Pinned or un-pinned event message found without an associated parent message.',
-      message,
+      message
     );
     return null;
   }
@@ -94,12 +94,12 @@ interface Props {
 const DiscussionMessageEvent = ({ message }: Props) => {
   const formattedDate = useMemo(
     () => formatMessageDate(message.createdAt, 'h:mm a'),
-    [message.createdAt],
+    [message.createdAt]
   );
 
   const { icon, color, description, title } = useMemo(
     () => getEventAttributes(message.messageEvent!),
-    [message.messageEvent],
+    [message.messageEvent]
   );
 
   return (

@@ -1,7 +1,7 @@
 import { graphql, useMutation } from 'react-relay';
 import { Button } from '@spout/toolkit';
 import { useAuthRedirect } from '../../Auth';
-import { SettingsHeaderMutation } from './__generated__/SettingsHeaderMutation.graphql';
+import { SettingsHeaderMutation } from '../../../__generated__/SettingsHeaderMutation.graphql';
 
 const mutation = graphql`
   mutation SettingsHeaderMutation($input: LogoutInput!) {

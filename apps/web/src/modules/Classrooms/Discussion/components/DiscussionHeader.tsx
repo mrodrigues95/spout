@@ -10,7 +10,7 @@ import {
   faThumbtack,
 } from '@fortawesome/free-solid-svg-icons';
 import { Title, Select, IconButton, Tooltip } from '@spout/toolkit';
-import { DiscussionHeader_discussion$key } from './__generated__/DiscussionHeader_discussion.graphql';
+import { DiscussionHeader_discussion$key } from '../../../../__generated__/DiscussionHeader_discussion.graphql';
 
 const fragment = graphql`
   fragment DiscussionHeader_discussion on Discussion {
@@ -44,7 +44,7 @@ const DiscussionHeader = ({ discussion, setShowDetails }: Props) => {
   }, [data.classroom.id, data.id, router, selectedDiscussionId]);
 
   const discussions = [...(data.classroom.discussions ?? [])].sort((d1, d2) =>
-    d1.name.localeCompare(d2.name),
+    d1.name.localeCompare(d2.name)
   );
 
   return (

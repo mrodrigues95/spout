@@ -9,7 +9,7 @@ import {
 import { Badge, Text } from '@spout/toolkit';
 import { getRandomAvatar } from '../../../../../../shared/utils/getRandomAvatar';
 import { Image, Card } from '../../../../../../shared/components';
-import { DiscussionMessagesListHeader_discussion$key } from './__generated__/DiscussionMessagesListHeader_discussion.graphql';
+import { DiscussionMessagesListHeader_discussion$key } from '../../../../../../__generated__/DiscussionMessagesListHeader_discussion.graphql';
 
 interface TopicOrDescriptionProps {
   content: string;

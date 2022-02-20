@@ -65,13 +65,6 @@
         "cwd": "apps/web"
       }
     },
-    "clean": {
-      "executor": "@nrwl/workspace:run-commands",
-      "options": {
-        "commands": ["trash ./src/**/__generated__/**"],
-        "cwd": "apps/web"
-      }
-    },
     "ts-check": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {

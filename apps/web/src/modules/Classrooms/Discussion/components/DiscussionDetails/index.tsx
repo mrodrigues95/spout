@@ -9,7 +9,7 @@ import Participants from './Participants';
 import Attachments from './Attachments';
 import Topic from './Topic';
 import Description from './Description';
-import { DiscussionDetails_discussion$key } from './__generated__/DiscussionDetails_discussion.graphql';
+import { DiscussionDetails_discussion$key } from '../../../../../__generated__/DiscussionDetails_discussion.graphql';
 
 const fragment = graphql`
   fragment DiscussionDetails_discussion on Discussion {

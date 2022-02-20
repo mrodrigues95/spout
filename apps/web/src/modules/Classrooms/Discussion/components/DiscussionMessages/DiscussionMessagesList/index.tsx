@@ -19,8 +19,8 @@ import {
   usePrependDiscussionItems,
 } from '../../../hooks';
 import { Card } from '../../../../../../shared/components';
-import { DiscussionMessagesList_user$key } from './__generated__/DiscussionMessagesList_user.graphql';
-import { DiscussionMessagesList_discussion$key } from './__generated__/DiscussionMessagesList_discussion.graphql';
+import { DiscussionMessagesList_user$key } from '../../../../../../__generated__/DiscussionMessagesList_user.graphql';
+import { DiscussionMessagesList_discussion$key } from '../../../../../../__generated__/DiscussionMessagesList_discussion.graphql';
 import DiscussionMessagesListHeader from './DiscussionMessagesListHeader';
 import DiscussionMessageDivider from '../DiscussionMessage/DiscussionMessageDivider';
 import DiscussionMessage from '../DiscussionMessage';
@@ -30,8 +30,8 @@ import { useShouldForceScrollToBottom } from '../../../hooks/useShouldForceScrol
 
 const discussionFragment = graphql`
   fragment DiscussionMessagesList_discussion on Discussion
-  @argumentDefinitions(count: { type: "Int!" }, cursor: { type: "String" })
-  @refetchable(queryName: "DiscussionMessagesListPaginationQuery") {
+    @argumentDefinitions(count: { type: "Int!" }, cursor: { type: "String" })
+    @refetchable(queryName: "DiscussionMessagesListPaginationQuery") {
     id
     ...DiscussionMessagesListHeader_discussion
     messages(last: $count, before: $cursor, order: { createdAt: ASC })
@@ -116,7 +116,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
   const shouldForceScrollToBottom = useShouldForceScrollToBottom(
     discussion.id,
     me.id,
-    items,
+    items
   );
 
   const followOutput = useCallback(
@@ -126,7 +126,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
       // A message from another user has been received - don't scroll to bottom unless already there.
       return isAtBottom ? 'smooth' : false;
     },
-    [shouldForceScrollToBottom],
+    [shouldForceScrollToBottom]
   );
 
   const itemContent: ItemContent<Item, unknown> = useCallback(
@@ -152,7 +152,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
         />
       );
     },
-    [discussion.id, me, recentMessages],
+    [discussion.id, me, recentMessages]
   );
 
   const components: Components = useMemo(
@@ -175,7 +175,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
       ),
       Footer: () => <div className="pt-2" />,
     }),
-    [hasPrevious, isLoadingPrevious, discussion],
+    [hasPrevious, isLoadingPrevious, discussion]
   );
 
   // TODO: Create a 'Jump to Present' footer.

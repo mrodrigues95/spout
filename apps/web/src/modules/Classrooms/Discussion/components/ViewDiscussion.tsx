@@ -2,11 +2,11 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useRouter } from 'next/router';
 import { NextSeo } from 'next-seo';
 import { Card } from '../../../../shared/components';
+import { ViewDiscussionQuery } from '../../../../__generated__/ViewDiscussionQuery.graphql';
 import DiscussionHeader from './DiscussionHeader';
 import DiscussionDetails from './DiscussionDetails';
 import DiscussionMessagesList from './DiscussionMessages/DiscussionMessagesList';
 import DiscussionMessageComposer from './DiscussionMessages/DiscussionMessageComposer';
-import { ViewDiscussionQuery } from './__generated__/ViewDiscussionQuery.graphql';
 import { useState } from 'react';
 
 export const query = graphql`
@@ -39,7 +39,7 @@ const ViewDiscussion = ({ fetchKey }: Props) => {
       id: router.query.discussionId as string,
       count: 50,
     },
-    { fetchPolicy: 'store-and-network', fetchKey },
+    { fetchPolicy: 'store-and-network', fetchKey }
   );
 
   const [showDetails, setShowDetails] = useState(true);

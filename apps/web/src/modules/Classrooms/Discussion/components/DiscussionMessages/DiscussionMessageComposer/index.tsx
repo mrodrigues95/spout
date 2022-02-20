@@ -12,8 +12,8 @@ import { ComposerAttachments } from './ComposerAttachments';
 import TextArea from '../../../../../../shared/components/ui/TextArea';
 import ComposerToolbar from './ComposerToolbar';
 import { ComposerToolbarProvider } from './ComposerToolbarProvider';
-import { DiscussionMessageComposer_discussion$key } from './__generated__/DiscussionMessageComposer_discussion.graphql';
-import { DiscussionMessageComposer_user$key } from './__generated__/DiscussionMessageComposer_user.graphql';
+import { DiscussionMessageComposer_discussion$key } from '../../../../../../__generated__/DiscussionMessageComposer_discussion.graphql';
+import { DiscussionMessageComposer_user$key } from '../../../../../../__generated__/DiscussionMessageComposer_user.graphql';
 
 const discussionFragment = graphql`
   fragment DiscussionMessageComposer_discussion on Discussion {
@@ -73,19 +73,19 @@ const DiscussionMessageComposer = ({ ...props }: Props) => {
 
   const onFilesAccepted = useCallback(
     (files: File[]) => setAcceptedFiles(files),
-    [],
+    []
   );
 
   const onFilesRejected = useCallback(
     (files: FileRejection[]) => setRejectedFiles(files),
-    [],
+    []
   );
 
   return (
     <div
       className={clsx(
         'pointer-events-auto flex h-full items-center justify-between rounded-md border-2 bg-white p-3 transition duration-150 ease-in-out',
-        focused ? 'border-transparent ring-2 ring-black' : 'border-gray-200',
+        focused ? 'border-transparent ring-2 ring-black' : 'border-gray-200'
       )}
     >
       <div className="flex w-full flex-col space-y-3">

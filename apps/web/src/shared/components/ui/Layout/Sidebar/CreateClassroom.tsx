@@ -5,7 +5,7 @@ import Zod, { object, string } from 'zod';
 import { Button, Modal, Form, useZodForm } from '@spout/toolkit';
 import { useIsRedirecting } from '../../../../hooks';
 import { useToast } from '../../../../../shared/components';
-import { CreateClassroomMutation } from './__generated__/CreateClassroomMutation.graphql';
+import { CreateClassroomMutation } from '../../../../../__generated__/CreateClassroomMutation.graphql';
 
 const schema = object({
   name: string().min(1, '- Invalid name').max(64, '- Invalid name'),

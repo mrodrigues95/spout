@@ -7,7 +7,7 @@ import { useIsRedirecting } from '../../../shared/hooks/useIsRedirecting';
 import { useAuthRedirect, useInitializeIronSession } from '../hooks';
 import AuthError from './AuthError';
 import AuthCard from './AuthCard';
-import { SignUpFormMutation } from './__generated__/SignUpFormMutation.graphql';
+import { SignUpFormMutation } from '../../../__generated__/SignUpFormMutation.graphql';
 
 const signUpSchema = object({
   name: string()

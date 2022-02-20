@@ -17,9 +17,9 @@ import clsx from 'clsx';
 import { FileIcon, IconLink, Spinner, Text, Tooltip } from '@spout/toolkit';
 import { Avatar, EmptyFallback } from '../../../../../shared/components/ui';
 import { formatBytesToHumanReadable } from '../../../../../shared/utils';
-import { AttachmentsQuery } from './__generated__/AttachmentsQuery.graphql';
-import { Attachments_files$key } from './__generated__/Attachments_files.graphql';
-import { Attachments_attachment$key } from './__generated__/Attachments_attachment.graphql';
+import { AttachmentsQuery } from '../../../../../__generated__/AttachmentsQuery.graphql';
+import { Attachments_files$key } from '../../../../../__generated__/Attachments_files.graphql';
+import { Attachments_attachment$key } from '../../../../../__generated__/Attachments_attachment.graphql';
 
 interface AttachmentProps {
   index: number;
@@ -42,7 +42,7 @@ const Attachment = ({ index, file }: AttachmentProps) => {
         }
       }
     `,
-    file,
+    file
   );
 
   const isOdd = index % 2 === 0;
@@ -109,44 +109,48 @@ interface AttachmentsListProps {
 }
 
 const AttachmentsList = ({ ...props }: AttachmentsListProps) => {
-  const { data, loadPrevious, hasPrevious, isLoadingPrevious } =
-    usePaginationFragment(
-      graphql`
-        fragment Attachments_files on Query
+  const {
+    data,
+    loadPrevious,
+    hasPrevious,
+    isLoadingPrevious,
+  } = usePaginationFragment(
+    graphql`
+      fragment Attachments_files on Query
         @argumentDefinitions(
           id: { type: "ID!" }
           count: { type: "Int!" }
           cursor: { type: "String" }
         )
         @refetchable(queryName: "AttachmentsPaginationQuery") {
-          files(
-            last: $count
-            before: $cursor
-            where: {
-              messageFiles: {
-                some: { message: { discussion: { id: { eq: $id } } } }
-              }
-              and: { isDeleted: { eq: false }, uploadStatus: { eq: COMPLETED } }
+        files(
+          last: $count
+          before: $cursor
+          where: {
+            messageFiles: {
+              some: { message: { discussion: { id: { eq: $id } } } }
             }
-            order: { createdAt: DESC }
-          ) @connection(key: "Attachments_file_files") {
-            edges {
-              node {
-                ...Attachments_attachment
-              }
-            }
-            pageInfo {
-              startCursor
+            and: { isDeleted: { eq: false }, uploadStatus: { eq: COMPLETED } }
+          }
+          order: { createdAt: DESC }
+        ) @connection(key: "Attachments_file_files") {
+          edges {
+            node {
+              ...Attachments_attachment
             }
           }
+          pageInfo {
+            startCursor
+          }
         }
-      `,
-      props.files,
-    );
+      }
+    `,
+    props.files
+  );
 
   const files = useMemo(
     () => (data.files?.edges ?? []).map((edge) => edge.node),
-    [data.files?.edges],
+    [data.files?.edges]
   );
 
   if (!files.length) {
@@ -200,7 +204,7 @@ const Attachments = () => {
       }
     `,
     { id: router.query.discussionId as string, count: 50 },
-    { fetchPolicy: 'store-and-network' },
+    { fetchPolicy: 'store-and-network' }
   );
 
   return <AttachmentsList files={data} />;

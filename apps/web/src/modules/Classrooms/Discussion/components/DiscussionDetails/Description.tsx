@@ -3,8 +3,8 @@ import { graphql, useFragment, useMutation } from 'react-relay';
 import Zod, { object, string } from 'zod';
 import { Button as SButton, Form, Modal, useZodForm } from '@spout/toolkit';
 import { useToast } from '../../../../../shared/components';
-import { DescriptionMutation } from './__generated__/DescriptionMutation.graphql';
-import { Description_discussion$key } from './__generated__/Description_discussion.graphql';
+import { DescriptionMutation } from '../../../../../__generated__/DescriptionMutation.graphql';
+import { Description_discussion$key } from '../../../../../__generated__/Description_discussion.graphql';
 import { Item } from './Topic';
 
 const fragment = graphql`
@@ -37,8 +37,9 @@ interface Props {
 
 const Description = ({ discussion }: Props) => {
   const data = useFragment(fragment, discussion);
-  const [updateDescription, isInFlight] =
-    useMutation<DescriptionMutation>(mutation);
+  const [updateDescription, isInFlight] = useMutation<DescriptionMutation>(
+    mutation
+  );
 
   const [isOpen, setIsOpen] = useState(false);
   const { handleError } = useToast();
@@ -62,7 +63,7 @@ const Description = ({ discussion }: Props) => {
           setIsOpen(false);
         },
       }),
-    [updateDescription, data.id, form, handleError],
+    [updateDescription, data.id, form, handleError]
   );
 
   return (

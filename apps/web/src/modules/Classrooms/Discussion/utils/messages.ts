@@ -1,7 +1,7 @@
 import { differenceInMinutes, format } from 'date-fns';
 import { getTime } from './dates';
-import { DiscussionMessagesList_discussion$data } from '../components/DiscussionMessages/DiscussionMessagesList/__generated__/DiscussionMessagesList_discussion.graphql';
-import { DiscussionMessagesList_user$data } from '../components/DiscussionMessages/DiscussionMessagesList/__generated__/DiscussionMessagesList_user.graphql';
+import { DiscussionMessagesList_discussion$data } from '../../../../__generated__/DiscussionMessagesList_discussion.graphql';
+import { DiscussionMessagesList_user$data } from '../../../../__generated__/DiscussionMessagesList_user.graphql';
 
 export type Me = DiscussionMessagesList_user$data;
 
@@ -49,7 +49,7 @@ const sort = (groups: GroupedDiscussionMessages) => {
   Object.entries(days).forEach(([_, messages]) =>
     messages
       .sort((x, y) => getTime(x.createdAt) - getTime(y.createdAt))
-      .reverse(),
+      .reverse()
   );
 
   const sortedDays = Object.keys(days)
@@ -60,7 +60,7 @@ const sort = (groups: GroupedDiscussionMessages) => {
         ...acc,
         [day]: [...days[day]],
       }),
-      {},
+      {}
     );
 
   // Returning a map gurantees sort order is respected when being iterated on.

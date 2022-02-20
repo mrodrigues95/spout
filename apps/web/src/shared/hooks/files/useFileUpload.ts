@@ -6,11 +6,11 @@ import { validateWhitelistedExtension } from '../../utils';
 import {
   useFileUploadGenerateUploadSASMutation,
   useFileUploadGenerateUploadSASMutation$data,
-} from './__generated__/useFileUploadGenerateUploadSASMutation.graphql';
+} from '../../../__generated__/useFileUploadGenerateUploadSASMutation.graphql';
 import {
   useFileUploadCompleteUploadMutation,
   useFileUploadCompleteUploadMutation$data,
-} from './__generated__/useFileUploadCompleteUploadMutation.graphql';
+} from '../../../__generated__/useFileUploadCompleteUploadMutation.graphql';
 
 const GenerateUploadSASMutation = graphql`
   mutation useFileUploadGenerateUploadSASMutation(

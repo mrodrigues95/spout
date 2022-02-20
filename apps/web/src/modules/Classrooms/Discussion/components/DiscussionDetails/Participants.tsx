@@ -1,7 +1,7 @@
 import { graphql, useFragment } from 'react-relay';
 import { Button } from '@spout/toolkit';
 import { Avatar } from '../../../../../shared/components';
-import { Participants_classroom$key } from './__generated__/Participants_classroom.graphql';
+import { Participants_classroom$key } from '../../../../../__generated__/Participants_classroom.graphql';
 
 const fragment = graphql`
   fragment Participants_classroom on Classroom {

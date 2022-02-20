@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { HorizontalNavigation, Button, Link, Tooltip } from '@spout/toolkit';
 import clsx from 'clsx';
-import { DiscussionsNavigation_discussions$key } from './__generated__/DiscussionsNavigation_discussions.graphql';
+import { DiscussionsNavigation_discussions$key } from '../../../../__generated__/DiscussionsNavigation_discussions.graphql';
 
 const HorizontalNavigationSeparator = () => {
   return <span className="ml-2 -mr-2 h-5 border border-gray-400 opacity-50" />;
@@ -20,7 +20,7 @@ const HorziontalNavigationItem = ({
     <li
       className={clsx(
         'inline-flex h-full w-16 items-center justify-center',
-        className,
+        className
       )}
     >
       {children}

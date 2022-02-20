@@ -5,7 +5,7 @@ import {
   RecordProxy,
   RecordSourceSelectorProxy,
 } from 'relay-runtime';
-import { useDiscussionMessagesSubscription as useDiscussionMessagesSubscriptionType } from './__generated__/useDiscussionMessagesSubscription.graphql';
+import { useDiscussionMessagesSubscription as useDiscussionMessagesSubscriptionType } from '../../../../__generated__/useDiscussionMessagesSubscription.graphql';
 
 const subscription = graphql`
   subscription useDiscussionMessagesSubscription($discussionId: ID!) {
@@ -50,13 +50,13 @@ const subscription = graphql`
 
 const getSharedConnection = (
   store: RecordSourceSelectorProxy,
-  discussionId: string,
+  discussionId: string
 ) => {
   // Get the discussion.
   const discussionRecord = store.get(discussionId);
   if (!discussionRecord) {
     throw new Error(
-      `Unable to get discussion record for discussionId: ${discussionId}`,
+      `Unable to get discussion record for discussionId: ${discussionId}`
     );
   }
 
@@ -73,7 +73,7 @@ const getSharedConnection = (
 export const sharedUpdater = (
   store: RecordSourceSelectorProxy,
   discussionId: string,
-  message: RecordProxy,
+  message: RecordProxy
 ) => {
   const conn = getSharedConnection(store, discussionId);
 
@@ -82,39 +82,38 @@ export const sharedUpdater = (
     store,
     conn,
     message,
-    'MessagesEdge',
+    'MessagesEdge'
   );
   ConnectionHandler.insertEdgeAfter(conn, newEdge);
 };
 
 export const useDiscussionMessagesSubscription = (
   discussionId: string,
-  creatorId: string,
+  creatorId: string
 ) => {
-  const config: GraphQLSubscriptionConfig<useDiscussionMessagesSubscriptionType> =
-    useMemo(
-      () => ({
-        variables: { discussionId },
-        subscription,
-        updater: (store) => {
-          const message = store
-            .getRootField('onDiscussionMessageReceived')
-            .getLinkedRecord('message');
+  const config: GraphQLSubscriptionConfig<useDiscussionMessagesSubscriptionType> = useMemo(
+    () => ({
+      variables: { discussionId },
+      subscription,
+      updater: (store) => {
+        const message = store
+          .getRootField('onDiscussionMessageReceived')
+          .getLinkedRecord('message');
 
-          const isEvent = message.getValue('isEvent');
-          const isMyMessage =
-            message.getLinkedRecord('createdBy').getValue('id') === creatorId;
-          const shouldIgnore = !isEvent && isMyMessage;
+        const isEvent = message.getValue('isEvent');
+        const isMyMessage =
+          message.getLinkedRecord('createdBy').getValue('id') === creatorId;
+        const shouldIgnore = !isEvent && isMyMessage;
 
-          // Messages (not events) created by the same user are handled within
-          // the mutation instead.
-          if (shouldIgnore) return;
+        // Messages (not events) created by the same user are handled within
+        // the mutation instead.
+        if (shouldIgnore) return;
 
-          sharedUpdater(store, discussionId, message);
-        },
-      }),
-      [discussionId, creatorId],
-    );
+        sharedUpdater(store, discussionId, message);
+      },
+    }),
+    [discussionId, creatorId]
+  );
 
   useSubscription<useDiscussionMessagesSubscriptionType>(config);
 };
