@@ -1,6 +1,6 @@
 using API.Data.Entities;
-using API.Schema.Types.Discussions;
 using API.Schema.Types.Files;
+using API.Schema.Types.Messages;
 using API.Schema.Types.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -43,7 +43,7 @@ namespace API.Data {
             builder.Entity<IdentityRole<int>>().ToTable("roles");
 
             // Configure enums.
-            builder.HasPostgresEnum<DiscussionEvent>();
+            builder.HasPostgresEnum<MessageEvent>();
             builder.HasPostgresEnum<UserProfileColor>();
             builder.HasPostgresEnum<WhitelistedFileExtension>();
             builder.HasPostgresEnum<FileUploadStatus>();
@@ -52,7 +52,7 @@ namespace API.Data {
         }
 
         private static void MapEnums() {
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<DiscussionEvent>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<MessageEvent>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<UserProfileColor>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<WhitelistedFileExtension>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<FileUploadStatus>();

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<421defc9ba7a4322ab7a3e25cdb5957a>>
+ * @generated SignedSource<<c5a7bd62c8097354e0fe22890812e500>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -91,7 +91,41 @@ v5 = [
       "createdAt": "ASC"
     }
   }
-];
+],
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "content",
+  "storageKey": null
+},
+v7 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "User",
+  "kind": "LinkedField",
+  "name": "createdBy",
+  "plural": false,
+  "selections": [
+    (v3/*: any*/),
+    (v4/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "avatarUrl",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "profileColor",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
+};
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
@@ -189,13 +223,7 @@ return {
                         "plural": false,
                         "selections": [
                           (v3/*: any*/),
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "content",
-                            "storageKey": null
-                          },
+                          (v6/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -207,14 +235,14 @@ return {
                             "alias": null,
                             "args": null,
                             "kind": "ScalarField",
-                            "name": "isDiscussionEvent",
+                            "name": "isEvent",
                             "storageKey": null
                           },
                           {
                             "alias": null,
                             "args": null,
                             "kind": "ScalarField",
-                            "name": "discussionEvent",
+                            "name": "messageEvent",
                             "storageKey": null
                           },
                           {
@@ -251,33 +279,7 @@ return {
                             ],
                             "storageKey": null
                           },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "concreteType": "User",
-                            "kind": "LinkedField",
-                            "name": "createdBy",
-                            "plural": false,
-                            "selections": [
-                              (v3/*: any*/),
-                              (v4/*: any*/),
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "avatarUrl",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "profileColor",
-                                "storageKey": null
-                              }
-                            ],
-                            "storageKey": null
-                          },
+                          (v7/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -288,6 +290,20 @@ return {
                             "selections": [
                               (v3/*: any*/),
                               (v4/*: any*/)
+                            ],
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "concreteType": "Message",
+                            "kind": "LinkedField",
+                            "name": "parentMessage",
+                            "plural": false,
+                            "selections": [
+                              (v3/*: any*/),
+                              (v6/*: any*/),
+                              (v7/*: any*/)
                             ],
                             "storageKey": null
                           },
@@ -354,16 +370,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e7dd8fe89fdd0a1b9ff8f8350f9361e3",
+    "cacheID": "834836b952809444a57a287d9eac8d66",
     "id": null,
     "metadata": {},
     "name": "DiscussionMessagesListPaginationQuery",
     "operationKind": "query",
-    "text": "query DiscussionMessagesListPaginationQuery(\n  $count: Int!\n  $cursor: String\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...DiscussionMessagesList_discussion_1G22uz\n    id\n  }\n}\n\nfragment DiscussionMessagesListHeader_discussion on Discussion {\n  name\n  topic\n  description\n}\n\nfragment DiscussionMessagesList_discussion_1G22uz on Discussion {\n  id\n  ...DiscussionMessagesListHeader_discussion\n  messages(last: $count, before: $cursor, order: {createdAt: ASC}) {\n    edges {\n      node {\n        id\n        content\n        createdAt\n        isDiscussionEvent\n        discussionEvent\n        attachments {\n          id\n          location\n          name\n          contentLength\n          extension\n        }\n        createdBy {\n          id\n          name\n          avatarUrl\n          profileColor\n        }\n        pinnedBy {\n          id\n          name\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n"
+    "text": "query DiscussionMessagesListPaginationQuery(\n  $count: Int!\n  $cursor: String\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...DiscussionMessagesList_discussion_1G22uz\n    id\n  }\n}\n\nfragment DiscussionMessagesListHeader_discussion on Discussion {\n  name\n  topic\n  description\n}\n\nfragment DiscussionMessagesList_discussion_1G22uz on Discussion {\n  id\n  ...DiscussionMessagesListHeader_discussion\n  messages(last: $count, before: $cursor, order: {createdAt: ASC}) {\n    edges {\n      node {\n        id\n        content\n        createdAt\n        isEvent\n        messageEvent\n        attachments {\n          id\n          location\n          name\n          contentLength\n          extension\n        }\n        createdBy {\n          id\n          name\n          avatarUrl\n          profileColor\n        }\n        pinnedBy {\n          id\n          name\n        }\n        parentMessage {\n          id\n          content\n          createdBy {\n            id\n            name\n            avatarUrl\n            profileColor\n          }\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "a9cbb65408c4cfb08bb53d5e657464f5";
+(node as any).hash = "4185b1902d60995a95d6db86bb46c0e8";
 
 export default node;

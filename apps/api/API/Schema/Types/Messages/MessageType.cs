@@ -15,6 +15,15 @@ using Microsoft.EntityFrameworkCore;
 using API.Schema.Types.Discussions;
 
 namespace API.Schema.Types.Messages {
+    public enum MessageEvent {
+        CHANGE_TOPIC,
+        CHANGE_DESCRIPTION,
+        PINNED_MESSAGE,
+        UNPINNED_MESSAGE
+    }
+
+    public class MessageEventType : EnumType<MessageEvent> { }
+
     public class MessageType : ObjectType<Message> {
         protected override void Configure(IObjectTypeDescriptor<Message> descriptor) {
             descriptor
@@ -43,11 +52,16 @@ namespace API.Schema.Types.Messages {
                 .Ignore();
 
             descriptor
+                .Field(m => m.ParentMessageId)
+                .Type<IntType>()
+                .Ignore();
+
+            descriptor
                 .Field(m => m.Discussion)
                 .Type<NonNullType<DiscussionType>>();
 
             descriptor
-                .Field(m => m.IsDiscussionEvent)
+                .Field(m => m.IsEvent)
                 .Type<NonNullType<BooleanType>>();
 
             descriptor
@@ -73,28 +87,51 @@ namespace API.Schema.Types.Messages {
                 .Name("pinnedBy");
 
             descriptor
+                .Field(m => m.ParentMessage)
+                .Type<MessageType>()
+                .ResolveWith<MessageResolvers>(x =>
+                    x.GetParentMessageAsync(default!, default!, default!))
+                .Name("parentMessage");
+
+            descriptor
                 .Field(m => m.MessageFiles)
                 .Type<NonNullType<ListType<NonNullType<FileType>>>>()
                 .UseDbContext<ApplicationDbContext>()
                 .ResolveWith<MessageResolvers>(x =>
                     x.GetAttachmentsAsync(default!, default!, default!, default!))
                 .Name("attachments");
+
+            descriptor
+                .Field(m => m.MessageLinks)
+                .Type<NonNullType<ListType<NonNullType<MessageType>>>>()
+                .UseDbContext<ApplicationDbContext>()
+                .ResolveWith<MessageResolvers>(x =>
+                    x.GetTriggeredEventsAsync(default!, default!, default!, default!))
+                .Name("triggeredEvents");
         }
 
         private class MessageResolvers {
             public async Task<User> GetCreatedByAsync(
-            [Parent] Message message,
-            UserByIdDataLoader userById,
-            CancellationToken cancellationToken)
-            => await userById.LoadAsync(message.CreatedById, cancellationToken);
+                [Parent] Message message,
+                UserByIdDataLoader userById,
+                CancellationToken cancellationToken)
+                => await userById.LoadAsync(message.CreatedById, cancellationToken);
 
             public async Task<User?> GetPinnedByAsync(
-            [Parent] Message message,
-            UserByIdDataLoader userById,
-            CancellationToken cancellationToken)
-            => message.PinnedById is null
-                ? null
-                : await userById.LoadAsync(message.PinnedById.Value, cancellationToken);
+                [Parent] Message message,
+                UserByIdDataLoader userById,
+                CancellationToken cancellationToken)
+                => message.PinnedById is null
+                    ? null
+                    : await userById.LoadAsync(message.PinnedById.Value, cancellationToken);
+
+            public async Task<Message?> GetParentMessageAsync(
+                [Parent] Message message,
+                MessageByIdDataLoader messageById,
+                CancellationToken cancellationToken)
+                => message.ParentMessageId is null
+                    ? null
+                    : await messageById.LoadAsync(message.ParentMessageId.Value, cancellationToken);
 
             public async Task<IEnumerable<File>> GetAttachmentsAsync(
                 [Parent] Message message,
@@ -113,6 +150,22 @@ namespace API.Schema.Types.Messages {
                     .ToArrayAsync(cancellationToken);
 
                 return await fileById.LoadAsync(fileIds, cancellationToken);
+            }
+
+            public async Task<IEnumerable<Message>> GetTriggeredEventsAsync(
+            [Parent] Message message,
+            [ScopedService] ApplicationDbContext ctx,
+            MessageByIdDataLoader messageByIdDataLoader,
+            CancellationToken cancellationToken) {
+                int[] messageIds = await ctx.Messages
+                    .Where(m => m.Id == message.Id)
+                    .Include(m => m.MessageLinks)
+                    .SelectMany(m => m.MessageLinks)
+                        .Where(m => m.ParentMessageId == message.Id)
+                        .Select(m => m.Id)
+                    .ToArrayAsync(cancellationToken);
+
+                return await messageByIdDataLoader.LoadAsync(messageIds, cancellationToken);
             }
         }
     }

@@ -58,8 +58,8 @@ export const useSendDiscussionMessageMutation = () => {
           const newDiscussionMessageRecord = store.create(id, 'Message');
           newDiscussionMessageRecord.setValue(id, 'id');
           newDiscussionMessageRecord.setValue(content, 'content');
-          newDiscussionMessageRecord.setValue(false, 'isDiscussionEvent');
-          newDiscussionMessageRecord.setValue(null, 'discussionEvent');
+          newDiscussionMessageRecord.setValue(false, 'isEvent');
+          newDiscussionMessageRecord.setValue(null, 'messageEvent');
           newDiscussionMessageRecord.setValue(
             new Date().toISOString(),
             'createdAt',

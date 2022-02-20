@@ -1,2 +1,3 @@
 export * from './useEditDiscussionMessage';
-export * from './usePinOrUnpinDiscussionMessage';
+export * from './useUnpinDiscussionMessage';
+export * from './usePinDiscussionMessage';

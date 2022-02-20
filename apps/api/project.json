@@ -39,6 +39,13 @@
         "cwd": "apps/api"
       }
     },
+    "migrations-remove": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": ["dotnet ef migrations remove --project=API"],
+        "cwd": "apps/api"
+      }
+    },
     "seed-db": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {

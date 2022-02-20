@@ -31,7 +31,7 @@ interface GroupedDiscussionMessages {
  * @param messages The array of messages that require grouping.
  * @returns An object containing messages groups which is indexed by `date`.
  */
-export const group = (
+const group = (
   messages: DiscussionMessage[]
 ): GroupedDiscussionMessages =>
   messages.reduce((acc: GroupedDiscussionMessages, message) => {
@@ -113,7 +113,7 @@ export const isDivider = (item: Item) =>
   'type' in item && item.type === 'divider';
 
 export const isEvent = (item: Item) =>
-  'isDiscussionEvent' in item && !!item.discussionEvent;
+  'isEvent' in item && !!item.messageEvent;
 
 export const isMessage = (item: Item) => !(isDivider(item) || isEvent(item));
 

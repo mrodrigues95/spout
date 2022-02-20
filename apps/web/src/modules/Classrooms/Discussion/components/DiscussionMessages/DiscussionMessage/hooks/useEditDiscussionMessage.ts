@@ -29,7 +29,10 @@ export const useEditDiscussionMessage = (message: DiscussionMessage) => {
         },
         optimisticResponse: {
           updateDiscussionMessage: {
-            message: { id: message.id, content: updatedContent },
+            message: {
+              id: message.id,
+              content: updatedContent
+            },
           },
         },
       });

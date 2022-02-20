@@ -10,22 +10,20 @@ namespace API.Data.Configurations {
             builder.Property(m => m.CreatedById)
                 .IsRequired();
 
-            builder.Property(m => m.PinnedById)
-                .IsRequired(false);
-
             builder.Property(m => m.DiscussionId)
                 .IsRequired();
 
+            builder.Property(m => m.PinnedById)
+                .IsRequired(false);
+
             builder.Property(m => m.Content)
                 .HasMaxLength(2000)
-                .IsRequired();
+                .IsRequired()
+                .HasDefaultValue("");
 
-            builder.Property(m => m.IsDiscussionEvent)
+            builder.Property(m => m.IsEvent)
                 .HasDefaultValue(false)
                 .IsRequired();
-
-            builder.Property(m => m.DiscussionEvent)
-                .IsRequired(false);
 
             builder.Property(m => m.CreatedAt)
                 .HasDefaultValueSql("timezone('UTC', now())")
@@ -35,17 +33,28 @@ namespace API.Data.Configurations {
                 .HasDefaultValueSql("timezone('UTC', now())")
                 .IsRequired();
 
+            builder.Property(m => m.DeletedAt)
+                .IsRequired(false);
+
+            builder.Property(m => m.PinnedAt)
+                .IsRequired(false);
+
             builder.HasIndex(m => new { m.CreatedById, m.DiscussionId });
 
             builder.HasOne(m => m.CreatedBy)
                 .WithMany(u => u!.Messages)
-                .HasForeignKey(m => m.CreatedById)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(m => m.CreatedById);
 
             builder.HasOne(m => m.PinnedBy)
                 .WithMany(u => u!.PinnedMessages)
                 .HasForeignKey(m => m.PinnedById)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired(false);
+
+            builder.HasOne(m => m.ParentMessage)
+                .WithMany(m => m!.MessageLinks)
+                .HasForeignKey(m => m.ParentMessageId)
+                .IsRequired(false);
 
             builder.HasOne(m => m.Discussion)
                 .WithMany(d => d!.Messages)

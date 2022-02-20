@@ -66,12 +66,13 @@ export const useStore = create<OptimisticMessagesStore>((set) => ({
               optimisticId: getOptimisticId(),
               content: content,
               createdAt: new Date().toISOString(),
-              isDiscussionEvent: false,
-              discussionEvent: null,
+              isEvent: false,
+              messageEvent: null,
               isSent: false,
               attachmentIds,
               createdBy,
-              pinnedBy: null
+              pinnedBy: null,
+              parentMessage: null
             },
           ],
         },

@@ -9,8 +9,10 @@ import {
 import {
   useEditDiscussionMessage,
   EditFn,
-  usePinOrUnpinDiscussionMessage,
-  PinOrUnpinFn,
+  useUnpinDiscussionMessage,
+  UnpinFn,
+  PinFn,
+  usePinDiscussionMessage,
 } from './hooks';
 
 interface OptimisticMessageOptions {
@@ -22,6 +24,7 @@ interface OptimisticMessageOptions {
 interface DiscussionMessageData {
   message: DiscussionMessage;
   me: Me;
+  discussionId: string;
   formattedCreatedAt: string;
   isOptimistic: boolean;
   isPinned: boolean;
@@ -32,7 +35,8 @@ interface DiscussionMessageData {
 
 interface DiscussionMessageActions {
   edit: EditFn;
-  pinOrUnpin: PinOrUnpinFn;
+  unpin: UnpinFn;
+  pin: PinFn;
 }
 
 interface DiscussionMessageState {
@@ -53,7 +57,7 @@ const DiscussionMessageContext = createContext<TDiscussionMessageContext | null>
 export interface Props
   extends Pick<
     TDiscussionMessageContext['data'],
-    'message' | 'isMyMessage' | 'optimisticMessageOpts' | 'me'
+    'message' | 'isMyMessage' | 'optimisticMessageOpts' | 'me' | 'discussionId'
   > {
   recentMessages?: RecentMessages;
   children: ReactNode;
@@ -62,6 +66,7 @@ export interface Props
 export const DiscussionMessageProvider = ({
   message,
   me,
+  discussionId,
   recentMessages,
   isMyMessage,
   optimisticMessageOpts,
@@ -86,6 +91,7 @@ export const DiscussionMessageProvider = ({
     () => ({
       message,
       me,
+      discussionId,
       formattedCreatedAt,
       recentMessage: recentMessage,
       isPinned: !!message.pinnedBy,
@@ -98,6 +104,7 @@ export const DiscussionMessageProvider = ({
       isMyMessage,
       me,
       message,
+      discussionId,
       optimisticMessageOpts,
       recentMessage,
     ]
@@ -111,11 +118,12 @@ export const DiscussionMessageProvider = ({
   );
 
   const { edit } = useEditDiscussionMessage(message);
-  const { pinOrUnpin } = usePinOrUnpinDiscussionMessage(message, me);
+  const { unpin } = useUnpinDiscussionMessage(message, me);
+  const { pin } = usePinDiscussionMessage(message, me);
 
   const actions: DiscussionMessageActions = useMemo(
-    () => ({ edit, pinOrUnpin }),
-    [edit, pinOrUnpin]
+    () => ({ edit, unpin, pin }),
+    [edit, unpin, pin]
   );
 
   const context = useMemo(

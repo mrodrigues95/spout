@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<407d1fed6236edf484b24edc580cbc0c>>
+ * @generated SignedSource<<a71898de4267bbb886ab3287f44eaad9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 // @ts-nocheck
 
 import { ReaderFragment, RefetchableFragment } from 'relay-runtime';
-export type DiscussionEvent = "CHANGE_TOPIC" | "CHANGE_DESCRIPTION" | "%future added value";
+export type MessageEvent = "CHANGE_TOPIC" | "CHANGE_DESCRIPTION" | "PINNED_MESSAGE" | "UNPINNED_MESSAGE" | "%future added value";
 export type UserProfileColor = "SKY" | "PINK" | "GREEN" | "PURPLE" | "ROSE" | "GRAY" | "ORANGE" | "%future added value";
 export type WhitelistedFileExtension = "AAC" | "CSV" | "PDF" | "XLS" | "XLSX" | "PPT" | "PPTX" | "BMP" | "GIF" | "JPEG" | "JPG" | "JPE" | "PNG" | "TIFF" | "TIF" | "TXT" | "TEXT" | "RTF" | "DOC" | "DOCX" | "DOT" | "DOTX" | "DWG" | "DWF" | "DXF" | "MP3" | "MP4" | "WAV" | "AVI" | "MOV" | "MPEG" | "WMV" | "ZIP" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
@@ -21,8 +21,8 @@ export type DiscussionMessagesList_discussion$data = {
         readonly id: string;
         readonly content: string;
         readonly createdAt: string;
-        readonly isDiscussionEvent: boolean;
-        readonly discussionEvent: DiscussionEvent | null;
+        readonly isEvent: boolean;
+        readonly messageEvent: MessageEvent | null;
         readonly attachments: ReadonlyArray<{
           readonly id: string;
           readonly location: string | null;
@@ -39,6 +39,16 @@ export type DiscussionMessagesList_discussion$data = {
         readonly pinnedBy: {
           readonly id: string;
           readonly name: string;
+        } | null;
+        readonly parentMessage: {
+          readonly id: string;
+          readonly content: string;
+          readonly createdBy: {
+            readonly id: string;
+            readonly name: string;
+            readonly avatarUrl: string | null;
+            readonly profileColor: UserProfileColor;
+          };
         } | null;
       };
     }> | null;
@@ -67,7 +77,41 @@ v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "content",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "name",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "User",
+  "kind": "LinkedField",
+  "name": "createdBy",
+  "plural": false,
+  "selections": [
+    (v1/*: any*/),
+    (v3/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "avatarUrl",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "profileColor",
+      "storageKey": null
+    }
+  ],
   "storageKey": null
 };
 return {
@@ -150,13 +194,7 @@ return {
               "plural": false,
               "selections": [
                 (v1/*: any*/),
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "content",
-                  "storageKey": null
-                },
+                (v2/*: any*/),
                 {
                   "alias": null,
                   "args": null,
@@ -168,14 +206,14 @@ return {
                   "alias": null,
                   "args": null,
                   "kind": "ScalarField",
-                  "name": "isDiscussionEvent",
+                  "name": "isEvent",
                   "storageKey": null
                 },
                 {
                   "alias": null,
                   "args": null,
                   "kind": "ScalarField",
-                  "name": "discussionEvent",
+                  "name": "messageEvent",
                   "storageKey": null
                 },
                 {
@@ -194,7 +232,7 @@ return {
                       "name": "location",
                       "storageKey": null
                     },
-                    (v2/*: any*/),
+                    (v3/*: any*/),
                     {
                       "alias": null,
                       "args": null,
@@ -212,33 +250,7 @@ return {
                   ],
                   "storageKey": null
                 },
-                {
-                  "alias": null,
-                  "args": null,
-                  "concreteType": "User",
-                  "kind": "LinkedField",
-                  "name": "createdBy",
-                  "plural": false,
-                  "selections": [
-                    (v1/*: any*/),
-                    (v2/*: any*/),
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "avatarUrl",
-                      "storageKey": null
-                    },
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "profileColor",
-                      "storageKey": null
-                    }
-                  ],
-                  "storageKey": null
-                },
+                (v4/*: any*/),
                 {
                   "alias": null,
                   "args": null,
@@ -248,7 +260,21 @@ return {
                   "plural": false,
                   "selections": [
                     (v1/*: any*/),
-                    (v2/*: any*/)
+                    (v3/*: any*/)
+                  ],
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "concreteType": "Message",
+                  "kind": "LinkedField",
+                  "name": "parentMessage",
+                  "plural": false,
+                  "selections": [
+                    (v1/*: any*/),
+                    (v2/*: any*/),
+                    (v4/*: any*/)
                   ],
                   "storageKey": null
                 },
@@ -306,6 +332,6 @@ return {
 };
 })();
 
-(node as any).hash = "a9cbb65408c4cfb08bb53d5e657464f5";
+(node as any).hash = "4185b1902d60995a95d6db86bb46c0e8";
 
 export default node;

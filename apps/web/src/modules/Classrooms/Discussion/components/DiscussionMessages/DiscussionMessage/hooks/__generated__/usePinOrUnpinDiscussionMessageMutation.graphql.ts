@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0ba543f7d9e81caeb140331e1715a660>>
+ * @generated SignedSource<<3961a5380a4c07908541701e9feedc5a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,12 +18,15 @@ export type usePinOrUnpinDiscussionMessageMutation$variables = {
 export type usePinOrUnpinDiscussionMessageMutationVariables = usePinOrUnpinDiscussionMessageMutation$variables;
 export type usePinOrUnpinDiscussionMessageMutation$data = {
   readonly pinOrUnpinDiscussionMessage: {
-    readonly message: {
-      readonly id: string;
-      readonly pinnedBy: {
+    readonly pinnedOrUnpinnedDiscussionMessagePayload: {
+      readonly message: {
         readonly id: string;
-        readonly name: string;
+        readonly pinnedBy: {
+          readonly id: string;
+          readonly name: string;
+        } | null;
       } | null;
+      readonly deletedEventMessageId: string | null;
     } | null;
   };
 };
@@ -66,29 +69,47 @@ v2 = [
       {
         "alias": null,
         "args": null,
-        "concreteType": "Message",
+        "concreteType": "PinnedOrUnpinnedDiscussionMessagePayload",
         "kind": "LinkedField",
-        "name": "message",
+        "name": "pinnedOrUnpinnedDiscussionMessagePayload",
         "plural": false,
         "selections": [
-          (v1/*: any*/),
           {
             "alias": null,
             "args": null,
-            "concreteType": "User",
+            "concreteType": "Message",
             "kind": "LinkedField",
-            "name": "pinnedBy",
+            "name": "message",
             "plural": false,
             "selections": [
               (v1/*: any*/),
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "name",
+                "concreteType": "User",
+                "kind": "LinkedField",
+                "name": "pinnedBy",
+                "plural": false,
+                "selections": [
+                  (v1/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "name",
+                    "storageKey": null
+                  }
+                ],
                 "storageKey": null
               }
             ],
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "deletedEventMessageId",
             "storageKey": null
           }
         ],
@@ -116,16 +137,16 @@ return {
     "selections": (v2/*: any*/)
   },
   "params": {
-    "cacheID": "e519706196323ec5b2e9dca7f2a5bdbc",
+    "cacheID": "ae43a1b93c3e427b7716bcd11bc1bbb5",
     "id": null,
     "metadata": {},
     "name": "usePinOrUnpinDiscussionMessageMutation",
     "operationKind": "mutation",
-    "text": "mutation usePinOrUnpinDiscussionMessageMutation(\n  $input: PinOrUnpinDiscussionMessageInput!\n) {\n  pinOrUnpinDiscussionMessage(input: $input) {\n    message {\n      id\n      pinnedBy {\n        id\n        name\n      }\n    }\n  }\n}\n"
+    "text": "mutation usePinOrUnpinDiscussionMessageMutation(\n  $input: PinOrUnpinDiscussionMessageInput!\n) {\n  pinOrUnpinDiscussionMessage(input: $input) {\n    pinnedOrUnpinnedDiscussionMessagePayload {\n      message {\n        id\n        pinnedBy {\n          id\n          name\n        }\n      }\n      deletedEventMessageId\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "edc3f159034d03abfcb232c6a81ca622";
+(node as any).hash = "74c555ad7a4959641b98bac95edb871c";
 
 export default node;

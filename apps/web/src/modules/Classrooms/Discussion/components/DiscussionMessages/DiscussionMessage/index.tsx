@@ -262,15 +262,16 @@ const DiscussionMessage = () => {
   );
 };
 
-interface Props
+export interface Props
   extends Pick<
     DiscussionMessageProviderProps,
-    'message' | 'optimisticMessageOpts' | 'recentMessages' | 'me'
+    'message' | 'optimisticMessageOpts' | 'recentMessages' | 'me' | 'discussionId'
   > {}
 
 const DiscussionMessageWithProvider = ({
   message,
   me,
+  discussionId,
   recentMessages,
   optimisticMessageOpts,
 }: Props) => {
@@ -283,6 +284,7 @@ const DiscussionMessageWithProvider = ({
     <DiscussionMessageProvider
       message={message}
       me={me}
+      discussionId={discussionId}
       optimisticMessageOpts={optimisticMessageOpts}
       isMyMessage={isMyMessage}
       recentMessages={recentMessages}

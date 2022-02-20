@@ -41,8 +41,8 @@ const discussionFragment = graphql`
           id
           content
           createdAt
-          isDiscussionEvent
-          discussionEvent
+          isEvent
+          messageEvent
           attachments {
             id
             location
@@ -59,6 +59,16 @@ const discussionFragment = graphql`
           pinnedBy {
             id
             name
+          }
+          parentMessage {
+            id
+            content
+            createdBy {
+              id
+              name
+              avatarUrl
+              profileColor
+            }
           }
         }
       }
@@ -125,7 +135,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
         <DiscussionMessageDivider date={(item as Divider).date} />
       ) : isEvent(item) ? (
         // Events are considered as regular messages but styled different.
-        <DiscussionMessageEvent event={item as TDiscussionMessage} />
+        <DiscussionMessageEvent message={item as TDiscussionMessage} />
       ) : isOptimistic(item) ? (
         <DiscussionOptimisticMessage
           discussionId={discussion.id}
@@ -135,6 +145,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
         />
       ) : (
         <DiscussionMessage
+          discussionId={discussion.id}
           recentMessages={recentMessages}
           message={item as TDiscussionMessage}
           me={me}

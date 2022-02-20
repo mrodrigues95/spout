@@ -14,8 +14,8 @@ const subscription = graphql`
         id
         content
         createdAt
-        isDiscussionEvent
-        discussionEvent
+        isEvent
+        messageEvent
         attachments {
           id
           location
@@ -33,15 +33,24 @@ const subscription = graphql`
           id
           name
         }
+        parentMessage {
+          id
+          content
+          createdBy {
+            id
+            name
+            avatarUrl
+            profileColor
+          }
+        }
       }
     }
   }
 `;
 
-export const sharedUpdater = (
+const getSharedConnection = (
   store: RecordSourceSelectorProxy,
-  discussionId: string,
-  message: RecordProxy
+  discussionId: string
 ) => {
   // Get the discussion.
   const discussionRecord = store.get(discussionId);
@@ -58,7 +67,17 @@ export const sharedUpdater = (
   });
   if (!conn) throw new Error(`Unable to get connection by key: ${key}`);
 
-  // Insert edge.
+  return conn;
+};
+
+export const sharedUpdater = (
+  store: RecordSourceSelectorProxy,
+  discussionId: string,
+  message: RecordProxy
+) => {
+  const conn = getSharedConnection(store, discussionId);
+
+  // Insert a new edge.
   const newEdge = ConnectionHandler.createEdge(
     store,
     conn,
@@ -81,7 +100,7 @@ export const useDiscussionMessagesSubscription = (
           .getRootField('onDiscussionMessageReceived')
           .getLinkedRecord('message');
 
-        const isEvent = message.getValue('isDiscussionEvent');
+        const isEvent = message.getValue('isEvent');
         const isMyMessage =
           message.getLinkedRecord('createdBy').getValue('id') === creatorId;
         const shouldIgnore = !isEvent && isMyMessage;

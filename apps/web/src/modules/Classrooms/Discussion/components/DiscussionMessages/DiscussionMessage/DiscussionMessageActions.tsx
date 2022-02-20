@@ -8,7 +8,7 @@ const DiscussionMessageActions = () => {
   const {
     data: { isMyMessage, isPinned, isOptimistic },
     state: { isEditing, setIsEditing },
-    actions: { pinOrUnpin },
+    actions: { pin, unpin },
   } = useDiscussionMessage()!;
 
   if (isOptimistic || isEditing) return null;
@@ -54,7 +54,7 @@ const DiscussionMessageActions = () => {
                   className={clsx(isPinned ? 'rotate-45' : 'rotate-0')}
                 />
               }
-              onClick={() => pinOrUnpin()}
+              onClick={() => (isPinned ? unpin() : pin())}
             />
           </Tooltip>
         </li>

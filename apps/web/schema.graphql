@@ -470,11 +470,6 @@ type Discussion implements Node {
   delLog: DelLog
 }
 
-enum DiscussionEvent {
-  CHANGE_TOPIC
-  CHANGE_DESCRIPTION
-}
-
 input DiscussionFilterInput {
   and: [DiscussionFilterInput!]
   or: [DiscussionFilterInput!]
@@ -495,6 +490,14 @@ input DiscussionFilterInput {
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
   messages: ListFilterInputTypeOfMessageFilterInput
+}
+
+type DiscussionMessageAlreadyNotPinnedError implements Error {
+  message: String!
+}
+
+type DiscussionMessageAlreadyPinnedError implements Error {
+  message: String!
 }
 
 type DiscussionMessageNotFoundError implements Error {
@@ -840,16 +843,26 @@ type Message implements Node {
   id: ID!
   content: String!
   discussion: Discussion!
-  isDiscussionEvent: Boolean!
+  isEvent: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
   createdBy: User!
   pinnedBy: User
+  parentMessage: Message
   attachments: [File!]!
-  discussionEvent: DiscussionEvent
+  triggeredEvents: [Message!]!
+  messageEvent: MessageEvent
   delLogId: Int
   delLog: DelLog
+  pinnedAt: DateTime
   deletedAt: DateTime
+}
+
+enum MessageEvent {
+  CHANGE_TOPIC
+  CHANGE_DESCRIPTION
+  PINNED_MESSAGE
+  UNPINNED_MESSAGE
 }
 
 type MessageFile {
@@ -883,14 +896,18 @@ input MessageFilterInput {
   createdBy: UserFilterInput
   pinnedById: ComparableNullableOfInt32OperationFilterInput
   pinnedBy: UserFilterInput
-  isDiscussionEvent: BooleanOperationFilterInput
-  discussionEvent: NullableOfDiscussionEventOperationFilterInput
+  parentMessageId: ComparableNullableOfInt32OperationFilterInput
+  parentMessage: MessageFilterInput
+  isEvent: BooleanOperationFilterInput
+  messageEvent: NullableOfMessageEventOperationFilterInput
   delLogId: ComparableNullableOfInt32OperationFilterInput
   delLog: DelLogFilterInput
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
+  pinnedAt: ComparableNullableOfDateTimeOperationFilterInput
   deletedAt: ComparableNullableOfDateTimeOperationFilterInput
   messageFiles: ListFilterInputTypeOfMessageFileFilterInput
+  messageLinks: ListFilterInputTypeOfMessageFilterInput
 }
 
 """A connection to a list of items."""
@@ -923,13 +940,24 @@ input MessageSortInput {
   createdBy: UserSortInput
   pinnedById: SortEnumType
   pinnedBy: UserSortInput
-  isDiscussionEvent: SortEnumType
-  discussionEvent: SortEnumType
+  parentMessageId: SortEnumType
+  parentMessage: MessageSortInput
+  isEvent: SortEnumType
+  messageEvent: SortEnumType
   delLogId: SortEnumType
   delLog: DelLogSortInput
   createdAt: SortEnumType
   updatedAt: SortEnumType
+  pinnedAt: SortEnumType
   deletedAt: SortEnumType
+}
+
+type MessageTriggeredEvent {
+  from: Message!
+  to: Message!
+  triggeredAt: DateTime!
+  updatedAt: DateTime!
+  createdAt: DateTime!
 }
 
 type Mutation {
@@ -939,7 +967,8 @@ type Mutation {
   createClassroomInvite(input: CreateClassroomInviteInput!): CreateClassroomInvitePayload!
   sendDiscussionMessage(input: SendDiscussionMessageInput!): SendDiscussionMessagePayload!
   updateDiscussionMessage(input: UpdateDiscussionMessageInput!): UpdateDiscussionMessagePayload!
-  pinOrUnpinDiscussionMessage(input: PinOrUnpinDiscussionMessageInput!): PinOrUnpinDiscussionMessagePayload!
+  pinDiscussionMessage(input: PinDiscussionMessageInput!): PinDiscussionMessagePayload!
+  unpinDiscussionMessage(input: UnpinDiscussionMessageInput!): UnpinDiscussionMessagePayload!
   createDiscussion(input: CreateDiscussionInput!): CreateDiscussionPayload!
   updateDiscussionTopic(input: UpdateDiscussionTopicInput!): UpdateDiscussionTopicPayload!
   updateDiscussionDescription(input: UpdateDiscussionDescriptionInput!): UpdateDiscussionDescriptionPayload!
@@ -959,11 +988,11 @@ interface Node {
   id: ID!
 }
 
-input NullableOfDiscussionEventOperationFilterInput {
-  eq: DiscussionEvent
-  neq: DiscussionEvent
-  in: [DiscussionEvent]
-  nin: [DiscussionEvent]
+input NullableOfMessageEventOperationFilterInput {
+  eq: MessageEvent
+  neq: MessageEvent
+  in: [MessageEvent]
+  nin: [MessageEvent]
 }
 
 """Information about pagination in a connection."""
@@ -989,15 +1018,15 @@ type ParseSignatureError implements Error {
   message: String!
 }
 
-union PinOrUnpinDiscussionMessageError = DiscussionMessageNotFoundError
+union PinDiscussionMessageError = DiscussionMessageNotFoundError | DiscussionMessageAlreadyPinnedError
 
-input PinOrUnpinDiscussionMessageInput {
+input PinDiscussionMessageInput {
   messageId: ID!
 }
 
-type PinOrUnpinDiscussionMessagePayload {
+type PinDiscussionMessagePayload {
   message: Message
-  errors: [PinOrUnpinDiscussionMessageError!]
+  errors: [PinDiscussionMessageError!]
   query: Query!
 }
 
@@ -1167,6 +1196,18 @@ input StringOperationFilterInput {
 
 type Subscription {
   onDiscussionMessageReceived(discussionId: ID!): DiscussionMessageSubscriptionPayload!
+}
+
+union UnpinDiscussionMessageError = DiscussionMessageNotFoundError | DiscussionMessageAlreadyNotPinnedError
+
+input UnpinDiscussionMessageInput {
+  messageId: ID!
+}
+
+type UnpinDiscussionMessagePayload {
+  message: Message
+  errors: [UnpinDiscussionMessageError!]
+  query: Query!
 }
 
 union UpdateDiscussionDescriptionError = DiscussionNotFoundError

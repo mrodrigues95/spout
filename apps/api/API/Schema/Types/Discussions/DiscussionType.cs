@@ -20,13 +20,6 @@ using HotChocolate.Data.Sorting.Expressions;
 using HotChocolate.Types.Pagination.Extensions;
 
 namespace API.Schema.Types.Discussions {
-    public enum DiscussionEvent {
-        CHANGE_TOPIC,
-        CHANGE_DESCRIPTION
-    }
-
-    public class DiscussionEventType : EnumType<DiscussionEvent> { }
-
     public class DiscussionFilterInputType : FilterInputType<Discussion> {
         protected override void Configure(IFilterInputTypeDescriptor<Discussion> descriptor) {
             descriptor
@@ -121,7 +114,8 @@ namespace API.Schema.Types.Discussions {
                 var query = dbContext.Discussions
                     .Where(d => d.Id == discussion.Id)
                     .Include(d => d.Messages)
-                    .SelectMany(d => d.Messages)
+                    .SelectMany(d => d.Messages
+                        .Where(m => m.DeletedAt == null))
                     .AsQueryable();
 
                 var connection = await query                

@@ -1,6 +1,6 @@
 ﻿using System;
-using API.Schema.Types.Discussions;
 using API.Schema.Types.Files;
+using API.Schema.Types.Messages;
 using API.Schema.Types.Users;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,8 +12,8 @@ namespace API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:Enum:discussion_event", "change_topic,change_description")
                 .Annotation("Npgsql:Enum:file_upload_status", "queued,completed,error,ignored")
+                .Annotation("Npgsql:Enum:message_event", "change_topic,change_description,pinned_message,unpinned_message")
                 .Annotation("Npgsql:Enum:user_profile_color", "sky,pink,green,purple,rose,gray,orange")
                 .Annotation("Npgsql:Enum:whitelisted_file_extension", "aac,csv,pdf,xls,xlsx,ppt,pptx,bmp,gif,jpeg,jpg,jpe,png,tiff,tif,txt,text,rtf,doc,docx,dot,dotx,dwg,dwf,dxf,mp3,mp4,wav,avi,mov,mpeg,wmv,zip");
 
@@ -171,8 +171,8 @@ namespace API.Migrations
                     guid = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     state_id = table.Column<int>(type: "integer", nullable: false),
-                    deleted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     del_log_id = table.Column<int>(type: "integer", nullable: true),
+                    deleted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
                 },
@@ -201,7 +201,7 @@ namespace API.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     uploaded_by_id = table.Column<int>(type: "integer", nullable: false),
                     content_length = table.Column<long>(type: "bigint", maxLength: 8388608, nullable: false),
-                    mime_type = table.Column<string>(type: "text", nullable: false),
+                    mime_type = table.Column<string>(type: "text", nullable: true),
                     file_extension = table.Column<WhitelistedFileExtension>(type: "whitelisted_file_extension", nullable: false),
                     upload_status = table.Column<FileUploadStatus>(type: "file_upload_status", maxLength: 255, nullable: false),
                     sas = table.Column<string>(type: "text", nullable: false),
@@ -452,14 +452,16 @@ namespace API.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    content = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    content = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false, defaultValue: ""),
                     discussion_id = table.Column<int>(type: "integer", nullable: false),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
-                    is_discussion_event = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                    discussion_event = table.Column<DiscussionEvent>(type: "discussion_event", nullable: true),
+                    pinned_by_id = table.Column<int>(type: "integer", nullable: true),
+                    is_event = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    message_event = table.Column<MessageEvent>(type: "message_event", nullable: true),
                     del_log_id = table.Column<int>(type: "integer", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
+                    pinned_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
@@ -483,6 +485,12 @@ namespace API.Migrations
                         principalTable: "users",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_messages_users_pinned_by_id",
+                        column: x => x.pinned_by_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -506,6 +514,34 @@ namespace API.Migrations
                     table.ForeignKey(
                         name: "fk_message_files_messages_message_id",
                         column: x => x.message_id,
+                        principalTable: "messages",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "message_triggered_events",
+                columns: table => new
+                {
+                    triggered_from_id = table.Column<int>(type: "integer", nullable: false),
+                    triggered_to_id = table.Column<int>(type: "integer", nullable: false),
+                    id = table.Column<int>(type: "integer", nullable: false),
+                    triggered_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_message_triggered_events", x => new { x.triggered_from_id, x.triggered_to_id });
+                    table.ForeignKey(
+                        name: "fk_message_triggered_events_messages_triggered_to_id",
+                        column: x => x.triggered_from_id,
+                        principalTable: "messages",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_message_triggered_events_messages_triggered_to_id1",
+                        column: x => x.triggered_to_id,
                         principalTable: "messages",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -589,6 +625,11 @@ namespace API.Migrations
                 column: "file_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_message_triggered_events_triggered_to_id",
+                table: "message_triggered_events",
+                column: "triggered_to_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_messages_created_by_id_discussion_id",
                 table: "messages",
                 columns: new[] { "created_by_id", "discussion_id" });
@@ -602,6 +643,11 @@ namespace API.Migrations
                 name: "ix_messages_discussion_id",
                 table: "messages",
                 column: "discussion_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_messages_pinned_by_id",
+                table: "messages",
+                column: "pinned_by_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_role_claims_role_id",
@@ -661,6 +707,9 @@ namespace API.Migrations
 
             migrationBuilder.DropTable(
                 name: "message_files");
+
+            migrationBuilder.DropTable(
+                name: "message_triggered_events");
 
             migrationBuilder.DropTable(
                 name: "role_claims");

@@ -11,7 +11,7 @@ import {
   RecentMessages,
 } from '../../../utils/messages';
 import { DiscussionOptimisticMessageMutation } from './__generated__/DiscussionOptimisticMessageMutation.graphql';
-import DiscussionMessage from '.';
+import DiscussionMessage, { Props as DiscussionMessageProps } from '.';
 
 const mutation = graphql`
   mutation DiscussionOptimisticMessageMutation(
@@ -22,8 +22,8 @@ const mutation = graphql`
         id
         content
         createdAt
-        isDiscussionEvent
-        discussionEvent
+        isEvent
+        messageEvent
         attachments {
           id
           location
@@ -41,12 +41,22 @@ const mutation = graphql`
           id
           name
         }
+        parentMessage {
+          id
+          content
+          createdBy {
+            id
+            name
+            avatarUrl
+            profileColor
+          }
+        }
       }
     }
   }
 `;
 
-interface Props {
+interface Props extends Omit<DiscussionMessageProps, 'message'> {
   discussionId: string;
   message: OptimisticDiscussionMessage;
   me: Me;
@@ -106,6 +116,7 @@ const DiscussionOptimisticMessage = ({
     <DiscussionMessage
       message={{ ...message, attachments: [] }}
       me={me}
+      discussionId={discussionId}
       optimisticMessageOpts={opts}
       recentMessages={recentMessages}
     />

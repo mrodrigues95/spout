@@ -2,6 +2,6 @@ using API.Data.Entities;
 using HotChocolate.Types.Relay;
 
 namespace API.Schema.Mutations.Discussions.Inputs {
-    public record PinOrUnpinDiscussionMessageInput(
+    public record PinDiscussionMessageInput(
         [property: ID(nameof(Message))] int MessageId);
 }

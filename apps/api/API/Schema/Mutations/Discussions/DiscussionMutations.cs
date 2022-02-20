@@ -8,11 +8,11 @@ using API.Extensions;
 using API.Data;
 using System.Threading;
 using HotChocolate.AspNetCore.Authorization;
-using API.Schema.Types.Discussions;
 using System;
 using API.Schema.Mutations.Discussions.Exceptions;
 using API.Schema.Mutations.Discussions.Inputs;
 using Microsoft.EntityFrameworkCore;
+using API.Schema.Types.Messages;
 
 namespace API.Schema.Mutations.Discussions {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -38,7 +38,7 @@ namespace API.Schema.Mutations.Discussions {
                 Content = input.Content.Trim(),
                 DiscussionId = discussion.Id,
                 CreatedById = userId,
-                IsDiscussionEvent = false
+                IsEvent = false
             };
 
             // Save all files that are attached to this message.
@@ -85,28 +85,93 @@ namespace API.Schema.Mutations.Discussions {
         [Authorize]
         [UseApplicationDbContext]
         [Error(typeof(DiscussionMessageNotFoundException))]
-        public async Task<Message?> PinOrUnpinDiscussionMessageAsync(
-            PinOrUnpinDiscussionMessageInput input,
-            [ScopedService] ApplicationDbContext ctx,
+        [Error(typeof(DiscussionMessageAlreadyPinnedException))]
+        public async Task<Message?> PinDiscussionMessageAsync(
+            PinDiscussionMessageInput input,
             [GlobalState] int userId,
+            [Service] ITopicEventSender sender,
+            [ScopedService] ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
-            var message = await ctx.Messages.FindAsync(
-                new object[] { input.MessageId },
-                cancellationToken);
+            var message = await ctx.Messages
+                .Include(m => m.Discussion)
+                .SingleOrDefaultAsync(m => m.Id == input.MessageId, cancellationToken);
 
             if (message is null) {
                 throw new DiscussionMessageNotFoundException();
             }
 
-            // Toggle pinned.
-            if (message.PinnedById is null) {
-                message.PinnedById = userId;
-            } else {
-                message.PinnedById = null;
+            if (message.PinnedById is not null) {
+                throw new DiscussionMessageAlreadyPinnedException();
+            }
+            
+            var eventMessage = new Message {
+                ParentMessageId = message.Id,
+                Content = message.Content,
+                DiscussionId = message.DiscussionId,
+                CreatedById = userId,
+                IsEvent = true,
+                MessageEvent = MessageEvent.PINNED_MESSAGE
+            };
+
+            message.Discussion!.Messages.Add(eventMessage);
+            message.MessageLinks.Add(eventMessage);
+            message.PinnedById = userId;
+            message.UpdatedAt = DateTime.UtcNow;
+            message.PinnedAt = DateTime.UtcNow;
+            await ctx.SaveChangesAsync(cancellationToken);
+
+            // Send a new message to the discussion when pinning.
+            await sender.SendAsync(
+              "OnDiscussionMessageReceived_" + eventMessage.DiscussionId,
+              eventMessage.Id,
+              cancellationToken);
+
+            return message;
+        }
+
+        [Authorize]
+        [UseApplicationDbContext]
+        [Error(typeof(DiscussionMessageNotFoundException))]
+        [Error(typeof(DiscussionMessageAlreadyNotPinnedException))]
+        public async Task<Message?> UnpinDiscussionMessageAsync(
+            UnpinDiscussionMessageInput input,
+            [GlobalState] int userId,
+            [Service] ITopicEventSender sender,
+            [ScopedService] ApplicationDbContext ctx,
+            CancellationToken cancellationToken) {
+            var message = await ctx.Messages
+                .Include(m => m.Discussion)
+                .SingleOrDefaultAsync(m => m.Id == input.MessageId, cancellationToken);
+
+            if (message is null) {
+                throw new DiscussionMessageNotFoundException();
             }
 
-            message.UpdatedAt = DateTime.UtcNow;
+            if (message.PinnedById is null) {
+                throw new DiscussionMessageAlreadyNotPinnedException();
+            }
+
+            var eventMessage = new Message {
+                ParentMessageId = message.Id,
+                Content = message.Content,
+                DiscussionId = message.DiscussionId,
+                CreatedById = userId,
+                IsEvent = true,
+                MessageEvent = MessageEvent.UNPINNED_MESSAGE
+            };
+
+            message.Discussion!.Messages.Add(eventMessage);
+            message.MessageLinks.Add(eventMessage);
+            message.PinnedById = null;
+            message.PinnedAt = null;
+            message.UpdatedAt = DateTime.UtcNow;            
             await ctx.SaveChangesAsync(cancellationToken);
+
+            // Send a new message to the discussion when un-pinning.
+            await sender.SendAsync(
+              "OnDiscussionMessageReceived_" + eventMessage.DiscussionId,
+              eventMessage.Id,
+              cancellationToken);
 
             return message;
         }
@@ -157,22 +222,22 @@ namespace API.Schema.Mutations.Discussions {
                 throw new DiscussionNotFoundException();
             }
 
-            var message = new Message {
+            var eventMessage = new Message {
                 Content = input.Topic.Trim(),
                 DiscussionId = discussion.Id,
                 CreatedById = userId,
-                IsDiscussionEvent = true,
-                DiscussionEvent = DiscussionEvent.CHANGE_TOPIC
+                IsEvent = true,
+                MessageEvent = MessageEvent.CHANGE_TOPIC
             };
 
-            discussion.Messages.Add(message);
+            discussion.Messages.Add(eventMessage);
             discussion.Topic = input.Topic.Trim();
             discussion.UpdatedAt = DateTime.UtcNow;
             await ctx.SaveChangesAsync(cancellationToken);
 
             await sender.SendAsync(
               "OnDiscussionMessageReceived_" + discussion.Id,
-              message.Id,
+              eventMessage.Id,
               cancellationToken);
 
             return discussion;
@@ -199,8 +264,8 @@ namespace API.Schema.Mutations.Discussions {
                 Content = input.Description.Trim(),
                 DiscussionId = discussion.Id,
                 CreatedById = userId,
-                IsDiscussionEvent = true,
-                DiscussionEvent = DiscussionEvent.CHANGE_DESCRIPTION
+                IsEvent = true,
+                MessageEvent = MessageEvent.CHANGE_DESCRIPTION
             };
 
             discussion.Messages.Add(message);
