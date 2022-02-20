@@ -1,4 +1,4 @@
-﻿namespace API.Common.Enums {
+namespace API.Common.Enums {
     public static class DelLogType {
         public const string Classrooms = "Classrooms";
         public const string Discussions = "Discussions";

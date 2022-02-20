@@ -1,14 +1,14 @@
-using API.Data.Entities;
-using Enums = API.Common.Enums;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Common.Utilities;
+using API.Data.Entities;
 using API.Schema.Types.Users;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Enums = API.Common.Enums;
 
 namespace API.Data {
     public class ApplicationDbContextSeed {

@@ -1,22 +1,22 @@
-using API.Data;
-using API.Extensions;
-using API.Data.Entities;
-using Enums = API.Common.Enums;
-using HotChocolate;
-using HotChocolate.Types;
-using Microsoft.AspNetCore.Identity;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
-using HotChocolate.AspNetCore.Authorization;
-using API.Schema.Mutations.Sessions.Common;
 using API.Common.Enums;
-using API.Schema.Types.Users;
+using API.Data;
+using API.Data.Entities;
+using API.Extensions;
+using API.Schema.Mutations.Auth.Exceptions;
 using API.Schema.Mutations.Auth.Inputs;
 using API.Schema.Mutations.Auth.Payloads;
-using API.Schema.Mutations.Auth.Exceptions;
+using API.Schema.Mutations.Sessions.Common;
+using API.Schema.Types.Users;
+using HotChocolate;
+using HotChocolate.AspNetCore.Authorization;
+using HotChocolate.Types;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Enums = API.Common.Enums;
 
 namespace API.Schema.Mutations.Auth {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -34,7 +34,7 @@ namespace API.Schema.Mutations.Auth {
             [ScopedService] ApplicationDbContext context,
             [Service] UserManager<User> userManager,
             [Service] SignInManager<User> signInManager,
-            CancellationToken cancellationToken) {         
+            CancellationToken cancellationToken) {
             if (await context.Users.AnyAsync(x => x.Email == input.Email || x.UserName == input.Email)) {
                 _logger.LogWarning("Email already exists.", input.Email);
                 throw new SignUpNewUserException();

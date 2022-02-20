@@ -2,13 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { secondsToMinutes, secondsToHours } from 'date-fns';
 import clsx from 'clsx';
 import { Button } from '@spout/toolkit';
-import { ClassroomInvite } from '../../ClassroomOverviewProvider';
 
 interface Props {
-  invite: ClassroomInvite;
+  invite: any;
 }
 
-const getExpiresMessage = (invite: ClassroomInvite) => {
+const getExpiresMessage = (invite: any) => {
   if (!invite) return '';
 
   const { maxAge, maxUses } = invite;
@@ -109,9 +108,9 @@ const CopyInvite = ({ invite }: Props) => {
         </div>
         <Button
           size="sm"
-          rounded="lg"
           scheme="purple"
           className={clsx(
+            'rounded-lg',
             isCopied &&
               '!bg-green-600 !text-white !ring-transparent !transition-colors hover:!bg-green-700 active:!bg-green-800',
           )}

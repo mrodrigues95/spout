@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-type-constraint */
 import { ReactNode } from 'react';
 import { Listbox } from '@headlessui/react';
 import { SelectButton } from './select-button';

@@ -9,8 +9,8 @@ const Quote = ({ className, children, ...props }: Props) => {
   return (
     <blockquote
       className={clsx(
-        'p-2 bg-gray-50 border-gray-200 border-l-4 rounded-r-md',
-        className
+        'rounded-r-md border-l-4 border-gray-200 bg-gray-50 p-2',
+        className,
       )}
       {...props}
     >

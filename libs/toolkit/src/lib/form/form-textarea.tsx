@@ -20,12 +20,12 @@ export const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
         <TextareaAutosize
           className={clsx(
             'outline-none w-full rounded-md border-none bg-gray-100 font-medium text-black transition duration-200 ease-in-out placeholder-shown:font-normal focus:ring-2 focus:ring-black',
-            className
+            className,
           )}
           ref={ref}
           {...props}
         />
       </label>
     );
-  }
+  },
 );

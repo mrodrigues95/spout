@@ -58,7 +58,7 @@ const DiscussionMessageAttachment = ({
           </Tooltip>
         </div>
       )}
-      <FileIcon fileName={attachment.name} className="pt-1.5 mr-2 text-3xl" />
+      <FileIcon fileName={attachment.name} className="mr-2 pt-1.5 text-3xl" />
       <div className="min-w-0 flex-1">
         <p className="truncate font-medium">{attachment.name}</p>
         <p className="truncate text-sm text-gray-500">

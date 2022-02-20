@@ -1,9 +1,9 @@
-using API.Data.Entities;
-using HotChocolate.Types.Relay;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
+using API.Data.Entities;
 using API.Schema.Queries.Discussions;
 using API.Schema.Queries.Messages;
+using HotChocolate.Types.Relay;
 
 namespace API.Schema.Subscriptions.Discussions {
     public class DiscussionMessageSubscriptionPayload {

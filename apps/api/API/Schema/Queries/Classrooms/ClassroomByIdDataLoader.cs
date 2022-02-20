@@ -1,12 +1,12 @@
-using API.Data;
-using API.Data.Entities;
-using GreenDonut;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using API.Data;
+using API.Data.Entities;
+using GreenDonut;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Schema.Queries.Classrooms {
     public class ClassroomByIdDataLoader : BatchDataLoader<int, Classroom> {

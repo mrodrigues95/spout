@@ -1,12 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace API.Migrations
-{
-    public partial class AddUniqueIndex : Migration
-    {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+namespace API.Migrations {
+    public partial class AddUniqueIndex : Migration {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropPrimaryKey(
                 name: "pk_message_triggered_events",
                 table: "message_triggered_events");
@@ -36,8 +33,7 @@ namespace API.Migrations
                 unique: true);
         }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropPrimaryKey(
                 name: "pk_message_triggered_events",
                 table: "message_triggered_events");

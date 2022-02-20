@@ -1,16 +1,16 @@
+using System;
 using API.Data;
 using API.Data.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace API.Extensions {
     public static class IdentityServiceExtensions {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services) {
             services.AddDefaultIdentity<User>(opt => {
                 opt.User.RequireUniqueEmail = true;
-            })  
+            })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 

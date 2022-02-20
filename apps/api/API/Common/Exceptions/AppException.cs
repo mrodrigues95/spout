@@ -1,4 +1,4 @@
-﻿namespace API.Common.Exceptions {
+namespace API.Common.Exceptions {
     public class AppException {
         public int StatusCode { get; set; }
         public string Message { get; set; }

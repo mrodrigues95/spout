@@ -1,3 +1,5 @@
+export {};
+
 // import { WebSocketLink } from '@apollo/client/link/ws';
 
 // // TODO: This should use the graphql-ws instead once Hot Chocolate

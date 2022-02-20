@@ -1,18 +1,18 @@
-using API.Data.Entities;
-using HotChocolate.Types;
-using System.Threading.Tasks;
-using System.Threading;
-using API.Schema.Queries.Messages;
-using API.Schema.Queries.Users;
-using API.Schema.Types.Users;
-using HotChocolate;
-using API.Schema.Types.Files;
-using API.Schema.Queries.Files;
-using API.Data;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
+using System.Threading;
+using System.Threading.Tasks;
+using API.Data;
+using API.Data.Entities;
+using API.Schema.Queries.Files;
+using API.Schema.Queries.Messages;
+using API.Schema.Queries.Users;
 using API.Schema.Types.Discussions;
+using API.Schema.Types.Files;
+using API.Schema.Types.Users;
+using HotChocolate;
+using HotChocolate.Types;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Schema.Types.Messages {
     public enum MessageEvent {

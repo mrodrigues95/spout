@@ -40,7 +40,7 @@ namespace API.Data.Configurations {
 
             builder.HasOne(c => c.DelLog)
                 .WithMany(d => d!.DeletedClassrooms)
-                .HasForeignKey(c => c.DelLogId);           
+                .HasForeignKey(c => c.DelLogId);
 
             builder.HasOne(c => c.State)
                 .WithMany(s => s!.Classrooms)

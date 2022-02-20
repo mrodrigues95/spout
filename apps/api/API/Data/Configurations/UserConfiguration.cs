@@ -58,7 +58,7 @@ namespace API.Data.Configurations {
 
             builder.HasMany(u => u.FileUploads)
                 .WithOne(f => f.UploadedBy!)
-                .HasForeignKey(f => f.UploadedById);          
+                .HasForeignKey(f => f.UploadedById);
 
             builder.HasOne(u => u.State)
                 .WithMany(s => s!.Users)

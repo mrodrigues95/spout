@@ -1,16 +1,13 @@
-﻿using System;
+using System;
 using API.Schema.Types.Files;
 using API.Schema.Types.Messages;
 using API.Schema.Types.Users;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace API.Migrations
-{
-    public partial class Initial : Migration
-    {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+namespace API.Migrations {
+    public partial class Initial : Migration {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.AlterDatabase()
                 .Annotation("Npgsql:Enum:file_upload_status", "queued,completed,error,ignored")
                 .Annotation("Npgsql:Enum:message_event", "change_topic,change_description,pinned_message,unpinned_message")
@@ -19,21 +16,18 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "del_log_types",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     type = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_del_log_types", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "invites",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     code = table.Column<string>(type: "character varying(22)", maxLength: 22, nullable: false),
@@ -44,8 +38,7 @@ namespace API.Migrations
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_invites", x => x.id);
                     table.CheckConstraint("ck_uses", "uses >= 0");
                     table.CheckConstraint("ck_max_uses", "max_uses >= 0 AND max_uses <= 100");
@@ -53,46 +46,40 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "roles",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalized_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     concurrency_stamp = table.Column<string>(type: "text", nullable: true)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_roles", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "states",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     status = table.Column<string>(type: "character varying(35)", maxLength: 35, nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_states", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "del_logs",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     deleted_for_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_del_logs", x => x.id);
                     table.ForeignKey(
                         name: "fk_del_logs_del_log_types_deleted_for_id",
@@ -104,16 +91,14 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "role_claims",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     role_id = table.Column<int>(type: "integer", nullable: false),
                     claim_type = table.Column<string>(type: "text", nullable: true),
                     claim_value = table.Column<string>(type: "text", nullable: true)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_role_claims", x => x.id);
                     table.ForeignKey(
                         name: "fk_role_claims_asp_net_roles_role_id",
@@ -125,8 +110,7 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "users",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     guid = table.Column<Guid>(type: "uuid", nullable: false),
@@ -151,8 +135,7 @@ namespace API.Migrations
                     lockout_enabled = table.Column<bool>(type: "boolean", nullable: false),
                     access_failed_count = table.Column<int>(type: "integer", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_users", x => x.id);
                     table.ForeignKey(
                         name: "fk_users_states_state_id",
@@ -164,8 +147,7 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "classrooms",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     guid = table.Column<Guid>(type: "uuid", nullable: false),
@@ -176,8 +158,7 @@ namespace API.Migrations
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_classrooms", x => x.id);
                     table.ForeignKey(
                         name: "fk_classrooms_del_logs_del_log_id",
@@ -195,8 +176,7 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "files",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     uploaded_by_id = table.Column<int>(type: "integer", nullable: false),
@@ -218,8 +198,7 @@ namespace API.Migrations
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
                     deleted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_files", x => x.id);
                     table.CheckConstraint("ck_content_length", "content_length > 0");
                     table.CheckConstraint("ck_container_name", "length(container_name) >= 3 AND length(container_name) <= 63");
@@ -233,16 +212,14 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "sessions",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     user_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
                     expires_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now() + INTERVAL '7 DAYS')"),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_sessions", x => x.id);
                     table.ForeignKey(
                         name: "fk_sessions_users_user_id",
@@ -254,16 +231,14 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "user_claims",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     user_id = table.Column<int>(type: "integer", nullable: false),
                     claim_type = table.Column<string>(type: "text", nullable: true),
                     claim_value = table.Column<string>(type: "text", nullable: true)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_user_claims", x => x.id);
                     table.ForeignKey(
                         name: "fk_user_claims_users_user_id",
@@ -275,15 +250,13 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "user_logins",
-                columns: table => new
-                {
+                columns: table => new {
                     login_provider = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     provider_key = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     provider_display_name = table.Column<string>(type: "text", nullable: true),
                     user_id = table.Column<int>(type: "integer", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_user_logins", x => new { x.login_provider, x.provider_key });
                     table.ForeignKey(
                         name: "fk_user_logins_users_user_id",
@@ -295,13 +268,11 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "user_roles",
-                columns: table => new
-                {
+                columns: table => new {
                     user_id = table.Column<int>(type: "integer", nullable: false),
                     role_id = table.Column<int>(type: "integer", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_user_roles", x => new { x.user_id, x.role_id });
                     table.ForeignKey(
                         name: "fk_user_roles_asp_net_roles_role_id",
@@ -319,15 +290,13 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "users_tokens",
-                columns: table => new
-                {
+                columns: table => new {
                     user_id = table.Column<int>(type: "integer", nullable: false),
                     login_provider = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     value = table.Column<string>(type: "text", nullable: true)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_users_tokens", x => new { x.user_id, x.login_provider, x.name });
                     table.ForeignKey(
                         name: "fk_users_tokens_users_user_id",
@@ -339,8 +308,7 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "classroom_invites",
-                columns: table => new
-                {
+                columns: table => new {
                     invite_id = table.Column<int>(type: "integer", nullable: false),
                     user_id = table.Column<int>(type: "integer", nullable: false),
                     classroom_id = table.Column<int>(type: "integer", nullable: false),
@@ -349,8 +317,7 @@ namespace API.Migrations
                     used_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_classroom_invites", x => new { x.invite_id, x.user_id, x.classroom_id });
                     table.ForeignKey(
                         name: "fk_classroom_invites_classrooms_classroom_id",
@@ -374,16 +341,14 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "classroom_users",
-                columns: table => new
-                {
+                columns: table => new {
                     classroom_id = table.Column<int>(type: "integer", nullable: false),
                     user_id = table.Column<int>(type: "integer", nullable: false),
                     is_creator = table.Column<bool>(type: "boolean", nullable: true, defaultValue: false),
                     joined_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_classroom_users", x => new { x.user_id, x.classroom_id });
                     table.ForeignKey(
                         name: "fk_classroom_users_classrooms_classroom_id",
@@ -401,8 +366,7 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "discussions",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     guid = table.Column<Guid>(type: "uuid", nullable: false),
@@ -417,8 +381,7 @@ namespace API.Migrations
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_discussions", x => x.id);
                     table.ForeignKey(
                         name: "fk_discussions_classrooms_classroom_id",
@@ -448,8 +411,7 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "messages",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     content = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false, defaultValue: ""),
@@ -464,8 +426,7 @@ namespace API.Migrations
                     pinned_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_messages", x => x.id);
                     table.ForeignKey(
                         name: "fk_messages_del_logs_del_log_id",
@@ -495,15 +456,13 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "message_files",
-                columns: table => new
-                {
+                columns: table => new {
                     message_id = table.Column<int>(type: "integer", nullable: false),
                     file_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_message_files", x => new { x.message_id, x.file_id });
                     table.ForeignKey(
                         name: "fk_message_files_files_file_id",
@@ -521,8 +480,7 @@ namespace API.Migrations
 
             migrationBuilder.CreateTable(
                 name: "message_triggered_events",
-                columns: table => new
-                {
+                columns: table => new {
                     triggered_from_id = table.Column<int>(type: "integer", nullable: false),
                     triggered_to_id = table.Column<int>(type: "integer", nullable: false),
                     id = table.Column<int>(type: "integer", nullable: false),
@@ -530,8 +488,7 @@ namespace API.Migrations
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_message_triggered_events", x => new { x.triggered_from_id, x.triggered_to_id });
                     table.ForeignKey(
                         name: "fk_message_triggered_events_messages_triggered_to_id",
@@ -697,8 +654,7 @@ namespace API.Migrations
                 unique: true);
         }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropTable(
                 name: "classroom_invites");
 

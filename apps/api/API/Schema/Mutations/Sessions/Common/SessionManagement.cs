@@ -1,9 +1,9 @@
-﻿using API.Data.Entities;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using API.Data;
+using API.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Schema.Mutations.Sessions.Common {
     public class SessionPayload {

@@ -59,6 +59,13 @@
         ],
         "parallel": false
       }
+    },
+    "ts-check": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project tsconfig.json",
+        "cwd": "libs/toolkit"
+      }
     }
   }
 }

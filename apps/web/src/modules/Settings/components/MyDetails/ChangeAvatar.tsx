@@ -10,7 +10,6 @@ import {
   Button,
   PhotoCropper,
 } from '@spout/toolkit';
-import { useToast } from '../../../../shared/components';
 
 // const mutation = gql`
 //   mutation UpdateAvatar($input: UpdateAvatarInput!) {
@@ -30,8 +29,8 @@ import { useToast } from '../../../../shared/components';
 const ChangeAvatar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [files, setFiles] = useState<FileType[]>([]);
-  const [cropper, setCropper] = useState<Cropper>();
-  const { handleError } = useToast();
+  const [_, setCropper] = useState<Cropper>();
+  // const { handleError } = useToast();
   // const [updateAvatar, updateAvatarResult] = useMutation<
   //   UpdateAvatar,
   //   UpdateAvatarVariables
@@ -51,7 +50,7 @@ const ChangeAvatar = () => {
     // cropper?.getCroppedCanvas().toBlob((blob) => {
     //   updateAvatar({ variables: { input: { file: blob } } });
     // }),
-    [cropper],
+    [],
   );
 
   const onFileSelected = useCallback((acceptedFiles: File[]) => {

@@ -1,4 +1,6 @@
-export {};
+const Invite = () => <></>;
+
+export default Invite;
 
 // import { useCallback, useContext, useEffect, useState } from 'react';
 // import { graphql, useFragment, useMutation } from 'react-relay';

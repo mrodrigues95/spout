@@ -9,6 +9,7 @@ import {
   useEffect,
   useMemo,
 } from 'react';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { usePopper } from '@spout/utils';
 import { Portal } from '@headlessui/react';
 import { Placement } from '@popperjs/core';

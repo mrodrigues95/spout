@@ -1,11 +1,11 @@
+using System.Threading;
+using System.Threading.Tasks;
 using API.Data.Entities;
 using HotChocolate;
 using HotChocolate.Execution;
 using HotChocolate.Subscriptions;
 using HotChocolate.Types;
 using HotChocolate.Types.Relay;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace API.Schema.Subscriptions.Discussions {
     [ExtendObjectType(OperationTypeNames.Subscription)]

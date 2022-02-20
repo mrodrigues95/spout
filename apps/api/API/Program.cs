@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using API.Data;
 using API.Data.Entities;
 using Microsoft.AspNetCore.Hosting;
@@ -7,8 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Npgsql;
-using System;
-using System.Threading.Tasks;
 
 namespace API {
     public class Program {

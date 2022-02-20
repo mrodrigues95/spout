@@ -8,7 +8,7 @@ const EditClassroom = () => {
   const { setModal } = useContext(SettingsContext)!;
 
   return (
-    <Form form={form} onSubmit={() => {}}>
+    <Form form={form} onSubmit={() => console.log('test')}>
       <Modal.Header title="Edit" description="Update classroom details below" />
       <Modal.Footer className="!justify-between">
         <Button

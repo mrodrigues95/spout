@@ -72,7 +72,7 @@ export const useStore = create<OptimisticMessagesStore>((set) => ({
               attachmentIds,
               createdBy,
               pinnedBy: null,
-              parentMessage: null
+              parentMessage: null,
             },
           ],
         },

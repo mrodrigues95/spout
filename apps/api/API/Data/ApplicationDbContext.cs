@@ -1,3 +1,4 @@
+using System.Reflection;
 using API.Data.Entities;
 using API.Schema.Types.Files;
 using API.Schema.Types.Messages;
@@ -6,10 +7,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using System.Reflection;
 
 namespace API.Data {
-    public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, int> {        
+    public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, int> {
         static ApplicationDbContext() {
             MapEnums();
         }

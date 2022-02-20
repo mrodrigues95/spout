@@ -1,17 +1,17 @@
-using API.Data;
-using API.Data.Entities;
-using API.Extensions;
-using HotChocolate;
-using HotChocolate.Types;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using API.Data;
+using API.Data.Entities;
+using API.Extensions;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Discussions;
 using API.Schema.Queries.Users;
 using API.Schema.Types.Users;
+using HotChocolate;
+using HotChocolate.Types;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Schema.Types.Classrooms {
     public class ClassroomType : ObjectType<Classroom> {
@@ -34,9 +34,9 @@ namespace API.Schema.Types.Classrooms {
                 .Type<NonNullType<IntType>>()
                 .Ignore();
 
-           descriptor
-                .Field(c => c.CreatedAt)
-                .Type<NonNullType<DateTimeType>>();
+            descriptor
+                 .Field(c => c.CreatedAt)
+                 .Type<NonNullType<DateTimeType>>();
 
             descriptor
                 .Field(c => c.UpdatedAt)

@@ -1,14 +1,14 @@
-using API.Data.Entities;
-using HotChocolate.Types;
 using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using API.Data;
+using API.Data.Entities;
 using API.Extensions;
 using HotChocolate;
-using API.Data;
-using System.Threading;
-using HotChocolate.Types.Relay;
 using HotChocolate.AspNetCore.Authorization;
-using System.Linq;
+using HotChocolate.Types;
+using HotChocolate.Types.Relay;
 
 namespace API.Schema.Queries.Sessions {
     [ExtendObjectType(OperationTypeNames.Query)]

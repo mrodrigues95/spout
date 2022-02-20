@@ -1,14 +1,14 @@
-﻿using API.Data;
-using API.Data.Entities;
-using API.Extensions;
-using HotChocolate;
-using HotChocolate.Types;
-using HotChocolate.Types.Relay;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using API.Data;
+using API.Data.Entities;
+using API.Extensions;
+using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
+using HotChocolate.Types;
+using HotChocolate.Types.Relay;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Schema.Queries.Classrooms {
     [ExtendObjectType(OperationTypeNames.Query)]

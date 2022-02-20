@@ -9,10 +9,10 @@ namespace API.Data.Configurations {
 
             builder.Property(i => i.Code)
                 .HasMaxLength(22);
-            
+
             builder.Property(i => i.Uses)
                 .HasDefaultValue(0);
-            
+
             builder.Property(i => i.MaxUses)
                 .IsRequired(false)
                 .HasDefaultValue(null);

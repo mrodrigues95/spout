@@ -23,7 +23,7 @@ const PinnedOrUnpinnedEventMessage = ({
   if (!parentMessage) {
     console.warn(
       'Pinned or un-pinned event message found without an associated parent message.',
-      message
+      message,
     );
     return null;
   }
@@ -44,7 +44,7 @@ const PinnedOrUnpinnedEventMessage = ({
           profileColor={parentMessage.createdBy.profileColor}
           size="sm"
         />
-        <span className="font-bold text-xs text-gray-900">
+        <span className="text-xs font-bold text-gray-900">
           {parentMessage.createdBy.name}
         </span>
       </cite>
@@ -94,12 +94,12 @@ interface Props {
 const DiscussionMessageEvent = ({ message }: Props) => {
   const formattedDate = useMemo(
     () => formatMessageDate(message.createdAt, 'h:mm a'),
-    [message.createdAt]
+    [message.createdAt],
   );
 
   const { icon, color, description, title } = useMemo(
     () => getEventAttributes(message.messageEvent!),
-    [message.messageEvent]
+    [message.messageEvent],
   );
 
   return (

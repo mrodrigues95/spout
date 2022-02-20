@@ -7,6 +7,7 @@ import {
   useRef,
   WheelEvent,
 } from 'react';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { useDrag } from '@spout/utils';
 import clsx from 'clsx';
 

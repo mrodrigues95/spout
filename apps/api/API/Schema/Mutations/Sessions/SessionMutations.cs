@@ -1,3 +1,5 @@
+using System.Threading;
+using System.Threading.Tasks;
 using API.Data;
 using API.Extensions;
 using API.Schema.Mutations.Auth.Payloads;
@@ -8,8 +10,6 @@ using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace API.Schema.Mutations.Sessions {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -32,7 +32,7 @@ namespace API.Schema.Mutations.Sessions {
             var session = await SessionManagement.RefreshSession(input.SessionId, context, cancellationToken);
             if (session is null) {
                 throw new SessionNotFoundException();
-            }                
+            }
 
             return new AuthPayload(session.User, session.Session, true);
         }

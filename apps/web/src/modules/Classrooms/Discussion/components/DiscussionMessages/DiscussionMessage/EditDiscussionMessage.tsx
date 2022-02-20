@@ -36,13 +36,13 @@ const EditDiscussionMessage = () => {
       edit(updatedMessage);
       setIsEditing(false);
     },
-    [edit, setIsEditing]
+    [edit, setIsEditing],
   );
 
   useKeyboardEvent('Escape', () => setIsEditing(false));
 
   return (
-    <div className="bg-white w-[45rem] p-4 rounded-md">
+    <div className="w-[45rem] rounded-md bg-white p-4">
       <Form form={form} onSubmit={onSubmit}>
         <Form.TextArea
           label="Edit Message"
@@ -60,7 +60,7 @@ const EditDiscussionMessage = () => {
             // Place the cursor at the end of the message.
             e.currentTarget.setSelectionRange(
               field.value.length,
-              field.value.length
+              field.value.length,
             );
           }}
           {...field}

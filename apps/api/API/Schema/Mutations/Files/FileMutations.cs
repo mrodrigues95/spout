@@ -7,17 +7,17 @@ using API.Data;
 using API.Data.Entities;
 using API.Extensions;
 using API.Infrastructure;
+using API.Schema.Mutations.Files.Exceptions;
+using API.Schema.Mutations.Files.Inputs;
+using API.Schema.Mutations.Files.Payloads;
 using API.Schema.Types.Files;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Sas;
 using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
-using Azure.Storage.Blobs.Models;
-using Azure.Storage.Sas;
-using API.Schema.Mutations.Files.Inputs;
-using API.Schema.Mutations.Files.Payloads;
-using API.Schema.Mutations.Files.Exceptions;
+using Microsoft.Extensions.Options;
 
 namespace API.Schema.Mutations.Files {
     [ExtendObjectType(OperationTypeNames.Mutation)]

@@ -1,19 +1,19 @@
-using API.Data;
-using API.Data.Entities;
-using Enums = API.Common.Enums;
-using API.Extensions;
-using HotChocolate;
-using HotChocolate.Types;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using System;
-using CSharpVitamins;
-using HotChocolate.AspNetCore.Authorization;
-using System.Linq;
-using System.Collections.Generic;
-using API.Schema.Mutations.Classrooms.Inputs;
+using API.Data;
+using API.Data.Entities;
+using API.Extensions;
 using API.Schema.Mutations.Classrooms.Exceptions;
+using API.Schema.Mutations.Classrooms.Inputs;
+using CSharpVitamins;
+using HotChocolate;
+using HotChocolate.AspNetCore.Authorization;
+using HotChocolate.Types;
+using Microsoft.EntityFrameworkCore;
+using Enums = API.Common.Enums;
 
 namespace API.Schema.Mutations.Classrooms {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -27,7 +27,7 @@ namespace API.Schema.Mutations.Classrooms {
             CancellationToken cancellationToken) {
             var classroom = new Classroom {
                 Name = input.Name,
-                StateId = (int) Enums.State.Active
+                StateId = (int)Enums.State.Active
             };
 
             classroom.Users.Add(new ClassroomUser {
@@ -110,7 +110,8 @@ namespace API.Schema.Mutations.Classrooms {
                         && x.UserId == userId
                         && x.IsInviter, cancellationToken);
 
-                if (IsValid(classroomInvite?.Invite)) return classroomInvite!.Invite!;
+                if (IsValid(classroomInvite?.Invite))
+                    return classroomInvite!.Invite!;
             } else if (input.MaxAge is null && input.MaxUses is null) {
                 // Check if the user already has an existing invite created before creating a new one.
                 var classroomInvites = await ctx.ClassroomInvites
@@ -122,7 +123,8 @@ namespace API.Schema.Mutations.Classrooms {
                     .ToListAsync(cancellationToken);
 
                 var classroomInvite = ValidateClassroomInvites(classroomInvites);
-                if (classroomInvite != null) return classroomInvite!.Invite!;
+                if (classroomInvite != null)
+                    return classroomInvite!.Invite!;
             }
 
             // Set defaults (7 days).
@@ -131,7 +133,7 @@ namespace API.Schema.Mutations.Classrooms {
 
             if (input.MaxAge != null && input.MaxAge > 0) {
                 maxAge = input.MaxAge;
-                expiresAt = DateTime.UtcNow.AddSeconds((double) input.MaxAge);
+                expiresAt = DateTime.UtcNow.AddSeconds((double)input.MaxAge);
             } else if (input.MaxAge == 0) {
                 maxAge = null;
                 expiresAt = null;
@@ -164,16 +166,20 @@ namespace API.Schema.Mutations.Classrooms {
         /// </summary>
         private ClassroomInvite? ValidateClassroomInvites(List<ClassroomInvite> classroomInvites) {
             foreach (var classroomInvite in classroomInvites) {
-                if (IsValid(classroomInvite.Invite!)) return classroomInvite;
+                if (IsValid(classroomInvite.Invite!))
+                    return classroomInvite;
             }
 
             return null;
         }
 
         private bool IsValid(Invite? invite) {
-            if (invite is null) return false;
-            if (invite.MaxUses != null && invite.MaxUses <= invite.Uses) return false;
-            if (invite.ExpiresAt != null && invite.ExpiresAt <= DateTime.UtcNow) return false;
+            if (invite is null)
+                return false;
+            if (invite.MaxUses != null && invite.MaxUses <= invite.Uses)
+                return false;
+            if (invite.ExpiresAt != null && invite.ExpiresAt <= DateTime.UtcNow)
+                return false;
 
             return true;
         }

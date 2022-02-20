@@ -1,4 +1,4 @@
-﻿using API.Data.Entities;
+using API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -17,7 +17,7 @@ namespace API.Data.Configurations {
             builder.HasOne(ci => ci.Invite)
                 .WithMany(i => i!.Logs)
                 .HasForeignKey(ci => ci.InviteId);
-            
+
             builder.HasOne(ci => ci.Classroom)
                 .WithMany(c => c!.Invites)
                 .HasForeignKey(ci => ci.ClassroomId);

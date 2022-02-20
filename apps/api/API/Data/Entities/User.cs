@@ -1,7 +1,7 @@
-using API.Schema.Types.Users;
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using API.Schema.Types.Users;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Data.Entities {
     public class User : IdentityUser<int> {

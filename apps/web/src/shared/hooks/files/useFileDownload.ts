@@ -1,3 +1,5 @@
+export {};
+
 // import { gql, useMutation } from '@apollo/client';
 // import { FileFragment } from '../../../modules/Classrooms/Discussion/utils/fragments';
 // import { RefObject, useCallback } from 'react';

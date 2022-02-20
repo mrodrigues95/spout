@@ -31,13 +31,13 @@ export const useEditDiscussionMessage = (message: DiscussionMessage) => {
           updateDiscussionMessage: {
             message: {
               id: message.id,
-              content: updatedContent
+              content: updatedContent,
             },
           },
         },
       });
     },
-    [commit, message.id]
+    [commit, message.id],
   );
 
   return { edit };

@@ -4,12 +4,12 @@ import { createPopper, Options } from '@popperjs/core';
 export const usePopper = (
   options?: Partial<Options>,
 ): [RefCallback<Element | null>, RefCallback<HTMLElement | null>] => {
-  let reference = useRef<Element | null>(null);
-  let popper = useRef<HTMLElement | null>(null);
+  const reference = useRef<Element | null>(null);
+  const popper = useRef<HTMLElement | null>(null);
 
-  let cleanupCallback = useRef(() => {});
+  const cleanupCallback = useRef<() => void>();
 
-  let instantiatePopper = useCallback(() => {
+  const instantiatePopper = useCallback(() => {
     if (!reference.current || !popper.current) return;
 
     if (cleanupCallback.current) cleanupCallback.current();

@@ -1,3 +1,7 @@
+using System;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
 using API.Schema.Mutations.Auth;
 using API.Schema.Mutations.Classrooms;
 using API.Schema.Mutations.Discussions;
@@ -23,10 +27,6 @@ using HotChocolate.Types.Pagination;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace API.Extensions {
     public static class HotChocolateServiceExtensions {
@@ -98,7 +98,7 @@ namespace API.Extensions {
                 .AddQueryFieldToMutationPayloads()
                 .SetPagingOptions(new PagingOptions { MaxPageSize = 50 })
                 .ModifyRequestOptions(opts => {
-                  opts.IncludeExceptionDetails = env == Environments.Development;
+                    opts.IncludeExceptionDetails = env == Environments.Development;
                 });
 
             return services;

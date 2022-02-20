@@ -92,7 +92,7 @@ csharp_space_between_method_call_parameter_list_parentheses = false
 csharp_space_between_parentheses = false
 
 # Wrapping options
-csharp_preserve_single_line_statements = false
+csharp_preserve_single_line_statements = true
 csharp_preserve_single_line_blocks = true
 
 dotnet_style_require_accessibility_modifiers = always

@@ -1,4 +1,5 @@
 import { Story, Meta } from '@storybook/react';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { FeelingBlueIllustration } from '@spout/assets/illustrations';
 import { EmptyState, EmptyStateProps } from './empty-state';
 import { Button } from '../button';

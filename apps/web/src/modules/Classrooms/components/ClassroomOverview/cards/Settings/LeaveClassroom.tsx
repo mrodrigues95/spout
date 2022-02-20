@@ -8,7 +8,7 @@ const LeaveClassroom = () => {
   const { setModal } = useContext(SettingsContext)!;
 
   return (
-    <Form form={form} onSubmit={() => {}}>
+    <Form form={form} onSubmit={() => console.log('test')}>
       <Modal.Header
         title="Leave"
         description="Are you sure you want to leave this classroom?"

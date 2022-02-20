@@ -1,11 +1,11 @@
-using API.Extensions;
-using API.Data.Entities;
-using HotChocolate.Types;
-using HotChocolate;
-using API.Data;
 using System.Linq;
+using API.Data;
+using API.Data.Entities;
+using API.Extensions;
+using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Data;
+using HotChocolate.Types;
 
 namespace API.Schema.Queries.Files {
     [ExtendObjectType(OperationTypeNames.Query)]

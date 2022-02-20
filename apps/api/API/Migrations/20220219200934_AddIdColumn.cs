@@ -1,11 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace API.Migrations
-{
-    public partial class AddIdColumn : Migration
-    {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+namespace API.Migrations {
+    public partial class AddIdColumn : Migration {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropPrimaryKey(
                 name: "pk_message_triggered_events",
                 table: "message_triggered_events");
@@ -28,8 +25,7 @@ namespace API.Migrations
                 column: "triggered_from_id");
         }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropPrimaryKey(
                 name: "pk_message_triggered_events",
                 table: "message_triggered_events");

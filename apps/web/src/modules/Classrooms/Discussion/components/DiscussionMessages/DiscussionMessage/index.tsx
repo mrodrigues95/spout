@@ -27,7 +27,7 @@ const DiscussionMessageHeader = () => {
     <div
       className={clsx(
         'flex items-center space-x-2 pb-1',
-        isMyMessage ? 'flex-row-reverse space-x-reverse' : 'flex-row'
+        isMyMessage ? 'flex-row-reverse space-x-reverse' : 'flex-row',
       )}
     >
       <span className="font-semibold text-gray-900">
@@ -47,7 +47,7 @@ const getMessageBorderStyles = (
     isLastMessage,
     isRecent,
   }: Partial<RecentMessage>,
-  isMyMessage: boolean
+  isMyMessage: boolean,
 ) => {
   const borders: string[] = [];
 
@@ -83,20 +83,16 @@ const DiscussionMessageBody = () => {
     state: { isEditing },
   } = useDiscussionMessage()!;
 
-  const {
-    isRecent,
-    isFirstMessage,
-    isMiddleMessage,
-    isLastMessage,
-  } = recentMessage;
+  const { isRecent, isFirstMessage, isMiddleMessage, isLastMessage } =
+    recentMessage;
 
   const borderStyles = useMemo(
     () =>
       getMessageBorderStyles(
         { isRecent, isFirstMessage, isMiddleMessage, isLastMessage },
-        isMyMessage
+        isMyMessage,
       ).join(' '),
-    [isRecent, isFirstMessage, isMiddleMessage, isLastMessage, isMyMessage]
+    [isRecent, isFirstMessage, isMiddleMessage, isLastMessage, isMyMessage],
   );
 
   return (
@@ -107,13 +103,13 @@ const DiscussionMessageBody = () => {
           ? 'bg-blue-600 shadow-md'
           : 'bg-white shadow-sm ring-1 ring-gray-900/5',
         optimisticMessageOpts?.hasError ? 'text-red-600' : 'text-black',
-        borderStyles
+        borderStyles,
       )}
     >
       <div
         className={clsx(
           'flex',
-          isMyMessage ? 'items-end justify-end' : 'items-start justify-start'
+          isMyMessage ? 'items-end justify-end' : 'items-start justify-start',
         )}
       >
         {isEditing ? (
@@ -122,7 +118,7 @@ const DiscussionMessageBody = () => {
           <p
             className={clsx(
               'whitespace-pre-line break-words text-sm font-medium',
-              isMyMessage ? 'text-white' : 'text-gray-900'
+              isMyMessage ? 'text-white' : 'text-gray-900',
             )}
           >
             {message.content.trim()}
@@ -139,7 +135,7 @@ const DiscussionMessageBody = () => {
         <Button
           type="button"
           variant="unstyled"
-          className="focus:outline-none font-medium pt-4"
+          className="focus:outline-none pt-4 font-medium"
           onClick={() => optimisticMessageOpts.retry()}
         >
           Failed to send message. Click to try again.
@@ -172,12 +168,8 @@ const DiscussionMessage = () => {
     },
   } = useDiscussionMessage()!;
 
-  const {
-    isFirstMessage,
-    isMiddleMessage,
-    isLastMessage,
-    isRecent,
-  } = recentMessage;
+  const { isFirstMessage, isMiddleMessage, isLastMessage, isRecent } =
+    recentMessage;
 
   const paddingStyles = useMemo(
     () =>
@@ -186,7 +178,7 @@ const DiscussionMessage = () => {
         isMiddleMessage,
         isLastMessage,
       }),
-    [isFirstMessage, isMiddleMessage, isLastMessage]
+    [isFirstMessage, isMiddleMessage, isLastMessage],
   );
 
   return (
@@ -194,16 +186,16 @@ const DiscussionMessage = () => {
       className={clsx(
         !isRecent && 'py-1',
         isFirstMessage && 'pt-1',
-        isLastMessage && 'pb-1'
+        isLastMessage && 'pb-1',
       )}
     >
       <div
         className={clsx(
-          'flex relative group items-baseline space-x-2 px-4 hover:bg-indigo-100/50',
+          'group relative flex items-baseline space-x-2 px-4 hover:bg-indigo-100/50',
           isPinned && 'bg-indigo-100/50',
           isMyMessage ? 'flex-row-reverse space-x-reverse' : 'flex-row',
           optimisticMessageOpts?.loading ? 'opacity-50' : 'opacity-100',
-          paddingStyles
+          paddingStyles,
         )}
       >
         <div>
@@ -227,7 +219,7 @@ const DiscussionMessage = () => {
         <div
           className={clsx(
             'flex max-w-[75%] flex-col',
-            isMyMessage ? 'items-end' : 'items-start'
+            isMyMessage ? 'items-end' : 'items-start',
           )}
         >
           <DiscussionMessageHeader />
@@ -236,7 +228,9 @@ const DiscussionMessage = () => {
             <div
               className={clsx(
                 'flex items-center space-x-2',
-                isMyMessage ? '-mr-4 flex-row' : 'flex-row-reverse space-x-reverse -ml-4'
+                isMyMessage
+                  ? '-mr-4 flex-row'
+                  : '-ml-4 flex-row-reverse space-x-reverse',
               )}
             >
               <Text
@@ -265,7 +259,11 @@ const DiscussionMessage = () => {
 export interface Props
   extends Pick<
     DiscussionMessageProviderProps,
-    'message' | 'optimisticMessageOpts' | 'recentMessages' | 'me' | 'discussionId'
+    | 'message'
+    | 'optimisticMessageOpts'
+    | 'recentMessages'
+    | 'me'
+    | 'discussionId'
   > {}
 
 const DiscussionMessageWithProvider = ({
@@ -275,10 +273,10 @@ const DiscussionMessageWithProvider = ({
   recentMessages,
   optimisticMessageOpts,
 }: Props) => {
-  const isMyMessage = useMemo(() => message.createdBy.id === me.id, [
-    me.id,
-    message.createdBy.id,
-  ]);
+  const isMyMessage = useMemo(
+    () => message.createdBy.id === me.id,
+    [me.id, message.createdBy.id],
+  );
 
   return (
     <DiscussionMessageProvider

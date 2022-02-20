@@ -1,8 +1,6 @@
 import { createContext, ReactNode, useMemo, useState } from 'react';
-import { InviteMutation$data } from './cards/Invite/__generated__/InviteMutation.graphql';
 
-export type ClassroomInvite =
-  InviteMutation$data['createClassroomInvite']['invite'];
+export type ClassroomInvite = any;
 
 interface ClassroomOverviewContextType {
   classroomInvite: ClassroomInvite;

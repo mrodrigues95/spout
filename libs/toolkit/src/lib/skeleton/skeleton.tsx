@@ -18,7 +18,7 @@ const SkeletonStack = ({
       className={clsx(
         'flex',
         vertical ? 'flex-col space-y-2' : 'flex-row space-x-2',
-        className
+        className,
       )}
       {...props}
     >
@@ -35,8 +35,8 @@ export const Skeleton = ({ className, ...props }: SkeletonProps) => {
       className={twMerge(
         clsx(
           'h-6 w-full animate-pulse rounded-lg bg-gray-500 bg-opacity-25',
-          className
-        )
+          className,
+        ),
       )}
       {...props}
     />

@@ -1,4 +1,4 @@
-﻿namespace API.Common.Enums {
+namespace API.Common.Enums {
     public enum State {
         Active = 1,
         Deleted = 2,

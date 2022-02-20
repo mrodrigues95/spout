@@ -1,23 +1,23 @@
-using API.Data.Entities;
-using HotChocolate.Types;
-using System.Threading.Tasks;
-using System.Threading;
-using HotChocolate;
-using API.Data;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using HotChocolate.Types.Pagination;
+using System.Threading;
+using System.Threading.Tasks;
+using API.Data;
+using API.Data.Entities;
 using API.Schema.Queries.Classrooms;
+using API.Schema.Queries.Discussions;
 using API.Schema.Queries.Users;
 using API.Schema.Types.Classrooms;
 using API.Schema.Types.Messages;
 using API.Schema.Types.Users;
-using API.Schema.Queries.Discussions;
+using HotChocolate;
 using HotChocolate.Data.Filters;
-using HotChocolate.Resolvers;
 using HotChocolate.Data.Filters.Expressions;
 using HotChocolate.Data.Sorting.Expressions;
+using HotChocolate.Resolvers;
+using HotChocolate.Types;
+using HotChocolate.Types.Pagination;
 using HotChocolate.Types.Pagination.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Schema.Types.Discussions {
     public class DiscussionFilterInputType : FilterInputType<Discussion> {
@@ -118,7 +118,7 @@ namespace API.Schema.Types.Discussions {
                         .Where(m => m.DeletedAt == null))
                     .AsQueryable();
 
-                var connection = await query                
+                var connection = await query
                     .Filter(resolverCtx)
                     .Sort(resolverCtx)
                     .ApplyCursorPaginationAsync(resolverCtx, cancellationToken: cancellationToken);

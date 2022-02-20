@@ -1,18 +1,18 @@
-using API.Data.Entities;
-using Enums = API.Common.Enums;
-using HotChocolate.Types;
-using System.Threading.Tasks;
-using HotChocolate;
-using HotChocolate.Subscriptions;
-using API.Extensions;
-using API.Data;
-using System.Threading;
-using HotChocolate.AspNetCore.Authorization;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using API.Data;
+using API.Data.Entities;
+using API.Extensions;
 using API.Schema.Mutations.Discussions.Exceptions;
 using API.Schema.Mutations.Discussions.Inputs;
-using Microsoft.EntityFrameworkCore;
 using API.Schema.Types.Messages;
+using HotChocolate;
+using HotChocolate.AspNetCore.Authorization;
+using HotChocolate.Subscriptions;
+using HotChocolate.Types;
+using Microsoft.EntityFrameworkCore;
+using Enums = API.Common.Enums;
 
 namespace API.Schema.Mutations.Discussions {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -30,9 +30,7 @@ namespace API.Schema.Mutations.Discussions {
                 new object[] { input.DiscussionId },
                 cancellationToken);
 
-            if (discussion is null) {
-                throw new DiscussionNotFoundException();
-            }
+            if (discussion is null) throw new DiscussionNotFoundException();
 
             var message = new Message {
                 Content = input.Content.Trim(),
@@ -71,9 +69,7 @@ namespace API.Schema.Mutations.Discussions {
                 new object[] { input.MessageId },
                 cancellationToken);
 
-            if (message is null) {
-                throw new DiscussionMessageNotFoundException();
-            }
+            if (message is null) throw new DiscussionMessageNotFoundException();
 
             message.Content = input.Content;
             message.UpdatedAt = DateTime.UtcNow;
@@ -96,14 +92,9 @@ namespace API.Schema.Mutations.Discussions {
                 .Include(m => m.Discussion)
                 .SingleOrDefaultAsync(m => m.Id == input.MessageId, cancellationToken);
 
-            if (message is null) {
-                throw new DiscussionMessageNotFoundException();
-            }
+            if (message is null) throw new DiscussionMessageNotFoundException();
+            if (message.PinnedById is not null) throw new DiscussionMessageAlreadyPinnedException();
 
-            if (message.PinnedById is not null) {
-                throw new DiscussionMessageAlreadyPinnedException();
-            }
-            
             var eventMessage = new Message {
                 ParentMessageId = message.Id,
                 Content = message.Content,
@@ -143,13 +134,8 @@ namespace API.Schema.Mutations.Discussions {
                 .Include(m => m.Discussion)
                 .SingleOrDefaultAsync(m => m.Id == input.MessageId, cancellationToken);
 
-            if (message is null) {
-                throw new DiscussionMessageNotFoundException();
-            }
-
-            if (message.PinnedById is null) {
-                throw new DiscussionMessageAlreadyNotPinnedException();
-            }
+            if (message is null) throw new DiscussionMessageNotFoundException();
+            if (message.PinnedById is null) throw new DiscussionMessageAlreadyNotPinnedException();
 
             var eventMessage = new Message {
                 ParentMessageId = message.Id,
@@ -164,7 +150,7 @@ namespace API.Schema.Mutations.Discussions {
             message.MessageLinks.Add(eventMessage);
             message.PinnedById = null;
             message.PinnedAt = null;
-            message.UpdatedAt = DateTime.UtcNow;            
+            message.UpdatedAt = DateTime.UtcNow;
             await ctx.SaveChangesAsync(cancellationToken);
 
             // Send a new message to the discussion when un-pinning.
@@ -218,9 +204,7 @@ namespace API.Schema.Mutations.Discussions {
                 new object[] { input.DiscussionId },
                 cancellationToken);
 
-            if (discussion is null) {
-                throw new DiscussionNotFoundException();
-            }
+            if (discussion is null) throw new DiscussionNotFoundException();
 
             var eventMessage = new Message {
                 Content = input.Topic.Trim(),
@@ -256,9 +240,7 @@ namespace API.Schema.Mutations.Discussions {
                 new object[] { input.DiscussionId },
                 cancellationToken);
 
-            if (discussion is null) {
-                throw new DiscussionNotFoundException();
-            }
+            if (discussion is null) throw new DiscussionNotFoundException();
 
             var message = new Message {
                 Content = input.Description.Trim(),

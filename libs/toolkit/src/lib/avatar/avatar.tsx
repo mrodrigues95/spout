@@ -80,7 +80,7 @@ export const Avatar = ({
   );
 
   const imgProps = {
-    src: src as string | undefined,
+    src: src!,
     alt: name,
     className: rounded ? 'rounded-full' : 'rounded-md',
     onError: () => setError(true),

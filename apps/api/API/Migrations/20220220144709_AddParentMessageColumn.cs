@@ -1,11 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace API.Migrations
-{
-    public partial class AddParentMessageColumn : Migration
-    {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+namespace API.Migrations {
+    public partial class AddParentMessageColumn : Migration {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropForeignKey(
                 name: "fk_message_triggered_events_messages_triggered_to_id",
                 table: "message_triggered_events");
@@ -50,8 +47,7 @@ namespace API.Migrations
                 onDelete: ReferentialAction.Restrict);
         }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropForeignKey(
                 name: "fk_message_triggered_events_messages_triggered_from_id",
                 table: "message_triggered_events");

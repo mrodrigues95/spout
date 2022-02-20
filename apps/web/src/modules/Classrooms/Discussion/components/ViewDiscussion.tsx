@@ -39,7 +39,7 @@ const ViewDiscussion = ({ fetchKey }: Props) => {
       id: router.query.discussionId as string,
       count: 50,
     },
-    { fetchPolicy: 'store-and-network', fetchKey }
+    { fetchPolicy: 'store-and-network', fetchKey },
   );
 
   const [showDetails, setShowDetails] = useState(true);

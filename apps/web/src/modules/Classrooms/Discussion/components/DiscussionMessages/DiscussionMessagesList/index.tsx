@@ -30,8 +30,8 @@ import { useShouldForceScrollToBottom } from '../../../hooks/useShouldForceScrol
 
 const discussionFragment = graphql`
   fragment DiscussionMessagesList_discussion on Discussion
-    @argumentDefinitions(count: { type: "Int!" }, cursor: { type: "String" })
-    @refetchable(queryName: "DiscussionMessagesListPaginationQuery") {
+  @argumentDefinitions(count: { type: "Int!" }, cursor: { type: "String" })
+  @refetchable(queryName: "DiscussionMessagesListPaginationQuery") {
     id
     ...DiscussionMessagesListHeader_discussion
     messages(last: $count, before: $cursor, order: { createdAt: ASC })
@@ -116,7 +116,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
   const shouldForceScrollToBottom = useShouldForceScrollToBottom(
     discussion.id,
     me.id,
-    items
+    items,
   );
 
   const followOutput = useCallback(
@@ -126,7 +126,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
       // A message from another user has been received - don't scroll to bottom unless already there.
       return isAtBottom ? 'smooth' : false;
     },
-    [shouldForceScrollToBottom]
+    [shouldForceScrollToBottom],
   );
 
   const itemContent: ItemContent<Item, unknown> = useCallback(
@@ -152,13 +152,13 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
         />
       );
     },
-    [discussion.id, me, recentMessages]
+    [discussion.id, me, recentMessages],
   );
 
   const components: Components = useMemo(
     () => ({
       Header: () => (
-        <div className="px-4 py-6 h-42">
+        <div className="h-42 px-4 py-6">
           {hasPrevious || isLoadingPrevious ? (
             <Card className="flex w-full space-x-2 rounded-md bg-white p-3 shadow-sm ring-1 ring-gray-900/5">
               <Skeleton className="h-10 w-10 rounded-full" />
@@ -175,7 +175,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
       ),
       Footer: () => <div className="pt-2" />,
     }),
-    [hasPrevious, isLoadingPrevious, discussion]
+    [hasPrevious, isLoadingPrevious, discussion],
   );
 
   // TODO: Create a 'Jump to Present' footer.

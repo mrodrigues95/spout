@@ -1,19 +1,19 @@
-using API.Data;
-using API.Data.Entities;
-using HotChocolate;
-using HotChocolate.Types;
-using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System;
+using API.Data;
+using API.Data.Entities;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Sessions;
+using API.Schema.Queries.Users;
 using API.Schema.Types.Classrooms;
 using API.Schema.Types.Sessions;
-using API.Schema.Queries.Users;
+using HotChocolate;
 using HotChocolate.Data.Filters;
+using HotChocolate.Types;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Schema.Types.Users {
     public enum UserProfileColor {

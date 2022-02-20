@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace API.Common.Validators {
     public static class ValidatorExtensions {

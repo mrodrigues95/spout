@@ -5,12 +5,13 @@ import { useStore } from '../utils/optimisticMessagesStore';
 export const useShouldForceScrollToBottom = (
   discussionId: string,
   meId: string,
-  items: Item[]
+  items: Item[],
 ) => {
   const optimisticMessages = useStore(
-    useCallback((state) => state.messagesByDiscussionId[discussionId] || [], [
-      discussionId,
-    ])
+    useCallback(
+      (state) => state.messagesByDiscussionId[discussionId] || [],
+      [discussionId],
+    ),
   );
 
   // If the last message was created by the current user, then they should

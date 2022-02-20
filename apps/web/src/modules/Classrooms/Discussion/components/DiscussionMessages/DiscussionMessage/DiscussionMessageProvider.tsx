@@ -50,9 +50,8 @@ interface TDiscussionMessageContext {
   state: DiscussionMessageState;
 }
 
-const DiscussionMessageContext = createContext<TDiscussionMessageContext | null>(
-  null
-);
+const DiscussionMessageContext =
+  createContext<TDiscussionMessageContext | null>(null);
 
 export interface Props
   extends Pick<
@@ -72,10 +71,10 @@ export const DiscussionMessageProvider = ({
   optimisticMessageOpts,
   children,
 }: Props) => {
-  const recentMessage = useMemo(() => recentMessages?.[message.id] || {}, [
-    message.id,
-    recentMessages,
-  ]) as RecentMessage;
+  const recentMessage = useMemo(
+    () => recentMessages?.[message.id] || {},
+    [message.id, recentMessages],
+  ) as RecentMessage;
 
   const formattedCreatedAt = useMemo(() => {
     const { isMiddleMessage, isLastMessage, isRecent } = recentMessage;
@@ -107,14 +106,14 @@ export const DiscussionMessageProvider = ({
       discussionId,
       optimisticMessageOpts,
       recentMessage,
-    ]
+    ],
   );
 
   const [isEditing, setIsEditing] = useState(false);
 
   const state: DiscussionMessageState = useMemo(
     () => ({ isEditing, setIsEditing }),
-    [isEditing]
+    [isEditing],
   );
 
   const { edit } = useEditDiscussionMessage(message);
@@ -123,7 +122,7 @@ export const DiscussionMessageProvider = ({
 
   const actions: DiscussionMessageActions = useMemo(
     () => ({ edit, unpin, pin }),
-    [edit, unpin, pin]
+    [edit, unpin, pin],
   );
 
   const context = useMemo(
@@ -132,7 +131,7 @@ export const DiscussionMessageProvider = ({
       actions,
       state,
     }),
-    [data, actions, state]
+    [data, actions, state],
   );
 
   return (

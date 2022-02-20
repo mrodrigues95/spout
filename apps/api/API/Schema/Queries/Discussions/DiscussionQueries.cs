@@ -1,14 +1,14 @@
-using API.Extensions;
-using API.Data.Entities;
-using HotChocolate.Types;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using HotChocolate;
-using API.Data;
-using System.Threading;
-using HotChocolate.Types.Relay;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using API.Data;
+using API.Data.Entities;
+using API.Extensions;
+using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
+using HotChocolate.Types;
+using HotChocolate.Types.Relay;
 
 namespace API.Schema.Queries.Discussions {
     [ExtendObjectType(OperationTypeNames.Query)]

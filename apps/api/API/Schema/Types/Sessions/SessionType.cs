@@ -1,10 +1,10 @@
-using API.Data.Entities;
-using HotChocolate.Types;
-using System.Threading.Tasks;
 using System.Threading;
-using API.Schema.Queries.Users;
+using System.Threading.Tasks;
+using API.Data.Entities;
 using API.Schema.Queries.Sessions;
+using API.Schema.Queries.Users;
 using HotChocolate;
+using HotChocolate.Types;
 
 namespace API.Schema.Types.Sessions {
     public class SessionType : ObjectType<Session> {

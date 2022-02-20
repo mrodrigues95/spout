@@ -23,7 +23,7 @@ export type UnpinFn = () => void;
 
 export const useUnpinDiscussionMessage = (
   message: DiscussionMessage,
-  me: Me
+  me: Me,
 ) => {
   const [commit] = useMutation<useUnpinDiscussionMessageMutation>(mutation);
 

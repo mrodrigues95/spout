@@ -33,8 +33,7 @@ const ProfileItem = ({
       <Link
         href={to}
         variant="ghost"
-        rounded="xxl"
-        className="!p-4"
+        className="rounded-2xl !p-4"
         fullWidth
         aria-labelledby={titleId}
         aria-describedby={descId}

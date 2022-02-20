@@ -71,6 +71,13 @@
         "commands": ["trash ./src/**/__generated__/**"],
         "cwd": "apps/web"
       }
+    },
+    "ts-check": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project tsconfig.app.json",
+        "cwd": "apps/web"
+      }
     }
   }
 }
