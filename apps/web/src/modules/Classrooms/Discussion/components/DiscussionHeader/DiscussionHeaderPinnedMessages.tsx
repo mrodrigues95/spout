@@ -43,16 +43,16 @@ const DiscussionHeaderPinnedMessage = ({
         }
       }
     `,
-    props.message
+    props.message,
   );
 
   const formattedCreatedAt = useMemo(
     () => formatMessageDate(message.createdAt),
-    [message.createdAt]
+    [message.createdAt],
   );
 
   return (
-    <div className="flex space-x-2 p-3 shadow-md ring-1 ring-black ring-opacity-5 rounded-md">
+    <div className="flex space-x-2 rounded-md p-3 shadow-md ring-1 ring-black ring-opacity-5">
       <div>
         <Avatar
           src={message.createdBy.avatarUrl}
@@ -60,7 +60,7 @@ const DiscussionHeaderPinnedMessage = ({
           profileColor={message.createdBy.profileColor}
         />
       </div>
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-1 flex-col">
         <div className="flex items-center space-x-2 pb-1">
           <Text as="span" size="sm" weight="semibold" color="dark">
             {message.createdBy.name}
@@ -90,14 +90,10 @@ const DiscussionHeaderPinnedMessagesList = ({
   ...props
 }: DiscussionHeaderPinnedMessagesListProps) => {
   const [listHeight, setListHeight] = useState(288); // 72rem.
-  const {
-    data,
-    loadPrevious,
-    hasPrevious,
-    isLoadingPrevious,
-  } = usePaginationFragment(
-    graphql`
-      fragment DiscussionHeaderPinnedMessages_list on Discussion
+  const { data, loadPrevious, hasPrevious, isLoadingPrevious } =
+    usePaginationFragment(
+      graphql`
+        fragment DiscussionHeaderPinnedMessages_list on Discussion
         @argumentDefinitions(
           count: { type: "Int!" }
           cursor: { type: "String" }
@@ -105,25 +101,25 @@ const DiscussionHeaderPinnedMessagesList = ({
         @refetchable(
           queryName: "DiscussionHeaderPinnedMessagesListPaginationQuery"
         ) {
-        messages(
-          last: $count
-          before: $cursor
-          order: { pinnedAt: DESC }
-          where: { pinnedAt: { neq: null } }
-        )
-          @connection(
-            key: "DiscussionHeaderPinnedMessagesList_discussion_messages"
-          ) {
-          edges {
-            node {
-              ...DiscussionHeaderPinnedMessages_message
+          messages(
+            last: $count
+            before: $cursor
+            order: { pinnedAt: DESC }
+            where: { pinnedAt: { neq: null } }
+          )
+            @connection(
+              key: "DiscussionHeaderPinnedMessagesList_discussion_messages"
+            ) {
+            edges {
+              node {
+                ...DiscussionHeaderPinnedMessages_message
+              }
             }
           }
         }
-      }
-    `,
-    props.discussion
-  );
+      `,
+      props.discussion,
+    );
 
   const messages = useConnection(data.messages);
 
@@ -140,7 +136,7 @@ const DiscussionHeaderPinnedMessagesList = ({
           />
         ) : null,
       Item: ({ children, ...props }) => (
-        <li {...props} role="listitem" className="px-4 odd:py-3 last:pb-3">
+        <li {...props} role="listitem" className="px-4 last:pb-3 odd:py-3">
           {children}
         </li>
       ),
@@ -155,7 +151,7 @@ const DiscussionHeaderPinnedMessagesList = ({
         );
       }) as Components['List'],
     }),
-    [isLoadingPrevious]
+    [isLoadingPrevious],
   );
 
   if (!messages.length) {
@@ -176,7 +172,7 @@ const DiscussionHeaderPinnedMessagesList = ({
       )}
       increaseViewportBy={{ top: 200, bottom: 200 }}
       totalCount={messages.length}
-      className="overflow-x-hidden max-h-96"
+      className="max-h-96 overflow-x-hidden"
       style={{ height: listHeight }}
       totalListHeightChanged={setListHeight}
       components={components}
@@ -209,7 +205,7 @@ const DiscussionHeaderPinnedMessages = ({
       id: router.query.discussionId as string,
       count: 10,
     },
-    { fetchPolicy: 'store-and-network', fetchKey }
+    { fetchPolicy: 'store-and-network', fetchKey },
   );
 
   return (
@@ -250,14 +246,14 @@ const DiscussionHeaderPinnedMessagesPopover = () => {
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1"
           >
-            <Popover.Panel className="absolute z-50 bg-white w-[28rem] mt-3 transform translate-x-[-91%] shadow-lg rounded-lg">
-              <div className="flex flex-col flex-1 h-full ring-1 ring-black ring-opacity-5 rounded-lg">
+            <Popover.Panel className="absolute z-50 mt-3 w-[28rem] translate-x-[-91%] transform rounded-lg bg-white shadow-lg">
+              <div className="flex h-full flex-1 flex-col rounded-lg ring-1 ring-black ring-opacity-5">
                 <div className="bg-gray-100 p-4">
                   <Text className="text-gray-900" weight="semibold">
                     Pinned Messages
                   </Text>
                 </div>
-                <div className="flex flex-col flex-1">
+                <div className="flex flex-1 flex-col">
                   <ErrorBoundaryWithRetry
                     FallbackComponent={({ resetErrorBoundary }) => (
                       <ErrorFallback

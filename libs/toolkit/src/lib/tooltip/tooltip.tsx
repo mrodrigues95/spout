@@ -115,7 +115,7 @@ export const Tooltip = ({
                 className={clsx(
                   !unstyled &&
                     'flex items-center justify-center whitespace-nowrap rounded-md bg-black px-2 py-1 text-xs font-semibold tracking-wider text-white',
-                  className
+                  className,
                 )}
                 variants={variants}
                 initial="exit"

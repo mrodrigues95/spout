@@ -37,7 +37,7 @@ export const useEditDiscussionMessage = (message: DiscussionMessage) => {
         },
       });
     },
-    [commit, message.id]
+    [commit, message.id],
   );
 
   return { edit };

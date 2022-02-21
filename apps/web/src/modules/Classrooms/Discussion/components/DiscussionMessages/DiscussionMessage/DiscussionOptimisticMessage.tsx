@@ -76,9 +76,8 @@ const DiscussionOptimisticMessage = ({
 }: Props) => {
   const [hasError, setHasError] = useState(false);
   const { remove } = useStore(selector);
-  const [sendMessage, isInFlight] = useMutation<
-    DiscussionOptimisticMessageMutation
-  >(mutation);
+  const [sendMessage, isInFlight] =
+    useMutation<DiscussionOptimisticMessageMutation>(mutation);
 
   const send = useCallback(() => {
     sendMessage({
@@ -106,11 +105,10 @@ const DiscussionOptimisticMessage = ({
     send();
   }, [send]);
 
-  const opts = useMemo(() => ({ hasError, loading: isInFlight, retry: send }), [
-    hasError,
-    isInFlight,
-    send,
-  ]);
+  const opts = useMemo(
+    () => ({ hasError, loading: isInFlight, retry: send }),
+    [hasError, isInFlight, send],
+  );
 
   return (
     <DiscussionMessage

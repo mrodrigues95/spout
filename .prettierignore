@@ -1,4 +1,6 @@
 apps/**/__generated__/**
 libs/**/__generated__/**
+apps/**/bin/**
+apps/**/obj/**
 /dist
 /coverage

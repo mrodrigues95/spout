@@ -37,9 +37,8 @@ interface Props {
 
 const Description = ({ discussion }: Props) => {
   const data = useFragment(fragment, discussion);
-  const [updateDescription, isInFlight] = useMutation<DescriptionMutation>(
-    mutation
-  );
+  const [updateDescription, isInFlight] =
+    useMutation<DescriptionMutation>(mutation);
 
   const [isOpen, setIsOpen] = useState(false);
   const { handleError } = useToast();
@@ -63,7 +62,7 @@ const Description = ({ discussion }: Props) => {
           setIsOpen(false);
         },
       }),
-    [updateDescription, data.id, form, handleError]
+    [updateDescription, data.id, form, handleError],
   );
 
   return (

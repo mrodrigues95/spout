@@ -49,7 +49,7 @@ const sort = (groups: GroupedDiscussionMessages) => {
   Object.entries(days).forEach(([_, messages]) =>
     messages
       .sort((x, y) => getTime(x.createdAt) - getTime(y.createdAt))
-      .reverse()
+      .reverse(),
   );
 
   const sortedDays = Object.keys(days)
@@ -60,7 +60,7 @@ const sort = (groups: GroupedDiscussionMessages) => {
         ...acc,
         [day]: [...days[day]],
       }),
-      {}
+      {},
     );
 
   // Returning a map gurantees sort order is respected when being iterated on.

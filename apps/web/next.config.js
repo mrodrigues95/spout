@@ -6,15 +6,15 @@ module.exports = {
   compiler: {
     relay: {
       // This should match `relay.config.json`.
-      src: "apps/web/src",
-      schema: "apps/web/schema.graphql",
-      artifactDirectory: "apps/web/src/__generated__",
-      exclude: ["**/node_modules/**", "**/__generated__/**"],
-      language: "typescript",
+      src: 'apps/web/src',
+      schema: 'apps/web/schema.graphql',
+      artifactDirectory: 'apps/web/src/__generated__',
+      exclude: ['**/node_modules/**', '**/__generated__/**'],
+      language: 'typescript',
       customScalars: {
-        DateTime: "string",
-        URL: "string"
-      }
+        DateTime: 'string',
+        URL: 'string',
+      },
     },
   },
   // Enable fast refresh to work inside WSL2.
