@@ -9,7 +9,7 @@ import DiscussionMessagesList from './DiscussionMessages/DiscussionMessagesList'
 import DiscussionMessageComposer from './DiscussionMessages/DiscussionMessageComposer';
 import { useState } from 'react';
 
-export const query = graphql`
+const query = graphql`
   query ViewDiscussionQuery($id: ID!, $count: Int!, $cursor: String) {
     discussionById(id: $id) {
       id

@@ -4,6 +4,7 @@ import clsx from 'clsx';
 
 const STYLES = {
   color: {
+    dark: 'text-gray-900',
     body: 'text-gray-700',
     muted: 'text-gray-500',
   },

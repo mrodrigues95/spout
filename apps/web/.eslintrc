@@ -28,6 +28,7 @@
     }
   ],
   "rules": {
-    "relay/generated-flow-types": "off"
+    "relay/generated-flow-types": "off",
+    "relay/unused-fields": "off"
   }
 }

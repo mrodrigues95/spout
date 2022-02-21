@@ -9,17 +9,17 @@ import {
   useEffect,
   useMemo,
 } from 'react';
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { usePopper } from '@spout/utils';
 import { Portal } from '@headlessui/react';
 import { Placement } from '@popperjs/core';
 import { AnimatePresence, motion, Variants } from 'framer-motion';
-import { generateId } from '../../utils';
 import clsx from 'clsx';
+import { generateId } from '../../utils';
+import { useControllableProp, usePopper } from '../../hooks';
 
 export interface TooltipProps {
   label: ReactNode;
   children: ReactNode | ReactElement;
+  isOpen?: boolean;
   onOpen?: () => void;
   onClose?: () => void;
   placement?: Placement;
@@ -34,11 +34,13 @@ export const Tooltip = ({
   className,
   onOpen,
   onClose,
+  isOpen: isOpenProp,
   placement = 'top',
   delay = 0,
   unstyled = false,
 }: TooltipProps) => {
-  const [isShowing, setIsShowing] = useState(false);
+  const [isOpenState, setIsOpen] = useState(isOpenProp || false);
+  const [isControlled, isOpen] = useControllableProp(isOpenProp, isOpenState);
   const [trigger, container] = usePopper({
     placement: placement,
     strategy: 'fixed',
@@ -49,14 +51,14 @@ export const Tooltip = ({
   const showTooltip = () => {
     clearTimeout(timeoutRef.current);
     timeoutRef.current = window.setTimeout(() => {
-      setIsShowing(true);
+      if (!isControlled) setIsOpen(true);
       if (onOpen) onOpen();
     }, delay || 0);
   };
 
   const hideTooltip = () => {
     clearTimeout(timeoutRef.current);
-    setIsShowing(false);
+    if (!isControlled) setIsOpen(false);
     if (onClose) onClose();
   };
 
@@ -68,7 +70,7 @@ export const Tooltip = ({
     onFocus: showTooltip,
     onBlur: hideTooltip,
     ref: trigger,
-    'aria-describedby': isShowing ? id : undefined,
+    'aria-describedby': isOpen ? id : undefined,
   };
 
   const childrenWithTriggerProps = Children.map(children, (child) => {
@@ -104,7 +106,7 @@ export const Tooltip = ({
     <>
       {childrenWithTriggerProps}
       <AnimatePresence>
-        {isShowing && (
+        {isOpen && (
           <Portal>
             <div ref={container}>
               <motion.span
@@ -113,7 +115,7 @@ export const Tooltip = ({
                 className={clsx(
                   !unstyled &&
                     'flex items-center justify-center whitespace-nowrap rounded-md bg-black px-2 py-1 text-xs font-semibold tracking-wider text-white',
-                  className,
+                  className
                 )}
                 variants={variants}
                 initial="exit"

@@ -22,7 +22,7 @@ const PinnedOrUnpinnedEventMessage = ({
 
   if (!parentMessage) {
     console.warn(
-      'Pinned or un-pinned event message found without an associated parent message.',
+      'Pinned or unpinned event message found without an associated parent message.',
       message
     );
     return null;
@@ -79,7 +79,7 @@ const getEventAttributes = (event: MessageEvent) => {
       return {
         icon: faCommentDots,
         color: 'purple',
-        description: 'un-pinned a',
+        description: 'unpinned a',
         title: 'Message',
       };
     default:

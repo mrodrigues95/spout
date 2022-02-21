@@ -3,14 +3,14 @@ import { graphql, useFragment } from 'react-relay';
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faBell,
   faCheck,
   faChevronDown,
   faInfoCircle,
-  faThumbtack,
 } from '@fortawesome/free-solid-svg-icons';
 import { Title, Select, IconButton, Tooltip } from '@spout/toolkit';
-import { DiscussionHeader_discussion$key } from '../../../../__generated__/DiscussionHeader_discussion.graphql';
+import { DiscussionHeader_discussion$key } from '../../../../../__generated__/DiscussionHeader_discussion.graphql';
+import DiscussionHeaderNotifications from './DiscussionHeaderNotifications';
+import DiscussionHeaderPinnedMessages from './DiscussionHeaderPinnedMessages';
 
 const fragment = graphql`
   fragment DiscussionHeader_discussion on Discussion {
@@ -72,27 +72,8 @@ const DiscussionHeader = ({ discussion, setShowDetails }: Props) => {
             ))}
           </Select.Options>
         </Select>
-        <Tooltip label="Notifications" placement="bottom">
-          <IconButton
-            icon={<FontAwesomeIcon icon={faBell} />}
-            className="text-gray-500"
-            aria-label="Show notifications"
-            size="md"
-          />
-        </Tooltip>
-        <Tooltip label="Pinned Messages" placement="bottom">
-          <IconButton
-            icon={
-              <FontAwesomeIcon
-                icon={faThumbtack}
-                className="rotate-45 transform"
-              />
-            }
-            className="text-gray-500"
-            aria-label="Show pinned messages"
-            size="md"
-          />
-        </Tooltip>
+        <DiscussionHeaderNotifications />
+        <DiscussionHeaderPinnedMessages />
         <Tooltip label="Show Details" placement="bottom">
           <IconButton
             icon={<FontAwesomeIcon icon={faInfoCircle} />}

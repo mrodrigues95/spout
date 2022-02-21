@@ -43,7 +43,7 @@ const DiscussionMessageActions = () => {
           </li>
         )}
         <li>
-          <Tooltip label={isPinned ? 'Un-pin' : 'Pin'}>
+          <Tooltip label={isPinned ? 'Unpin' : 'Pin'}>
             <IconButton
               aria-label="Pin Message"
               scheme={isPinned ? 'red' : 'gray'}

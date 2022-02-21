@@ -5,7 +5,7 @@ module.exports = {
   },
   compiler: {
     relay: {
-      // This should match relay.config.js.
+      // This should match `relay.config.json`.
       src: "apps/web/src",
       schema: "apps/web/schema.graphql",
       artifactDirectory: "apps/web/src/__generated__",

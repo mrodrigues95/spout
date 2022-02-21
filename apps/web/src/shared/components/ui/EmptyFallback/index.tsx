@@ -8,10 +8,10 @@ interface Props extends Omit<EmptyStateProps, 'heading' | 'icon'> {
   icon?: ReactElement;
 }
 
-const EmptyFallback = ({ icon, heading, body }: Props) => {
+const EmptyFallback = ({ icon, heading, body, ...props }: Props) => {
   return (
     <EmptyState
-      heading={heading ? heading : "There's nothing here, yet"}
+      heading={heading ? heading : "There's nothing here, yet."}
       body={body}
       icon={
         icon ? (
@@ -23,6 +23,7 @@ const EmptyFallback = ({ icon, heading, body }: Props) => {
           />
         )
       }
+      {...props}
     />
   );
 };
