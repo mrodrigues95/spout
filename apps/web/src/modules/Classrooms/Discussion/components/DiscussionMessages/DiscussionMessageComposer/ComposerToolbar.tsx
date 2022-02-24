@@ -31,7 +31,7 @@ const ComposerToolbar = () => {
         onClick={onNewMessage}
         variant="solid"
         scheme="orange"
-        disabled={!message || isUploadingFiles}
+        disabled={!message.raw || isUploadingFiles}
         className="rounded-full"
       />
     </div>

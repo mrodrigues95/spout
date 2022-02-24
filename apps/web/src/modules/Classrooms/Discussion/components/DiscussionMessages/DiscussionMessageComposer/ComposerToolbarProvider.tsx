@@ -2,7 +2,7 @@ import { createContext, ReactNode, useContext, useMemo } from 'react';
 import { FilePickerProps } from '@spout/toolkit';
 
 interface ComposerToolbarContextType {
-  message: string;
+  message: { raw: string; html: string };
   isUploadingFiles: boolean;
   onNewMessage: () => void;
   onFilesAccepted: FilePickerProps['onDropAccepted'];

@@ -1,6 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { FileRejection } from 'react-dropzone';
+import { useEditor, EditorContent, Extension } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 import clsx from 'clsx';
 import { formatNewMessage } from '../../../utils/format';
 import { FileWithId } from '../../../hooks';
@@ -9,11 +11,11 @@ import {
   useStore,
 } from '../../../utils/optimisticMessagesStore';
 import { ComposerAttachments } from './ComposerAttachments';
-import TextArea from '../../../../../../shared/components/ui/TextArea';
 import ComposerToolbar from './ComposerToolbar';
 import { ComposerToolbarProvider } from './ComposerToolbarProvider';
 import { DiscussionMessageComposer_discussion$key } from '../../../../../../__generated__/DiscussionMessageComposer_discussion.graphql';
 import { DiscussionMessageComposer_user$key } from '../../../../../../__generated__/DiscussionMessageComposer_user.graphql';
+import { useEffect } from 'react';
 
 const discussionFragment = graphql`
   fragment DiscussionMessageComposer_discussion on Discussion {
@@ -48,28 +50,75 @@ const DiscussionMessageComposer = ({ ...props }: Props) => {
   const [uploadedFiles, setUploadedFiles] = useState<FileWithId[]>([]);
   const [isUploadingFiles, setIsUploadingFiles] = useState(false);
   const [shouldClearFiles, setShouldClearFiles] = useState(false);
-  const [message, setMessage] = useState('');
+  const [shouldSubmitMessage, setShouldSubmitMessage] = useState(false);
   const [focused, setFocused] = useState(false);
 
+  const messageRef = useRef({ raw: '', html: '' });
+
+  const editor = useEditor({
+    autofocus: true,
+    extensions: [
+      StarterKit,
+      Extension.create({
+        addKeyboardShortcuts: () => {
+          return {
+            // Overwrite the default 'Enter' behaviour.
+            Enter: () => {
+              setShouldSubmitMessage(true);
+              return true;
+            },
+          };
+        },
+      }),
+    ],
+    editorProps: {
+      attributes: {
+        class: 'focus:outline-none',
+      },
+      handleDOMEvents: {
+        focusin: () => {
+          setFocused(true);
+          return false;
+        },
+        focusout: () => {
+          setFocused(false);
+          return false;
+        },
+      },
+    },
+    onUpdate: ({ editor }) => {
+      messageRef.current = { raw: editor.getText(), html: editor.getHTML() };
+    },
+  });
+
   const onNewMessage = useCallback(() => {
+    const { raw, html } = messageRef.current;
     if (isUploadingFiles) return;
-    if (!message.trim().length) return;
+    if (!raw.length) return;
 
     add(discussion.id, {
-      content: formatNewMessage(message.trim()),
+      content: formatNewMessage(html),
       attachmentIds: uploadedFiles.map((f) => f.id!),
       createdBy: me,
     });
-    setMessage('');
+    editor?.commands.clearContent(true);
     setShouldClearFiles(true);
-  }, [isUploadingFiles, message, add, discussion.id, uploadedFiles, me]);
+  }, [
+    isUploadingFiles,
+    messageRef,
+    editor,
+    add,
+    discussion.id,
+    uploadedFiles,
+    me,
+  ]);
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
+  useEffect(() => {
+    if (shouldSubmitMessage) {
       onNewMessage();
+      setShouldSubmitMessage(false);
     }
-  };
+  }, [shouldSubmitMessage, editor, onNewMessage]);
 
   const onFilesAccepted = useCallback(
     (files: File[]) => setAcceptedFiles(files),
@@ -89,17 +138,7 @@ const DiscussionMessageComposer = ({ ...props }: Props) => {
       )}
     >
       <div className="flex w-full flex-col space-y-3">
-        <TextArea
-          placeholder={`Message #${discussion.name.trim()}`}
-          value={message}
-          aria-label="Enter message"
-          onChange={(e) => setMessage(e.target.value)}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          onKeyPress={handleKeyPress}
-          className="p-0"
-          maxRows={5}
-        />
+        <EditorContent editor={editor} className="max-h-60 overflow-auto" />
         <ComposerAttachments
           acceptedFiles={acceptedFiles}
           rejectedFiles={rejectedFiles}
@@ -109,7 +148,7 @@ const DiscussionMessageComposer = ({ ...props }: Props) => {
           setShouldClearFiles={setShouldClearFiles}
         />
         <ComposerToolbarProvider
-          message={message}
+          message={messageRef.current}
           isUploadingFiles={isUploadingFiles}
           onNewMessage={onNewMessage}
           onFilesAccepted={onFilesAccepted}

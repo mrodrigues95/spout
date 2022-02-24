@@ -1,8 +1,8 @@
 import { memo, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbtack } from '@fortawesome/free-solid-svg-icons';
-import { Button, Text } from '@spout/toolkit';
 import clsx from 'clsx';
+import { Button, Text } from '@spout/toolkit';
 import { Avatar } from '../../../../../../shared/components';
 import { BaseDiscussionMessage, RecentMessage } from '../../../utils/messages';
 import {

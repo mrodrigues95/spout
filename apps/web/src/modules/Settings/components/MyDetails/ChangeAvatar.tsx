@@ -29,7 +29,8 @@ import {
 const ChangeAvatar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [files, setFiles] = useState<FileType[]>([]);
-  const [_, setCropper] = useState<Cropper>();
+  const [cropper, setCropper] = useState<Cropper>();
+  console.log(cropper);
   // const { handleError } = useToast();
   // const [updateAvatar, updateAvatarResult] = useMutation<
   //   UpdateAvatar,

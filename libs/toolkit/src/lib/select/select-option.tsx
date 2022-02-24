@@ -2,7 +2,7 @@ import { ComponentProps, ReactElement } from 'react';
 import { Listbox } from '@headlessui/react';
 import clsx from 'clsx';
 
-interface SelectOption extends Omit<ComponentProps<'li'>, 'value'> {
+interface SelectOptionProps extends Omit<ComponentProps<'li'>, 'value'> {
   value: unknown;
   label: string;
   selectedIcon: ReactElement;
@@ -13,7 +13,7 @@ export const SelectOption = ({
   label,
   selectedIcon,
   ...props
-}: SelectOption) => {
+}: SelectOptionProps) => {
   return (
     <Listbox.Option
       className={({ active }) =>
