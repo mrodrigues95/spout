@@ -26,6 +26,8 @@ const DiscussionMessageActions = () => {
             <IconButton
               aria-label="Add Reaction"
               className="text-gray-500"
+              size="sm"
+              variant="tertiary"
               icon={<FontAwesomeIcon icon={faLaugh} />}
             />
           </Tooltip>
@@ -35,6 +37,8 @@ const DiscussionMessageActions = () => {
             <Tooltip label="Edit">
               <IconButton
                 aria-label="Edit Message"
+                size="sm"
+                variant="tertiary"
                 className="text-gray-500"
                 icon={<FontAwesomeIcon icon={faPen} />}
                 onClick={() => setIsEditing(true)}
@@ -46,8 +50,8 @@ const DiscussionMessageActions = () => {
           <Tooltip label={isPinned ? 'Unpin' : 'Pin'}>
             <IconButton
               aria-label="Pin Message"
-              scheme={isPinned ? 'red' : 'gray'}
-              variant={isPinned ? 'light' : 'ghost'}
+              variant={isPinned ? 'default' : 'tertiary'}
+              size="sm"
               icon={
                 <FontAwesomeIcon
                   icon={faThumbtack}

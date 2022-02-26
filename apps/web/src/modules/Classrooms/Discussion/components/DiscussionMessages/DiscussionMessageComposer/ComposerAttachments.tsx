@@ -8,7 +8,7 @@ import {
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import {
-  buttonOrLinkStyles,
+  getButtonStyles,
   FilePicker,
   Spinner,
   Tooltip,
@@ -35,6 +35,8 @@ import { useComposerToolbar } from './ComposerToolbarProvider';
 export const UploadAttachments = () => {
   const { onFilesAccepted, onFilesRejected } = useComposerToolbar()!;
 
+  const styles = getButtonStyles();
+
   return (
     <FilePicker
       accept={[...WHITELISTED_EXTENSIONS].map((ext) => `.${ext.toLowerCase()}`)}
@@ -47,12 +49,11 @@ export const UploadAttachments = () => {
       <Tooltip label="Upload Attachments">
         <FilePicker.Button
           className={clsx(
-            buttonOrLinkStyles.base,
-            buttonOrLinkStyles.disabled,
-            buttonOrLinkStyles.active,
-            buttonOrLinkStyles.variant['ghost'],
-            buttonOrLinkStyles.scheme['gray']['ghost'],
-            buttonOrLinkStyles.size['icon'].sm,
+            styles.base,
+            styles.disabled,
+            styles.active,
+            styles.variant.tertiary,
+            styles.size.icon.sm,
           )}
           aria-label="Select attachments to upload"
         >

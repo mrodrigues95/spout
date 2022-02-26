@@ -25,7 +25,7 @@ const ErrorFallback = ({ icon, heading, action, ...props }: Props) => {
       }
       {...props}
     >
-      <Button scheme="red" className="text-sm" onClick={() => action()}>
+      <Button className="text-sm" onClick={() => action()}>
         Try again
       </Button>
     </EmptyState>

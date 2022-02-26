@@ -32,7 +32,6 @@ const ProfileItem = ({
     <li>
       <Link
         href={to}
-        variant="ghost"
         className="rounded-2xl !p-4"
         fullWidth
         aria-labelledby={titleId}

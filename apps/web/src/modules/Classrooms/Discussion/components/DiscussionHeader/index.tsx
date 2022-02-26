@@ -80,6 +80,7 @@ const DiscussionHeader = ({ discussion, setShowDetails }: Props) => {
             className="text-blue-500 hover:text-blue-700 focus:text-blue-700"
             aria-label="Show discussion details"
             size="md"
+            variant="tertiary"
             onClick={setShowDetails}
           />
         </Tooltip>

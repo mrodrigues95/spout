@@ -10,11 +10,13 @@ const ComposerToolbar = () => {
 
   return (
     <div className="flex items-center justify-between">
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center space-x-2">
         <Tooltip label="View Emojis">
           <IconButton
             icon={<FontAwesomeIcon icon={faLaughSquint} />}
             aria-label="View Emojis"
+            variant="tertiary"
+            size="sm"
           />
         </Tooltip>
         <UploadAttachments />
@@ -29,10 +31,9 @@ const ComposerToolbar = () => {
         }
         aria-label="Send message"
         onClick={onNewMessage}
-        variant="solid"
-        scheme="orange"
         disabled={!message.raw || isUploadingFiles}
         className="rounded-full"
+        variant="primary"
       />
     </div>
   );

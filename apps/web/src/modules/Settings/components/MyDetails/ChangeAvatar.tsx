@@ -91,12 +91,7 @@ const ChangeAvatar = () => {
               )}
             </Modal.Body>
             <Modal.Footer>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => setIsOpen(false)}
-                ref={focusRef}
-              >
+              <Button size="sm" onClick={() => setIsOpen(false)} ref={focusRef}>
                 Cancel
               </Button>
               <Form.SubmitButton

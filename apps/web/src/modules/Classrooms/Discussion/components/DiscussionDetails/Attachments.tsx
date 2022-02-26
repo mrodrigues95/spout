@@ -72,7 +72,7 @@ const Attachment = ({ index, file }: AttachmentProps) => {
             className="mb-auto"
             size="xs"
             aria-label="View Attachment"
-            scheme="red"
+            variant="danger"
             rel="noreferrer"
             target="_blank"
             icon={<FontAwesomeIcon icon={faExternalLinkAlt} />}

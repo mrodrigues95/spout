@@ -19,12 +19,7 @@ const Search = forwardRef<HTMLInputElement, Props>(({ ...props }, ref) => {
           />
         </span>
       ) : (
-        <Button
-          size="sm"
-          variant="ghost"
-          className="sm:ml-3"
-          aria-label="Search"
-        >
+        <Button size="sm" className="sm:ml-3" aria-label="Search">
           <FontAwesomeIcon
             icon={faSearch}
             className="h-4 w-4 text-gray-400 sm:h-5 sm:w-5"

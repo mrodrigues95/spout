@@ -232,9 +232,9 @@ const DiscussionHeaderPinnedMessagesPopover = () => {
                   className="rotate-45 transform"
                 />
               }
-              className="text-gray-500"
               aria-label="Show pinned messages"
               size="md"
+              variant="tertiary"
             />
           </Tooltip>
           <Transition

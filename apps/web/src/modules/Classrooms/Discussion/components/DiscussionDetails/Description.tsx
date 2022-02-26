@@ -83,19 +83,16 @@ const Description = ({ discussion }: Props) => {
               />
             </Modal.Body>
             <Modal.Footer>
-              <SButton
-                size="sm"
-                variant="outline"
-                onClick={() => setIsOpen(false)}
-              >
+              <SButton size="sm" onClick={() => setIsOpen(false)}>
                 Cancel
               </SButton>
               <Form.SubmitButton
                 size="sm"
+                variant="primary"
                 disabled={isInFlight}
                 isSubmitting={isInFlight}
               >
-                Save
+                Save Changes
               </Form.SubmitButton>
             </Modal.Footer>
           </Modal.Content>

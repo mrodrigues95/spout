@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCog,
   faCommentDots,
-  faHome,
+  faHouseChimney,
 } from '@fortawesome/free-solid-svg-icons';
 import { getRandomAvatar } from '../../../../utils';
 import { ErrorFallback } from '../../../../../shared/components';
@@ -27,7 +27,7 @@ const Sidebar = () => {
           <VerticalNav.Item
             to="/home"
             label="Home"
-            icon={<FontAwesomeIcon icon={faHome} />}
+            icon={<FontAwesomeIcon icon={faHouseChimney} />}
           />
           <VerticalNav.Item
             to="/messages"

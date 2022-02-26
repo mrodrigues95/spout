@@ -19,7 +19,8 @@ export const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
         </span>
         <TextareaAutosize
           className={clsx(
-            'outline-none w-full rounded-md border-none bg-gray-100 font-medium text-black transition duration-200 ease-in-out placeholder-shown:font-normal focus:ring-2 focus:ring-black',
+            'outline-none w-full rounded-md border-2 border-transparent bg-gray-100 font-medium text-black transition duration-200 ease-in-out',
+            'ring-offset-4 placeholder-shown:font-normal focus:border-blue-700 focus:ring-2 focus:ring-blue-200',
             className,
           )}
           ref={ref}

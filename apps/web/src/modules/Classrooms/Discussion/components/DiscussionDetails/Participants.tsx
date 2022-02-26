@@ -26,13 +26,19 @@ const Participants = ({ classroom }: Props) => {
       <ul className="space-y-3">
         {data.users.map((user) => (
           <li key={user.id}>
-            <Button className="space-x-3" variant="ghost" size="sm" fullWidth>
-              <Avatar
-                src={user.avatarUrl}
-                name={user.name}
-                profileColor={user.profileColor}
-                size="sm"
-              />
+            <Button
+              size="sm"
+              variant="tertiary"
+              leftIcon={
+                <Avatar
+                  src={user.avatarUrl}
+                  name={user.name}
+                  profileColor={user.profileColor}
+                  size="sm"
+                />
+              }
+              fullWidth
+            >
               <span className="min-w-0 flex-1 truncate">{user.name}</span>
             </Button>
           </li>

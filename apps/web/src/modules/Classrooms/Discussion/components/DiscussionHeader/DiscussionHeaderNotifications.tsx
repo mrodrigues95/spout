@@ -7,9 +7,9 @@ const DiscussionHeaderNotifications = () => {
     <Tooltip label="Notifications" placement="bottom">
       <IconButton
         icon={<FontAwesomeIcon icon={faBell} />}
-        className="text-gray-500"
         aria-label="Show notifications"
         size="md"
+        variant="tertiary"
       />
     </Tooltip>
   );

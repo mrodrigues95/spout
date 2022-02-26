@@ -55,8 +55,6 @@ const CreateClassroom = () => {
     <>
       <Button
         size="xs"
-        variant="light"
-        scheme="orange"
         className="rounded uppercase"
         onClick={() => setIsOpen(true)}
       >

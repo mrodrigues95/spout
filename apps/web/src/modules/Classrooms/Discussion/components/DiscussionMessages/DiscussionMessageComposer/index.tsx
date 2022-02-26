@@ -134,7 +134,7 @@ const DiscussionMessageComposer = ({ ...props }: Props) => {
     <div
       className={clsx(
         'pointer-events-auto flex h-full items-center justify-between rounded-md border-2 bg-white p-3 transition duration-150 ease-in-out',
-        focused ? 'border-transparent ring-2 ring-black' : 'border-gray-200',
+        focused ? 'border-blue-700 ring-4 ring-blue-200' : 'border-gray-200',
       )}
     >
       <div className="flex w-full flex-col space-y-3">

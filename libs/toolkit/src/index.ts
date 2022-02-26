@@ -1,6 +1,7 @@
 export * from './lib/file-icon';
 export * from './lib/avatar';
 export * from './lib/button';
+export * from './lib/icon-button';
 export * from './lib/text';
 export * from './lib/title';
 export * from './lib/tabs';

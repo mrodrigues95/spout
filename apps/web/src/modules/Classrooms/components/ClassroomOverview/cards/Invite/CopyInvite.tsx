@@ -108,7 +108,6 @@ const CopyInvite = ({ invite }: Props) => {
         </div>
         <Button
           size="sm"
-          scheme="purple"
           className={clsx(
             'rounded-lg',
             isCopied &&

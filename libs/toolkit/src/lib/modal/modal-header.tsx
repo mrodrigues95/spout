@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 import { ModalContext } from './modal';
-import { IconButton } from '../button';
+import { IconButton } from '../icon-button';
 
 interface HeaderProps {
   className?: string;
@@ -51,9 +51,9 @@ export const ModalHeader = ({
       </div>
       {dismiss && (
         <IconButton
-          variant="ghost"
           className="mb-auto -mt-1 !p-2"
           aria-label="Close modal"
+          variant="tertiary"
           onClick={onClose}
           icon={<FontAwesomeIcon icon={faTimes} />}
         />

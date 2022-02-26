@@ -50,13 +50,7 @@ export const Item = ({ label, content, onClick }: ItemProps) => {
           {content}
         </Text>
       ) : (
-        <SButton
-          size="xs"
-          variant="light"
-          scheme="orange"
-          className="rounded uppercase"
-          onClick={onClick}
-        >
+        <SButton size="xs" className="rounded uppercase" onClick={onClick}>
           Edit
         </SButton>
       )}
@@ -156,11 +150,7 @@ const Topic = ({ discussion }: Props) => {
               />
             </Modal.Body>
             <Modal.Footer>
-              <SButton
-                size="sm"
-                variant="outline"
-                onClick={() => setIsOpen(false)}
-              >
+              <SButton size="sm" onClick={() => setIsOpen(false)}>
                 Cancel
               </SButton>
               <Form.SubmitButton

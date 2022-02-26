@@ -22,7 +22,7 @@ const LeaveClassroom = () => {
         >
           Back
         </Button>
-        <Form.SubmitButton size="sm" scheme="red" className="font-semibold">
+        <Form.SubmitButton size="sm" className="font-semibold">
           Leave
         </Form.SubmitButton>
       </Modal.Footer>

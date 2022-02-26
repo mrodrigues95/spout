@@ -17,6 +17,7 @@ export const FormSubmitButton = forwardRef<
     <Button
       type="submit"
       disabled={formState.isSubmitting || disabled}
+      variant="primary"
       {...props}
       ref={ref}
     >

@@ -1,8 +1,7 @@
-import { ComponentProps, ReactNode } from 'react';
+import { ComponentProps, ReactElement, ReactNode } from 'react';
 import { Link, Title } from '@spout/toolkit';
 import clsx from 'clsx';
 import { useIsCurrentRoute } from '../../../hooks';
-import { twMerge } from 'tailwind-merge';
 
 interface VerticalNavGroupHeaderProps {
   title: string;
@@ -40,7 +39,7 @@ const VerticalNavItems = ({
 interface VerticalNavItemProps extends ComponentProps<'li'> {
   to?: string;
   label?: string;
-  icon?: ReactNode;
+  icon?: ReactElement;
   groupTitle?: string;
   groupActions?: ReactNode;
   isGroup?: boolean;
@@ -72,19 +71,16 @@ const VerticalNavItem = ({
       ) : (
         <Link
           href={to!}
-          variant={selected ? 'light' : 'ghost'}
-          scheme="gray"
           fullWidth
           size="sm"
-          className={twMerge(
-            clsx(
-              'group space-x-4 text-sm',
-              selected ? 'text-gray-900' : 'text-gray-600',
-              className,
-            ),
+          variant={selected ? 'default' : 'tertiary'}
+          leftIcon={icon}
+          className={clsx(
+            'group',
+            selected ? 'text-gray-900' : 'text-gray-600',
+            className,
           )}
         >
-          {icon}
           <span className="min-w-0 flex-1 truncate">{label}</span>
         </Link>
       )}

@@ -66,7 +66,7 @@ const EditDiscussionMessage = () => {
           {...field}
         />
         <div className="flex items-center justify-end space-x-2">
-          <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>
+          <Button size="sm" onClick={() => setIsEditing(false)}>
             Cancel
           </Button>
           <Form.SubmitButton size="sm">Save</Form.SubmitButton>

@@ -45,9 +45,8 @@ const DiscussionMessageAttachment = ({
               className={clsx(
                 'z-10',
                 isMyMessage &&
-                  'bg-blue-700 text-white hover:bg-blue-800 hover:text-white focus:bg-blue-800 focus:text-white focus:ring',
+                  'bg-blue-700 text-white hover:bg-blue-800 hover:text-white focus:bg-blue-800 focus:text-white focus:ring active:bg-blue-800 active:text-white',
               )}
-              variant="light"
               size="xs"
               aria-label="View Attachment"
               rel="noreferrer"
@@ -91,15 +90,16 @@ const DiscussionMessageAttachments = ({ isMyMessage, attachments }: Props) => {
             <Disclosure.Button
               as={Button}
               className={clsx(
-                'space-x-2 uppercase',
+                'px-2 py-1 uppercase',
                 isMyMessage &&
-                  'bg-blue-700 text-white hover:bg-blue-800 hover:text-white focus:bg-blue-800 focus:text-white focus:ring',
+                  'bg-blue-700 text-white hover:bg-blue-800 hover:text-white focus:text-white focus:ring focus-visible:bg-blue-800 active:bg-blue-800 active:text-white',
               )}
-              variant="light"
               size="xs"
+              rightIcon={
+                <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} />
+              }
             >
-              <span>Attachments</span>
-              <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} />
+              Attachments
             </Disclosure.Button>
             {open && (
               <Disclosure.Panel>
