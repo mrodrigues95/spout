@@ -1,4 +1,3 @@
-using API.Common.Validators;
 using FluentValidation;
 
 namespace API.Schema.Mutations.Auth.Inputs {
@@ -11,7 +10,7 @@ namespace API.Schema.Mutations.Auth.Inputs {
         public SignUpInputValidator() {
             RuleFor(x => x.Name).NotEmpty().MaximumLength(70);
             RuleFor(x => x.Email).NotEmpty().EmailAddress();
-            RuleFor(x => x.Password).Password();
+            RuleFor(x => x.Password).NotEmpty().MinimumLength(6);
         }
     }
 }

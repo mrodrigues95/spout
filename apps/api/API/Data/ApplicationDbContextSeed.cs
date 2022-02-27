@@ -30,7 +30,7 @@ namespace API.Data {
 
                 if (!await userManager.Users.AnyAsync()) {
                     foreach (User user in GetPreconfiguredUsers(context)) {
-                        await userManager.CreateAsync(user, "Pa$$w0rd!");
+                        await userManager.CreateAsync(user, "rootdev");
                     }
                     await context.SaveChangesAsync();
                 }
@@ -93,6 +93,13 @@ namespace API.Data {
 
         private static IEnumerable<User> GetPreconfiguredUsers(ApplicationDbContext context) {
             return new List<User>() {
+                new User {
+                    Name = "root",
+                    UserName = "root@test.com",
+                    Email = "root@test.com",
+                    ProfileColor = UserProfileColor.SKY,
+                    State = GetState(context)
+                },
                 new User {
                     Name = "Marcus Rodrigues",
                     UserName = "mrodrigues@test.com",

@@ -58,6 +58,8 @@ const SidebarClassrooms = ({ fetchKey }: Props) => {
     { fetchKey },
   );
 
+  if (!data.me?.classrooms.length) return null;
+
   return (
     <VerticalNav.Items>
       {data.me?.classrooms.map((classroom) => {

@@ -132,6 +132,7 @@
   "lint-staged": {
     "*": [
       "nx format:write",
+      "nx run api:lint",
       "yarn check:lint",
       "yarn check:ts-check"
     ]

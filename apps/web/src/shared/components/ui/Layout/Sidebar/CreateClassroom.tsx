@@ -8,7 +8,9 @@ import { useToast } from '../../../../../shared/components';
 import { CreateClassroomMutation } from '../../../../../__generated__/CreateClassroomMutation.graphql';
 
 const schema = object({
-  name: string().min(1, '- Invalid name').max(64, '- Invalid name'),
+  name: string()
+    .min(1, '- Invalid name')
+    .max(64, '- Invalid name (max. 64 characters)'),
 });
 
 const mutation = graphql`
@@ -44,11 +46,27 @@ const CreateClassroom = () => {
         onError: () => handleError(),
         onCompleted: ({ createClassroom }) => {
           setIsOpen(false);
+          form.reset();
           router.push(`/classrooms/${createClassroom!.classroom!.id}`);
+        },
+        updater: (store) => {
+          const classroom = store
+            .getRootField('createClassroom')
+            .getLinkedRecord('classroom');
+
+          const userId = classroom.getLinkedRecord('createdBy').getValue('id');
+          const userProxy = store.get(userId);
+          if (!userProxy) return;
+
+          const newNodes = [
+            ...(userProxy!.getLinkedRecords('classrooms') || []),
+            classroom,
+          ];
+          userProxy.setLinkedRecords(newNodes, 'classrooms');
         },
       });
     },
-    [createClassroom, handleError, router],
+    [createClassroom, handleError, form, router],
   );
 
   return (

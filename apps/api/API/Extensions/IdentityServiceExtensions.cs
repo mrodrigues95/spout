@@ -10,6 +10,11 @@ namespace API.Extensions {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services) {
             services.AddDefaultIdentity<User>(opt => {
                 opt.User.RequireUniqueEmail = true;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireDigit = false;
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequireLowercase = false;
+                opt.Password.RequiredLength = 6;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();

@@ -10,8 +10,8 @@ import AuthError from './AuthError';
 import { LoginFormMutation } from '../../../__generated__/LoginFormMutation.graphql';
 
 const loginSchema = object({
-  email: string().email({ message: '- Invalid email' }),
-  password: string().min(6, { message: '- Invalid password' }),
+  email: string().email({ message: '- Invalid email or password' }),
+  password: string().min(6, { message: '- Invalid email or password' }),
 });
 
 const mutation = graphql`

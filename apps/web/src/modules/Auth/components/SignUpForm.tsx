@@ -14,11 +14,7 @@ const signUpSchema = object({
     .min(1, { message: '- Invalid name' })
     .max(70, { message: '- Name is too long' }),
   email: string().email({ message: '- Invalid email' }),
-  password: string()
-    .min(1, { message: '- Invalid password' })
-    .regex(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/, {
-      message: '- That password is too easy to guess',
-    }),
+  password: string().min(6, { message: '- Invalid password' }),
   confirmPassword: string(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: '- Passwords do not match',
