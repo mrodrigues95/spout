@@ -21,7 +21,7 @@ export const VARIANTS = {
     tab: {
       base: 'relative flex w-full items-center justify-center px-8 py-2',
       active: 'bg-white rounded-md shadow-md text-gray-900 font-semibold',
-      inactive: 'bg-transparent text-gray-500',
+      inactive: 'bg-transparent text-gray-400',
     },
     tabList: 'flex p-1 space-x-6 bg-gray-100 rounded-md',
   },

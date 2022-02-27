@@ -3,4 +3,4 @@ import { authenticatedRoute } from '../../../shared/utils';
 
 export const getServerSideProps: GetServerSideProps = authenticatedRoute;
 
-export { Classrooms as default } from '../../../modules';
+export { Classroom as default } from '../../../modules';
