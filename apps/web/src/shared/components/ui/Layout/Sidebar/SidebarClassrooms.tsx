@@ -1,9 +1,8 @@
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useRouter } from 'next/router';
 import { Skeleton } from '@spout/toolkit';
+import clsx from 'clsx';
 import VerticalNav from '../../VerticalNav';
-import Image from '../../Image';
-import { getRandomAvatar } from '../../../../utils';
 import { SidebarClassroomsQuery } from '../../../../../__generated__/SidebarClassroomsQuery.graphql';
 
 export const SidebarClassroomsSkeleton = () => {
@@ -22,6 +21,19 @@ export const SidebarClassroomsSkeleton = () => {
       {stack}
     </>
   );
+};
+
+// TODO: Implement classroom colors and grab these from the api.
+const getRandomColor = () => {
+  const colors: Record<string, { border: string; bg: string }> = {
+    red: { border: 'border-red-300', bg: 'bg-red-400' },
+    blue: { border: 'border-blue-300', bg: 'bg-blue-400' },
+    purple: { border: 'border-purple-300', bg: 'bg-purple-400' },
+    lime: { border: 'border-lime-300', bg: 'bg-lime-400' },
+    pink: { border: 'border-pink-300', bg: 'bg-pink-400' },
+  };
+  const keys = Object.keys(colors);
+  return colors[keys[Math.floor(Math.random() * keys.length)]];
 };
 
 interface Props {
@@ -48,15 +60,30 @@ const SidebarClassrooms = ({ fetchKey }: Props) => {
 
   return (
     <VerticalNav.Items>
-      {data.me?.classrooms.map((classroom) => (
-        <VerticalNav.Item
-          key={classroom.id}
-          to={`/classrooms/${classroom.id}`}
-          label={classroom.name}
-          icon={<Image src={getRandomAvatar()} alt="" size="sm" />}
-          routes={[`/classrooms/${classroom.id}/${router.query.discussionId}`]}
-        />
-      ))}
+      {data.me?.classrooms.map((classroom) => {
+        const color = getRandomColor();
+
+        return (
+          <VerticalNav.Item
+            key={classroom.id}
+            to={`/classrooms/${classroom.id}`}
+            label={classroom.name}
+            icon={
+              <div
+                className={clsx(
+                  'h-3 w-3 rounded-md border-2',
+                  color.bg,
+                  color.border,
+                )}
+                aria-hidden="true"
+              />
+            }
+            routes={[
+              `/classrooms/${classroom.id}/${router.query.discussionId}`,
+            ]}
+          />
+        );
+      })}
     </VerticalNav.Items>
   );
 };

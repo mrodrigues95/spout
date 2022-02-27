@@ -13,9 +13,10 @@ import {
   generateId,
   Tooltip,
 } from '@spout/toolkit';
-import { useToast } from '../../../../../shared/components';
+import { ConditionalWrapper, useToast } from '../../../../../shared/components';
 import { TopicMutation } from '../../../../../__generated__/TopicMutation.graphql';
 import { Topic_discussion$key } from '../../../../../__generated__/Topic_discussion.graphql';
+import { MEDIA_QUERIES, useMediaQuery } from '../../../../../shared/hooks';
 
 interface ItemProps {
   label: 'Topic' | 'Description';
@@ -24,11 +25,12 @@ interface ItemProps {
 }
 
 export const Item = ({ label, content, onClick }: ItemProps) => {
+  const isLaptop = useMediaQuery(MEDIA_QUERIES.LARGE);
   const Component = content ? SButton : 'div';
 
   const item = (
     <Component
-      className="relative flex w-full items-center justify-between space-x-4"
+      className="outline-none relative flex w-full items-center justify-between space-x-4 rounded-md focus-visible:ring"
       {...(content && {
         variant: 'unstyled',
         'aria-labelledby': `spout-details-label-${generateId()}`,
@@ -58,20 +60,21 @@ export const Item = ({ label, content, onClick }: ItemProps) => {
   );
 
   return (
-    <>
-      {content ? (
+    <ConditionalWrapper
+      condition={!!content && isLaptop}
+      wrapper={(children) => (
         <Tooltip
           label={content}
           placement="left-start"
           className="block max-h-[40rem] max-w-[40rem] whitespace-pre-line break-words rounded-md bg-white p-2 shadow-md ring-1 ring-gray-900/5"
           unstyled
         >
-          {item}
+          {children}
         </Tooltip>
-      ) : (
-        item
       )}
-    </>
+    >
+      {item}
+    </ConditionalWrapper>
   );
 };
 
@@ -94,9 +97,7 @@ const mutation = graphql`
 `;
 
 const topicSchema = object({
-  topic: string()
-    .min(1, { message: '- Minimum 1 character' })
-    .max(250, { message: '- Maximum 250 characters' }),
+  topic: string().max(250, { message: '- Maximum 250 characters' }).nullable(),
 });
 
 interface Props {
@@ -112,6 +113,7 @@ const Topic = ({ discussion }: Props) => {
 
   const form = useZodForm({
     schema: topicSchema,
+    defaultValues: { topic: data.topic },
   });
 
   const onSubmit = useCallback(
@@ -125,11 +127,10 @@ const Topic = ({ discussion }: Props) => {
         },
         onError: () => handleError(),
         onCompleted: () => {
-          form.reset();
           setIsOpen(false);
         },
       }),
-    [updateTopic, data.id, form, handleError],
+    [updateTopic, data.id, handleError],
   );
 
   return (
@@ -146,6 +147,7 @@ const Topic = ({ discussion }: Props) => {
               <Form.TextArea
                 label="Topic"
                 maxRows={10}
+                className="resize-none"
                 {...form.register('topic')}
               />
             </Modal.Body>

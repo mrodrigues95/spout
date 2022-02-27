@@ -4,6 +4,7 @@ import { faThumbtack } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 import { Button, Text } from '@spout/toolkit';
 import { Avatar } from '../../../../../../shared/components';
+import { MEDIA_QUERIES, useMediaQuery } from '../../../../../../shared/hooks';
 import { BaseDiscussionMessage, RecentMessage } from '../../../utils/messages';
 import {
   DiscussionMessageProvider,
@@ -30,7 +31,7 @@ const DiscussionMessageHeader = () => {
         isMyMessage ? 'flex-row-reverse space-x-reverse' : 'flex-row',
       )}
     >
-      <span className="font-semibold text-gray-900">
+      <span className="font-medium text-gray-900">
         {isMyMessage ? 'You' : message.createdBy.name}
       </span>
       <span className="text-xs font-medium text-gray-500">
@@ -117,7 +118,7 @@ const DiscussionMessageBody = () => {
         ) : (
           <p
             className={clsx(
-              'whitespace-pre-line break-words text-sm font-medium',
+              'whitespace-pre-line break-words text-sm',
               isMyMessage ? 'text-white' : 'text-gray-900',
             )}
           >
@@ -157,6 +158,8 @@ const getVerticalMessagePaddingStyles = ({
 };
 
 const DiscussionMessage = () => {
+  const isMobile = useMediaQuery(MEDIA_QUERIES.SMALL);
+
   const {
     data: {
       message,
@@ -191,7 +194,7 @@ const DiscussionMessage = () => {
     >
       <div
         className={clsx(
-          'group relative flex items-baseline space-x-2 px-4 hover:bg-indigo-100/50',
+          'group relative flex items-baseline px-2 hover:bg-indigo-100/50 sm:px-4',
           isPinned && 'bg-indigo-100/50',
           isMyMessage ? 'flex-row-reverse space-x-reverse' : 'flex-row',
           optimisticMessageOpts?.loading ? 'opacity-50' : 'opacity-100',
@@ -201,24 +204,28 @@ const DiscussionMessage = () => {
         <div>
           <DiscussionMessageActions />
         </div>
-        <div className="flex w-14 flex-shrink-0 items-center justify-center">
+        <div className="flex w-10 flex-shrink-0 items-center justify-center sm:w-14">
           {!isRecent || isFirstMessage ? (
             <div className="rounded-md shadow-md">
               <Avatar
                 src={message.createdBy.avatarUrl}
                 name={message.createdBy.name}
                 profileColor={message.createdBy.profileColor}
+                size={isMobile ? 'md' : 'sm'}
               />
             </div>
           ) : (
-            <span className="hidden text-xs font-medium text-gray-500 group-hover:inline-block">
+            <time
+              className="hidden text-xs font-medium text-gray-500 sm:group-hover:inline-block"
+              dateTime={message.createdAt}
+            >
               {formattedCreatedAt}
-            </span>
+            </time>
           )}
         </div>
         <div
           className={clsx(
-            'flex max-w-[75%] flex-col',
+            'ml-2 flex flex-col sm:max-w-[75%]',
             isMyMessage ? 'items-end' : 'items-start',
           )}
         >

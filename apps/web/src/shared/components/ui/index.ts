@@ -6,6 +6,8 @@ export { default as TextArea } from './TextArea';
 export { default as ErrorFallback } from './ErrorFallback';
 export { default as EmptyFallback } from './EmptyFallback';
 export { default as Layout } from './Layout';
+export { default as Header } from './Layout/Header';
+export { default as Main } from './Layout/Main';
 export { default as Card } from './Card';
 export { default as Image } from './Image';
 export { default as ConditionalWrapper } from './ConditionalWrapper';

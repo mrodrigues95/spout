@@ -158,7 +158,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
   const components: Components = useMemo(
     () => ({
       Header: () => (
-        <div className="h-42 px-4 py-6">
+        <div className="h-42 px-2 py-6 sm:px-4">
           {hasPrevious || isLoadingPrevious ? (
             <Card className="flex w-full space-x-2 rounded-md bg-white p-3 shadow-sm ring-1 ring-gray-900/5">
               <Skeleton className="h-10 w-10 rounded-full" />
@@ -190,8 +190,7 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
       followOutput={followOutput}
       startReached={startReached}
       overscan={0}
-      increaseViewportBy={{ top: 800, bottom: 200 }}
-      style={{ overflowX: 'hidden' }}
+      className="!overflow-x-hidden rounded-xl"
     />
   );
 };

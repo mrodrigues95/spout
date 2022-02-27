@@ -55,12 +55,7 @@ const SignUpForm = () => {
   });
 
   const loginLink = (
-    <Link
-      href="/auth/login"
-      variant="link"
-      className="font-semibold text-green-600"
-      preserveRedirect
-    >
+    <Link href="/auth/login" variant="link" preserveRedirect>
       Login.
     </Link>
   );

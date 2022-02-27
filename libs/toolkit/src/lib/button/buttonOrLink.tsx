@@ -35,7 +35,7 @@ const STYLES = {
       'text-gray-500 bg-white hover:text-gray-900 hover:bg-gray-100 active:bg-gray-200 active:text-gray-900',
     danger:
       'text-red-600 focus-visible:bg-red-100 focus-visible:ring-red-600 active:bg-red-200 hover:bg-red-100',
-    link: '!p-0 focus:underline hover:underline',
+    link: '!p-0 font-semibold text-green-600 focus-visible:ring-transparent focus:underline hover:underline',
     unstyled: '',
   },
 } as const;

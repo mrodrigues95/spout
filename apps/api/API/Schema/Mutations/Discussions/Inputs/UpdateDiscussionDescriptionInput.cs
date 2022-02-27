@@ -5,11 +5,11 @@ using HotChocolate.Types.Relay;
 namespace API.Schema.Mutations.Discussions.Inputs {
     public record UpdateDiscussionDescriptionInput(
         [property: ID(nameof(Discussion))] int DiscussionId,
-        string Description);
+        string? Description);
 
     public class UpdateDiscussionDescriptionInputValidator : AbstractValidator<UpdateDiscussionDescriptionInput> {
         public UpdateDiscussionDescriptionInputValidator() {
-            RuleFor(x => x.Description).NotEmpty().Length(1, 250);
+            RuleFor(x => x.Description).Length(1, 250);
         }
 
     }

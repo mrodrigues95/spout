@@ -12,7 +12,7 @@ const AuthCard = ({ title, subtitle, action, children }: Props) => {
     <section className="mx-auto flex w-full max-w-xl flex-1 items-center justify-center">
       <div className="flex h-96 w-full flex-col items-center justify-center space-y-2 rounded-xl p-4">
         <div className="mb-5 inline-flex flex-col items-center justify-center space-y-2">
-          <h1 className="text-2xl font-bold">{title}</h1>
+          <h1 className="text-2xl font-semibold">{title}</h1>
           {subtitle && (
             <h2 className="font-medium text-gray-400">
               Use the form below to login
@@ -20,7 +20,7 @@ const AuthCard = ({ title, subtitle, action, children }: Props) => {
           )}
         </div>
         {children}
-        <div className="w-full text-sm font-medium">
+        <div className="w-full text-sm">
           <span className="mr-1 text-gray-500">{action.description}</span>
           {action.link}
         </div>

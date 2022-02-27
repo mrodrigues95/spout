@@ -1,13 +1,14 @@
+import { useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useRouter } from 'next/router';
 import { NextSeo } from 'next-seo';
-import { Card } from '../../../../shared/components';
+import { Card, Header, Main } from '../../../../shared/components';
 import { ViewDiscussionQuery } from '../../../../__generated__/ViewDiscussionQuery.graphql';
 import DiscussionHeader from './DiscussionHeader';
 import DiscussionDetails from './DiscussionDetails';
 import DiscussionMessagesList from './DiscussionMessages/DiscussionMessagesList';
 import DiscussionMessageComposer from './DiscussionMessages/DiscussionMessageComposer';
-import { useState } from 'react';
+import { DiscussionProvider } from './DiscussionProvider';
 
 const query = graphql`
   query ViewDiscussionQuery($id: ID!, $count: Int!, $cursor: String) {
@@ -42,35 +43,39 @@ const ViewDiscussion = ({ fetchKey }: Props) => {
     { fetchPolicy: 'store-and-network', fetchKey },
   );
 
-  const [showDetails, setShowDetails] = useState(true);
+  const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <>
+    <DiscussionProvider
+      showDetails={showDetails}
+      setShowDetails={setShowDetails}
+    >
       <NextSeo title={data.discussionById.name} />
-      <section className="flex flex-1 flex-col space-y-4">
-        <DiscussionHeader
-          discussion={data.discussionById}
-          setShowDetails={() => setShowDetails((prev) => !prev)}
-        />
-        <article className="flex flex-1 flex-col space-y-3">
-          <Card className="relative flex flex-1 flex-col rounded-xl bg-indigo-50/40 p-0">
-            <div className="bg-messages absolute inset-0 h-full w-full opacity-[7%]" />
-            <DiscussionMessagesList
-              key={data.discussionById.id}
-              discussion={data.discussionById}
-              user={data.me!}
-            />
-          </Card>
-          <Card className="p-0">
-            <DiscussionMessageComposer
-              discussion={data.discussionById}
-              user={data.me!}
-            />
-          </Card>
-        </article>
-      </section>
-      {showDetails && <DiscussionDetails discussion={data.discussionById} />}
-    </>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <Header>
+          <DiscussionHeader discussion={data.discussionById} />
+        </Header>
+        <Main className="flex flex-1 flex-col space-y-2">
+          <article className="flex flex-1 flex-col space-y-3">
+            <Card className="relative flex flex-1 flex-col rounded-xl bg-indigo-50/40 p-0">
+              <div className="bg-messages absolute inset-0 h-full w-full opacity-[7%]" />
+              <DiscussionMessagesList
+                key={data.discussionById.id}
+                discussion={data.discussionById}
+                user={data.me!}
+              />
+            </Card>
+            <Card className="p-0">
+              <DiscussionMessageComposer
+                discussion={data.discussionById}
+                user={data.me!}
+              />
+            </Card>
+          </article>
+        </Main>
+      </div>
+      <DiscussionDetails discussion={data.discussionById} />
+    </DiscussionProvider>
   );
 };
 

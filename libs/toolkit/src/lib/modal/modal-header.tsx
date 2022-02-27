@@ -41,10 +41,7 @@ export const ModalHeader = ({
         </Dialog.Title>
         <Dialog.Description
           as="h4"
-          className={clsx(
-            'font-medium text-gray-700',
-            descriptionProps?.className,
-          )}
+          className={clsx(' text-gray-700', descriptionProps?.className)}
         >
           {description}
         </Dialog.Description>

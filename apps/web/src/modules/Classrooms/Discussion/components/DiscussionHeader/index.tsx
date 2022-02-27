@@ -8,6 +8,8 @@ import {
   faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { Title, Select, IconButton, Tooltip } from '@spout/toolkit';
+import { MEDIA_QUERIES, useMediaQuery } from '../../../../../shared/hooks';
+import { useDiscussion } from '../DiscussionProvider';
 import { DiscussionHeader_discussion$key } from '../../../../../__generated__/DiscussionHeader_discussion.graphql';
 import DiscussionHeaderNotifications from './DiscussionHeaderNotifications';
 import DiscussionHeaderPinnedMessages from './DiscussionHeaderPinnedMessages';
@@ -28,11 +30,12 @@ const fragment = graphql`
 
 interface Props {
   discussion: DiscussionHeader_discussion$key;
-  setShowDetails: () => void;
 }
 
-const DiscussionHeader = ({ discussion, setShowDetails }: Props) => {
+const DiscussionHeader = ({ discussion }: Props) => {
   const data = useFragment(fragment, discussion);
+  const isDesktop = useMediaQuery(MEDIA_QUERIES.XL);
+  const { setShowDetails } = useDiscussion()!;
 
   const router = useRouter();
   const [selectedDiscussionId, setSelectedDiscussionId] = useState(data.id);
@@ -48,16 +51,18 @@ const DiscussionHeader = ({ discussion, setShowDetails }: Props) => {
   );
 
   return (
-    <article className="flex items-center justify-between">
-      <div className="flex-1">
-        <Title as="h1" variant="h4">
-          # {data.name}
-        </Title>
-      </div>
+    <div className="flex min-w-0 flex-1 items-center justify-between">
+      <Title as="h1" variant="h5" className="mr-4 truncate">
+        # {data.name}
+      </Title>
       <div className="flex items-center space-x-2">
-        <Select value={selectedDiscussionId} onChange={setSelectedDiscussionId}>
+        <Select
+          className="hidden md:block"
+          value={selectedDiscussionId}
+          onChange={setSelectedDiscussionId}
+        >
           <Select.Button
-            className="w-72"
+            className="w-48 xl:w-72"
             label={data.name}
             icon={<FontAwesomeIcon icon={faChevronDown} size="xs" />}
           />
@@ -79,13 +84,13 @@ const DiscussionHeader = ({ discussion, setShowDetails }: Props) => {
             icon={<FontAwesomeIcon icon={faInfoCircle} />}
             className="text-blue-500 hover:text-blue-700 focus:text-blue-700"
             aria-label="Show discussion details"
-            size="md"
+            size={isDesktop ? 'md' : 'sm'}
             variant="tertiary"
-            onClick={setShowDetails}
+            onClick={() => setShowDetails((prev) => !prev)}
           />
         </Tooltip>
       </div>
-    </article>
+    </div>
   );
 };
 

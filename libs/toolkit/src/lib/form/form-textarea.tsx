@@ -14,7 +14,7 @@ export const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
   ({ label, className, isHiddenLabel = false, ...props }, ref) => {
     return (
       <label className="flex flex-col items-start justify-center space-y-1">
-        <span className={clsx('font-semibold', isHiddenLabel && 'sr-only')}>
+        <span className={clsx('font-medium', isHiddenLabel && 'sr-only')}>
           {label} <FieldError name={props.name} />
         </span>
         <TextareaAutosize

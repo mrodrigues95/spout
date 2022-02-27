@@ -27,8 +27,8 @@ const mutation = graphql`
 
 const descriptionSchema = object({
   description: string()
-    .min(1, { message: '- Minimum 1 character' })
-    .max(250, { message: '- Maximum 250 characters' }),
+    .max(250, { message: '- Maximum 250 characters' })
+    .nullable(),
 });
 
 interface Props {
@@ -45,6 +45,7 @@ const Description = ({ discussion }: Props) => {
 
   const form = useZodForm({
     schema: descriptionSchema,
+    defaultValues: { description: data.description },
   });
 
   const onSubmit = useCallback(
@@ -58,11 +59,10 @@ const Description = ({ discussion }: Props) => {
         },
         onError: () => handleError(),
         onCompleted: () => {
-          form.reset();
           setIsOpen(false);
         },
       }),
-    [updateDescription, data.id, form, handleError],
+    [updateDescription, data.id, handleError],
   );
 
   return (
@@ -79,6 +79,7 @@ const Description = ({ discussion }: Props) => {
               <Form.TextArea
                 label="Description"
                 maxRows={10}
+                className="resize-none"
                 {...form.register('description')}
               />
             </Modal.Body>

@@ -11,7 +11,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCommentSlash, faThumbtack } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 import { IconButton, Spinner, Text, Tooltip } from '@spout/toolkit';
-import { useConnection } from '../../../../../shared/hooks';
+import {
+  MEDIA_QUERIES,
+  useConnection,
+  useMediaQuery,
+} from '../../../../../shared/hooks';
 import {
   Avatar,
   EmptyFallback,
@@ -214,9 +218,11 @@ const DiscussionHeaderPinnedMessages = ({
 };
 
 const DiscussionHeaderPinnedMessagesPopover = () => {
+  const isDesktop = useMediaQuery(MEDIA_QUERIES.XL);
+
   // TODO: Position this with `usePopper` and use a portal.
   return (
-    <Popover>
+    <Popover className="hidden lg:block">
       {({ open }) => (
         <>
           <Tooltip
@@ -233,7 +239,7 @@ const DiscussionHeaderPinnedMessagesPopover = () => {
                 />
               }
               aria-label="Show pinned messages"
-              size="md"
+              size={isDesktop ? 'md' : 'sm'}
               variant="tertiary"
             />
           </Tooltip>

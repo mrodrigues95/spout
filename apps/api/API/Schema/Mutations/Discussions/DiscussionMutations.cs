@@ -207,7 +207,7 @@ namespace API.Schema.Mutations.Discussions {
             if (discussion is null) throw new DiscussionNotFoundException();
 
             var eventMessage = new Message {
-                Content = input.Topic.Trim(),
+                Content = input.Topic?.Trim(),
                 DiscussionId = discussion.Id,
                 CreatedById = userId,
                 IsEvent = true,
@@ -215,7 +215,7 @@ namespace API.Schema.Mutations.Discussions {
             };
 
             discussion.Messages.Add(eventMessage);
-            discussion.Topic = input.Topic.Trim();
+            discussion.Topic = input.Topic?.Trim();
             discussion.UpdatedAt = DateTime.UtcNow;
             await ctx.SaveChangesAsync(cancellationToken);
 
@@ -243,7 +243,7 @@ namespace API.Schema.Mutations.Discussions {
             if (discussion is null) throw new DiscussionNotFoundException();
 
             var message = new Message {
-                Content = input.Description.Trim(),
+                Content = input.Description?.Trim(),
                 DiscussionId = discussion.Id,
                 CreatedById = userId,
                 IsEvent = true,
@@ -251,7 +251,7 @@ namespace API.Schema.Mutations.Discussions {
             };
 
             discussion.Messages.Add(message);
-            discussion.Description = input.Description.Trim();
+            discussion.Description = input.Description?.Trim();
             discussion.UpdatedAt = DateTime.UtcNow;
             await ctx.SaveChangesAsync(cancellationToken);
 

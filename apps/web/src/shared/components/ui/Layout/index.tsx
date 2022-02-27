@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { NextSeo } from 'next-seo';
-import Sidebar from './Sidebar';
 import clsx from 'clsx';
+import Sidebar from './Sidebar';
 
 interface Props {
   title?: string;
@@ -13,17 +13,10 @@ export const Layout = ({ title, authenticated = true, children }: Props) => {
   return (
     <>
       <NextSeo title={title} />
-      <div className="flex min-h-screen flex-col bg-white">
-        <div className="flex flex-1">
+      <div className="flex max-h-screen min-h-screen bg-white">
+        <div className="max-w-8xl mx-auto flex min-w-0 flex-1 p-2 lg:p-4">
           {authenticated && <Sidebar />}
-          <main
-            className={clsx(
-              'relative flex flex-1 p-5',
-              authenticated && 'pl-72',
-            )}
-          >
-            {children}
-          </main>
+          <div className={clsx('relative flex min-w-0 flex-1')}>{children}</div>
         </div>
       </div>
     </>

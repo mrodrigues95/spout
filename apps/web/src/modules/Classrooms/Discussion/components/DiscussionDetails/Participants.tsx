@@ -23,7 +23,7 @@ const Participants = ({ classroom }: Props) => {
 
   return (
     <div className="absolute inset-0 overflow-auto">
-      <ul className="space-y-3">
+      <ul className="space-y-3 p-2">
         {data.users.map((user) => (
           <li key={user.id}>
             <Button

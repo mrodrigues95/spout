@@ -16,7 +16,7 @@ const DiscussionMessageActions = () => {
   return (
     <div
       className={clsx(
-        'absolute -top-2 z-10 hidden px-4 group-hover:block',
+        'absolute -top-2 z-10 hidden px-2 group-hover:block sm:px-4',
         isMyMessage ? 'left-0' : 'right-0',
       )}
     >

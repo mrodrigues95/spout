@@ -1004,14 +1004,6 @@ input MessageSortInput {
   deletedAt: SortEnumType
 }
 
-type MessageTriggeredEvent {
-  from: Message!
-  to: Message!
-  triggeredAt: DateTime!
-  updatedAt: DateTime!
-  createdAt: DateTime!
-}
-
 type Mutation {
   refreshSession(input: RefreshSessionInput!): RefreshSessionPayload!
   createClassroom(input: CreateClassroomInput!): CreateClassroomPayload!
@@ -1308,7 +1300,7 @@ union UpdateDiscussionDescriptionError = DiscussionNotFoundError
 
 input UpdateDiscussionDescriptionInput {
   discussionId: ID!
-  description: String!
+  description: String
 }
 
 type UpdateDiscussionDescriptionPayload {
@@ -1334,7 +1326,7 @@ union UpdateDiscussionTopicError = DiscussionNotFoundError
 
 input UpdateDiscussionTopicInput {
   discussionId: ID!
-  topic: String!
+  topic: String
 }
 
 type UpdateDiscussionTopicPayload {

@@ -7,7 +7,7 @@ import {
   Layout,
 } from '../../../../shared/components';
 
-const Classrooms = () => {
+const Discussion = () => {
   return (
     <Layout title="Discussion">
       <ErrorBoundaryWithRetry
@@ -28,4 +28,4 @@ const Classrooms = () => {
   );
 };
 
-export default Classrooms;
+export default Discussion;

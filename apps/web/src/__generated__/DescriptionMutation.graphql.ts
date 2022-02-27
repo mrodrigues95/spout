@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4cd63a46c8189cfacdf4cb8c672303e7>>
+ * @generated SignedSource<<ea3e26db979f66015013cb058cf7e3e8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type UpdateDiscussionDescriptionInput = {
   discussionId: string;
-  description: string;
+  description?: string | null;
 };
 export type DescriptionMutation$variables = {
   input: UpdateDiscussionDescriptionInput;

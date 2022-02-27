@@ -44,12 +44,7 @@ const LoginForm = () => {
   });
 
   const signUpLink = (
-    <Link
-      href="/auth/signup"
-      variant="link"
-      className="font-semibold text-green-600"
-      preserveRedirect
-    >
+    <Link href="/auth/signup" variant="link" preserveRedirect>
       Sign up.
     </Link>
   );
@@ -99,7 +94,6 @@ const LoginForm = () => {
             {...form.register('password')}
           />
           <div className="space-y-1">
-            <p className="font-semibold">Forgot your password?</p>
             <Form.SubmitButton disabled={isInFlight || isRedirecting} fullWidth>
               Login
             </Form.SubmitButton>
