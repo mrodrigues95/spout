@@ -1,15 +1,27 @@
 import { ReactElement } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
-import { EmptyState, EmptyStateProps, Button } from '@spout/toolkit';
+import {
+  EmptyState,
+  EmptyStateProps,
+  Button,
+  ButtonOrLinkProps,
+} from '@spout/toolkit';
 
 export interface Props extends Omit<EmptyStateProps, 'heading' | 'icon'> {
   action: () => void;
   heading?: string;
   icon?: ReactElement;
+  buttonProps?: ButtonOrLinkProps;
 }
 
-const ErrorFallback = ({ icon, heading, action, ...props }: Props) => {
+const ErrorFallback = ({
+  icon,
+  heading,
+  action,
+  buttonProps,
+  ...props
+}: Props) => {
   return (
     <EmptyState
       heading={heading ? heading : 'Something went wrong'}
@@ -25,7 +37,7 @@ const ErrorFallback = ({ icon, heading, action, ...props }: Props) => {
       }
       {...props}
     >
-      <Button className="text-sm" onClick={() => action()}>
+      <Button className="text-sm" onClick={() => action()} {...buttonProps}>
         Try again
       </Button>
     </EmptyState>

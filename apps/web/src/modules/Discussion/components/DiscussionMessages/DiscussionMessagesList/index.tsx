@@ -155,6 +155,11 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
     [discussion.id, me, recentMessages],
   );
 
+  const itemSize = useCallback(
+    (el: HTMLElement) => el.getBoundingClientRect().height,
+    [],
+  );
+
   const components: Components = useMemo(
     () => ({
       Header: () => (
@@ -189,6 +194,8 @@ const DiscussionMessagesList = ({ ...props }: Props) => {
       components={components}
       followOutput={followOutput}
       startReached={startReached}
+      increaseViewportBy={{ bottom: 200, top: 0 }}
+      itemSize={itemSize}
       overscan={0}
       className="!overflow-x-hidden rounded-xl"
     />

@@ -86,6 +86,17 @@ const SidebarClassrooms = ({ fetchKey }: Props) => {
           />
         );
       })}
+      {/* <VerticalNav.Item
+        to={`/classrooms/`}
+        label={'name'}
+        icon={
+          <div
+            className={clsx('h-3 w-3 rounded-md border-2')}
+            aria-hidden="true"
+          />
+        }
+        routes={[`/classrooms/${router.query.discussionId}`]}
+      /> */}
     </VerticalNav.Items>
   );
 };

@@ -92,12 +92,13 @@ const DiscussionMessageComposer = ({ ...props }: Props) => {
   });
 
   const onNewMessage = useCallback(() => {
-    const { raw, html } = messageRef.current;
+    const { raw } = messageRef.current;
     if (isUploadingFiles) return;
     if (!raw.length) return;
 
     add(discussion.id, {
-      content: formatNewMessage(html),
+      // content: formatNewMessage(html),
+      content: formatNewMessage(raw),
       attachmentIds: uploadedFiles.map((f) => f.id!),
       createdBy: me,
     });

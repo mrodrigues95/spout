@@ -49,7 +49,7 @@ const MobileWrapper = ({ children }: MobileWrapperProps) => {
           leaveFrom="translate-x-0"
           leaveTo="translate-x-full"
         >
-          <div className="relative flex h-full w-80 max-w-[calc(100%-4rem)] flex-col space-y-8 overflow-y-auto rounded-l-3xl bg-white p-5 shadow-2xl ring ring-gray-200">
+          <div className="relative flex h-full w-80 max-w-[calc(100%-4rem)] flex-col space-y-8 overflow-y-auto rounded-l-3xl bg-white p-4 shadow-2xl ring ring-gray-200">
             {children}
           </div>
         </Transition.Child>

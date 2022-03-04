@@ -5,6 +5,7 @@ import {
   faBars,
   faCog,
   faCommentDots,
+  faExclamationCircle,
   faHouseChimney,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@spout/toolkit';
@@ -13,59 +14,89 @@ import { ErrorFallback } from '../../../../../shared/components';
 import { useMediaQuery, MEDIA_QUERIES } from '../../../../hooks';
 import Image from '../../Image';
 import VerticalNav from '../../VerticalNav';
+import Search from '../../Search';
 import ErrorBoundaryWithRetry from '../../ErrorBoundaryWithRetry';
 import CreateClassroom from './CreateClassroom';
 import SidebarClassrooms, {
   SidebarClassroomsSkeleton,
 } from './SidebarClassrooms';
+import UserInfoButton, { UserInfoButtonSkeleton } from './UserInfoButton';
+import ThemeButton from './ThemeButton';
 
 const SidebarContent = () => {
   return (
     <>
-      <div className="flex items-center space-x-4 px-2">
-        <Image src={getRandomAvatar()} alt="Spout" size="sm" rounded />
-        <span className="text-lg font-bold">spout</span>
+      <div className="px-2">
+        <div className="flex items-center space-x-4">
+          <Image src={getRandomAvatar()} alt="Spout" size="sm" rounded />
+          <span className="text-lg font-bold">spout</span>
+        </div>
+        <Search className="mt-8" />
       </div>
-      <VerticalNav className="">
-        <VerticalNav.Items>
-          <VerticalNav.Item
-            to="/home"
-            label="Home"
-            icon={<FontAwesomeIcon icon={faHouseChimney} />}
-          />
-          <VerticalNav.Item
-            to="/messages"
-            label="Messages"
-            icon={<FontAwesomeIcon icon={faCommentDots} />}
-          />
-          <VerticalNav.Item
-            to="/settings"
-            label="Settings"
-            icon={<FontAwesomeIcon icon={faCog} />}
-          />
-          <VerticalNav.Item
-            isGroup
-            groupTitle="Classrooms"
-            groupActions={<CreateClassroom />}
-          >
-            <ErrorBoundaryWithRetry
-              FallbackComponent={({ resetErrorBoundary }) => (
-                <ErrorFallback
-                  heading="We couldn't load any classrooms"
-                  action={resetErrorBoundary}
-                  className="!mt-48"
-                />
-              )}
+      <div className="flex-1 overflow-y-auto p-2">
+        <VerticalNav>
+          <VerticalNav.Items>
+            <VerticalNav.Item
+              to="/home"
+              label="Home"
+              icon={<FontAwesomeIcon icon={faHouseChimney} />}
+            />
+            <VerticalNav.Item
+              to="/messages"
+              label="Messages"
+              icon={<FontAwesomeIcon icon={faCommentDots} />}
+            />
+            <VerticalNav.Item
+              to="/settings"
+              label="Settings"
+              icon={<FontAwesomeIcon icon={faCog} />}
+            />
+            <VerticalNav.Item
+              isGroup
+              groupTitle="Classrooms"
+              groupActions={<CreateClassroom />}
             >
-              {({ fetchKey }) => (
-                <Suspense fallback={<SidebarClassroomsSkeleton />}>
-                  <SidebarClassrooms fetchKey={fetchKey} />
-                </Suspense>
-              )}
-            </ErrorBoundaryWithRetry>
-          </VerticalNav.Item>
-        </VerticalNav.Items>
-      </VerticalNav>
+              <ErrorBoundaryWithRetry
+                FallbackComponent={({ resetErrorBoundary }) => (
+                  <ErrorFallback
+                    heading="We couldn't load any classrooms"
+                    action={resetErrorBoundary}
+                    className="!mt-48"
+                  />
+                )}
+              >
+                {({ fetchKey }) => (
+                  <Suspense fallback={<SidebarClassroomsSkeleton />}>
+                    <SidebarClassrooms fetchKey={fetchKey} />
+                  </Suspense>
+                )}
+              </ErrorBoundaryWithRetry>
+            </VerticalNav.Item>
+          </VerticalNav.Items>
+        </VerticalNav>
+      </div>
+      <ThemeButton />
+      <ErrorBoundaryWithRetry
+        FallbackComponent={({ resetErrorBoundary }) => (
+          <ErrorFallback
+            className="flex-initial"
+            icon={
+              <FontAwesomeIcon
+                icon={faExclamationCircle}
+                className="text-red-600"
+              />
+            }
+            heading="There was a problem."
+            action={resetErrorBoundary}
+          />
+        )}
+      >
+        {({ fetchKey }) => (
+          <Suspense fallback={<UserInfoButtonSkeleton />}>
+            <UserInfoButton fetchKey={fetchKey} />
+          </Suspense>
+        )}
+      </ErrorBoundaryWithRetry>
     </>
   );
 };
@@ -112,7 +143,7 @@ export const MobileSidebar = () => {
             leaveFrom="translate-x-0"
             leaveTo="-translate-x-full"
           >
-            <div className="relative flex h-full w-80 max-w-[calc(100%-4rem)] flex-col space-y-8 overflow-y-auto rounded-r-3xl bg-white p-5 shadow-2xl ring ring-gray-200">
+            <div className="relative flex h-full w-80 max-w-[calc(100%-4rem)] flex-col space-y-8 overflow-y-auto rounded-r-3xl bg-white px-1 py-4 shadow-2xl ring ring-gray-200">
               <SidebarContent />
             </div>
           </Transition.Child>
@@ -124,7 +155,7 @@ export const MobileSidebar = () => {
 
 const Sidebar = () => {
   return (
-    <aside className="-ml-2 hidden w-64 flex-shrink-0 flex-col space-y-8 overflow-y-auto bg-white p-2 lg:mr-4 lg:flex">
+    <aside className="relative -ml-2 hidden w-64 flex-shrink-0 flex-col space-y-8 bg-white lg:mr-4 lg:flex">
       <SidebarContent />
     </aside>
   );

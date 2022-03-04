@@ -13,7 +13,7 @@ const VerticalNavGroupHeader = ({
   actions,
 }: VerticalNavGroupHeaderProps) => {
   return (
-    <div className="mb-3 flex items-center space-x-4 px-4">
+    <div className="mb-3 flex items-center space-x-4">
       <Title as="h5" className="text-xs uppercase tracking-wider text-gray-900">
         {title}
       </Title>
@@ -92,7 +92,7 @@ interface Props extends ComponentProps<'nav'> {}
 
 const VerticalNav = ({ className, children, ...props }: Props) => {
   return (
-    <nav className={clsx('space-y-6', className)} {...props}>
+    <nav className={clsx('relative space-y-8', className)} {...props}>
       {children}
     </nav>
   );
