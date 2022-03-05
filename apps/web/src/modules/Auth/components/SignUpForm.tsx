@@ -12,7 +12,7 @@ import { SignUpFormMutation } from '../../../__generated__/SignUpFormMutation.gr
 const signUpSchema = object({
   name: string()
     .min(1, { message: '- Invalid name' })
-    .max(70, { message: '- Name is too long' }),
+    .max(70, { message: '- Name cannot exceed 70 characters' }),
   email: string().email({ message: '- Invalid email' }),
   password: string().min(6, { message: '- Invalid password' }),
   confirmPassword: string(),

@@ -112,7 +112,7 @@ const DiscussionDetails = ({ discussion }: Props) => {
       condition={!isLaptop}
       wrapper={(children) => <MobileWrapper>{children}</MobileWrapper>}
     >
-      <section className="flex flex-1 flex-col space-y-8 lg:ml-4 lg:w-64 lg:flex-initial">
+      <section className="flex flex-1 flex-col space-y-8 lg:ml-4 lg:w-64 lg:flex-initial xl:ml-8">
         <div className="flex flex-col items-center">
           <Image src={getRandomAvatar()} alt="" size="xl" rounded />
           <Title className="mt-2" as="h2" variant="h4">

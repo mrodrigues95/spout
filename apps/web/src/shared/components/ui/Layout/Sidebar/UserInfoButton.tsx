@@ -1,4 +1,4 @@
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { graphql, useLazyLoadQuery, useMutation } from 'react-relay';
 import { Portal } from '@headlessui/react';
 import {
   faChevronRight,
@@ -13,9 +13,12 @@ import {
   Menu,
   usePopper,
   Skeleton,
+  Link,
 } from '@spout/toolkit';
 import clsx from 'clsx';
 import { UserInfoButtonQuery } from '../../../../../__generated__/UserInfoButtonQuery.graphql';
+import { UserInfoButtonMutation } from '../../../../../__generated__/UserInfoButtonMutation.graphql';
+import { useAuthRedirect } from '../../../../../modules';
 
 export const UserInfoButtonSkeleton = () => {
   return (
@@ -28,6 +31,16 @@ export const UserInfoButtonSkeleton = () => {
     </div>
   );
 };
+
+const mutation = graphql`
+  mutation UserInfoButtonMutation($input: LogoutInput!) {
+    logout(input: $input) {
+      authPayload {
+        isLoggedIn
+      }
+    }
+  }
+`;
 
 const query = graphql`
   query UserInfoButtonQuery {
@@ -44,7 +57,17 @@ interface Props {
 }
 
 const UserInfoButton = ({ fetchKey }: Props) => {
+  const authRedirect = useAuthRedirect();
+  const [logout] = useMutation<UserInfoButtonMutation>(mutation);
   const { me } = useLazyLoadQuery<UserInfoButtonQuery>(query, {}, { fetchKey });
+
+  const removeSession = async () => {
+    const response = await fetch('/api/sessions/remove', {
+      method: 'POST',
+    });
+    const sessionId = await response.json();
+    logout({ variables: { input: { sessionId } }, onCompleted: authRedirect });
+  };
 
   const [trigger, container] = usePopper({
     placement: 'right-end',
@@ -67,7 +90,7 @@ const UserInfoButton = ({ fetchKey }: Props) => {
           ref={trigger}
           fullWidth
           variant="tertiary"
-          leftIcon={<Avatar name="Ryan Joe" scheme="orange" />}
+          leftIcon={<Avatar name={me!.name} scheme="orange" />}
           rightIcon={<FontAwesomeIcon icon={faChevronRight} size="xs" />}
         >
           <div className="flex flex-1 flex-col">
@@ -82,7 +105,7 @@ const UserInfoButton = ({ fetchKey }: Props) => {
         <Portal>
           <Menu.Items ref={container}>
             <Menu.Group className="flex items-center space-x-3.5 px-2 py-2">
-              <Avatar name="Ryan Joe" scheme="orange" />
+              <Avatar name={me!.name} scheme="orange" />
               <div className="flex flex-1 flex-col">
                 <Text as="span" size="sm" weight="semibold" color="dark">
                   {me!.name}
@@ -95,7 +118,8 @@ const UserInfoButton = ({ fetchKey }: Props) => {
             <Menu.Group>
               <Menu.Item>
                 {({ active }) => (
-                  <Button
+                  <Link
+                    href="/settings"
                     leftIcon={<FontAwesomeIcon icon={faGear} />}
                     variant="tertiary"
                     size="sm"
@@ -108,7 +132,7 @@ const UserInfoButton = ({ fetchKey }: Props) => {
                     fullWidth
                   >
                     Settings
-                  </Button>
+                  </Link>
                 )}
               </Menu.Item>
               <Menu.Item>
@@ -126,6 +150,7 @@ const UserInfoButton = ({ fetchKey }: Props) => {
                         : 'bg-white text-gray-500',
                     )}
                     fullWidth
+                    onClick={removeSession}
                   >
                     Logout
                   </Button>

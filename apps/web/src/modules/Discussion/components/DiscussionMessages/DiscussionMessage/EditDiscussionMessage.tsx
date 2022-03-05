@@ -55,7 +55,10 @@ const EditDiscussionMessage = () => {
           maxRows={5}
           autoFocus
           className="resize-none"
-          isHiddenLabel
+          labelProps={{
+            labelTextProps: { className: 'sr-only' },
+            errorTextPlacement: 'bottom',
+          }}
           onFocus={(e) => {
             // Place the cursor at the end of the message.
             e.currentTarget.setSelectionRange(
@@ -66,7 +69,11 @@ const EditDiscussionMessage = () => {
           {...field}
         />
         <div className="flex items-center justify-end space-x-2">
-          <Button size="sm" onClick={() => setIsEditing(false)}>
+          <Button
+            size="sm"
+            variant="tertiary"
+            onClick={() => setIsEditing(false)}
+          >
             Cancel
           </Button>
           <Form.SubmitButton size="sm">Save</Form.SubmitButton>

@@ -2,31 +2,48 @@ import { forwardRef } from 'react';
 import TextareaAutosize, {
   TextareaAutosizeProps,
 } from 'react-textarea-autosize';
+import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
-import { FieldError } from '../form';
+import { FormLabel, FormLabelProps } from './form-label';
+import { useFormError } from './hooks';
+import { getBaseInputStyles } from './utils';
+import { FormHelperText, FormHelperTextProps } from './form-helper-text';
 
-export interface FormTextAreaProps extends TextareaAutosizeProps {
-  label: string;
-  isHiddenLabel?: boolean;
+export interface FormTextAreaProps
+  extends TextareaAutosizeProps,
+    Pick<FormLabelProps, 'name' | 'label'>,
+    Pick<FormHelperTextProps, 'helperText'> {
+  helperTextProps?: FormHelperTextProps;
+  labelProps?: Omit<FormLabelProps, 'name' | 'label'>;
 }
 
 export const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
-  ({ label, className, isHiddenLabel = false, ...props }, ref) => {
+  (
+    {
+      className,
+      label,
+      name,
+      helperText,
+      helperTextProps = {},
+      labelProps = {},
+      ...props
+    },
+    ref,
+  ) => {
+    const { hasError } = useFormError(name);
+
     return (
-      <label className="flex flex-col items-start justify-center space-y-1">
-        <span className={clsx('font-medium', isHiddenLabel && 'sr-only')}>
-          {label} <FieldError name={props.name} />
-        </span>
-        <TextareaAutosize
-          className={clsx(
-            'outline-none w-full rounded-md border-2 border-transparent bg-gray-100 font-medium text-black transition duration-200 ease-in-out',
-            'ring-offset-4 placeholder-shown:font-normal focus:border-blue-700 focus:ring-2 focus:ring-blue-200',
-            className,
-          )}
-          ref={ref}
-          {...props}
-        />
-      </label>
+      <>
+        <FormLabel name={name} label={label} {...labelProps}>
+          <TextareaAutosize
+            className={twMerge(clsx(getBaseInputStyles(hasError), className))}
+            ref={ref}
+            name={name}
+            {...props}
+          />
+        </FormLabel>
+        <FormHelperText helperText={helperText} {...helperTextProps} />
+      </>
     );
   },
 );

@@ -9,7 +9,7 @@ import {
 
 const Discussion = () => {
   return (
-    <Layout title="Discussion">
+    <Layout title="Discussion" horizontal>
       <ErrorBoundaryWithRetry
         FallbackComponent={({ resetErrorBoundary }) => (
           <ErrorFallback

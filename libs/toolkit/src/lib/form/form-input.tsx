@@ -1,33 +1,48 @@
 import { ComponentProps, forwardRef } from 'react';
+import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
-import { FieldError } from '../form';
+import { useFormError } from './hooks';
+import { FormLabel, FormLabelProps } from './form-label';
+import { getBaseInputStyles } from './utils';
+import { FormHelperText, FormHelperTextProps } from './form-helper-text';
 
-export interface FormInputProps extends ComponentProps<'input'> {
-  label: string;
-  isHiddenLabel?: boolean;
+export interface FormInputProps
+  extends ComponentProps<'input'>,
+    Pick<FormLabelProps, 'name' | 'label'>,
+    Pick<FormHelperTextProps, 'helperText'> {
+  helperTextProps?: FormHelperTextProps;
+  labelProps?: Omit<FormLabelProps, 'name' | 'label'>;
 }
 
 export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
   (
-    { label, type = 'text', isHiddenLabel = false, className, ...props },
+    {
+      type = 'text',
+      className,
+      label,
+      name,
+      helperText,
+      labelProps = {},
+      helperTextProps = {},
+      ...props
+    },
     ref,
   ) => {
+    const { hasError } = useFormError(name);
+
     return (
-      <label className="flex flex-col items-start justify-center space-y-1">
-        <span className={clsx('font-medium', isHiddenLabel && 'sr-only')}>
-          {label} <FieldError name={props.name} />
-        </span>
-        <input
-          className={clsx(
-            'outline-none w-full rounded-lg border-2 border-transparent bg-gray-100 font-medium text-black transition duration-200 ease-in-out',
-            'ring-offset-4 placeholder-shown:font-normal focus:border-blue-700 focus:ring-2 focus:ring-blue-200',
-            className,
-          )}
-          type={type}
-          ref={ref}
-          {...props}
-        />
-      </label>
+      <>
+        <FormLabel name={name} label={label} {...labelProps}>
+          <input
+            className={twMerge(clsx(getBaseInputStyles(hasError), className))}
+            type={type}
+            ref={ref}
+            name={name}
+            {...props}
+          />
+        </FormLabel>
+        <FormHelperText helperText={helperText} {...helperTextProps} />
+      </>
     );
   },
 );

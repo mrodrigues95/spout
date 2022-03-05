@@ -10,9 +10,9 @@ import { TabProvider } from './tab-provider';
 export const VARIANTS = {
   default: {
     tab: {
-      base: 'relative inline-flex items-center justify-center px-3 py-2.5 text-sm font-semibold border-b-2 outline-none',
+      base: 'relative inline-flex items-center justify-center px-3 py-2.5 text-sm font-semibold border-b-2',
       active:
-        'text-orange-500 border-current hover:text-orange-500 focus:ring-2 ring-offset-2 ring-offset-blue-400 ring-white',
+        'text-blue-700 border-current hover:text-blue-900 focus:outline-none focus:ring-2 ring-offset-2 ring-offset-blue-400 ring-white ring-opacity-60',
       inactive: 'text-gray-900 border-transparent',
     },
     tabList: 'flex space-x-10 border-b border-gray-200',
@@ -42,7 +42,6 @@ export const Tabs = ({
     <TabProvider variant={variant}>
       <HeadlessTab.Group
         as="div"
-        manual
         className={clsx('flex flex-1 flex-col', className)}
       >
         {children}

@@ -7,9 +7,9 @@ import {
   UseFormReturn,
   FieldValues,
   SubmitHandler,
-  useFormContext,
 } from 'react-hook-form';
 import { ZodSchema, TypeOf } from 'zod';
+import clsx from 'clsx';
 import { FormSubmitButton } from './form-submit-button';
 import { FormInput } from './form-input';
 import { FormTextArea } from './form-textarea';
@@ -30,21 +30,14 @@ export const useZodForm = <T extends ZodSchema<any>>({
 };
 
 interface FieldErrorProps {
-  name?: string;
+  error?: any;
 }
 
-export function FieldError({ name }: FieldErrorProps) {
-  const {
-    formState: { errors },
-  } = useFormContext();
-
-  if (!name) return null;
-
-  const error = errors[name];
+export function FieldError({ error }: FieldErrorProps) {
   if (!error) return null;
 
   return (
-    <span className="text-sm font-medium italic text-red-600" role="alert">
+    <span className="text-sm font-medium italic text-red-600">
       {error.message}
     </span>
   );
@@ -60,12 +53,17 @@ export const Form = <T extends FieldValues>({
   form,
   onSubmit,
   children,
+  className,
   ...props
 }: FormProps<T>) => {
   return (
     <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} {...props}>
-        <fieldset className="flex flex-col space-y-4">{children}</fieldset>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={clsx('flex flex-col space-y-4', className)}
+        {...props}
+      >
+        {children}
       </form>
     </FormProvider>
   );
