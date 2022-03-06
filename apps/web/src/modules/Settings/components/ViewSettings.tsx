@@ -1,30 +1,27 @@
-import { ReactElement, useState } from 'react';
+import { useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard, faCog } from '@fortawesome/free-solid-svg-icons';
 import { Tabs, Title } from '@spout/toolkit';
 import { Header, Main } from '../../../shared/components';
-import { Profile } from './Profile';
-import { Account } from './Account';
-
-interface Tab {
-  label: string;
-  icon: ReactElement;
-  component: ReactElement;
-}
+import { SettingsProfile } from './SettingsProfile';
+import { SettingsAccount } from './SettingsAccount';
 
 const ViewSettings = () => {
-  const [tabs] = useState<Tab[]>([
-    {
-      label: 'Profile',
-      icon: <FontAwesomeIcon icon={faIdCard} className="mr-2" />,
-      component: <Profile />,
-    },
-    {
-      label: 'Account',
-      icon: <FontAwesomeIcon icon={faCog} className="mr-2" />,
-      component: <Account />,
-    },
-  ]);
+  const tabs = useMemo(
+    () => [
+      {
+        label: 'Profile',
+        icon: <FontAwesomeIcon icon={faIdCard} className="mr-2" />,
+        component: <SettingsProfile />,
+      },
+      {
+        label: 'Account',
+        icon: <FontAwesomeIcon icon={faCog} className="mr-2" />,
+        component: <SettingsAccount />,
+      },
+    ],
+    [],
+  );
 
   return (
     <>

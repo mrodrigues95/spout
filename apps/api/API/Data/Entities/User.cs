@@ -8,6 +8,7 @@ namespace API.Data.Entities {
         public Guid Guid { get; set; } = Guid.NewGuid();
         public string? Name { get; set; }
         public override string? Email { get; set; }
+        public string? Bio { get; set; }
         public UserProfileColor ProfileColor { get; set; }
         public string? AvatarUrl { get; set; }
         public int StateId { get; set; }

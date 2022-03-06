@@ -90,8 +90,7 @@ const Description = ({ discussion }: Props) => {
               <Form.SubmitButton
                 size="sm"
                 variant="primary"
-                disabled={isInFlight}
-                isSubmitting={isInFlight}
+                loading={isInFlight}
               >
                 Save Changes
               </Form.SubmitButton>

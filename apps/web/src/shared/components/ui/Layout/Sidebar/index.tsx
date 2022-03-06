@@ -15,7 +15,7 @@ import { useMediaQuery, MEDIA_QUERIES } from '../../../../hooks';
 import Image from '../../Image';
 import VerticalNav from '../../VerticalNav';
 import Search from '../../Search';
-import ErrorBoundaryWithRetry from '../../ErrorBoundaryWithRetry';
+import ErrorBoundary from '../../ErrorBoundary';
 import CreateClassroom from './CreateClassroom';
 import SidebarClassrooms, {
   SidebarClassroomsSkeleton,
@@ -56,7 +56,7 @@ const SidebarContent = () => {
               groupTitle="Classrooms"
               groupActions={<CreateClassroom />}
             >
-              <ErrorBoundaryWithRetry
+              <ErrorBoundary
                 FallbackComponent={({ resetErrorBoundary }) => (
                   <ErrorFallback
                     heading="We couldn't load any classrooms"
@@ -70,13 +70,13 @@ const SidebarContent = () => {
                     <SidebarClassrooms fetchKey={fetchKey} />
                   </Suspense>
                 )}
-              </ErrorBoundaryWithRetry>
+              </ErrorBoundary>
             </VerticalNav.Item>
           </VerticalNav.Items>
         </VerticalNav>
       </div>
       <ThemeButton />
-      <ErrorBoundaryWithRetry
+      <ErrorBoundary
         FallbackComponent={({ resetErrorBoundary }) => (
           <ErrorFallback
             className="flex-initial"
@@ -96,7 +96,7 @@ const SidebarContent = () => {
             <UserInfoButton fetchKey={fetchKey} />
           </Suspense>
         )}
-      </ErrorBoundaryWithRetry>
+      </ErrorBoundary>
     </>
   );
 };

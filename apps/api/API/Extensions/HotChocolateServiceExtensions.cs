@@ -7,6 +7,7 @@ using API.Schema.Mutations.Classrooms;
 using API.Schema.Mutations.Discussions;
 using API.Schema.Mutations.Files;
 using API.Schema.Mutations.Sessions;
+using API.Schema.Mutations.Users;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Discussions;
 using API.Schema.Queries.Files;
@@ -43,6 +44,7 @@ namespace API.Extensions {
 
             gql
                 .AddTypeExtension<UserQueries>()
+                .AddTypeExtension<UserMutations>()
                 .AddDataLoader<UserByIdDataLoader>()
                 .AddType<UserType>()
                 .AddType<UserProfileColorType>()

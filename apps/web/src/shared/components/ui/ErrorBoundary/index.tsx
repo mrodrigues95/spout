@@ -1,5 +1,8 @@
 import { ReactNode, useState } from 'react';
-import { ErrorBoundary, ErrorBoundaryProps } from 'react-error-boundary';
+import {
+  ErrorBoundary as ReactErrorBoundary,
+  ErrorBoundaryProps,
+} from 'react-error-boundary';
 
 interface RenderProp {
   fetchKey: number;
@@ -9,18 +12,18 @@ type Props = {
   children({ fetchKey }: RenderProp): ReactNode;
 } & ErrorBoundaryProps;
 
-const ErrorBoundaryWithRetry = ({ children, ...props }: Props) => {
+const ErrorBoundary = ({ children, ...props }: Props) => {
   const [fetchKey, setFetchKey] = useState(0);
 
   return (
-    <ErrorBoundary
+    <ReactErrorBoundary
       {...props}
       onReset={() => setFetchKey((prev) => prev + 1)}
       resetKeys={[fetchKey]}
     >
       {children({ fetchKey })}
-    </ErrorBoundary>
+    </ReactErrorBoundary>
   );
 };
 
-export default ErrorBoundaryWithRetry;
+export default ErrorBoundary;

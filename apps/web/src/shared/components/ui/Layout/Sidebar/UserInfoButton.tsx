@@ -93,11 +93,11 @@ const UserInfoButton = ({ fetchKey }: Props) => {
           leftIcon={<Avatar name={me!.name} scheme="orange" />}
           rightIcon={<FontAwesomeIcon icon={faChevronRight} size="xs" />}
         >
-          <div className="flex flex-1 flex-col">
-            <Text as="span" size="sm" weight="semibold" color="dark">
+          <div className="flex min-w-0 flex-1 flex-col">
+            <Text as="span" size="sm" weight="semibold" color="dark" truncate>
               {me!.name}
             </Text>
-            <Text size="xs" color="muted">
+            <Text size="xs" color="muted" truncate>
               {me!.email}
             </Text>
           </div>
@@ -106,11 +106,17 @@ const UserInfoButton = ({ fetchKey }: Props) => {
           <Menu.Items ref={container}>
             <Menu.Group className="flex items-center space-x-3.5 px-2 py-2">
               <Avatar name={me!.name} scheme="orange" />
-              <div className="flex flex-1 flex-col">
-                <Text as="span" size="sm" weight="semibold" color="dark">
+              <div className="flex min-w-0 flex-1 flex-col">
+                <Text
+                  as="span"
+                  size="sm"
+                  weight="semibold"
+                  color="dark"
+                  truncate
+                >
                   {me!.name}
                 </Text>
-                <Text size="xs" color="muted">
+                <Text size="xs" color="muted" truncate>
                   {me!.email}
                 </Text>
               </div>

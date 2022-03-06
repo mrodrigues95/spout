@@ -19,7 +19,7 @@ import {
 import {
   Avatar,
   EmptyFallback,
-  ErrorBoundaryWithRetry,
+  ErrorBoundary,
   ErrorFallback,
 } from '../../../../shared/components';
 import { DiscussionHeaderPinnedMessagesQuery } from '../../../../__generated__/DiscussionHeaderPinnedMessagesQuery.graphql';
@@ -260,7 +260,7 @@ const DiscussionHeaderPinnedMessagesPopover = () => {
                   </Text>
                 </div>
                 <div className="flex flex-1 flex-col">
-                  <ErrorBoundaryWithRetry
+                  <ErrorBoundary
                     FallbackComponent={({ resetErrorBoundary }) => (
                       <ErrorFallback
                         heading="We couldn't load any pinned messages."
@@ -278,7 +278,7 @@ const DiscussionHeaderPinnedMessagesPopover = () => {
                         <DiscussionHeaderPinnedMessages fetchKey={fetchKey} />
                       </Suspense>
                     )}
-                  </ErrorBoundaryWithRetry>
+                  </ErrorBoundary>
                 </div>
               </div>
             </Popover.Panel>

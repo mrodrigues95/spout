@@ -19,6 +19,8 @@ export const Dropzone = ({
     ...props,
   });
 
+  // TODO: Show success/loading/error icon bottom right.
+  // TODO: Create a hook to show error modal and timeout status icons.
   return (
     <section className="w-full flex-1">
       <div

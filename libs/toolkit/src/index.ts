@@ -1,3 +1,4 @@
+export * from './lib/alert';
 export * from './lib/dropzone';
 export * from './lib/menu';
 export * from './lib/file-icon';

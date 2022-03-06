@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { Spinner } from '@spout/toolkit';
 import ViewDiscussion from './ViewDiscussion';
 import {
-  ErrorBoundaryWithRetry,
+  ErrorBoundary,
   ErrorFallback,
   Layout,
 } from '../../../shared/components';
@@ -10,7 +10,7 @@ import {
 const Discussion = () => {
   return (
     <Layout title="Discussion" horizontal>
-      <ErrorBoundaryWithRetry
+      <ErrorBoundary
         FallbackComponent={({ resetErrorBoundary }) => (
           <ErrorFallback
             heading="We couldn't load this discussion"
@@ -23,7 +23,7 @@ const Discussion = () => {
             <ViewDiscussion fetchKey={fetchKey} />
           </Suspense>
         )}
-      </ErrorBoundaryWithRetry>
+      </ErrorBoundary>
     </Layout>
   );
 };

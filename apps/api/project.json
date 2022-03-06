@@ -30,7 +30,10 @@
       }
     },
     "lint": {
-      "executor": "@nx-dotnet/core:format"
+      "executor": "@nx-dotnet/core:format",
+      "options": {
+        "fix": true
+      }
     },
     "migrations-add": {
       "executor": "@nrwl/workspace:run-commands",

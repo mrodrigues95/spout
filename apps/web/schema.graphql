@@ -1005,6 +1005,7 @@ input MessageSortInput {
 }
 
 type Mutation {
+  updateUser(input: UpdateUserInput!): UpdateUserPayload!
   refreshSession(input: RefreshSessionInput!): RefreshSessionPayload!
   createClassroom(input: CreateClassroomInput!): CreateClassroomPayload!
   joinClassroom(input: JoinClassroomInput!): JoinClassroomPayload!
@@ -1335,6 +1336,16 @@ type UpdateDiscussionTopicPayload {
   query: Query!
 }
 
+input UpdateUserInput {
+  name: String!
+  bio: String
+}
+
+type UpdateUserPayload {
+  user: User
+  query: Query!
+}
+
 input UriFilterInput {
   and: [UriFilterInput!]
   or: [UriFilterInput!]
@@ -1413,6 +1424,7 @@ type User implements Node {
   updatedAt: DateTime!
   classrooms: [Classroom!]!
   sessions: [Session!]!
+  bio: String
   avatarUrl: String
   state: State
   messages: [Message!]!
@@ -1445,6 +1457,7 @@ input UserFilterInput {
   guid: ComparableGuidOperationFilterInput
   name: StringOperationFilterInput
   email: StringOperationFilterInput
+  bio: StringOperationFilterInput
   profileColor: UserProfileColorOperationFilterInput
   avatarUrl: StringOperationFilterInput
   stateId: ComparableInt32OperationFilterInput
@@ -1497,6 +1510,7 @@ input UserSortInput {
   guid: SortEnumType
   name: SortEnumType
   email: SortEnumType
+  bio: SortEnumType
   profileColor: SortEnumType
   avatarUrl: SortEnumType
   stateId: SortEnumType

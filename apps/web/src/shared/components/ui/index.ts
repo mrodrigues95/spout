@@ -12,6 +12,6 @@ export { default as Card } from './Card';
 export { default as Image } from './Image';
 export { default as ConditionalWrapper } from './ConditionalWrapper';
 export { default as Quote } from './Quote';
-export { default as ErrorBoundaryWithRetry } from './ErrorBoundaryWithRetry';
+export { default as ErrorBoundary } from './ErrorBoundary';
 
 export * from './Layout/Sidebar';

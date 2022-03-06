@@ -21,6 +21,10 @@ namespace API.Data.Configurations {
                 .HasMaxLength(256)
                 .IsRequired();
 
+            builder.Property(u => u.Bio)
+                .HasMaxLength(190)
+                .IsRequired(false);
+
             builder.Property(u => u.ProfileColor)
                 .IsRequired();
 

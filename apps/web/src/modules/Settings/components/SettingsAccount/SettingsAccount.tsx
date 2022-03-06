@@ -1,8 +1,6 @@
-import { faLock } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Title, Text } from '@spout/toolkit';
+import { Button, Title, Text, Alert } from '@spout/toolkit';
 
-const Account = () => {
+const SettingsAccount = () => {
   return (
     <div className="flex flex-col space-y-5 divide-y divide-gray-200">
       <div className="space-y-6">
@@ -31,17 +29,15 @@ const Account = () => {
         </div>
       </div>
       <div>
-        <div className="mt-5 text-center">
-          <Title as="h2" variant="h5">
-            <FontAwesomeIcon icon={faLock} className="mr-2" />
-            Two-factor authentication is not yet enabled.
-          </Title>
-          <Text size="sm">
-            Protect your account by adding an extra layer of security. Once
-            configured, you&apos;ll need your password and a verification code
-            to sign in.
-          </Text>
-          <Button variant="primary" className="mt-6">
+        <div className="mt-5">
+          <Alert
+            severity="warning"
+            title="Two-factor authentication is not yet enabled"
+            description="Protect your account by adding an extra layer of security. Once
+            configured, you'll need your password and a verification code to
+            sign in."
+          />
+          <Button variant="primary" className="mt-6 ml-auto block">
             Enable Two-Factor Auth
           </Button>
         </div>
@@ -65,4 +61,4 @@ const Account = () => {
   );
 };
 
-export default Account;
+export default SettingsAccount;

@@ -155,11 +155,7 @@ const Topic = ({ discussion }: Props) => {
               <SButton size="sm" onClick={() => setIsOpen(false)}>
                 Cancel
               </SButton>
-              <Form.SubmitButton
-                size="sm"
-                disabled={isInFlight}
-                isSubmitting={isInFlight}
-              >
+              <Form.SubmitButton size="sm" loading={isInFlight}>
                 Save
               </Form.SubmitButton>
             </Modal.Footer>
