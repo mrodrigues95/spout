@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -107,7 +106,7 @@ namespace API.Schema.Types.Users {
                 [ScopedService] ApplicationDbContext dbContext,
                 SessionByIdDataLoader sessionById,
                 CancellationToken cancellationToken) {
-                Guid[] sessionIds = await dbContext.Users
+                int[] sessionIds = await dbContext.Users
                     .Where(u => u.Id == user.Id)
                     .Include(u => u.Sessions)
                     .SelectMany(u => u.Sessions.Select(s => s.Id))

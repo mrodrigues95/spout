@@ -1,8 +1,8 @@
+import { useFormContext } from 'react-hook-form';
 import { ComponentProps } from 'react';
 import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
 import { FieldError } from './form';
-import { useFormError } from './hooks';
 
 export interface FormLabelProps extends ComponentProps<'label'> {
   label: string;
@@ -20,7 +20,10 @@ export const FormLabel = ({
   labelTextProps: _labelTextProps = {},
   ...props
 }: FormLabelProps) => {
-  const { hasError, error } = useFormError(name);
+  const {
+    formState: { errors },
+  } = useFormContext();
+  const error = errors[name!];
   const { className: labelTextClassName, ...labelTextProps } = _labelTextProps;
 
   return (
@@ -28,7 +31,7 @@ export const FormLabel = ({
       className={twMerge(
         clsx(
           'flex flex-col items-start justify-center space-y-2',
-          hasError ? 'text-red-600' : 'text-gray-900',
+          error ? 'text-red-600' : 'text-gray-900',
           className,
         ),
       )}

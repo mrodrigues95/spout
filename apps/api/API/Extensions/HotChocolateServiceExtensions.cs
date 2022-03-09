@@ -6,7 +6,6 @@ using API.Schema.Mutations.Auth;
 using API.Schema.Mutations.Classrooms;
 using API.Schema.Mutations.Discussions;
 using API.Schema.Mutations.Files;
-using API.Schema.Mutations.Sessions;
 using API.Schema.Mutations.Users;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Discussions;
@@ -52,9 +51,9 @@ namespace API.Extensions {
 
             gql
                 .AddTypeExtension<SessionQueries>()
-                .AddTypeExtension<SessionMutations>()
                 .AddDataLoader<SessionByIdDataLoader>()
-                .AddType<SessionType>();
+                .AddType<SessionType>()
+                .AddType<SessionFilterType>();
 
             gql
                 .AddTypeExtension<ClassroomQueries>()

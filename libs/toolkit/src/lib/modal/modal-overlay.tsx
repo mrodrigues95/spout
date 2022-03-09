@@ -11,7 +11,10 @@ export const ModalOverlay = ({ className, ...props }: ModalOverlayProps) => {
   return (
     <Transition.Child {...transitions[transition!].overlay}>
       <Dialog.Overlay
-        className={clsx('absolute inset-0 bg-black bg-opacity-25', className)}
+        className={clsx(
+          'fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm backdrop-filter',
+          className,
+        )}
         {...props}
       />
     </Transition.Child>

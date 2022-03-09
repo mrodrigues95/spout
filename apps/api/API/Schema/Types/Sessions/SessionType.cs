@@ -4,15 +4,28 @@ using API.Data.Entities;
 using API.Schema.Queries.Sessions;
 using API.Schema.Queries.Users;
 using HotChocolate;
+using HotChocolate.Data.Filters;
 using HotChocolate.Types;
 
 namespace API.Schema.Types.Sessions {
+    public class SessionFilterType : FilterInputType<Session> {
+        protected override void Configure(
+            IFilterInputTypeDescriptor<Session> descriptor) {
+            descriptor.BindFieldsImplicitly();
+            descriptor.Field(s => s.Id).Type<IdOperationFilterInputType>();
+        }
+    }
+
     public class SessionType : ObjectType<Session> {
         protected override void Configure(IObjectTypeDescriptor<Session> descriptor) {
             descriptor
                 .ImplementsNode()
-                .IdField(x => x.Id)
+                .IdField(s => s.Id)
                 .ResolveNode((ctx, id) => ctx.DataLoader<SessionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+
+            descriptor
+                .Field(s => s.Guid)
+                .Type<NonNullType<UuidType>>();
 
             descriptor
                 .Field(s => s.UserId)
@@ -20,7 +33,7 @@ namespace API.Schema.Types.Sessions {
                 .Ignore();
 
             descriptor
-                .Field(x => x.User)
+                .Field(s => s.User)
                 .ResolveWith<SessionResolvers>(x => x.GetUserAsync(default!, default!, default!))
                 .Name("user");
 

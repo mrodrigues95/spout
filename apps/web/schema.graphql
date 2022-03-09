@@ -103,6 +103,24 @@ input BooleanOperationFilterInput {
   neq: Boolean
 }
 
+union ChangePasswordError =
+    UserNotFoundError
+  | IncorrectCurrentPasswordError
+  | SessionExpiredError
+  | SessionNotFoundError
+
+input ChangePasswordInput {
+  sessionId: ID!
+  currentPassword: String!
+  newPassword: String!
+}
+
+type ChangePasswordPayload {
+  authPayload: AuthPayload
+  errors: [ChangePasswordError!]
+  query: Query!
+}
+
 type Classroom implements Node {
   id: ID!
   guid: UUID!
@@ -728,6 +746,10 @@ input IdOperationFilterInput {
   nin: [ID]
 }
 
+type IncorrectCurrentPasswordError implements Error {
+  message: String!
+}
+
 type Invite {
   id: Int!
   code: String!
@@ -1006,7 +1028,6 @@ input MessageSortInput {
 
 type Mutation {
   updateUser(input: UpdateUserInput!): UpdateUserPayload!
-  refreshSession(input: RefreshSessionInput!): RefreshSessionPayload!
   createClassroom(input: CreateClassroomInput!): CreateClassroomPayload!
   joinClassroom(input: JoinClassroomInput!): JoinClassroomPayload!
   createClassroomInvite(
@@ -1034,6 +1055,8 @@ type Mutation {
   signUp(input: SignUpInput!): SignUpPayload!
   login(input: LoginInput!): LoginPayload!
   logout(input: LogoutInput!): LogoutPayload!
+  changePassword(input: ChangePasswordInput!): ChangePasswordPayload!
+  refreshSession(input: RefreshSessionInput!): RefreshSessionPayload!
   generateUploadSAS(input: GenerateUploadSASInput!): GenerateUploadSASPayload!
   generateDownloadSAS(
     input: GenerateDownloadSASInput!
@@ -1122,7 +1145,7 @@ type Query {
   me: User
   users: [User!]!
   userById(id: ID!): User!
-  sessions: [Session!]!
+  sessions(where: SessionFilterInput): [Session!]!
   sessionById(id: ID!): Session!
   classrooms: [Classroom!]!
   classroomById(id: ID!): Classroom!
@@ -1155,7 +1178,7 @@ type Query {
   ): FilesConnection
 }
 
-union RefreshSessionError = UserNotFoundError | SessionNotFoundError
+union RefreshSessionError = SessionNotFoundError
 
 input RefreshSessionInput {
   sessionId: ID!
@@ -1183,16 +1206,22 @@ type SendDiscussionMessagePayload {
 
 type Session implements Node {
   id: ID!
+  guid: UUID!
   user: User
   createdAt: DateTime!
   updatedAt: DateTime!
   expiresAt: DateTime!
 }
 
+type SessionExpiredError implements Error {
+  message: String!
+}
+
 input SessionFilterInput {
   and: [SessionFilterInput!]
   or: [SessionFilterInput!]
-  id: ComparableGuidOperationFilterInput
+  id: IdOperationFilterInput
+  guid: ComparableGuidOperationFilterInput
   userId: ComparableInt32OperationFilterInput
   user: UserFilterInput
   createdAt: ComparableDateTimeOperationFilterInput

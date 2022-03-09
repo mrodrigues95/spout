@@ -2,5 +2,5 @@ using API.Data.Entities;
 using HotChocolate.Types.Relay;
 
 namespace API.Schema.Mutations.Auth.Inputs {
-    public record LogoutInput([property: ID(nameof(Session))] int SessionId);
+    public record RefreshSessionInput([property: ID(nameof(Session))] int SessionId);
 }

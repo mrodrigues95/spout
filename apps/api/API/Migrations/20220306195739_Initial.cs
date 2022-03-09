@@ -116,6 +116,7 @@ namespace API.Migrations {
                     guid = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(70)", maxLength: 70, nullable: false),
                     email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    bio = table.Column<string>(type: "character varying(190)", maxLength: 190, nullable: true),
                     profile_color = table.Column<UserProfileColor>(type: "user_profile_color", nullable: false),
                     avatar_url = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true),
                     state_id = table.Column<int>(type: "integer", nullable: false),
@@ -213,7 +214,9 @@ namespace API.Migrations {
             migrationBuilder.CreateTable(
                 name: "sessions",
                 columns: table => new {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    guid = table.Column<Guid>(type: "uuid", nullable: false),
                     user_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
                     expires_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now() + INTERVAL '7 DAYS')"),
@@ -418,6 +421,7 @@ namespace API.Migrations {
                     discussion_id = table.Column<int>(type: "integer", nullable: false),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     pinned_by_id = table.Column<int>(type: "integer", nullable: true),
+                    parent_message_id = table.Column<int>(type: "integer", nullable: true),
                     is_event = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     message_event = table.Column<MessageEvent>(type: "message_event", nullable: true),
                     del_log_id = table.Column<int>(type: "integer", nullable: true),
@@ -440,6 +444,12 @@ namespace API.Migrations {
                         principalTable: "discussions",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_messages_messages_parent_message_id",
+                        column: x => x.parent_message_id,
+                        principalTable: "messages",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "fk_messages_users_created_by_id",
                         column: x => x.created_by_id,
@@ -473,32 +483,6 @@ namespace API.Migrations {
                     table.ForeignKey(
                         name: "fk_message_files_messages_message_id",
                         column: x => x.message_id,
-                        principalTable: "messages",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "message_triggered_events",
-                columns: table => new {
-                    triggered_from_id = table.Column<int>(type: "integer", nullable: false),
-                    triggered_to_id = table.Column<int>(type: "integer", nullable: false),
-                    id = table.Column<int>(type: "integer", nullable: false),
-                    triggered_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
-                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())"),
-                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "timezone('UTC', now())")
-                },
-                constraints: table => {
-                    table.PrimaryKey("pk_message_triggered_events", x => new { x.triggered_from_id, x.triggered_to_id });
-                    table.ForeignKey(
-                        name: "fk_message_triggered_events_messages_triggered_to_id",
-                        column: x => x.triggered_from_id,
-                        principalTable: "messages",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_message_triggered_events_messages_triggered_to_id1",
-                        column: x => x.triggered_to_id,
                         principalTable: "messages",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -582,11 +566,6 @@ namespace API.Migrations {
                 column: "file_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_message_triggered_events_triggered_to_id",
-                table: "message_triggered_events",
-                column: "triggered_to_id");
-
-            migrationBuilder.CreateIndex(
                 name: "ix_messages_created_by_id_discussion_id",
                 table: "messages",
                 columns: new[] { "created_by_id", "discussion_id" });
@@ -600,6 +579,11 @@ namespace API.Migrations {
                 name: "ix_messages_discussion_id",
                 table: "messages",
                 column: "discussion_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_messages_parent_message_id",
+                table: "messages",
+                column: "parent_message_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_messages_pinned_by_id",
@@ -663,9 +647,6 @@ namespace API.Migrations {
 
             migrationBuilder.DropTable(
                 name: "message_files");
-
-            migrationBuilder.DropTable(
-                name: "message_triggered_events");
 
             migrationBuilder.DropTable(
                 name: "role_claims");

@@ -8,7 +8,16 @@ import { useEnvironment } from '../shared/utils';
 import 'cropperjs/dist/cropper.css';
 import '../styles.css';
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+export interface MyPageProps {
+  shouldResetEnv: boolean;
+  sessionId?: string;
+}
+
+interface MyAppProps extends AppProps<MyPageProps> {
+  pageProps: MyPageProps;
+}
+
+const MyApp = ({ Component, pageProps }: MyAppProps) => {
   // TODO: Properly hydrate the client when fetching on the server.
   // See: https://github.com/vercel/next.js/blob/canary/examples/with-relay-modern/pages/index.js
   const { records, shouldResetEnv } = useMemo(
@@ -23,7 +32,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <RelayEnvironmentProvider environment={environment}>
         <DefaultSeo defaultTitle="Spout" titleTemplate="%s | Spout" />
         <Component {...pageProps} />
-        <Toaster position="bottom-right" />
+        <Toaster
+          position="bottom-right"
+          toastOptions={{ duration: 4000, className: 'font-medium' }}
+        />
         <NProgress />
       </RelayEnvironmentProvider>
     </Suspense>

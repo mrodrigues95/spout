@@ -3,12 +3,10 @@ import toast from 'react-hot-toast';
 
 const useToast = () => {
   const handleError = useCallback(() => {
-    toast.error('Something went wrong. Please try again.', {
-      className: 'font-semibold',
-    });
+    toast.error('Something went wrong. Please try again.');
   }, []);
 
-  return { handleError };
+  return { handleError, toast };
 };
 
 export default useToast;

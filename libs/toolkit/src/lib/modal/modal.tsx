@@ -6,6 +6,7 @@ import {
   ReactNode,
 } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
+import clsx from 'clsx';
 import { ModalHeader } from './modal-header';
 import { ModalFooter } from './modal-footer';
 import { ModalContent } from './modal-content';
@@ -61,7 +62,10 @@ export const Modal = ({
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
           as="div"
-          className="fixed inset-0 z-50 flex items-center justify-center"
+          className={clsx(
+            'fixed inset-0 z-50 flex items-center justify-center',
+            className,
+          )}
           onClose={onClose}
           initialFocus={initialFocus}
           {...props}

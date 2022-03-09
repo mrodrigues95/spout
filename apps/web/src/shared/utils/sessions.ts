@@ -1,13 +1,13 @@
 import { Environment, fetchQuery, graphql, commitMutation } from 'react-relay';
-import { IncomingMessage } from 'http';
+import { IncomingMessage, ServerResponse } from 'http';
 import { GetServerSidePropsContext } from 'next';
-import { IronSessionOptions } from 'iron-session';
+import { IronSessionOptions, getIronSession, IronSession } from 'iron-session';
 import { differenceInSeconds } from 'date-fns';
 import { createRelayEnvironment } from './relay';
 import { sessionsQuery } from '../../__generated__/sessionsQuery.graphql';
 import { sessionsMutation } from '../../__generated__/sessionsMutation.graphql';
 
-if (!process.env.IRON_SESSION_COOKIE_SECRET) {
+if (typeof window === 'undefined' && !process.env.IRON_SESSION_COOKIE_SECRET) {
   console.warn(
     'No `IRON_SESSION_COOKIE_SECRET` environment variable was set. This can cause production errors.',
   );
@@ -18,15 +18,15 @@ if (!process.env.IRON_SESSION_COOKIE_SECRET) {
 // NOTE: The duration is meant to match the backend Identity cookie duration, which is 7 days.
 const IRON_SESSION_TTL = 7 * 24 * 3600;
 
-export const SESSION_OPTIONS: IronSessionOptions = {
+const SESSION_OPTIONS: IronSessionOptions = {
   password: {
     1: process.env.IRON_SESSION_COOKIE_SECRET as string,
   },
   cookieName: 'SP_SESSION',
   ttl: IRON_SESSION_TTL,
   cookieOptions: {
-    secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
+    secure: true,
     httpOnly: true,
   },
 };
@@ -37,36 +37,44 @@ declare module 'iron-session' {
   }
 }
 
-const create = async (req: IncomingMessage, sessionId: string) => {
-  req.session.sessionId = sessionId;
-  await req.session.save();
+const create = async (ironSession: IronSession, sessionId: string) => {
+  ironSession.sessionId = sessionId;
+  await ironSession.save();
   return sessionId;
 };
 
-const destroy = (req: IncomingMessage) => {
-  req.session.destroy();
+const destroy = (ironSession: IronSession) => {
+  console.log('Destroying session!');
+  ironSession.destroy();
   return null;
 };
 
 export const createIronSession = async (
   req: IncomingMessage,
+  res: ServerResponse,
   sessionId: string,
 ) => {
-  return await create(req, sessionId);
+  const ironSession = await getIronSession(req, res, SESSION_OPTIONS);
+  return await create(ironSession, sessionId);
 };
 
-export const removeIronSession = async (req: IncomingMessage) => {
-  const sessionId = req.session.sessionId!;
-  destroy(req);
+export const removeIronSession = async (
+  req: IncomingMessage,
+  res: ServerResponse,
+) => {
+  const ironSession = await getIronSession(req, res, SESSION_OPTIONS);
+  const sessionId = ironSession.sessionId;
+  destroy(ironSession);
   return sessionId;
 };
 
-type Session = sessionsQuery['response']['sessionById'];
+type Session = sessionsQuery['response']['sessions'][number] | null | undefined;
 
-const sessionCache = new WeakMap<IncomingMessage, Partial<Session> | null>();
+const sessionCache = new WeakMap<IncomingMessage, Session>();
 export const resolveSession = async ({
   req,
-}: Pick<GetServerSidePropsContext, 'req'>) => {
+  res,
+}: Pick<GetServerSidePropsContext, 'req' | 'res'>): Promise<Session> => {
   // `sessionCache` allows us to safely call `resolveSession` multiple times a request.
   if (sessionCache.has(req)) return sessionCache.get(req);
 
@@ -74,22 +82,23 @@ export const resolveSession = async ({
     ...(req.headers as Record<string, string>),
   });
 
-  let session: Session | null | undefined = null;
-  const sessionId = req.session.sessionId;
+  const ironSession = await getIronSession(req, res, SESSION_OPTIONS);
+  const sessionId = ironSession.sessionId;
+  let session: Session = null;
 
   if (sessionId) {
     session = await fetchSession(env, sessionId);
-    if (!session) return destroy(req);
+    if (!session) return destroy(ironSession);
 
     // Renew the session if 50% of the session time has elapsed.
     const shouldRefreshSession =
-      differenceInSeconds(new Date(session.expiresAt!), new Date()) <
+      differenceInSeconds(new Date(session.expiresAt), new Date()) <
       0.5 * IRON_SESSION_TTL;
 
     if (shouldRefreshSession) {
       session = await refreshSession(env, session.id!);
-      if (!session) return destroy(req);
-      await create(req, session.id!);
+      if (!session) return destroy(ironSession);
+      await create(ironSession, session.id!);
     }
   }
 
@@ -100,12 +109,12 @@ export const resolveSession = async ({
 const fetchSession = async (
   env: Environment,
   sessionId: string,
-): Promise<Session | null | undefined> => {
+): Promise<Session> => {
   return await fetchQuery<sessionsQuery>(
     env,
     graphql`
-      query sessionsQuery($id: ID!) {
-        sessionById(id: $id) {
+      query sessionsQuery($id: ID!, $now: DateTime!) {
+        sessions(where: { id: { eq: $id }, expiresAt: { gte: $now } }) {
           id
           createdAt
           updatedAt
@@ -113,10 +122,13 @@ const fetchSession = async (
         }
       }
     `,
-    { id: sessionId },
+    { id: sessionId, now: new Date().toISOString() },
   )
     .toPromise()
-    .then((resp) => resp?.sessionById)
+    .then((resp) => {
+      console.log('Response: ', resp);
+      return resp?.sessions[0] as unknown as Session;
+    })
     .catch((err) => {
       console.log('[ERROR] - fetching client session: ', err);
       return null;
@@ -126,8 +138,8 @@ const fetchSession = async (
 const refreshSession = async (
   env: Environment,
   sessionId: string,
-): Promise<Session | null | undefined> => {
-  const promise = new Promise<Session | null | undefined>((resolve, reject) => {
+): Promise<Session> => {
+  const promise = new Promise<Session>((resolve, reject) => {
     commitMutation<sessionsMutation>(env, {
       mutation: graphql`
         mutation sessionsMutation($input: RefreshSessionInput!) {

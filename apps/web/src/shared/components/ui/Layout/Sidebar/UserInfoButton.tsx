@@ -6,19 +6,12 @@ import {
   faGear,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Avatar,
-  Button,
-  Text,
-  Menu,
-  usePopper,
-  Skeleton,
-  Link,
-} from '@spout/toolkit';
+import { Button, Text, Menu, usePopper, Skeleton, Link } from '@spout/toolkit';
 import clsx from 'clsx';
 import { UserInfoButtonQuery } from '../../../../../__generated__/UserInfoButtonQuery.graphql';
 import { UserInfoButtonMutation } from '../../../../../__generated__/UserInfoButtonMutation.graphql';
 import { useAuthRedirect } from '../../../../../modules';
+import Avatar from '../../Avatar';
 
 export const UserInfoButtonSkeleton = () => {
   return (
@@ -48,6 +41,7 @@ const query = graphql`
       name
       email
       avatarUrl
+      profileColor
     }
   }
 `;
@@ -90,7 +84,13 @@ const UserInfoButton = ({ fetchKey }: Props) => {
           ref={trigger}
           fullWidth
           variant="tertiary"
-          leftIcon={<Avatar name={me!.name} scheme="orange" />}
+          leftIcon={
+            <Avatar
+              name={me!.name}
+              src={me!.avatarUrl}
+              profileColor={me!.profileColor}
+            />
+          }
           rightIcon={<FontAwesomeIcon icon={faChevronRight} size="xs" />}
         >
           <div className="flex min-w-0 flex-1 flex-col">
@@ -105,7 +105,11 @@ const UserInfoButton = ({ fetchKey }: Props) => {
         <Portal>
           <Menu.Items ref={container}>
             <Menu.Group className="flex items-center space-x-3.5 px-2 py-2">
-              <Avatar name={me!.name} scheme="orange" />
+              <Avatar
+                name={me!.name}
+                src={me!.avatarUrl}
+                profileColor={me!.profileColor}
+              />
               <div className="flex min-w-0 flex-1 flex-col">
                 <Text
                   as="span"

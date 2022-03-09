@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220219202308_AddUniqueIndex")]
-    partial class AddUniqueIndex
+    [Migration("20220306195739_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -515,6 +515,10 @@ namespace API.Migrations
                         .HasColumnType("message_event")
                         .HasColumnName("message_event");
 
+                    b.Property<int?>("ParentMessageId")
+                        .HasColumnType("integer")
+                        .HasColumnName("parent_message_id");
+
                     b.Property<DateTime?>("PinnedAt")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("pinned_at");
@@ -537,6 +541,9 @@ namespace API.Migrations
 
                     b.HasIndex("DiscussionId")
                         .HasDatabaseName("ix_messages_discussion_id");
+
+                    b.HasIndex("ParentMessageId")
+                        .HasDatabaseName("ix_messages_parent_message_id");
 
                     b.HasIndex("PinnedById")
                         .HasDatabaseName("ix_messages_pinned_by_id");
@@ -578,7 +585,7 @@ namespace API.Migrations
                     b.ToTable("message_files");
                 });
 
-            modelBuilder.Entity("API.Data.Entities.MessageTriggeredEvent", b =>
+            modelBuilder.Entity("API.Data.Entities.Session", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -592,57 +599,15 @@ namespace API.Migrations
                         .HasColumnName("created_at")
                         .HasDefaultValueSql("timezone('UTC', now())");
 
-                    b.Property<DateTime>("TriggeredAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("triggered_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
-
-                    b.Property<int>("TriggeredFromId")
-                        .HasColumnType("integer")
-                        .HasColumnName("triggered_from_id");
-
-                    b.Property<int>("TriggeredToId")
-                        .HasColumnType("integer")
-                        .HasColumnName("triggered_to_id");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
-
-                    b.HasKey("Id")
-                        .HasName("pk_message_triggered_events");
-
-                    b.HasIndex("TriggeredToId")
-                        .HasDatabaseName("ix_message_triggered_events_triggered_to_id");
-
-                    b.HasIndex("TriggeredFromId", "TriggeredToId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_message_triggered_events_triggered_from_id_triggered_to_id");
-
-                    b.ToTable("message_triggered_events");
-                });
-
-            modelBuilder.Entity("API.Data.Entities.Session", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
-
                     b.Property<DateTime>("ExpiresAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("expires_at")
                         .HasDefaultValueSql("timezone('UTC', now() + INTERVAL '7 DAYS')");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("guid");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
@@ -711,6 +676,11 @@ namespace API.Migrations
                         .HasMaxLength(2048)
                         .HasColumnType("character varying(2048)")
                         .HasColumnName("avatar_url");
+
+                    b.Property<string>("Bio")
+                        .HasMaxLength(190)
+                        .HasColumnType("character varying(190)")
+                        .HasColumnName("bio");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -1133,6 +1103,11 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("API.Data.Entities.Message", "ParentMessage")
+                        .WithMany("MessageLinks")
+                        .HasForeignKey("ParentMessageId")
+                        .HasConstraintName("fk_messages_messages_parent_message_id");
+
                     b.HasOne("API.Data.Entities.User", "PinnedBy")
                         .WithMany("PinnedMessages")
                         .HasForeignKey("PinnedById")
@@ -1144,6 +1119,8 @@ namespace API.Migrations
                     b.Navigation("DelLog");
 
                     b.Navigation("Discussion");
+
+                    b.Navigation("ParentMessage");
 
                     b.Navigation("PinnedBy");
                 });
@@ -1167,27 +1144,6 @@ namespace API.Migrations
                     b.Navigation("File");
 
                     b.Navigation("Message");
-                });
-
-            modelBuilder.Entity("API.Data.Entities.MessageTriggeredEvent", b =>
-                {
-                    b.HasOne("API.Data.Entities.Message", "TriggeredFrom")
-                        .WithMany("MessageTriggeredEvents")
-                        .HasForeignKey("TriggeredFromId")
-                        .HasConstraintName("fk_message_triggered_events_messages_triggered_to_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Data.Entities.Message", "TriggeredTo")
-                        .WithMany()
-                        .HasForeignKey("TriggeredToId")
-                        .HasConstraintName("fk_message_triggered_events_messages_triggered_to_id1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TriggeredFrom");
-
-                    b.Navigation("TriggeredTo");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Session", b =>
@@ -1313,7 +1269,7 @@ namespace API.Migrations
                 {
                     b.Navigation("MessageFiles");
 
-                    b.Navigation("MessageTriggeredEvents");
+                    b.Navigation("MessageLinks");
                 });
 
             modelBuilder.Entity("API.Data.Entities.State", b =>

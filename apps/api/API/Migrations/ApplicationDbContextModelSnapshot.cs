@@ -585,10 +585,11 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Data.Entities.Session", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -601,6 +602,10 @@ namespace API.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("expires_at")
                         .HasDefaultValueSql("timezone('UTC', now() + INTERVAL '7 DAYS')");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("guid");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()

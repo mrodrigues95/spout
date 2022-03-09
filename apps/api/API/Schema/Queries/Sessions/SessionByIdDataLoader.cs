@@ -9,7 +9,7 @@ using GreenDonut;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Schema.Queries.Sessions {
-    public class SessionByIdDataLoader : BatchDataLoader<Guid, Session> {
+    public class SessionByIdDataLoader : BatchDataLoader<int, Session> {
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
         public SessionByIdDataLoader(
@@ -21,8 +21,8 @@ namespace API.Schema.Queries.Sessions {
                 throw new ArgumentNullException(nameof(dbContextFactory));
         }
 
-        protected override async Task<IReadOnlyDictionary<Guid, Session>> LoadBatchAsync(
-            IReadOnlyList<Guid> keys,
+        protected override async Task<IReadOnlyDictionary<int, Session>> LoadBatchAsync(
+            IReadOnlyList<int> keys,
             CancellationToken cancellationToken) {
             await using ApplicationDbContext dbContext =
                 _dbContextFactory.CreateDbContext();

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5987f3dbd82b8399778c9abdb7efb55c>>
+ * @generated SignedSource<<6fc3321e78937cba230982f1034cf9f6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,15 +11,16 @@
 import { ConcreteRequest, Query } from 'relay-runtime';
 export type sessionsQuery$variables = {
   id: string;
+  now: string;
 };
 export type sessionsQueryVariables = sessionsQuery$variables;
 export type sessionsQuery$data = {
-  readonly sessionById: {
+  readonly sessions: ReadonlyArray<{
     readonly id: string;
     readonly createdAt: string;
     readonly updatedAt: string;
     readonly expiresAt: string;
-  };
+  }>;
 };
 export type sessionsQueryResponse = sessionsQuery$data;
 export type sessionsQuery = {
@@ -33,6 +34,11 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "id"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "now"
   }
 ],
 v1 = [
@@ -40,15 +46,38 @@ v1 = [
     "alias": null,
     "args": [
       {
-        "kind": "Variable",
-        "name": "id",
-        "variableName": "id"
+        "fields": [
+          {
+            "fields": [
+              {
+                "kind": "Variable",
+                "name": "gte",
+                "variableName": "now"
+              }
+            ],
+            "kind": "ObjectValue",
+            "name": "expiresAt"
+          },
+          {
+            "fields": [
+              {
+                "kind": "Variable",
+                "name": "eq",
+                "variableName": "id"
+              }
+            ],
+            "kind": "ObjectValue",
+            "name": "id"
+          }
+        ],
+        "kind": "ObjectValue",
+        "name": "where"
       }
     ],
     "concreteType": "Session",
     "kind": "LinkedField",
-    "name": "sessionById",
-    "plural": false,
+    "name": "sessions",
+    "plural": true,
     "selections": [
       {
         "alias": null,
@@ -100,16 +129,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "246006108c0d5477c03c20def198a02b",
+    "cacheID": "d82375290f0574b489c54eb8d38e519f",
     "id": null,
     "metadata": {},
     "name": "sessionsQuery",
     "operationKind": "query",
-    "text": "query sessionsQuery(\n  $id: ID!\n) {\n  sessionById(id: $id) {\n    id\n    createdAt\n    updatedAt\n    expiresAt\n  }\n}\n"
+    "text": "query sessionsQuery(\n  $id: ID!\n  $now: DateTime!\n) {\n  sessions(where: {id: {eq: $id}, expiresAt: {gte: $now}}) {\n    id\n    createdAt\n    updatedAt\n    expiresAt\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "300d93429f25153f7122b1368fffe7bb";
+(node as any).hash = "055ca5997c59850c7844905186926be3";
 
 export default node;

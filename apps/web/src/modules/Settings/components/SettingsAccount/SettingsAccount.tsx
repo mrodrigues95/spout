@@ -1,4 +1,5 @@
 import { Button, Title, Text, Alert } from '@spout/toolkit';
+import SettingsChangePassword from './SettingsChangePassword';
 
 const SettingsAccount = () => {
   return (
@@ -10,12 +11,7 @@ const SettingsAccount = () => {
           </Title>
           <Button>Change Email</Button>
         </div>
-        <div className="flex items-center">
-          <Title as="h2" variant="h5" className="flex-1 font-medium">
-            Password
-          </Title>
-          <Button>Change Password</Button>
-        </div>
+        <SettingsChangePassword />
         <div className="flex items-center">
           <div className="flex-1">
             <Title as="h2" variant="h5" className="font-medium">

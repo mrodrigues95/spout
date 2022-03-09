@@ -13,7 +13,7 @@ interface HeaderProps {
 interface ModalHeaderProps {
   title: string;
   titleProps?: HeaderProps;
-  description: string;
+  description?: string;
   descriptionProps?: HeaderProps;
   dismiss?: boolean;
 }
@@ -39,12 +39,14 @@ export const ModalHeader = ({
         >
           {title}
         </Dialog.Title>
-        <Dialog.Description
-          as="h4"
-          className={clsx(' text-gray-700', descriptionProps?.className)}
-        >
-          {description}
-        </Dialog.Description>
+        {description && (
+          <Dialog.Description
+            as="h4"
+            className={clsx(' text-gray-700', descriptionProps?.className)}
+          >
+            {description}
+          </Dialog.Description>
+        )}
       </div>
       {dismiss && (
         <IconButton

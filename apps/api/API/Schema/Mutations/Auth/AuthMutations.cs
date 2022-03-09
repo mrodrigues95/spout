@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using API.Common.Enums;
@@ -7,12 +10,10 @@ using API.Extensions;
 using API.Schema.Mutations.Auth.Exceptions;
 using API.Schema.Mutations.Auth.Inputs;
 using API.Schema.Mutations.Auth.Payloads;
-using API.Schema.Mutations.Sessions.Common;
 using API.Schema.Types.Users;
 using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -31,11 +32,12 @@ namespace API.Schema.Mutations.Auth {
         [Error(typeof(SignUpNewUserException))]
         public async Task<AuthPayload> SignUpAsync(
             SignUpInput input,
-            [ScopedService] ApplicationDbContext context,
+            [ScopedService] ApplicationDbContext ctx,
             [Service] UserManager<User> userManager,
             [Service] SignInManager<User> signInManager,
             CancellationToken cancellationToken) {
-            if (await context.Users.AnyAsync(x => x.Email == input.Email || x.UserName == input.Email)) {
+            if (await ctx.Users.AnyAsync(x =>
+                x.Email == input.Email || x.UserName == input.Email)) {
                 _logger.LogWarning("Email already exists.", input.Email);
                 throw new SignUpNewUserException();
             }
@@ -54,65 +56,136 @@ namespace API.Schema.Mutations.Auth {
                 throw new SignUpNewUserException();
             }
 
-            var loginUser = await signInManager.PasswordSignInAsync(user, input.Password, true, false);
+            var loginUser = await signInManager.PasswordSignInAsync(user,
+                input.Password, true, false);
             if (!loginUser.Succeeded) {
                 _logger.LogError("Unable to sign in user.", loginUser, user);
                 throw new SignUpNewUserException();
             }
 
-            var session = await SessionManagement.CreateSession(user.Id, context, cancellationToken);
+            var session = await CreateSessionAsync(user, ctx, cancellationToken);
             if (session is null) {
                 _logger.LogError("Unable to refresh session.", user);
                 throw new SignUpNewUserException();
             }
 
-            return new AuthPayload(user, session.Session!, true);
+            return new AuthPayload(user, session, true);
         }
 
         [UseApplicationDbContext]
         [Error(typeof(LoginUserException))]
         public async Task<AuthPayload> LoginAsync(
             LoginInput input,
-            [ScopedService] ApplicationDbContext context,
+            [ScopedService] ApplicationDbContext ctx,
             [Service] UserManager<User> userManager,
             [Service] SignInManager<User> signInManager,
-            [Service] IHttpContextAccessor httpContextAccessor,
             CancellationToken cancellationToken) {
-            if (signInManager.IsSignedIn(httpContextAccessor.HttpContext?.User)) {
-                _logger.LogWarning("User is already signed in.",
-                    httpContextAccessor.HttpContext?.User);
-                throw new LoginUserException();
-            }
-
             var user = await userManager.FindByEmailAsync(input.Email);
             if (user is null) {
                 throw new LoginUserException();
             }
 
-            var loginUser = await signInManager.PasswordSignInAsync(user, input.Password, true, false);
+            var loginUser = await signInManager.PasswordSignInAsync(user,
+                input.Password, true, false);
             if (!loginUser.Succeeded) {
                 throw new LoginUserException();
             }
 
-            var session = await SessionManagement.CreateSession(user.Id, context, cancellationToken);
+            var session = await CreateSessionAsync(user, ctx, cancellationToken);
             if (session is null) {
                 _logger.LogError("Unable to refresh session.", user);
                 throw new LoginUserException();
             }
 
-            return new AuthPayload(user, session.Session, true);
+            return new AuthPayload(user, session, true);
         }
 
         [Authorize]
         [UseApplicationDbContext]
         public async Task<AuthPayload> LogoutAsync(
             LogoutInput input,
-            [ScopedService] ApplicationDbContext context,
+            [ScopedService] ApplicationDbContext ctx,
             [Service] SignInManager<User> signInManager,
             CancellationToken cancellationToken) {
-            await SessionManagement.RemoveSession(input.SessionId, context, cancellationToken);
             await signInManager.SignOutAsync();
+
+            var session = new Session { Id = input.SessionId };
+            ctx.Sessions.Remove(session);
+            await ctx.SaveChangesAsync(cancellationToken);
+
             return new AuthPayload(false);
+        }
+
+        [Authorize]
+        [UseApplicationDbContext]
+        [Error(typeof(UserNotFoundException))]
+        [Error(typeof(IncorrectCurrentPasswordException))]
+        [Error(typeof(SessionExpiredException))]
+        [Error(typeof(SessionNotFoundException))]
+        public async Task<AuthPayload> ChangePasswordAsync(
+            ChangePasswordInput input,
+            ClaimsPrincipal userClaim,
+            [ScopedService] ApplicationDbContext ctx,
+            [Service] UserManager<User> userManager,
+            CancellationToken cancellationToken) {
+            var user = await userManager.GetUserAsync(userClaim);
+            if (user is null) throw new UserNotFoundException();
+
+            var session = await ctx.Sessions.SingleOrDefaultAsync(x =>
+                x.Id == input.SessionId
+                && x.UserId == user.Id, cancellationToken);
+            if (session is null) throw new SessionNotFoundException();
+            if (session.ExpiresAt < DateTime.UtcNow) throw new SessionExpiredException();
+
+            var result = await userManager.ChangePasswordAsync(
+                user, input.CurrentPassword, input.NewPassword);
+            if (!result.Succeeded) throw new IncorrectCurrentPasswordException();
+
+            // Invalidate all other sessions.
+            ctx.Sessions.RemoveRange(ctx.Sessions.Where(x => x.Id != session.Id));
+            user.UpdatedAt = DateTime.UtcNow;
+            await ctx.SaveChangesAsync(cancellationToken);
+
+            // TODO: Send an email.
+            return new AuthPayload(user, session, true);
+        }
+
+        [Authorize]
+        [UseApplicationDbContext]
+        [Error(typeof(SessionNotFoundException))]
+        public async Task<AuthPayload> RefreshSessionAsync(
+            RefreshSessionInput input,
+            ClaimsPrincipal userClaim,
+            [ScopedService] ApplicationDbContext ctx,
+            [Service] UserManager<User> userManager,
+            CancellationToken cancellationToken) {
+            var session = await ctx.Sessions.FindAsync(
+                new object[] { input.SessionId },
+                cancellationToken);
+            if (session is null) throw new SessionNotFoundException();
+
+            session.ExpiresAt = DateTime.UtcNow.AddDays(7);
+            session.UpdatedAt = DateTime.UtcNow;
+            await ctx.SaveChangesAsync(cancellationToken);
+
+            var user = await userManager.GetUserAsync(userClaim);
+            return new AuthPayload(user, session, true);
+        }
+
+        private async Task<Session> CreateSessionAsync(
+            User user,
+            ApplicationDbContext ctx,
+            CancellationToken cancellationToken) {
+            var session = new Session {
+                UpdatedAt = DateTime.UtcNow,
+                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                UserId = user.Id
+            };
+
+            ctx.Sessions.Add(session);
+            await ctx.SaveChangesAsync(cancellationToken);
+
+            return session;
         }
     }
 }

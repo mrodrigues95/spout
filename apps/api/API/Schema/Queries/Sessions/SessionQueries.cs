@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,6 +6,7 @@ using API.Data.Entities;
 using API.Extensions;
 using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
+using HotChocolate.Data;
 using HotChocolate.Types;
 using HotChocolate.Types.Relay;
 
@@ -15,6 +15,7 @@ namespace API.Schema.Queries.Sessions {
     public class SessionQueries {
         [Authorize]
         [UseApplicationDbContext]
+        [UseFiltering]
         public IQueryable<Session> GetSessions(
             [ScopedService] ApplicationDbContext ctx)
             => ctx.Sessions;
@@ -22,9 +23,9 @@ namespace API.Schema.Queries.Sessions {
         [Authorize]
         [UseApplicationDbContext]
         public Task<Session> GetSessionByIdAsync(
-            [ID(nameof(Session))] Guid id,
+            [ID(nameof(Session))] int id,
             SessionByIdDataLoader sessionById,
-            CancellationToken cancellationToken) =>
-            sessionById.LoadAsync(id, cancellationToken);
+            CancellationToken cancellationToken)
+            => sessionById.LoadAsync(id, cancellationToken);
     }
 }

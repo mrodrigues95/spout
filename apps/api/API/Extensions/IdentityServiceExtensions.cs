@@ -22,9 +22,9 @@ namespace API.Extensions {
             services.ConfigureApplicationCookie(opt => {
                 opt.Cookie.Name = "SP_IDENTITY";
                 opt.Cookie.HttpOnly = true;
-                opt.ExpireTimeSpan = TimeSpan.FromDays(7);
                 opt.Cookie.SameSite = SameSiteMode.Strict;
                 opt.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                opt.ExpireTimeSpan = TimeSpan.FromDays(7);
                 opt.SlidingExpiration = true;
             });
 

@@ -1,9 +1,9 @@
 import { ComponentProps, forwardRef } from 'react';
 import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
-import { useFormError } from './hooks';
 import { FormLabel, FormLabelProps } from './form-label';
 import { FormHelperText, FormHelperTextProps } from './form-helper-text';
+import { useFormContext } from 'react-hook-form';
 
 export interface FormInputProps
   extends ComponentProps<'input'>,
@@ -27,7 +27,10 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     },
     ref,
   ) => {
-    const { hasError } = useFormError(name);
+    const {
+      formState: { errors },
+    } = useFormContext();
+    const error = errors[name!];
 
     return (
       <>
@@ -37,7 +40,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
               clsx(
                 'outline-none w-full rounded-lg border-2 border-transparent bg-gray-100 px-3 py-2 font-medium ring-offset-4 transition duration-150 ease-in-out',
                 'placeholder-shown:font-normal',
-                hasError
+                error
                   ? 'focus:border-red-700 focus:ring-4 focus:ring-red-200'
                   : 'focus:border-blue-700 focus:ring-4 focus:ring-blue-200',
                 className,

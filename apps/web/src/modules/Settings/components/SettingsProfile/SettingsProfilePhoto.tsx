@@ -20,7 +20,7 @@ const SettingsProfilePhoto = ({ ...props }: Props) => {
 
   // TODO: Implement this, also use a photo cropper.
   return (
-    <div className="mt-5 space-y-6">
+    <div className="mt-5 flex-1 space-y-6">
       <Title as="h2" variant="h5" className="font-medium">
         Your photo
       </Title>

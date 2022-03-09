@@ -1,11 +1,11 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { withIronSessionSsr } from 'iron-session/next';
-import { resolveSession, SESSION_OPTIONS } from './sessions';
+import { MyPageProps } from '../../pages/_app';
+import { resolveSession } from './sessions';
 
-const unauthRoute = async (
+export const unauthenticatedRoute = async (
   ctx: GetServerSidePropsContext,
   redirect = '/home',
-) => {
+): Promise<GetServerSidePropsResult<MyPageProps>> => {
   const session = await resolveSession(ctx);
 
   if (session) {
@@ -24,15 +24,10 @@ const unauthRoute = async (
   };
 };
 
-export const unauthenticatedRoute = withIronSessionSsr(
-  unauthRoute,
-  SESSION_OPTIONS,
-);
-
-const authRoute = async (
+export const authenticatedRoute = async (
   ctx: GetServerSidePropsContext,
   redirect = '/auth/signup',
-): Promise<GetServerSidePropsResult<Record<string, unknown>>> => {
+): Promise<GetServerSidePropsResult<MyPageProps>> => {
   const session = await resolveSession(ctx);
 
   if (!session) {
@@ -49,11 +44,7 @@ const authRoute = async (
   return {
     props: {
       shouldResetEnv: false,
+      sessionId: session.id,
     },
   };
 };
-
-export const authenticatedRoute = withIronSessionSsr(
-  authRoute,
-  SESSION_OPTIONS,
-);

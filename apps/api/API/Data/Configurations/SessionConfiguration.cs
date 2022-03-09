@@ -7,6 +7,9 @@ namespace API.Data.Configurations {
         public void Configure(EntityTypeBuilder<Session> builder) {
             builder.HasKey(s => s.Id);
 
+            builder.Property(u => u.Guid)
+                .IsRequired();
+
             builder.Property(s => s.UserId)
                 .IsRequired();
 

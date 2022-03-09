@@ -3,7 +3,6 @@
 //   BlockBlobClient,
 //   newPipeline,
 // } from '@azure/storage-blob';
-import { useState } from 'react';
 import { Layout } from '../../../shared/components';
 
 // const uploadFileToBlob = async (file: File | null) => {
@@ -23,7 +22,7 @@ import { Layout } from '../../../shared/components';
 // };
 const Home = () => {
   // current file to upload into container
-  const [fileSelected] = useState(null);
+  // const [fileSelected] = useState(null);
 
   // const onFileChange = (event: any) => {
   //   // capture file into state
@@ -36,8 +35,6 @@ const Home = () => {
   //   // reset state/form
   //   setFileSelected(null);
   // };
-
-  console.log(fileSelected);
 
   return (
     <Layout title="Home">

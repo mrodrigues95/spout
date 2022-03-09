@@ -2,7 +2,8 @@ using System;
 
 namespace API.Data.Entities {
     public class Session {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
+        public Guid Guid { get; set; } = Guid.NewGuid();
         public int UserId { get; set; }
         public User? User { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

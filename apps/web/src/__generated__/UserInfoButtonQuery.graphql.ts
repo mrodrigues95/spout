@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<917f5af448323195f810e120fe729443>>
+ * @generated SignedSource<<f65d8239bde72e03bfacd2e0d4aede04>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,6 +9,7 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Query } from 'relay-runtime';
+export type UserProfileColor = "SKY" | "PINK" | "GREEN" | "PURPLE" | "ROSE" | "GRAY" | "ORANGE" | "%future added value";
 export type UserInfoButtonQuery$variables = {};
 export type UserInfoButtonQueryVariables = UserInfoButtonQuery$variables;
 export type UserInfoButtonQuery$data = {
@@ -16,6 +17,7 @@ export type UserInfoButtonQuery$data = {
     readonly name: string;
     readonly email: string;
     readonly avatarUrl: string | null;
+    readonly profileColor: UserProfileColor;
   } | null;
 };
 export type UserInfoButtonQueryResponse = UserInfoButtonQuery$data;
@@ -45,6 +47,13 @@ v2 = {
   "kind": "ScalarField",
   "name": "avatarUrl",
   "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "profileColor",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -63,7 +72,8 @@ return {
         "selections": [
           (v0/*: any*/),
           (v1/*: any*/),
-          (v2/*: any*/)
+          (v2/*: any*/),
+          (v3/*: any*/)
         ],
         "storageKey": null
       }
@@ -88,6 +98,7 @@ return {
           (v0/*: any*/),
           (v1/*: any*/),
           (v2/*: any*/),
+          (v3/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -101,16 +112,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "42769f5719129932f8f79aea10bc2e46",
+    "cacheID": "5ce7d312f58144770eedb75e706dfb03",
     "id": null,
     "metadata": {},
     "name": "UserInfoButtonQuery",
     "operationKind": "query",
-    "text": "query UserInfoButtonQuery {\n  me {\n    name\n    email\n    avatarUrl\n    id\n  }\n}\n"
+    "text": "query UserInfoButtonQuery {\n  me {\n    name\n    email\n    avatarUrl\n    profileColor\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "10b6289172bf05beb1644df52070bf5d";
+(node as any).hash = "b3e1de5416bd07437c246dc6c5ec2d5f";
 
 export default node;
