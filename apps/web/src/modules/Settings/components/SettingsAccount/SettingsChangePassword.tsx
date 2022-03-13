@@ -24,10 +24,6 @@ const mutation = graphql`
           __typename
           message
         }
-        ... on SessionNotFoundError {
-          __typename
-          message
-        }
         ... on SessionExpiredError {
           __typename
           message
@@ -84,9 +80,6 @@ const SettingsChangePassword = () => {
               );
               return;
             case 'SessionExpiredError':
-              router.replace('/auth/login');
-              return;
-            case 'SessionNotFoundError':
               router.replace('/auth/login');
               return;
             default:

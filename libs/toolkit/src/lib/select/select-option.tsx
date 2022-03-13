@@ -1,10 +1,10 @@
-import { ComponentProps, ReactElement } from 'react';
+import { ComponentProps, ReactElement, ReactNode } from 'react';
 import { Listbox } from '@headlessui/react';
 import clsx from 'clsx';
 
 interface SelectOptionProps extends Omit<ComponentProps<'li'>, 'value'> {
   value: unknown;
-  label: string;
+  label: ReactNode;
   selectedIcon: ReactElement;
 }
 

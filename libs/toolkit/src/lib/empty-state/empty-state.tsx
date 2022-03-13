@@ -26,7 +26,9 @@ export const EmptyState = ({
     >
       {icon}
       <div>
-        <p className="text-center text-lg font-bold text-gray-900">{heading}</p>
+        <p className="text-center text-lg font-medium text-gray-900">
+          {heading}
+        </p>
         {body && <p className="font-medium text-gray-500">{body}</p>}
       </div>
       {children}

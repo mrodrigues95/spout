@@ -37,7 +37,7 @@ export function FieldError({ error }: FieldErrorProps) {
   if (!error) return null;
 
   return (
-    <span className="text-sm font-medium italic text-red-600">
+    <span className="text-xs font-medium italic text-red-600">
       {error.message}
     </span>
   );

@@ -6,7 +6,7 @@ namespace API.Schema.Mutations.Auth.Inputs {
     public class LoginInputValidator : AbstractValidator<LoginInput> {
         public LoginInputValidator() {
             RuleFor(x => x.Email).NotEmpty().EmailAddress();
-            RuleFor(x => x.Password).NotEmpty();
+            RuleFor(x => x.Password).NotEmpty().MinimumLength(6);
         }
     }
 }

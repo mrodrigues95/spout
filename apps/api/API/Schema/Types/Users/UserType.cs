@@ -64,6 +64,10 @@ namespace API.Schema.Types.Users {
                 .Type<NonNullType<UserProfileColorType>>();
 
             descriptor
+                .Field(u => u.EmailConfirmed)
+                .Type<NonNullType<BooleanType>>();
+
+            descriptor
                 .Field(u => u.CreatedAt)
                 .Type<NonNullType<DateTimeType>>();
 

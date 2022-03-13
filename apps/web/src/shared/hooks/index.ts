@@ -7,3 +7,4 @@ export * from './useIsMounted';
 export * from './files';
 export * from './useConnection';
 export * from './useKeyboardEvent';
+export * from './useTimeout';

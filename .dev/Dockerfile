@@ -18,6 +18,9 @@ ARG USER_GID=$USER_UID
 ARG INSTALL_AZURE_CLI=false
 ARG INSTALL_EF_DOTNET_TOOLS=false
 
+# App specific variables
+ENV APP_URL=https://spout.dev
+
 # Install additional tools
 RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then \
         groupmod --gid ${USER_GID} node \

@@ -78,9 +78,8 @@ export const resolveSession = async ({
   // `sessionCache` allows us to safely call `resolveSession` multiple times a request.
   if (sessionCache.has(req)) return sessionCache.get(req);
 
-  const env = createRelayEnvironment(true, {
-    ...(req.headers as Record<string, string>),
-  });
+  console.log('Req headers: ', req.headers);
+  const env = createRelayEnvironment(true, req.headers);
 
   const ironSession = await getIronSession(req, res, SESSION_OPTIONS);
   const sessionId = ironSession.sessionId;

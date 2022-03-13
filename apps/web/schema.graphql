@@ -103,11 +103,26 @@ input BooleanOperationFilterInput {
   neq: Boolean
 }
 
+union ChangeEmailError =
+    UserNotFoundError
+  | InvalidTokenError
+  | SessionExpiredError
+
+input ChangeEmailInput {
+  sessionId: ID!
+  token: String!
+}
+
+type ChangeEmailPayload {
+  authPayload: AuthPayload
+  errors: [ChangeEmailError!]
+  query: Query!
+}
+
 union ChangePasswordError =
     UserNotFoundError
   | IncorrectCurrentPasswordError
   | SessionExpiredError
-  | SessionNotFoundError
 
 input ChangePasswordInput {
   sessionId: ID!
@@ -574,6 +589,18 @@ input DiscussionSortInput {
   updatedAt: SortEnumType
 }
 
+type EmailAlreadyRegisteredError implements Error {
+  message: String!
+}
+
+type EmailAlreadyVerifiedError implements Error {
+  message: String!
+}
+
+type EmailNotVerifiedError implements Error {
+  message: String!
+}
+
 interface Error {
   message: String!
 }
@@ -703,6 +730,23 @@ input FileUploadStatusOperationFilterInput {
   nin: [FileUploadStatus!]
 }
 
+union GenerateChangeEmailTokenError =
+    UserNotFoundError
+  | IncorrectCurrentPasswordError
+  | EmailAlreadyRegisteredError
+  | EmailNotVerifiedError
+
+input GenerateChangeEmailTokenInput {
+  newEmail: String!
+  password: String!
+}
+
+type GenerateChangeEmailTokenPayload {
+  authPayload: AuthPayload
+  errors: [GenerateChangeEmailTokenError!]
+  query: Query!
+}
+
 union GenerateDownloadSASError = FileNotFoundError | GenerateSignatureError
 
 input GenerateDownloadSASInput {
@@ -712,6 +756,16 @@ input GenerateDownloadSASInput {
 type GenerateDownloadSASPayload {
   generateSASPayload: GenerateSASPayload
   errors: [GenerateDownloadSASError!]
+  query: Query!
+}
+
+union GenerateEmailVerificationTokenError =
+    UserNotFoundError
+  | EmailAlreadyVerifiedError
+
+type GenerateEmailVerificationTokenPayload {
+  authPayload: AuthPayload
+  errors: [GenerateEmailVerificationTokenError!]
   query: Query!
 }
 
@@ -747,6 +801,10 @@ input IdOperationFilterInput {
 }
 
 type IncorrectCurrentPasswordError implements Error {
+  message: String!
+}
+
+type InvalidTokenError implements Error {
   message: String!
 }
 
@@ -850,6 +908,13 @@ input ListFilterInputTypeOfSessionFilterInput {
   all: SessionFilterInput
   none: SessionFilterInput
   some: SessionFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfUserEmailChangeFilterInput {
+  all: UserEmailChangeFilterInput
+  none: UserEmailChangeFilterInput
+  some: UserEmailChangeFilterInput
   any: Boolean
 }
 
@@ -1056,6 +1121,12 @@ type Mutation {
   login(input: LoginInput!): LoginPayload!
   logout(input: LogoutInput!): LogoutPayload!
   changePassword(input: ChangePasswordInput!): ChangePasswordPayload!
+  generateEmailVerificationToken: GenerateEmailVerificationTokenPayload!
+  verifyEmail(input: VerifyEmailInput!): VerifyEmailPayload!
+  generateChangeEmailToken(
+    input: GenerateChangeEmailTokenInput!
+  ): GenerateChangeEmailTokenPayload!
+  changeEmail(input: ChangeEmailInput!): ChangeEmailPayload!
   refreshSession(input: RefreshSessionInput!): RefreshSessionPayload!
   generateUploadSAS(input: GenerateUploadSASInput!): GenerateUploadSASPayload!
   generateDownloadSAS(
@@ -1449,6 +1520,7 @@ type User implements Node {
   name: String!
   email: String!
   profileColor: UserProfileColor!
+  emailConfirmed: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
   classrooms: [Classroom!]!
@@ -1456,6 +1528,7 @@ type User implements Node {
   bio: String
   avatarUrl: String
   state: State
+  emailChanges: [UserEmailChange!]!
   messages: [Message!]!
   pinnedMessages: [Message!]!
   invites: [ClassroomInvite!]!
@@ -1463,7 +1536,6 @@ type User implements Node {
   userName: String
   normalizedUserName: String
   normalizedEmail: String
-  emailConfirmed: Boolean!
   passwordHash: String
   securityStamp: String
   concurrencyStamp: String
@@ -1477,6 +1549,30 @@ type User implements Node {
 
 type UserAlreadyInClassroomError implements Error {
   message: String!
+}
+
+type UserEmailChange {
+  id: Int!
+  token: String
+  newEmail: String
+  user: User
+  userId: Int
+  expiresAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input UserEmailChangeFilterInput {
+  and: [UserEmailChangeFilterInput!]
+  or: [UserEmailChangeFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  token: StringOperationFilterInput
+  newEmail: StringOperationFilterInput
+  user: UserFilterInput
+  userId: ComparableNullableOfInt32OperationFilterInput
+  expiresAt: ComparableDateTimeOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
 }
 
 input UserFilterInput {
@@ -1493,6 +1589,7 @@ input UserFilterInput {
   state: StateFilterInput
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
+  emailChanges: ListFilterInputTypeOfUserEmailChangeFilterInput
   sessions: ListFilterInputTypeOfSessionFilterInput
   messages: ListFilterInputTypeOfMessageFilterInput
   pinnedMessages: ListFilterInputTypeOfMessageFilterInput
@@ -1563,6 +1660,21 @@ input UserSortInput {
 }
 
 scalar UUID
+
+union VerifyEmailError =
+    UserNotFoundError
+  | EmailAlreadyVerifiedError
+  | InvalidTokenError
+
+input VerifyEmailInput {
+  token: String!
+}
+
+type VerifyEmailPayload {
+  authPayload: AuthPayload
+  errors: [VerifyEmailError!]
+  query: Query!
+}
 
 enum WhitelistedFileExtension {
   AAC

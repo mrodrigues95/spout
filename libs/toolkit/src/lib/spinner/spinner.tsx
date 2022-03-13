@@ -12,9 +12,9 @@ const STYLES = {
     xl: 'h-10 w-10',
   },
   scheme: {
-    black: 'text-black',
+    black: 'text-gray-900',
     white: 'text-white',
-    purple: 'text-purple-500',
+    blue: 'text-blue-600',
   },
   variant: {
     circle: LoadingCircle,
@@ -32,7 +32,7 @@ export interface SpinnerProps extends ComponentProps<'div'> {
 
 export const Spinner = ({
   size = 'md',
-  scheme = 'purple',
+  scheme = 'blue',
   variant = 'bricks',
   srLabel = 'Loading...',
   center = false,

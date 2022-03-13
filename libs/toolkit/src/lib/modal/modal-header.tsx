@@ -28,7 +28,7 @@ export const ModalHeader = ({
   const { onClose } = useContext(ModalContext)!;
 
   return (
-    <header className="flex items-center justify-center space-x-8 px-6 py-4">
+    <header className="flex items-center justify-center space-x-4 px-6 py-4">
       <div className="min-w-0 flex-1">
         <Dialog.Title
           as="h3"
@@ -50,10 +50,11 @@ export const ModalHeader = ({
       </div>
       {dismiss && (
         <IconButton
-          className="mb-auto -mt-1 !p-2"
+          className="mb-auto rounded-md py-1.5 px-2"
           aria-label="Close modal"
           variant="tertiary"
           onClick={onClose}
+          size="sm"
           icon={<FontAwesomeIcon icon={faTimes} />}
         />
       )}

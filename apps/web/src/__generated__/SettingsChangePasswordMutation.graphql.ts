@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<281e3b696fe996d1f61eb62ad12374f0>>
+ * @generated SignedSource<<ce292629a93bc8edb5c401bbb53a5ea1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,9 +22,6 @@ export type SettingsChangePasswordMutation$data = {
   readonly changePassword: {
     readonly errors: ReadonlyArray<{
       readonly __typename: "IncorrectCurrentPasswordError";
-      readonly message: string;
-    } | {
-      readonly __typename: "SessionNotFoundError";
       readonly message: string;
     } | {
       readonly __typename: "SessionExpiredError";
@@ -110,12 +107,6 @@ return {
               {
                 "kind": "InlineFragment",
                 "selections": (v4/*: any*/),
-                "type": "SessionNotFoundError",
-                "abstractKey": null
-              },
-              {
-                "kind": "InlineFragment",
-                "selections": (v4/*: any*/),
                 "type": "SessionExpiredError",
                 "abstractKey": null
               }
@@ -161,12 +152,6 @@ return {
               {
                 "kind": "InlineFragment",
                 "selections": (v5/*: any*/),
-                "type": "SessionNotFoundError",
-                "abstractKey": null
-              },
-              {
-                "kind": "InlineFragment",
-                "selections": (v5/*: any*/),
                 "type": "SessionExpiredError",
                 "abstractKey": null
               }
@@ -179,16 +164,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d76bf11404210cdd5b270dee6c71ff84",
+    "cacheID": "3e92faea62bf4015e4bdd334acbac889",
     "id": null,
     "metadata": {},
     "name": "SettingsChangePasswordMutation",
     "operationKind": "mutation",
-    "text": "mutation SettingsChangePasswordMutation(\n  $input: ChangePasswordInput!\n) {\n  changePassword(input: $input) {\n    errors {\n      __typename\n      ... on IncorrectCurrentPasswordError {\n        __typename\n        message\n      }\n      ... on SessionNotFoundError {\n        __typename\n        message\n      }\n      ... on SessionExpiredError {\n        __typename\n        message\n      }\n    }\n  }\n}\n"
+    "text": "mutation SettingsChangePasswordMutation(\n  $input: ChangePasswordInput!\n) {\n  changePassword(input: $input) {\n    errors {\n      __typename\n      ... on IncorrectCurrentPasswordError {\n        __typename\n        message\n      }\n      ... on SessionExpiredError {\n        __typename\n        message\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "17d0db86cc83d4937000853352ff68c0";
+(node as any).hash = "6359dd426c31b95071ad1590a1acf523";
 
 export default node;

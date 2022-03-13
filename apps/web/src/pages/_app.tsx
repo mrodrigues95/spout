@@ -3,7 +3,7 @@ import { AppProps } from 'next/app';
 import { DefaultSeo } from 'next-seo';
 import { Toaster } from 'react-hot-toast';
 import { RelayEnvironmentProvider } from 'react-relay';
-import { NProgress } from '../shared/components';
+import { NProgress, SessionProvider } from '../shared/components';
 import { useEnvironment } from '../shared/utils';
 import 'cropperjs/dist/cropper.css';
 import '../styles.css';
@@ -29,15 +29,17 @@ const MyApp = ({ Component, pageProps }: MyAppProps) => {
 
   return (
     <Suspense fallback={null}>
+      <DefaultSeo defaultTitle="Spout" titleTemplate="%s | Spout" />
       <RelayEnvironmentProvider environment={environment}>
-        <DefaultSeo defaultTitle="Spout" titleTemplate="%s | Spout" />
-        <Component {...pageProps} />
-        <Toaster
-          position="bottom-right"
-          toastOptions={{ duration: 4000, className: 'font-medium' }}
-        />
-        <NProgress />
+        <SessionProvider sessionId={pageProps.sessionId}>
+          <Component {...pageProps} />
+        </SessionProvider>
       </RelayEnvironmentProvider>
+      <Toaster
+        position="bottom-right"
+        toastOptions={{ duration: 4000, className: 'font-medium' }}
+      />
+      <NProgress />
     </Suspense>
   );
 };

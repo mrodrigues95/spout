@@ -39,7 +39,10 @@ namespace API.Extensions {
             });
 
             services.Configure<AzureStorageConfig>(config.GetSection("AzureStorageConfig"));
+            services.Configure<PostmarkConfig>(config.GetSection("PostmarkConfig"));
             services.AddScoped<IBlobService, BlobService>();
+            services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<ISessionManager, SessionManager>();
 
             return services;
         }

@@ -17,6 +17,7 @@ namespace API.Data {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public override DbSet<User> Users { get; set; } = default!;
+        public DbSet<UserEmailChange> UserEmailChanges { get; set; } = default!;
         public DbSet<Session> Sessions { get; set; } = default!;
         public DbSet<Classroom> Classrooms { get; set; } = default!;
         public DbSet<ClassroomUser> ClassroomUsers { get; set; } = default!;

@@ -12,6 +12,11 @@ namespace API.Schema.Mutations.Auth.Payloads {
             IsLoggedIn = isLoggedIn;
         }
 
+        public AuthPayload(User user, bool isLoggedIn) {
+            User = user;
+            IsLoggedIn = isLoggedIn;
+        }
+
         public AuthPayload(bool isLoggedIn) {
             IsLoggedIn = isLoggedIn;
         }

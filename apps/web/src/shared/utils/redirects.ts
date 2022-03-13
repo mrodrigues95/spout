@@ -26,7 +26,7 @@ export const unauthenticatedRoute = async (
 
 export const authenticatedRoute = async (
   ctx: GetServerSidePropsContext,
-  redirect = '/auth/signup',
+  redirect = '/auth/login',
 ): Promise<GetServerSidePropsResult<MyPageProps>> => {
   const session = await resolveSession(ctx);
 

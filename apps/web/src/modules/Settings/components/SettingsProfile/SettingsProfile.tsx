@@ -138,7 +138,7 @@ const SettingsProfileWithSuspense = () => {
     <ErrorBoundary
       FallbackComponent={({ resetErrorBoundary }) => (
         <ErrorFallback
-          heading="There was a problem loading your profile."
+          heading="There was a problem loading your profile details."
           action={resetErrorBoundary}
         />
       )}

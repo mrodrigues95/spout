@@ -36,6 +36,8 @@ const getFetchFn = (headers: Headers = {}): FetchFunction => {
       body: JSON.stringify(operationBody),
     });
 
+    console.log('Fetch opts: ', fetchOpts);
+
     const isServer = typeof window === 'undefined';
     const endpoint = isServer
       ? 'http://api:5000/api/graphql'
@@ -89,7 +91,7 @@ export const createRelayEnvironment = (
 let relayEnvironment: Environment | null;
 
 // TODO: Enable strict mode.
-export const initRelayEnvironment = (
+const initRelayEnvironment = (
   records?: RecordMap,
   shouldResetEnv?: boolean,
 ) => {

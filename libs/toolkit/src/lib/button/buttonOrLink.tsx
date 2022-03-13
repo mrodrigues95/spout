@@ -50,6 +50,7 @@ export interface Styles {
 
 export type ButtonOrLinkProps = {
   preserveRedirect?: boolean;
+  replace?: boolean;
   leftIcon?: ReactElement;
   rightIcon?: ReactElement;
   isIconButton?: boolean;
@@ -67,7 +68,8 @@ export const ButtonOrLink = forwardRef<
   (
     {
       href,
-      preserveRedirect,
+      replace = false,
+      preserveRedirect = false,
       size = 'md',
       variant = 'default',
       isIconButton = false,
@@ -124,7 +126,7 @@ export const ButtonOrLink = forwardRef<
           : href!;
 
       return (
-        <Link href={finalHref} passHref>
+        <Link href={finalHref} passHref replace>
           {content}
         </Link>
       );

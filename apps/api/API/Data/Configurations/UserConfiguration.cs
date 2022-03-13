@@ -40,6 +40,10 @@ namespace API.Data.Configurations {
                 .HasDefaultValueSql("timezone('UTC', now())")
                 .IsRequired();
 
+            builder.HasMany(u => u.EmailChanges)
+                .WithOne(uec => uec.User!)
+                .HasForeignKey(uec => uec.UserId);
+
             builder.HasMany(u => u.Classrooms)
                 .WithOne(uc => uc.User!)
                 .HasForeignKey(uc => uc.UserId);

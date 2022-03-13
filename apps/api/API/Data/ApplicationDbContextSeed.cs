@@ -30,7 +30,7 @@ namespace API.Data {
 
                 if (!await userManager.Users.AnyAsync()) {
                     foreach (User user in GetPreconfiguredUsers(context)) {
-                        await userManager.CreateAsync(user, "rootdev");
+                        await userManager.CreateAsync(user, "spoutrootdev");
                     }
                     await context.SaveChangesAsync();
                 }
@@ -95,35 +95,30 @@ namespace API.Data {
             return new List<User>() {
                 new User {
                     Name = "root",
-                    UserName = "root@test.com",
                     Email = "root@test.com",
                     ProfileColor = UserProfileColor.SKY,
                     State = GetState(context)
                 },
                 new User {
                     Name = "Marcus Rodrigues",
-                    UserName = "mrodrigues@test.com",
-                    Email = "mrodrigues@test.com",
+                    Email = "marcus.rodrigues95@gmail.com",
                     ProfileColor = UserProfileColor.GREEN,
                     State = GetState(context)
                 },
                 new User {
                     Name = "John Doe",
-                    UserName = "jdoe@test.com",
                     Email = "jdoe@test.com",
                     ProfileColor = UserProfileColor.ORANGE,
                     State = GetState(context)
                 },
                 new User {
                     Name = "Debbie Ray",
-                    UserName = "dray@test.com",
                     Email = "dray@test.com",
                     ProfileColor = UserProfileColor.ROSE,
                     State = GetState(context)
                 },
                 new User {
                     Name = "Heather Dook",
-                    UserName = "hdook@test.com",
                     Email = "hdook@test.com",
                     ProfileColor = UserProfileColor.PURPLE,
                     State = GetState(context)

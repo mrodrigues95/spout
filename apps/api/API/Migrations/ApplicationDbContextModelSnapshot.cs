@@ -784,6 +784,64 @@ namespace API.Migrations
                     b.ToTable("users");
                 });
 
+            modelBuilder.Entity("API.Data.Entities.UserEmailChange", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("timezone('UTC', now())");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<string>("NewEmail")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("new_email");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("token");
+
+                    b.Property<string>("TokenEncoded")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("token_encoded");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("timezone('UTC', now())");
+
+                    b.Property<int?>("UserId")
+                        .IsRequired()
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_email_changes");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_user_email_changes_user_id");
+
+                    b.HasIndex("Token", "UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_email_changes_token_user_id");
+
+                    b.ToTable("user_email_changes");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
                 {
                     b.Property<int>("Id")
@@ -1168,6 +1226,18 @@ namespace API.Migrations
                     b.Navigation("State");
                 });
 
+            modelBuilder.Entity("API.Data.Entities.UserEmailChange", b =>
+                {
+                    b.HasOne("API.Data.Entities.User", "User")
+                        .WithMany("EmailChanges")
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("fk_user_email_changes_users_user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -1282,6 +1352,8 @@ namespace API.Migrations
             modelBuilder.Entity("API.Data.Entities.User", b =>
                 {
                     b.Navigation("Classrooms");
+
+                    b.Navigation("EmailChanges");
 
                     b.Navigation("FileUploads");
 
