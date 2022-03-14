@@ -7,7 +7,7 @@ namespace API.Data.Entities {
         public int UserId { get; set; }
         public User? User { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime ExpiresAt { get; set; } = (DateTime.UtcNow).AddDays(14);
+        public DateTime ExpiresAt { get; set; } = (DateTime.UtcNow).AddDays(7);
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }

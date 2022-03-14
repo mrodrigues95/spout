@@ -8,10 +8,10 @@ namespace API.Data.Configurations {
             builder.HasKey(d => d.Id);
 
             builder.Property(d => d.CreatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("now()");
 
             builder.Property(d => d.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("now()");
 
             builder.HasOne(d => d.DeletedFor)
                 .WithMany(dlt => dlt!.DelLogs)

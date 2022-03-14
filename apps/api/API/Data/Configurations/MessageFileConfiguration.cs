@@ -8,10 +8,10 @@ namespace API.Data.Configurations {
             builder.HasKey(mf => new { mf.MessageId, mf.FileId });
 
             builder.Property(mf => mf.CreatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("now()");
 
             builder.Property(mf => mf.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("now()");
 
             builder.HasOne(mf => mf.Message)
                 .WithMany(m => m!.MessageFiles)

@@ -33,11 +33,11 @@ namespace API.Data.Configurations {
                 .IsRequired(false);
 
             builder.Property(u => u.CreatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())")
+                .HasDefaultValueSql("now()")
                 .IsRequired();
 
             builder.Property(u => u.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())")
+                .HasDefaultValueSql("now()")
                 .IsRequired();
 
             builder.HasMany(u => u.EmailChanges)

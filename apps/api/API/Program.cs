@@ -16,19 +16,19 @@ namespace API {
             var host = CreateHostBuilder(args).Build();
 
             using (var scope = host.Services.CreateScope())
-            using (var ctx = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>())
-            using (var conn = (NpgsqlConnection)ctx.Database.GetDbConnection()) {
+            using (var ctx = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>()) {
                 var services = scope.ServiceProvider;
                 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+                var conn = (NpgsqlConnection)ctx.Database.GetDbConnection();
+
                 try {
                     var userManager = services.GetRequiredService<UserManager<User>>();
                     await ctx.Database.MigrateAsync();
 
                     // Npgsql needs to reload the types for enums to work properly during seeding.
                     // https://www.npgsql.org/efcore/mapping/enum.html?tabs=tabid-1
-                    conn.Open();
+                    await conn.OpenAsync();
                     conn.ReloadTypes();
-                    conn.Close();
 
                     await ApplicationDbContextSeed.SeedDataAsync(ctx, userManager, loggerFactory);
                 } catch (Exception ex) {

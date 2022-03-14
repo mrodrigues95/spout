@@ -56,11 +56,11 @@ namespace API.Data.Configurations {
                 .IsRequired();
 
             builder.Property(f => f.CreatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())")
+                .HasDefaultValueSql("now()")
                 .IsRequired();
 
             builder.Property(f => f.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())")
+                .HasDefaultValueSql("now()")
                 .IsRequired();
 
             builder.Property(f => f.DeletedAt)

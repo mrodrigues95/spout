@@ -32,11 +32,11 @@ namespace API.Data.Configurations {
                 .IsRequired(false);
 
             builder.Property(d => d.CreatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())")
+                .HasDefaultValueSql("now()")
                 .IsRequired();
 
             builder.Property(d => d.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())")
+                .HasDefaultValueSql("now()")
                 .IsRequired();
 
             builder.HasIndex(d => new { d.CreatedById, d.ClassroomId });

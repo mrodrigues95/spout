@@ -7,7 +7,6 @@ using System.Web;
 using API.Common.Enums;
 using API.Data;
 using API.Data.Entities;
-using API.Extensions;
 using API.Infrastructure;
 using API.Schema.Mutations.Auth.Exceptions;
 using API.Schema.Mutations.Auth.Inputs;
@@ -34,15 +33,13 @@ namespace API.Schema.Mutations.Auth {
                 throw new ArgumentNullException(nameof(Environment));
         }
 
-        [UseApplicationDbContext]
         [Error(typeof(SignUpNewUserException))]
         public async Task<AuthPayload> SignUpAsync(
             SignUpInput input,
-            [ScopedService] ApplicationDbContext ctx,
-            [Service] UserManager<User> userManager,
-            [Service] SignInManager<User> signInManager,
-            [Service] ISessionManager sessionManager,
-            [Service] IEmailSender emailSender,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            ISessionManager sessionManager,
+            IEmailSender emailSender,
             CancellationToken cancellationToken) {
             var emailAlreadyExists = await userManager.FindByEmailAsync(input.Email);
             if (emailAlreadyExists is not null) throw new SignUpNewUserException();
@@ -56,18 +53,20 @@ namespace API.Schema.Mutations.Auth {
 
             var createUser = await userManager.CreateAsync(user, input.Password);
             if (!createUser.Succeeded) {
-                _logger.LogError("Unable to create new user.", createUser, user);
+                _logger.LogError("Unable to create new user for {user}. Result: {result}",
+                    user, createUser);
                 throw new SignUpNewUserException();
             }
 
             var loginUser = await signInManager.PasswordSignInAsync(user,
                 input.Password, true, false);
             if (!loginUser.Succeeded) {
-                _logger.LogError("Unable to sign in user.", loginUser, user);
+                _logger.LogError("Unable to sign in user for {user}. Result: {result}",
+                    user, loginUser);
                 throw new SignUpNewUserException();
             }
 
-            var session = await sessionManager.CreateAsync(user, ctx, cancellationToken);
+            var session = await sessionManager.CreateAsync(user, cancellationToken);
             if (session is null) {
                 _logger.LogError("Unable to refresh session.", user);
                 throw new SignUpNewUserException();
@@ -85,15 +84,13 @@ namespace API.Schema.Mutations.Auth {
             return new AuthPayload(user, session, true);
         }
 
-        [UseApplicationDbContext]
         [Error(typeof(LoginUserException))]
         public async Task<AuthPayload> LoginAsync(
             LoginInput input,
-            [ScopedService] ApplicationDbContext ctx,
-            [Service] UserManager<User> userManager,
-            [Service] SignInManager<User> signInManager,
-            [Service] ISessionManager sessionManager,
-            [Service] IEmailSender emailSender,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            ISessionManager sessionManager,
+            IEmailSender emailSender,
             CancellationToken cancellationToken) {
             var user = await userManager.FindByEmailAsync(input.Email);
             if (user is null) throw new LoginUserException();
@@ -103,7 +100,7 @@ namespace API.Schema.Mutations.Auth {
                 input.Password, true, false);
             if (!loginUser.Succeeded) throw new LoginUserException();
 
-            var session = await sessionManager.CreateAsync(user, ctx, cancellationToken);
+            var session = await sessionManager.CreateAsync(user, cancellationToken);
             if (session is null) {
                 _logger.LogError("Unable to refresh session.", user);
                 throw new LoginUserException();
@@ -125,11 +122,10 @@ namespace API.Schema.Mutations.Auth {
         }
 
         [Authorize]
-        [UseApplicationDbContext]
         public async Task<AuthPayload> LogoutAsync(
             LogoutInput input,
-            [ScopedService] ApplicationDbContext ctx,
-            [Service] SignInManager<User> signInManager,
+            ApplicationDbContext ctx,
+            SignInManager<User> signInManager,
             CancellationToken cancellationToken) {
             await signInManager.SignOutAsync();
 
@@ -141,34 +137,31 @@ namespace API.Schema.Mutations.Auth {
         }
 
         [Authorize]
-        [UseApplicationDbContext]
         [Error(typeof(UserNotFoundException))]
         [Error(typeof(IncorrectCurrentPasswordException))]
         [Error(typeof(SessionExpiredException))]
         public async Task<AuthPayload> ChangePasswordAsync(
             ChangePasswordInput input,
             ClaimsPrincipal userClaim,
-            [ScopedService] ApplicationDbContext ctx,
-            [Service] UserManager<User> userManager,
-            [Service] ISessionManager sessionManager,
-            [Service] IEmailSender emailSender,
+            UserManager<User> userManager,
+            ISessionManager sessionManager,
+            IEmailSender emailSender,
             CancellationToken cancellationToken) {
             var user = await userManager.GetUserAsync(userClaim);
             if (user is null) throw new UserNotFoundException();
 
             var session = await sessionManager.ValidateAsync(input.SessionId,
-                user, ctx, cancellationToken);
+                user, cancellationToken);
             if (session is null) throw new SessionExpiredException();
 
             var result = await userManager.ChangePasswordAsync(
                 user, input.CurrentPassword, input.NewPassword);
             if (!result.Succeeded) throw new IncorrectCurrentPasswordException();
 
-            await sessionManager.InvalidateExceptForAsync(session.Id,
-                user, ctx, cancellationToken);
+            await sessionManager.InvalidateExceptForAsync(session.Id, cancellationToken);
 
             user.UpdatedAt = DateTime.UtcNow;
-            await ctx.SaveChangesAsync(cancellationToken);
+            await userManager.UpdateAsync(user);
 
             //await emailSender.SendEmailAsync(
             //    toEmail: user.Email!,
@@ -183,13 +176,12 @@ namespace API.Schema.Mutations.Auth {
         }
 
         [Authorize]
-        [UseApplicationDbContext]
         [Error(typeof(UserNotFoundException))]
         [Error(typeof(EmailAlreadyVerifiedException))]
         public async Task<AuthPayload> GenerateEmailVerificationTokenAsync(
             [GlobalState] string userEmail,
-            [Service] UserManager<User> userManager,
-            [Service] IEmailSender emailSender) {
+            UserManager<User> userManager,
+            IEmailSender emailSender) {
             var user = await userManager.FindByEmailAsync(userEmail);
             if (user is null) throw new UserNotFoundException();
 
@@ -209,15 +201,14 @@ namespace API.Schema.Mutations.Auth {
         }
 
         [Authorize]
-        [UseApplicationDbContext]
         [Error(typeof(UserNotFoundException))]
         [Error(typeof(EmailAlreadyVerifiedException))]
         [Error(typeof(InvalidTokenException))]
         public async Task<AuthPayload> VerifyEmailAsync(
-            VerifyEmailInput input,
             [GlobalState] string userEmail,
-            [Service] UserManager<User> userManager,
-            [Service] IEmailSender emailSender) {
+            VerifyEmailInput input,
+            UserManager<User> userManager,
+            IEmailSender emailSender) {
             var user = await userManager.FindByEmailAsync(userEmail);
             if (user is null) throw new UserNotFoundException();
 
@@ -237,18 +228,17 @@ namespace API.Schema.Mutations.Auth {
         }
 
         [Authorize]
-        [UseApplicationDbContext]
         [Error(typeof(UserNotFoundException))]
         [Error(typeof(IncorrectCurrentPasswordException))]
         [Error(typeof(EmailAlreadyRegisteredException))]
         [Error(typeof(EmailNotVerifiedException))]
         public async Task<AuthPayload> GenerateChangeEmailTokenAsync(
-            GenerateChangeEmailTokenInput input,
             [GlobalState] string userEmail,
-            [Service] UserManager<User> userManager,
-            [Service] IEmailSender emailSender,
-            [ScopedService] ApplicationDbContext ctx,
-            CancellationToken cancellationToken) {
+            GenerateChangeEmailTokenInput input,
+            ApplicationDbContext ctx,
+            CancellationToken cancellationToken,
+            UserManager<User> userManager,
+            IEmailSender emailSender) {
             var user = await userManager.FindByEmailAsync(userEmail);
             if (user is null) throw new UserNotFoundException();
 
@@ -289,27 +279,24 @@ namespace API.Schema.Mutations.Auth {
         }
 
         [Authorize]
-        [UseApplicationDbContext]
         [Error(typeof(UserNotFoundException))]
         [Error(typeof(InvalidTokenException))]
         [Error(typeof(SessionExpiredException))]
         public async Task<AuthPayload> ChangeEmailAsync(
-            ChangeEmailInput input,
             [GlobalState] string userEmail,
-            [Service] UserManager<User> userManager,
-            [Service] SignInManager<User> signInManager,
-            [Service] IEmailSender emailSender,
-            [ScopedService] ApplicationDbContext ctx,
-            [Service] ISessionManager sessionManager,
-            CancellationToken cancellationToken) {
+            ChangeEmailInput input,
+            ApplicationDbContext ctx,
+            CancellationToken cancellationToken,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            IEmailSender emailSender,
+            ISessionManager sessionManager) {
             var user = await userManager.FindByEmailAsync(userEmail);
             if (user is null) throw new UserNotFoundException();
 
             var session = await sessionManager.ValidateAsync(input.SessionId,
-                user, ctx, cancellationToken);
+                user, cancellationToken);
             if (session is null) throw new SessionExpiredException();
-
-            var tokenDecoded = HttpUtility.UrlDecode(input.Token);
 
             var emailChange = await ctx.UserEmailChanges.SingleOrDefaultAsync(x =>
                 x.Token == input.Token
@@ -335,11 +322,13 @@ namespace API.Schema.Mutations.Auth {
             //       "If this wasn't you, please contact __ immediately.",
             //    tag: "Email Changes");
 
-            await sessionManager.InvalidateExceptForAsync(session.Id,
-                user, ctx, cancellationToken);
+            await sessionManager.InvalidateExceptForAsync(session.Id, cancellationToken);
 
             ctx.UserEmailChanges.Remove(emailChange);
             user.UpdatedAt = DateTime.UtcNow;
+            user.UserName = emailChange.NewEmail;
+            await userManager.UpdateAsync(user);
+            await userManager.UpdateNormalizedUserNameAsync(user);
             await ctx.SaveChangesAsync(cancellationToken);
 
             // The application cookie needs to be refreshed so that the user claims contain
@@ -350,17 +339,14 @@ namespace API.Schema.Mutations.Auth {
         }
 
         [Authorize]
-        [UseApplicationDbContext]
         [Error(typeof(SessionNotFoundException))]
         public async Task<AuthPayload> RefreshSessionAsync(
             RefreshSessionInput input,
             ClaimsPrincipal userClaim,
-            [ScopedService] ApplicationDbContext ctx,
-            [Service] UserManager<User> userManager,
-            [Service] ISessionManager sessionManager,
+            UserManager<User> userManager,
+            ISessionManager sessionManager,
             CancellationToken cancellationToken) {
-            var session = await sessionManager.RefreshAsync(input.SessionId,
-                ctx, cancellationToken);
+            var session = await sessionManager.RefreshAsync(input.SessionId, cancellationToken);
             if (session is null) throw new SessionNotFoundException();
 
             var user = await userManager.GetUserAsync(userClaim);

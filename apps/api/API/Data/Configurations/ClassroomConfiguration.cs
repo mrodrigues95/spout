@@ -18,12 +18,12 @@ namespace API.Data.Configurations {
                 .IsRequired();
 
             builder.Property(c => c.CreatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())")
+                .HasDefaultValueSql("now()")
                 .IsRequired();
 
             builder
                 .Property(c => c.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())")
+                .HasDefaultValueSql("now()")
                 .IsRequired();
 
             builder.HasMany(c => c.Users)

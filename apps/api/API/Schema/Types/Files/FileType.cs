@@ -76,8 +76,8 @@ namespace API.Schema.Types.Files {
             descriptor
                 .ImplementsNode()
                 .IdField(f => f.Id)
-                .ResolveNode((ctx, id) =>
-                    ctx.DataLoader<FileByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+                .ResolveNode((ctx, id)
+                    => ctx.DataLoader<FileByIdDataLoader>().LoadAsync(id, ctx.RequestAborted)!);
 
             descriptor
                 .Field(f => f.UploadedById)

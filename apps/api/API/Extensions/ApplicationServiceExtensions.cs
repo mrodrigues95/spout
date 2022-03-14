@@ -16,10 +16,6 @@ namespace API.Extensions {
                 //opt.LogTo(Console.WriteLine);
             });
 
-            services.AddScoped(p =>
-                p.GetRequiredService<IDbContextFactory<ApplicationDbContext>>()
-                    .CreateDbContext());
-
             services.AddControllers()
                 .AddFluentValidation(cfg => {
                     cfg.RegisterValidatorsFromAssemblyContaining<Startup>();
@@ -40,9 +36,14 @@ namespace API.Extensions {
 
             services.Configure<AzureStorageConfig>(config.GetSection("AzureStorageConfig"));
             services.Configure<PostmarkConfig>(config.GetSection("PostmarkConfig"));
-            services.AddScoped<IBlobService, BlobService>();
-            services.AddScoped<IEmailSender, EmailSender>();
-            services.AddScoped<ISessionManager, SessionManager>();
+
+            services.AddScoped(p =>
+                p.GetRequiredService<IDbContextFactory<ApplicationDbContext>>()
+                    .CreateDbContext());
+
+            services.AddTransient<IBlobService, BlobService>();
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<ISessionManager, SessionManager>();
 
             return services;
         }

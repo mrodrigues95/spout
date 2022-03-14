@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
+#nullable disable
+
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
@@ -18,34 +20,36 @@ namespace API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasPostgresEnum(null, "file_upload_status", new[] { "queued", "completed", "error", "ignored" })
-                .HasPostgresEnum(null, "message_event", new[] { "change_topic", "change_description", "pinned_message", "unpinned_message" })
-                .HasPostgresEnum(null, "user_profile_color", new[] { "sky", "pink", "green", "purple", "rose", "gray", "orange" })
-                .HasPostgresEnum(null, "whitelisted_file_extension", new[] { "aac", "csv", "pdf", "xls", "xlsx", "ppt", "pptx", "bmp", "gif", "jpeg", "jpg", "jpe", "png", "tiff", "tif", "txt", "text", "rtf", "doc", "docx", "dot", "dotx", "dwg", "dwf", "dxf", "mp3", "mp4", "wav", "avi", "mov", "mpeg", "wmv", "zip" })
-                .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.10")
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "file_upload_status", new[] { "queued", "completed", "error", "ignored" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "message_event", new[] { "change_topic", "change_description", "pinned_message", "unpinned_message" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "user_profile_color", new[] { "sky", "pink", "green", "purple", "rose", "gray", "orange" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "whitelisted_file_extension", new[] { "aac", "csv", "pdf", "xls", "xlsx", "ppt", "pptx", "bmp", "gif", "jpeg", "jpg", "jpe", "png", "tiff", "tif", "txt", "text", "rtf", "doc", "docx", "dot", "dotx", "dwg", "dwf", "dxf", "mp3", "mp4", "wav", "avi", "mov", "mpeg", "wmv", "zip" });
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("API.Data.Entities.Classroom", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int?>("DelLogId")
                         .HasColumnType("integer")
                         .HasColumnName("del_log_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
 
                     b.Property<Guid>("Guid")
@@ -64,9 +68,9 @@ namespace API.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.HasKey("Id")
                         .HasName("pk_classrooms");
@@ -77,7 +81,7 @@ namespace API.Migrations
                     b.HasIndex("StateId")
                         .HasDatabaseName("ix_classrooms_state_id");
 
-                    b.ToTable("classrooms");
+                    b.ToTable("classrooms", (string)null);
                 });
 
             modelBuilder.Entity("API.Data.Entities.ClassroomInvite", b =>
@@ -104,12 +108,12 @@ namespace API.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<DateTime?>("UsedAt")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("used_at");
 
                     b.HasKey("InviteId", "UserId", "ClassroomId")
@@ -121,7 +125,7 @@ namespace API.Migrations
                     b.HasIndex("UserId")
                         .HasDatabaseName("ix_classroom_invites_user_id");
 
-                    b.ToTable("classroom_invites");
+                    b.ToTable("classroom_invites", (string)null);
                 });
 
             modelBuilder.Entity("API.Data.Entities.ClassroomUser", b =>
@@ -142,15 +146,15 @@ namespace API.Migrations
 
                     b.Property<DateTime>("JoinedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("joined_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.HasKey("UserId", "ClassroomId")
                         .HasName("pk_classroom_users");
@@ -161,7 +165,7 @@ namespace API.Migrations
                     b.HasIndex("IsCreator")
                         .HasDatabaseName("ix_classroom_users_is_creator");
 
-                    b.ToTable("classroom_users");
+                    b.ToTable("classroom_users", (string)null);
                 });
 
             modelBuilder.Entity("API.Data.Entities.DelLog", b =>
@@ -169,14 +173,15 @@ namespace API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("DeletedForId")
                         .HasColumnType("integer")
@@ -184,9 +189,9 @@ namespace API.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.HasKey("Id")
                         .HasName("pk_del_logs");
@@ -194,7 +199,7 @@ namespace API.Migrations
                     b.HasIndex("DeletedForId")
                         .HasDatabaseName("ix_del_logs_deleted_for_id");
 
-                    b.ToTable("del_logs");
+                    b.ToTable("del_logs", (string)null);
                 });
 
             modelBuilder.Entity("API.Data.Entities.DelLogType", b =>
@@ -202,8 +207,9 @@ namespace API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -214,7 +220,7 @@ namespace API.Migrations
                     b.HasKey("Id")
                         .HasName("pk_del_log_types");
 
-                    b.ToTable("del_log_types");
+                    b.ToTable("del_log_types", (string)null);
                 });
 
             modelBuilder.Entity("API.Data.Entities.Discussion", b =>
@@ -222,8 +228,9 @@ namespace API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ClassroomId")
                         .HasColumnType("integer")
@@ -231,9 +238,9 @@ namespace API.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer")
@@ -244,7 +251,7 @@ namespace API.Migrations
                         .HasColumnName("del_log_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
 
                     b.Property<string>("Description")
@@ -273,9 +280,9 @@ namespace API.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.HasKey("Id")
                         .HasName("pk_discussions");
@@ -292,7 +299,7 @@ namespace API.Migrations
                     b.HasIndex("CreatedById", "ClassroomId")
                         .HasDatabaseName("ix_discussions_created_by_id_classroom_id");
 
-                    b.ToTable("discussions");
+                    b.ToTable("discussions", (string)null);
                 });
 
             modelBuilder.Entity("API.Data.Entities.File", b =>
@@ -300,8 +307,9 @@ namespace API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BlobName")
                         .IsRequired()
@@ -321,12 +329,12 @@ namespace API.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
 
                     b.Property<string>("ETag")
@@ -377,9 +385,9 @@ namespace API.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<FileUploadStatus>("UploadStatus")
                         .HasMaxLength(255)
@@ -400,11 +408,11 @@ namespace API.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_files_blob_name_container_name");
 
-                    b.ToTable("files");
-
-                    b.HasCheckConstraint("ck_content_length", "content_length > 0");
+                    b.ToTable("files", (string)null);
 
                     b.HasCheckConstraint("ck_container_name", "length(container_name) >= 3 AND length(container_name) <= 63");
+
+                    b.HasCheckConstraint("ck_content_length", "content_length > 0");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Invite", b =>
@@ -412,8 +420,9 @@ namespace API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -423,12 +432,12 @@ namespace API.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<DateTime?>("ExpiresAt")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("expires_at");
 
                     b.Property<int?>("MaxAge")
@@ -441,9 +450,9 @@ namespace API.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<short>("Uses")
                         .ValueGeneratedOnAdd()
@@ -458,11 +467,11 @@ namespace API.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_invites_code");
 
-                    b.ToTable("invites");
-
-                    b.HasCheckConstraint("ck_uses", "uses >= 0");
+                    b.ToTable("invites", (string)null);
 
                     b.HasCheckConstraint("ck_max_uses", "max_uses >= 0 AND max_uses <= 100");
+
+                    b.HasCheckConstraint("ck_uses", "uses >= 0");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Message", b =>
@@ -470,8 +479,9 @@ namespace API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -483,9 +493,9 @@ namespace API.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer")
@@ -496,7 +506,7 @@ namespace API.Migrations
                         .HasColumnName("del_log_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
 
                     b.Property<int>("DiscussionId")
@@ -518,7 +528,7 @@ namespace API.Migrations
                         .HasColumnName("parent_message_id");
 
                     b.Property<DateTime?>("PinnedAt")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("pinned_at");
 
                     b.Property<int?>("PinnedById")
@@ -527,9 +537,9 @@ namespace API.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.HasKey("Id")
                         .HasName("pk_messages");
@@ -549,7 +559,7 @@ namespace API.Migrations
                     b.HasIndex("CreatedById", "DiscussionId")
                         .HasDatabaseName("ix_messages_created_by_id_discussion_id");
 
-                    b.ToTable("messages");
+                    b.ToTable("messages", (string)null);
                 });
 
             modelBuilder.Entity("API.Data.Entities.MessageFile", b =>
@@ -564,15 +574,15 @@ namespace API.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.HasKey("MessageId", "FileId")
                         .HasName("pk_message_files");
@@ -580,7 +590,7 @@ namespace API.Migrations
                     b.HasIndex("FileId")
                         .HasDatabaseName("ix_message_files_file_id");
 
-                    b.ToTable("message_files");
+                    b.ToTable("message_files", (string)null);
                 });
 
             modelBuilder.Entity("API.Data.Entities.Session", b =>
@@ -588,20 +598,21 @@ namespace API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<DateTime>("ExpiresAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("expires_at")
-                        .HasDefaultValueSql("timezone('UTC', now() + INTERVAL '7 DAYS')");
+                        .HasDefaultValueSql("now() + INTERVAL '7 DAYS'");
 
                     b.Property<Guid>("Guid")
                         .HasColumnType("uuid")
@@ -609,9 +620,9 @@ namespace API.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer")
@@ -623,7 +634,7 @@ namespace API.Migrations
                     b.HasIndex("UserId")
                         .HasDatabaseName("ix_sessions_user_id");
 
-                    b.ToTable("sessions");
+                    b.ToTable("sessions", (string)null);
                 });
 
             modelBuilder.Entity("API.Data.Entities.State", b =>
@@ -631,14 +642,15 @@ namespace API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -648,14 +660,14 @@ namespace API.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.HasKey("Id")
                         .HasName("pk_states");
 
-                    b.ToTable("states");
+                    b.ToTable("states", (string)null);
                 });
 
             modelBuilder.Entity("API.Data.Entities.User", b =>
@@ -663,8 +675,9 @@ namespace API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer")
@@ -687,9 +700,9 @@ namespace API.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -759,9 +772,9 @@ namespace API.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -781,7 +794,7 @@ namespace API.Migrations
                     b.HasIndex("StateId")
                         .HasDatabaseName("ix_users_state_id");
 
-                    b.ToTable("users");
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("API.Data.Entities.UserEmailChange", b =>
@@ -789,17 +802,18 @@ namespace API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("expires_at");
 
                     b.Property<string>("NewEmail")
@@ -820,9 +834,9 @@ namespace API.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at")
-                        .HasDefaultValueSql("timezone('UTC', now())");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int?>("UserId")
                         .IsRequired()
@@ -839,7 +853,7 @@ namespace API.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_user_email_changes_token_user_id");
 
-                    b.ToTable("user_email_changes");
+                    b.ToTable("user_email_changes", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -847,8 +861,9 @@ namespace API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -872,7 +887,7 @@ namespace API.Migrations
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("roles");
+                    b.ToTable("roles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -880,8 +895,9 @@ namespace API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("text")
@@ -901,7 +917,7 @@ namespace API.Migrations
                     b.HasIndex("RoleId")
                         .HasDatabaseName("ix_role_claims_role_id");
 
-                    b.ToTable("role_claims");
+                    b.ToTable("role_claims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
@@ -909,8 +925,9 @@ namespace API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("text")
@@ -930,7 +947,7 @@ namespace API.Migrations
                     b.HasIndex("UserId")
                         .HasDatabaseName("ix_user_claims_user_id");
 
-                    b.ToTable("user_claims");
+                    b.ToTable("user_claims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
@@ -959,7 +976,7 @@ namespace API.Migrations
                     b.HasIndex("UserId")
                         .HasDatabaseName("ix_user_logins_user_id");
 
-                    b.ToTable("user_logins");
+                    b.ToTable("user_logins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
@@ -978,7 +995,7 @@ namespace API.Migrations
                     b.HasIndex("RoleId")
                         .HasDatabaseName("ix_user_roles_role_id");
 
-                    b.ToTable("user_roles");
+                    b.ToTable("user_roles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -1004,7 +1021,7 @@ namespace API.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name")
                         .HasName("pk_users_tokens");
 
-                    b.ToTable("users_tokens");
+                    b.ToTable("users_tokens", (string)null);
                 });
 
             modelBuilder.Entity("API.Data.Entities.Classroom", b =>
@@ -1017,9 +1034,9 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.State", "State")
                         .WithMany("Classrooms")
                         .HasForeignKey("StateId")
-                        .HasConstraintName("fk_classrooms_states_state_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_classrooms_states_state_id");
 
                     b.Navigation("DelLog");
 
@@ -1031,23 +1048,23 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.Classroom", "Classroom")
                         .WithMany("Invites")
                         .HasForeignKey("ClassroomId")
-                        .HasConstraintName("fk_classroom_invites_classrooms_classroom_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_classroom_invites_classrooms_classroom_id");
 
                     b.HasOne("API.Data.Entities.Invite", "Invite")
                         .WithMany("Logs")
                         .HasForeignKey("InviteId")
-                        .HasConstraintName("fk_classroom_invites_invites_invite_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_classroom_invites_invites_invite_id");
 
                     b.HasOne("API.Data.Entities.User", "User")
                         .WithMany("Invites")
                         .HasForeignKey("UserId")
-                        .HasConstraintName("fk_classroom_invites_users_user_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_classroom_invites_users_user_id");
 
                     b.Navigation("Classroom");
 
@@ -1061,16 +1078,16 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.Classroom", "Classroom")
                         .WithMany("Users")
                         .HasForeignKey("ClassroomId")
-                        .HasConstraintName("fk_classroom_users_classrooms_classroom_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_classroom_users_classrooms_classroom_id");
 
                     b.HasOne("API.Data.Entities.User", "User")
                         .WithMany("Classrooms")
                         .HasForeignKey("UserId")
-                        .HasConstraintName("fk_classroom_users_users_user_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_classroom_users_users_user_id");
 
                     b.Navigation("Classroom");
 
@@ -1082,9 +1099,9 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.DelLogType", "DeletedFor")
                         .WithMany("DelLogs")
                         .HasForeignKey("DeletedForId")
-                        .HasConstraintName("fk_del_logs_del_log_types_deleted_for_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_del_logs_del_log_types_deleted_for_id");
 
                     b.Navigation("DeletedFor");
                 });
@@ -1094,16 +1111,16 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.Classroom", "Classroom")
                         .WithMany("Discussions")
                         .HasForeignKey("ClassroomId")
-                        .HasConstraintName("fk_discussions_classrooms_classroom_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_discussions_classrooms_classroom_id");
 
                     b.HasOne("API.Data.Entities.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
-                        .HasConstraintName("fk_discussions_users_created_by_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_discussions_users_created_by_id");
 
                     b.HasOne("API.Data.Entities.DelLog", "DelLog")
                         .WithMany("DeletedDiscussions")
@@ -1113,9 +1130,9 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.State", "State")
                         .WithMany("Discussions")
                         .HasForeignKey("StateId")
-                        .HasConstraintName("fk_discussions_states_state_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_discussions_states_state_id");
 
                     b.Navigation("Classroom");
 
@@ -1131,9 +1148,9 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.User", "UploadedBy")
                         .WithMany("FileUploads")
                         .HasForeignKey("UploadedById")
-                        .HasConstraintName("fk_files_users_uploaded_by_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_files_users_uploaded_by_id");
 
                     b.Navigation("UploadedBy");
                 });
@@ -1143,9 +1160,9 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.User", "CreatedBy")
                         .WithMany("Messages")
                         .HasForeignKey("CreatedById")
-                        .HasConstraintName("fk_messages_users_created_by_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_messages_users_created_by_id");
 
                     b.HasOne("API.Data.Entities.DelLog", "DelLog")
                         .WithMany("DeletedMessages")
@@ -1155,9 +1172,9 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.Discussion", "Discussion")
                         .WithMany("Messages")
                         .HasForeignKey("DiscussionId")
-                        .HasConstraintName("fk_messages_discussions_discussion_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_messages_discussions_discussion_id");
 
                     b.HasOne("API.Data.Entities.Message", "ParentMessage")
                         .WithMany("MessageLinks")
@@ -1167,8 +1184,8 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.User", "PinnedBy")
                         .WithMany("PinnedMessages")
                         .HasForeignKey("PinnedById")
-                        .HasConstraintName("fk_messages_users_pinned_by_id")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_messages_users_pinned_by_id");
 
                     b.Navigation("CreatedBy");
 
@@ -1186,16 +1203,16 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.File", "File")
                         .WithMany("MessageFiles")
                         .HasForeignKey("FileId")
-                        .HasConstraintName("fk_message_files_files_file_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_message_files_files_file_id");
 
                     b.HasOne("API.Data.Entities.Message", "Message")
                         .WithMany("MessageFiles")
                         .HasForeignKey("MessageId")
-                        .HasConstraintName("fk_message_files_messages_message_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_message_files_messages_message_id");
 
                     b.Navigation("File");
 
@@ -1207,9 +1224,9 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.User", "User")
                         .WithMany("Sessions")
                         .HasForeignKey("UserId")
-                        .HasConstraintName("fk_sessions_users_user_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_sessions_users_user_id");
 
                     b.Navigation("User");
                 });
@@ -1219,9 +1236,9 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.State", "State")
                         .WithMany("Users")
                         .HasForeignKey("StateId")
-                        .HasConstraintName("fk_users_states_state_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_users_states_state_id");
 
                     b.Navigation("State");
                 });
@@ -1231,9 +1248,9 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.User", "User")
                         .WithMany("EmailChanges")
                         .HasForeignKey("UserId")
-                        .HasConstraintName("fk_user_email_changes_users_user_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_user_email_changes_users_user_id");
 
                     b.Navigation("User");
                 });
@@ -1243,9 +1260,9 @@ namespace API.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .HasConstraintName("fk_role_claims_asp_net_roles_role_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_role_claims_asp_net_roles_role_id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
@@ -1253,9 +1270,9 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .HasConstraintName("fk_user_claims_users_user_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_user_claims_users_user_id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
@@ -1263,9 +1280,9 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .HasConstraintName("fk_user_logins_users_user_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_user_logins_users_user_id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
@@ -1273,16 +1290,16 @@ namespace API.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .HasConstraintName("fk_user_roles_asp_net_roles_role_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_user_roles_asp_net_roles_role_id");
 
                     b.HasOne("API.Data.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .HasConstraintName("fk_user_roles_users_user_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_user_roles_users_user_id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -1290,9 +1307,9 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .HasConstraintName("fk_users_tokens_users_user_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_users_tokens_users_user_id");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Classroom", b =>

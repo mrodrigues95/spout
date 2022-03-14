@@ -11,10 +11,10 @@ namespace API.Data.Configurations {
                 .HasDefaultValue(false);
 
             builder.Property(cu => cu.JoinedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("now()");
 
             builder.Property(cu => cu.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("now()");
 
             builder.HasOne(cu => cu.User)
                 .WithMany(u => u!.Classrooms)

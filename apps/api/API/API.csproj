@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web" ToolsVersion="Current">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UserSecretsId>75f24b1f-1ff2-4145-b099-e4edafe68cfc</UserSecretsId>
     <FileUpgradeFlags>
@@ -11,25 +11,25 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.5.0" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.10.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.11.0" />
     <PackageReference Include="CSharpVitamins.ShortGuid" Version="2.0.0" />
-    <PackageReference Include="EFCore.NamingConventions" Version="5.0.2" />
+    <PackageReference Include="EFCore.NamingConventions" Version="6.0.0" />
     <PackageReference Include="FairyBread" Version="9.0.0-rc.1" />
-    <PackageReference Include="FluentValidation" Version="10.3.6" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.6" />
-    <PackageReference Include="HotChocolate.AspNetCore" Version="12.4.1" />
-    <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="12.4.1" />
-    <PackageReference Include="HotChocolate.Data" Version="12.4.1" />
-    <PackageReference Include="HotChocolate.Data.EntityFramework" Version="12.4.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.10" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.10">
+    <PackageReference Include="FluentValidation" Version="10.4.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="10.4.0" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="12.7.0" />
+    <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="12.7.0" />
+    <PackageReference Include="HotChocolate.Data" Version="12.7.0" />
+    <PackageReference Include="HotChocolate.Data.EntityFramework" Version="12.7.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.10" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.3" />
     <PackageReference Include="Postmark" Version="4.7.0" />
   </ItemGroup>
 </Project>

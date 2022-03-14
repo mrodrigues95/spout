@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using API.Data;
 using API.Data.Entities;
-using API.Extensions;
 using API.Schema.Mutations.Classrooms.Exceptions;
 using API.Schema.Mutations.Classrooms.Inputs;
 using CSharpVitamins;
@@ -19,11 +18,10 @@ namespace API.Schema.Mutations.Classrooms {
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class ClassroomMutations {
         [Authorize]
-        [UseApplicationDbContext]
         public async Task<Classroom> CreateClassroomAsync(
-            CreateClassroomInput input,
             [GlobalState] int userId,
-            [ScopedService] ApplicationDbContext ctx,
+            CreateClassroomInput input,
+            ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
             var classroom = new Classroom {
                 Name = input.Name,
@@ -43,13 +41,12 @@ namespace API.Schema.Mutations.Classrooms {
         }
 
         [Authorize]
-        [UseApplicationDbContext]
         [Error(typeof(ClassroomInviteExpiredException))]
         [Error(typeof(UserAlreadyInClassroomException))]
         public async Task<Classroom?> JoinClassroomAsync(
-            JoinClassroomInput input,
             [GlobalState] int userId,
-            [ScopedService] ApplicationDbContext ctx,
+            JoinClassroomInput input,
+            ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
             var classroomInvite = await ctx.ClassroomInvites
                 .Include(x => x.Invite)
@@ -95,11 +92,10 @@ namespace API.Schema.Mutations.Classrooms {
         }
 
         [Authorize]
-        [UseApplicationDbContext]
         public async Task<Invite> CreateClassroomInviteAsync(
-            CreateClassroomInviteInput input,
             [GlobalState] int userId,
-            [ScopedService] ApplicationDbContext ctx,
+            CreateClassroomInviteInput input,
+            ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
             if (input.Code != null) {
                 var classroomInvite = await ctx.ClassroomInvites

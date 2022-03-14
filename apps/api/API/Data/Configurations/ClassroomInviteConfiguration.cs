@@ -8,7 +8,7 @@ namespace API.Data.Configurations {
             builder.HasKey(ci => new { ci.InviteId, ci.UserId, ci.ClassroomId });
 
             builder.Property(i => i.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("now()");
 
             builder.HasOne(ci => ci.User)
                 .WithMany(u => u!.Invites)

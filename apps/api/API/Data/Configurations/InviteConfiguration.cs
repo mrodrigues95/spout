@@ -26,10 +26,10 @@ namespace API.Data.Configurations {
                 .HasDefaultValueSql(null);
 
             builder.Property(i => i.CreatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("now()");
 
             builder.Property(i => i.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("now()");
 
             builder.HasMany(i => i.Logs)
                 .WithOne(ui => ui.Invite!)

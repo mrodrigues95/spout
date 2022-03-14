@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using API.Data;
 using API.Data.Entities;
-using API.Extensions;
 using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
@@ -14,20 +13,19 @@ using Microsoft.EntityFrameworkCore;
 namespace API.Schema.Queries.Users {
     [ExtendObjectType(OperationTypeNames.Query)]
     public class UserQueries {
-        [UseApplicationDbContext]
         public async Task<User?> GetMeAsync(
             [GlobalState] int? userId,
-            [ScopedService] ApplicationDbContext context,
+            ApplicationDbContext context,
             CancellationToken cancellationToken) {
-            if (userId is null)
-                return null;
-            return await context.Users.Where(x => x.Id == userId).SingleOrDefaultAsync(cancellationToken);
+            if (userId is null) return null;
+
+            return await context.Users.Where(
+                x => x.Id == userId).SingleOrDefaultAsync(cancellationToken);
         }
 
         [Authorize]
-        [UseApplicationDbContext]
         public async Task<IEnumerable<User>> GetUsersAsync(
-            [ScopedService] ApplicationDbContext context,
+            ApplicationDbContext context,
             CancellationToken cancellationToken) =>
             await context.Users.ToListAsync(cancellationToken);
 

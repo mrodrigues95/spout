@@ -2,6 +2,9 @@ using System;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using API.Data;
+using API.Data.Entities;
+using API.Infrastructure;
 using API.Schema.Mutations.Auth;
 using API.Schema.Mutations.Classrooms;
 using API.Schema.Mutations.Discussions;
@@ -22,9 +25,11 @@ using API.Schema.Types.Sessions;
 using API.Schema.Types.Users;
 using HotChocolate;
 using HotChocolate.AspNetCore;
+using HotChocolate.Data;
 using HotChocolate.Execution;
 using HotChocolate.Types.Pagination;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -39,7 +44,32 @@ namespace API.Extensions {
             gql
                 .AddQueryType()
                 .AddMutationType()
-                .AddSubscriptionType();
+                .AddSubscriptionType()
+                .AddFiltering()
+                .AddSorting()
+                .AddProjections()
+                .AddAuthorization()
+                .AddMutationConventions()
+                .AddFairyBread()
+                .AddInMemorySubscriptions()
+                .AddGlobalObjectIdentification()
+                .AddQueryFieldToMutationPayloads()
+                .AddHttpRequestInterceptor<CustomHttpRequestInterceptor>()
+                .AddDiagnosticEventListener<CustomDiagnosticEventListener>();
+
+            gql
+                .SetPagingOptions(new PagingOptions { MaxPageSize = 50 })
+                .ModifyRequestOptions(opts => {
+                    opts.IncludeExceptionDetails = env == Environments.Development;
+                });
+
+            gql
+                .RegisterService<IEmailSender>()
+                .RegisterService<IBlobService>()
+                .RegisterService<ISessionManager>()
+                .RegisterService<UserManager<User>>()
+                .RegisterService<SignInManager<User>>()
+                .RegisterDbContext<ApplicationDbContext>(DbContextKind.Pooled);
 
             gql
                 .AddTypeExtension<UserQueries>()
@@ -84,23 +114,6 @@ namespace API.Extensions {
                 .AddType<FileType>()
                 .AddType<FileUploadStatusType>()
                 .AddType<WhitelistedFileExtensionType>();
-
-            gql
-                .AddAuthorization()
-                .AddHttpRequestInterceptor<CustomHttpRequestInterceptor>()
-                .AddDiagnosticEventListener<CustomDiagnosticEventListener>()
-                .AddFairyBread()
-                .AddMutationConventions()
-                .AddInMemorySubscriptions()
-                .AddFiltering()
-                .AddSorting()
-                .AddProjections()
-                .AddGlobalObjectIdentification()
-                .AddQueryFieldToMutationPayloads()
-                .SetPagingOptions(new PagingOptions { MaxPageSize = 50 })
-                .ModifyRequestOptions(opts => {
-                    opts.IncludeExceptionDetails = env == Environments.Development;
-                });
 
             return services;
         }

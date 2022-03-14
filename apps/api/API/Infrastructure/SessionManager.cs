@@ -7,21 +7,25 @@ using API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Infrastructure {
-    public class SessionManager : ISessionManager {
+    public class SessionManager : ISessionManager, IAsyncDisposable {
+        private readonly ApplicationDbContext _ctx;
         private const int _sessionTTL = 7;
 
-        public async Task<Session> CreateAsync(
-            User user,
-            ApplicationDbContext ctx,
-            CancellationToken cancellationToken) {
+        public SessionManager(IDbContextFactory<ApplicationDbContext> dbContextFactory) {
+            _ctx = dbContextFactory.CreateDbContext();
+        }
+
+        public ValueTask DisposeAsync() => _ctx.DisposeAsync();
+
+        public async Task<Session> CreateAsync(User user, CancellationToken cancellationToken) {
             var session = new Session {
                 UpdatedAt = DateTime.UtcNow,
                 ExpiresAt = DateTime.UtcNow.AddDays(_sessionTTL),
                 UserId = user.Id
             };
 
-            ctx.Sessions.Add(session);
-            await ctx.SaveChangesAsync(cancellationToken);
+            _ctx.Sessions.Add(session);
+            await _ctx.SaveChangesAsync(cancellationToken);
 
             return session;
         }
@@ -29,9 +33,8 @@ namespace API.Infrastructure {
         public async Task<Session?> ValidateAsync(
             int sessionId,
             User user,
-            ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
-            var session = await ctx.Sessions.SingleOrDefaultAsync(x =>
+            var session = await _ctx.Sessions.SingleOrDefaultAsync(x =>
                 x.Id == sessionId
                 && x.UserId == user.Id, cancellationToken);
 
@@ -42,28 +45,23 @@ namespace API.Infrastructure {
             return session;
         }
 
-        public async Task<Session?> RefreshAsync(
-            int sessionId,
-            ApplicationDbContext ctx,
-            CancellationToken cancellationToken) {
-            var session = await ctx.Sessions.FindAsync(
+        public async Task<Session?> RefreshAsync(int sessionId, CancellationToken cancellationToken) {
+            var session = await _ctx.Sessions.FindAsync(
                 new object[] { sessionId },
                 cancellationToken);
             if (session is null) return null;
 
             session.ExpiresAt = DateTime.UtcNow.AddDays(_sessionTTL);
             session.UpdatedAt = DateTime.UtcNow;
-            await ctx.SaveChangesAsync(cancellationToken);
+            await _ctx.SaveChangesAsync(cancellationToken);
             return session;
         }
 
         public async Task<bool> InvalidateExceptForAsync(
             int sessionId,
-            User user,
-            ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
-            ctx.Sessions.RemoveRange(ctx.Sessions.Where(x => x.Id != sessionId));
-            var success = await ctx.SaveChangesAsync(cancellationToken) > 0;
+            _ctx.Sessions.RemoveRange(_ctx.Sessions.Where(x => x.Id != sessionId));
+            var success = await _ctx.SaveChangesAsync(cancellationToken) > 0;
             return success;
         }
     }

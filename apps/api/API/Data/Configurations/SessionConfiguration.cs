@@ -14,15 +14,15 @@ namespace API.Data.Configurations {
                 .IsRequired();
 
             builder.Property(s => s.CreatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())")
+                .HasDefaultValueSql("now()")
                 .IsRequired();
 
             builder.Property(s => s.ExpiresAt)
-                .HasDefaultValueSql("timezone('UTC', now() + INTERVAL '7 DAYS')")
+                .HasDefaultValueSql("now() + INTERVAL '7 DAYS'")
                 .IsRequired();
 
             builder.Property(s => s.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())")
+                .HasDefaultValueSql("now()")
                 .IsRequired();
 
             builder.HasIndex(s => s.UserId);

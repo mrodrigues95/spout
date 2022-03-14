@@ -21,7 +21,8 @@ namespace API.Schema.Types.Sessions {
             descriptor
                 .ImplementsNode()
                 .IdField(s => s.Id)
-                .ResolveNode((ctx, id) => ctx.DataLoader<SessionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+                .ResolveNode((ctx, id)
+                    => ctx.DataLoader<SessionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted)!);
 
             descriptor
                 .Field(s => s.Guid)

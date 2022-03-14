@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Web;
 using API.Data;
 using API.Data.Entities;
-using API.Extensions;
 using API.Infrastructure;
 using API.Schema.Mutations.Files.Exceptions;
 using API.Schema.Mutations.Files.Inputs;
@@ -58,14 +57,13 @@ namespace API.Schema.Mutations.Files {
         }
 
         [Authorize]
-        [UseApplicationDbContext]
         [Error(typeof(GenerateSignatureException))]
         [Error(typeof(ParseSignatureException))]
         public async Task<GenerateSASPayload> GenerateUploadSASAsync(
-            GenerateUploadSASInput input,
             [GlobalState] int userId,
-            [Service] IBlobService blob,
-            [ScopedService] ApplicationDbContext ctx,
+            GenerateUploadSASInput input,
+            IBlobService blob,
+            ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
             var blobName = Guid.NewGuid().ToString();
             var sas = await blob.GetBlobSasUri(blobName,
@@ -106,13 +104,12 @@ namespace API.Schema.Mutations.Files {
         }
 
         [Authorize]
-        [UseApplicationDbContext]
         [Error(typeof(FileNotFoundException))]
         [Error(typeof(GenerateSignatureException))]
         public async Task<GenerateSASPayload> GenerateDownloadSASAsync(
             GenerateDownloadSASInput input,
-            [Service] IBlobService blob,
-            [ScopedService] ApplicationDbContext ctx,
+            IBlobService blob,
+            ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
             var file = await ctx.Files.FindAsync(
                 new object[] { input.FileId },
@@ -131,14 +128,13 @@ namespace API.Schema.Mutations.Files {
         }
 
         [Authorize]
-        [UseApplicationDbContext]
         [Error(typeof(BlobNotFoundException))]
         [Error(typeof(BlobPropertiesException))]
         [Error(typeof(FileNotFoundException))]
         public async Task<File?> CompleteUploadAsync(
             CompleteUploadInput input,
-            [Service] IBlobService blob,
-            [ScopedService] ApplicationDbContext ctx,
+            IBlobService blob,
+            ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
             var file = await ctx.Files.FindAsync(
                 new object[] { input.FileId },
@@ -177,14 +173,13 @@ namespace API.Schema.Mutations.Files {
         }
 
         [Authorize]
-        [UseApplicationDbContext]
         [Error(typeof(FileNotFoundException))]
         [Error(typeof(BlobNotFoundException))]
         [Error(typeof(BlobDeletionException))]
         public async Task<File?> DeleteFileAsync(
             DeleteFileInput input,
-            [Service] IBlobService blob,
-            [ScopedService] ApplicationDbContext ctx,
+            IBlobService blob,
+            ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
             var file = await ctx.Files.FindAsync(
                 new object[] { input.FileId },

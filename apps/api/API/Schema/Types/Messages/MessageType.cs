@@ -29,8 +29,8 @@ namespace API.Schema.Types.Messages {
             descriptor
                 .ImplementsNode()
                 .IdField(m => m.Id)
-                .ResolveNode((ctx, id) =>
-                    ctx.DataLoader<MessageByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+                .ResolveNode((ctx, id)
+                    => ctx.DataLoader<MessageByIdDataLoader>().LoadAsync(id, ctx.RequestAborted)!);
 
             descriptor
                 .Field(m => m.Content)

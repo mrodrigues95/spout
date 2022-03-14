@@ -24,11 +24,11 @@ namespace API.Data.Configurations {
                 .IsRequired();
 
             builder.Property(u => u.CreatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())")
+                .HasDefaultValueSql("now()")
                 .IsRequired();
 
             builder.Property(u => u.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())")
+                .HasDefaultValueSql("now()")
                 .IsRequired();
 
             builder.HasIndex(u => new { u.Token, u.UserId })

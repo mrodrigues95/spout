@@ -40,7 +40,8 @@ namespace API.Schema.Types.Users {
             descriptor
                 .ImplementsNode()
                 .IdField(x => x.Id)
-                .ResolveNode((ctx, id) => ctx.DataLoader<UserByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+                .ResolveNode((ctx, id)
+                    => ctx.DataLoader<UserByIdDataLoader>().LoadAsync(id, ctx.RequestAborted)!);
 
             descriptor
                 .Field(u => u.Guid)

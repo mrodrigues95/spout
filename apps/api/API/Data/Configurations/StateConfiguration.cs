@@ -11,10 +11,10 @@ namespace API.Data.Configurations {
                 .HasMaxLength(35);
 
             builder.Property(s => s.CreatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("now()");
 
             builder.Property(s => s.UpdatedAt)
-                .HasDefaultValueSql("timezone('UTC', now())");
+                .HasDefaultValueSql("now()");
 
             builder.HasMany(s => s.Users)
                 .WithOne(u => u.State!)

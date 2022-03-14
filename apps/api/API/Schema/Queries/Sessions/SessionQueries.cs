@@ -3,8 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using API.Data;
 using API.Data.Entities;
-using API.Extensions;
-using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Data;
 using HotChocolate.Types;
@@ -14,14 +12,12 @@ namespace API.Schema.Queries.Sessions {
     [ExtendObjectType(OperationTypeNames.Query)]
     public class SessionQueries {
         [Authorize]
-        [UseApplicationDbContext]
         [UseFiltering]
         public IQueryable<Session> GetSessions(
-            [ScopedService] ApplicationDbContext ctx)
+            ApplicationDbContext ctx)
             => ctx.Sessions;
 
         [Authorize]
-        [UseApplicationDbContext]
         public Task<Session> GetSessionByIdAsync(
             [ID(nameof(Session))] int id,
             SessionByIdDataLoader sessionById,

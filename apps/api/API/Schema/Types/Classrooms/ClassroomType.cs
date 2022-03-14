@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using API.Data;
 using API.Data.Entities;
-using API.Extensions;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Discussions;
 using API.Schema.Queries.Users;
@@ -19,7 +18,8 @@ namespace API.Schema.Types.Classrooms {
             descriptor
                 .ImplementsNode()
                 .IdField(c => c.Id)
-                .ResolveNode((ctx, id) => ctx.DataLoader<ClassroomByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+                .ResolveNode((ctx, id)
+                    => ctx.DataLoader<ClassroomByIdDataLoader>().LoadAsync(id, ctx.RequestAborted)!);
 
             descriptor
                 .Field(c => c.Guid)
