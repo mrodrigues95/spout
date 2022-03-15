@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using API.Attributes;
 using API.Data;
 using API.Data.Entities;
 using API.Schema.Queries.Classrooms;
@@ -18,8 +19,8 @@ namespace API.Schema.Types.Classrooms {
             descriptor
                 .ImplementsNode()
                 .IdField(c => c.Id)
-                .ResolveNode((ctx, id)
-                    => ctx.DataLoader<ClassroomByIdDataLoader>().LoadAsync(id, ctx.RequestAborted)!);
+                .ResolveNode((ctx, id) =>
+                    ctx.DataLoader<ClassroomByIdDataLoader>().LoadAsync(id, ctx.RequestAborted)!);
 
             descriptor
                 .Field(c => c.Guid)
@@ -45,29 +46,32 @@ namespace API.Schema.Types.Classrooms {
             descriptor
                 .Field("createdBy")
                 .Type<NonNullType<UserType>>()
-                .ResolveWith<ClassroomResolvers>(x => x.GetCreatedByAsync(default!, default!, default!, default!, default!))
+                .ResolveWith<ClassroomResolvers>(x =>
+                    x.GetCreatedByAsync(default!, default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>();
 
             descriptor
                 .Field(c => c.Users)
-                .ResolveWith<ClassroomResolvers>(x => x.GetUsersAsync(default!, default!, default!, default!))
+                .ResolveWith<ClassroomResolvers>(x =>
+                    x.GetUsersAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .Name("users");
 
             descriptor
                 .Field(c => c.Discussions)
-                .ResolveWith<ClassroomResolvers>(x => x.GetDiscussionsAsync(default!, default!, default!, default!))
+                .ResolveWith<ClassroomResolvers>(x =>
+                    x.GetDiscussionsAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .Name("discussions");
         }
 
         private class ClassroomResolvers {
             public async Task<User> GetCreatedByAsync(
-            [Parent] Classroom classroom,
-            [ScopedService] ApplicationDbContext dbContext,
-            [GlobalState] int userId,
-            UserByIdDataLoader userById,
-            CancellationToken cancellationToken) {
+                [Parent] Classroom classroom,
+                [GlobalUserId] int userId,
+                ApplicationDbContext dbContext,
+                UserByIdDataLoader userById,
+                CancellationToken cancellationToken) {
                 var id = await dbContext.ClassroomUsers
                     .Where(cu => cu.IsCreator == true &&
                         cu.UserId == userId &&
@@ -81,7 +85,7 @@ namespace API.Schema.Types.Classrooms {
 
             public async Task<IEnumerable<User>> GetUsersAsync(
                 [Parent] Classroom classroom,
-                [ScopedService] ApplicationDbContext dbContext,
+                ApplicationDbContext dbContext,
                 UserByIdDataLoader userById,
                 CancellationToken cancellationToken) {
                 var userIds = await dbContext.Classrooms
@@ -95,7 +99,7 @@ namespace API.Schema.Types.Classrooms {
 
             public async Task<IEnumerable<Discussion>> GetDiscussionsAsync(
                 [Parent] Classroom classroom,
-                [ScopedService] ApplicationDbContext dbContext,
+                ApplicationDbContext dbContext,
                 DiscussionByIdDataLoader discussionById,
                 CancellationToken cancellationToken) {
                 var discussionIds = await dbContext.Classrooms

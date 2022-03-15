@@ -40,8 +40,8 @@ namespace API.Schema.Types.Users {
             descriptor
                 .ImplementsNode()
                 .IdField(x => x.Id)
-                .ResolveNode((ctx, id)
-                    => ctx.DataLoader<UserByIdDataLoader>().LoadAsync(id, ctx.RequestAborted)!);
+                .ResolveNode((ctx, id) =>
+                    ctx.DataLoader<UserByIdDataLoader>().LoadAsync(id, ctx.RequestAborted)!);
 
             descriptor
                 .Field(u => u.Guid)
@@ -79,14 +79,16 @@ namespace API.Schema.Types.Users {
             descriptor
                 .Field(x => x.Classrooms)
                 .Type<NonNullType<ListType<NonNullType<ClassroomType>>>>()
-                .ResolveWith<UserResolvers>(x => x.GetClassroomsAsync(default!, default!, default!, default!))
+                .ResolveWith<UserResolvers>(x =>
+                    x.GetClassroomsAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .Name("classrooms");
 
             descriptor
                 .Field(x => x.Sessions)
                 .Type<NonNullType<ListType<NonNullType<SessionType>>>>()
-                .ResolveWith<UserResolvers>(x => x.GetSessionsAsync(default!, default!, default!, default!))
+                .ResolveWith<UserResolvers>(x =>
+                    x.GetSessionsAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .Name("sessions");
         }
@@ -94,7 +96,7 @@ namespace API.Schema.Types.Users {
         private class UserResolvers {
             public async Task<IEnumerable<Classroom>> GetClassroomsAsync(
                 [Parent] User user,
-                [ScopedService] ApplicationDbContext dbContext,
+                ApplicationDbContext dbContext,
                 ClassroomByIdDataLoader classroomById,
                 CancellationToken cancellationToken) {
                 int[] classroomIds = await dbContext.Users
@@ -108,7 +110,7 @@ namespace API.Schema.Types.Users {
 
             public async Task<IEnumerable<Session>> GetSessionsAsync(
                 [Parent] User user,
-                [ScopedService] ApplicationDbContext dbContext,
+                ApplicationDbContext dbContext,
                 SessionByIdDataLoader sessionById,
                 CancellationToken cancellationToken) {
                 int[] sessionIds = await dbContext.Users

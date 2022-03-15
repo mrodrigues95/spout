@@ -33,8 +33,8 @@ namespace API.Schema.Types.Discussions {
             descriptor
                 .ImplementsNode()
                 .IdField(d => d.Id)
-                .ResolveNode((ctx, id)
-                    => ctx.DataLoader<DiscussionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted)!);
+                .ResolveNode((ctx, id) =>
+                    ctx.DataLoader<DiscussionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted)!);
 
             descriptor
                 .Field(d => d.Guid)
@@ -108,7 +108,7 @@ namespace API.Schema.Types.Discussions {
 
             public async Task<Connection<Message>> GetMessagesAsync(
                 [Parent] Discussion discussion,
-                [ScopedService] ApplicationDbContext dbContext,
+                ApplicationDbContext dbContext,
                 IResolverContext resolverCtx,
                 CancellationToken cancellationToken) {
                 var query = dbContext.Discussions

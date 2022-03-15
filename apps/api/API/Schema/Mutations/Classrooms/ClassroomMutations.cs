@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using API.Attributes;
 using API.Data;
 using API.Data.Entities;
 using API.Schema.Mutations.Classrooms.Exceptions;
@@ -19,7 +20,7 @@ namespace API.Schema.Mutations.Classrooms {
     public class ClassroomMutations {
         [Authorize]
         public async Task<Classroom> CreateClassroomAsync(
-            [GlobalState] int userId,
+            [GlobalUserId] int userId,
             CreateClassroomInput input,
             ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
@@ -44,7 +45,7 @@ namespace API.Schema.Mutations.Classrooms {
         [Error(typeof(ClassroomInviteExpiredException))]
         [Error(typeof(UserAlreadyInClassroomException))]
         public async Task<Classroom?> JoinClassroomAsync(
-            [GlobalState] int userId,
+            [GlobalUserId] int userId,
             JoinClassroomInput input,
             ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
@@ -93,7 +94,7 @@ namespace API.Schema.Mutations.Classrooms {
 
         [Authorize]
         public async Task<Invite> CreateClassroomInviteAsync(
-            [GlobalState] int userId,
+            [GlobalUserId] int userId,
             CreateClassroomInviteInput input,
             ApplicationDbContext ctx,
             CancellationToken cancellationToken) {

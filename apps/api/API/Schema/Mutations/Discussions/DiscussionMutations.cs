@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using API.Attributes;
 using API.Data;
 using API.Data.Entities;
 using API.Schema.Mutations.Discussions.Exceptions;
@@ -19,7 +20,7 @@ namespace API.Schema.Mutations.Discussions {
         [Authorize]
         [Error(typeof(DiscussionNotFoundException))]
         public async Task<Message?> SendDiscussionMessageAsync(
-            [GlobalState] int userId,
+            [GlobalUserId] int userId,
             [Service] ITopicEventSender sender,
             SendDiscussionMessageInput input,
             ApplicationDbContext ctx,
@@ -79,7 +80,7 @@ namespace API.Schema.Mutations.Discussions {
         [Error(typeof(DiscussionMessageNotFoundException))]
         [Error(typeof(DiscussionMessageAlreadyPinnedException))]
         public async Task<Message?> PinDiscussionMessageAsync(
-            [GlobalState] int userId,
+            [GlobalUserId] int userId,
             [Service] ITopicEventSender sender,
             PinDiscussionMessageInput input,
             ApplicationDbContext ctx,
@@ -120,7 +121,7 @@ namespace API.Schema.Mutations.Discussions {
         [Error(typeof(DiscussionMessageNotFoundException))]
         [Error(typeof(DiscussionMessageAlreadyNotPinnedException))]
         public async Task<Message?> UnpinDiscussionMessageAsync(
-            [GlobalState] int userId,
+            [GlobalUserId] int userId,
             [Service] ITopicEventSender sender,
             UnpinDiscussionMessageInput input,
             ApplicationDbContext ctx,
@@ -160,8 +161,8 @@ namespace API.Schema.Mutations.Discussions {
         [Authorize]
         [Error(typeof(ClassroomNotFoundException))]
         public async Task<Discussion?> CreateDiscussionAsync(
+            [GlobalUserId] int userId,
             CreateDiscussionInput input,
-            [GlobalState] int userId,
             ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
             var classroom = await ctx.Classrooms.FindAsync(
@@ -188,11 +189,11 @@ namespace API.Schema.Mutations.Discussions {
         [Authorize]
         [Error(typeof(DiscussionNotFoundException))]
         public async Task<Discussion?> UpdateDiscussionTopicAsync(
-        [GlobalState] int userId,
-        [Service] ITopicEventSender sender,
-        UpdateDiscussionTopicInput input,
-        ApplicationDbContext ctx,
-        CancellationToken cancellationToken) {
+            [GlobalUserId] int userId,
+            [Service] ITopicEventSender sender,
+            UpdateDiscussionTopicInput input,
+            ApplicationDbContext ctx,
+            CancellationToken cancellationToken) {
             var discussion = await ctx.Discussions.FindAsync(
                 new object[] { input.DiscussionId },
                 cancellationToken);
@@ -223,11 +224,11 @@ namespace API.Schema.Mutations.Discussions {
         [Authorize]
         [Error(typeof(DiscussionNotFoundException))]
         public async Task<Discussion?> UpdateDiscussionDescriptionAsync(
-        [GlobalState] int userId,
-        [Service] ITopicEventSender sender,
-        UpdateDiscussionDescriptionInput input,
-        ApplicationDbContext ctx,
-        CancellationToken cancellationToken) {
+            [GlobalUserId] int userId,
+            [Service] ITopicEventSender sender,
+            UpdateDiscussionDescriptionInput input,
+            ApplicationDbContext ctx,
+            CancellationToken cancellationToken) {
             var discussion = await ctx.Discussions.FindAsync(
                 new object[] { input.DiscussionId },
                 cancellationToken);

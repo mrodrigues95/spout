@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using API.Attributes;
 using API.Data;
 using API.Data.Entities;
 using API.Infrastructure;
@@ -60,7 +61,7 @@ namespace API.Schema.Mutations.Files {
         [Error(typeof(GenerateSignatureException))]
         [Error(typeof(ParseSignatureException))]
         public async Task<GenerateSASPayload> GenerateUploadSASAsync(
-            [GlobalState] int userId,
+            [GlobalUserId] int userId,
             GenerateUploadSASInput input,
             IBlobService blob,
             ApplicationDbContext ctx,

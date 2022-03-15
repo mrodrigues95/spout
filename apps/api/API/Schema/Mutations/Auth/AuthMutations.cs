@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using API.Attributes;
 using API.Common.Enums;
 using API.Data;
 using API.Data.Entities;
@@ -179,7 +180,7 @@ namespace API.Schema.Mutations.Auth {
         [Error(typeof(UserNotFoundException))]
         [Error(typeof(EmailAlreadyVerifiedException))]
         public async Task<AuthPayload> GenerateEmailVerificationTokenAsync(
-            [GlobalState] string userEmail,
+            [GlobalUserEmail] string userEmail,
             UserManager<User> userManager,
             IEmailSender emailSender) {
             var user = await userManager.FindByEmailAsync(userEmail);
@@ -205,7 +206,7 @@ namespace API.Schema.Mutations.Auth {
         [Error(typeof(EmailAlreadyVerifiedException))]
         [Error(typeof(InvalidTokenException))]
         public async Task<AuthPayload> VerifyEmailAsync(
-            [GlobalState] string userEmail,
+            [GlobalUserEmail] string userEmail,
             VerifyEmailInput input,
             UserManager<User> userManager,
             IEmailSender emailSender) {
@@ -233,7 +234,7 @@ namespace API.Schema.Mutations.Auth {
         [Error(typeof(EmailAlreadyRegisteredException))]
         [Error(typeof(EmailNotVerifiedException))]
         public async Task<AuthPayload> GenerateChangeEmailTokenAsync(
-            [GlobalState] string userEmail,
+            [GlobalUserEmail] string userEmail,
             GenerateChangeEmailTokenInput input,
             ApplicationDbContext ctx,
             CancellationToken cancellationToken,
@@ -283,7 +284,7 @@ namespace API.Schema.Mutations.Auth {
         [Error(typeof(InvalidTokenException))]
         [Error(typeof(SessionExpiredException))]
         public async Task<AuthPayload> ChangeEmailAsync(
-            [GlobalState] string userEmail,
+            [GlobalUserEmail] string userEmail,
             ChangeEmailInput input,
             ApplicationDbContext ctx,
             CancellationToken cancellationToken,

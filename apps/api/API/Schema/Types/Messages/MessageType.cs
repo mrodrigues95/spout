@@ -135,7 +135,7 @@ namespace API.Schema.Types.Messages {
 
             public async Task<IEnumerable<File>> GetAttachmentsAsync(
                 [Parent] Message message,
-                [ScopedService] ApplicationDbContext ctx,
+                ApplicationDbContext ctx,
                 FileByIdDataLoader fileById,
                 CancellationToken cancellationToken) {
                 int[] fileIds = await ctx.Messages
@@ -153,10 +153,10 @@ namespace API.Schema.Types.Messages {
             }
 
             public async Task<IEnumerable<Message>> GetTriggeredEventsAsync(
-            [Parent] Message message,
-            [ScopedService] ApplicationDbContext ctx,
-            MessageByIdDataLoader messageByIdDataLoader,
-            CancellationToken cancellationToken) {
+                [Parent] Message message,
+                ApplicationDbContext ctx,
+                MessageByIdDataLoader messageByIdDataLoader,
+                CancellationToken cancellationToken) {
                 int[] messageIds = await ctx.Messages
                     .Where(m => m.Id == message.Id)
                     .Include(m => m.MessageLinks)

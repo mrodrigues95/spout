@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using API.Attributes;
 using API.Data;
 using API.Data.Entities;
-using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
 using HotChocolate.Types.Relay;
@@ -14,7 +14,7 @@ namespace API.Schema.Queries.Users {
     [ExtendObjectType(OperationTypeNames.Query)]
     public class UserQueries {
         public async Task<User?> GetMeAsync(
-            [GlobalState] int? userId,
+            [GlobalUserId] int? userId,
             ApplicationDbContext context,
             CancellationToken cancellationToken) {
             if (userId is null) return null;
