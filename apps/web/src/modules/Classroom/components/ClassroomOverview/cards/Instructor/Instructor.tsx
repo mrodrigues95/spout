@@ -23,7 +23,7 @@ export default Instructor;
 //   return (
 //     <ClassroomContentCard
 //       title="Instructor"
-//       icon={<FontAwesomeIcon icon={faLaughBeam} className="text-yellow-500" />}
+//       icon={<FontAwesomeIcon icon={faLaughBeam} className="text-amber-500" />}
 //       description={`John Doe is your instructor for ${classroom.name}`}
 //       className="w-full"
 //     />

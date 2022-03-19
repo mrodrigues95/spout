@@ -21,12 +21,12 @@ const VARIANTS = {
       'text-sky-800 bg-sky-100 hover:bg-sky-200/75 hover:text-sky-900 active:text-sky-900 active:bg-sky-200 focus-visible:ring-sky-300',
   },
   success: {
-    container: 'bg-green-50',
-    title: 'text-green-800',
-    description: 'text-green-700',
-    icon: <FontAwesomeIcon icon={faCircleCheck} className="text-green-400" />,
+    container: 'bg-emerald-50',
+    title: 'text-emerald-800',
+    description: 'text-emerald-700',
+    icon: <FontAwesomeIcon icon={faCircleCheck} className="text-emerald-400" />,
     action:
-      'text-green-800 bg-green-100 hover:bg-green-200/75 hover:text-green-900 active:text-green-800 active:bg-green-200 focus-visible:ring-green-300',
+      'text-emerald-800 bg-emerald-100 hover:bg-emerald-200/75 hover:text-emerald-900 active:text-emerald-800 active:bg-emerald-200 focus-visible:ring-emerald-300',
   },
   warning: {
     container: 'bg-amber-50',

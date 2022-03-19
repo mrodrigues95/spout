@@ -49,7 +49,7 @@ const Attachment = ({ index, file }: AttachmentProps) => {
 
   return (
     <div className={clsx('space-y-3 p-2', isOdd ? 'bg-gray-100' : 'bg-white')}>
-      <div className="flex flex-grow-0 justify-between space-x-2">
+      <div className="flex grow-0 justify-between space-x-2">
         <div className="inline-flex min-w-0 items-center space-x-2">
           <FileIcon fileName={data.name} size="2x" />
           <div className="min-w-0">
@@ -81,11 +81,7 @@ const Attachment = ({ index, file }: AttachmentProps) => {
         </Tooltip>
       </div>
       <div className="flex items-center justify-between space-x-2">
-        <Text
-          size="xs"
-          className="flex-shrink-0 text-gray-900"
-          weight="semibold"
-        >
+        <Text size="xs" className="shrink-0 text-gray-900" weight="semibold">
           {format(new Date(data.createdAt), 'MMM d, yyyy')}
         </Text>
         <div className="inline-flex min-w-0 items-center space-x-1 ">

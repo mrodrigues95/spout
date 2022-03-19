@@ -118,7 +118,7 @@ export default Invite;
 //         aria-labelledby={labelId}
 //         aria-describedby={descId}
 //         title="Invite"
-//         icon={<FontAwesomeIcon icon={faEnvelope} className="text-green-600" />}
+//         icon={<FontAwesomeIcon icon={faEnvelope} className="text-emerald-600" />}
 //         description={`Invite people to ${classroom.name}`}
 //         className="col-start-2"
 //         onClick={() => setIsOpen(true)}

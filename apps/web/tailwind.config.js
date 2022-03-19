@@ -4,7 +4,7 @@ const { join } = require('path');
 
 module.exports = {
   presets: [require('../../tailwind.config')],
-  purge: [
+  content: [
     join(__dirname, './src/**/*.{js,ts,jsx,tsx}'),
     ...createGlobPatternsForDependencies(__dirname),
   ],
@@ -15,9 +15,6 @@ module.exports = {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       },
     },
-  },
-  variants: {
-    extend: {},
   },
   plugins: [],
 };

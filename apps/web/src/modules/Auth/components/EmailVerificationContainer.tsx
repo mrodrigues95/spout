@@ -43,7 +43,7 @@ const EmailVerificationContainer = ({
                 <FontAwesomeIcon
                   icon={faCheckCircle}
                   size="3x"
-                  className="mb-8 text-green-500"
+                  className="mb-8 text-emerald-500"
                 />
                 <Title as="h1" variant="h3">
                   Verified!
@@ -68,7 +68,7 @@ const EmailVerificationContainer = ({
                 <FontAwesomeIcon
                   icon={faCheckCircle}
                   size="3x"
-                  className="mb-8 text-green-500"
+                  className="mb-8 text-emerald-500"
                 />
                 <Title as="h1" variant="h3">
                   Verification email has been sent!

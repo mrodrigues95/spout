@@ -124,7 +124,7 @@ const ComposerAttachment = ({
               isFocused || isError
                 ? 'text-red-700'
                 : isUploaded
-                ? 'text-green-700'
+                ? 'text-emerald-700'
                 : null,
             )}
           >

@@ -42,7 +42,7 @@ const EditDiscussionMessage = () => {
   useKeyboardEvent('Escape', () => setIsEditing(false));
 
   return (
-    <div className="rounded-md bg-white p-4 sm:w-[30rem] md:w-[35rem] xl:w-[50rem]">
+    <div className="w-full rounded-md bg-white p-4">
       <Form form={form} onSubmit={onSubmit}>
         <Form.TextArea
           label="Edit Message"

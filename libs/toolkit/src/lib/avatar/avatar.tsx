@@ -16,8 +16,8 @@ const STYLES = {
   scheme: {
     sky: 'bg-sky-100 text-sky-600',
     pink: 'bg-pink-100 text-pink-600',
-    green: 'bg-green-100 text-green-600',
-    purple: 'bg-purple-100 text-purple-600',
+    green: 'bg-emerald-100 text-emerald-600',
+    purple: 'bg-violet-100 text-violet-600',
     rose: 'bg-rose-100 text-rose-600',
     gray: 'bg-gray-100 text-gray-600',
     orange: 'bg-orange-100 text-orange-600',
@@ -96,7 +96,7 @@ export const Avatar = ({
   return (
     <span
       className={clsx(
-        'relative inline-flex flex-shrink-0 items-center justify-center border-transparent text-center font-semibold uppercase',
+        'relative inline-flex shrink-0 items-center justify-center border-transparent text-center font-semibold uppercase',
         rounded ? 'rounded-full' : 'rounded-md',
         STYLES.size[size],
         STYLES.scheme[scheme],

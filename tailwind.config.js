@@ -2,7 +2,6 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 const colors = require('tailwindcss/colors');
 
 module.exports = {
-  mode: 'jit',
   theme: {
     extend: {
       fontFamily: {
@@ -19,12 +18,6 @@ module.exports = {
       borderRadius: {
         100: '100%',
       },
-    },
-  },
-  variants: {
-    extend: {
-      accessibility: ['hover', 'active'],
-      margin: ['hover', 'focus'],
     },
   },
   plugins: [

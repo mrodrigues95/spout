@@ -25,5 +25,5 @@ form {
 }
 
 #nprogress .bar {
-  @apply fixed top-0 left-0 z-50 h-0.5 w-full bg-green-600;
+  @apply fixed top-0 left-0 z-50 h-0.5 w-full bg-emerald-600;
 }

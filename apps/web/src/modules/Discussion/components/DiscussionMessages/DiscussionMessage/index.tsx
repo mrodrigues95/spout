@@ -104,6 +104,7 @@ const DiscussionMessageBody = () => {
           ? 'bg-blue-600 shadow-md'
           : 'bg-white shadow-sm ring-1 ring-gray-900/5',
         optimisticMessageOpts?.hasError ? 'text-red-600' : 'text-black',
+        isEditing ? 'w-full' : 'w-auto',
         borderStyles,
       )}
     >
@@ -136,7 +137,7 @@ const DiscussionMessageBody = () => {
         <Button
           type="button"
           variant="unstyled"
-          className="focus:outline-none pt-4 font-medium"
+          className="pt-4 font-medium focus:outline-none"
           onClick={() => optimisticMessageOpts.retry()}
         >
           Failed to send message. Click to try again.
@@ -204,7 +205,7 @@ const DiscussionMessage = () => {
         <div>
           <DiscussionMessageActions />
         </div>
-        <div className="flex w-10 flex-shrink-0 items-center justify-center sm:w-14">
+        <div className="flex w-10 shrink-0 items-center justify-center sm:w-14">
           {!isRecent || isFirstMessage ? (
             <div className="rounded-md shadow-md">
               <Avatar
@@ -225,7 +226,7 @@ const DiscussionMessage = () => {
         </div>
         <div
           className={clsx(
-            'ml-2 flex flex-col sm:max-w-[75%]',
+            'ml-2 flex w-full flex-col sm:w-[75%]',
             isMyMessage ? 'items-end' : 'items-start',
           )}
         >

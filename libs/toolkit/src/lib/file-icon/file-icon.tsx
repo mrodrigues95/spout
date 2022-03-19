@@ -18,7 +18,7 @@ import clsx from 'clsx';
 const types = {
   audio: {
     icon: faFileAudio,
-    color: 'text-yellow-600',
+    color: 'text-amber-600',
   },
   image: {
     icon: faFileImage,
@@ -47,11 +47,11 @@ const types = {
     },
     spreadsheet: {
       icon: faFileExcel,
-      color: 'text-green-600',
+      color: 'text-emerald-600',
     },
     compressed: {
       icon: faFileArchive,
-      color: 'text-purple-600',
+      color: 'text-violet-600',
     },
   },
   other: {

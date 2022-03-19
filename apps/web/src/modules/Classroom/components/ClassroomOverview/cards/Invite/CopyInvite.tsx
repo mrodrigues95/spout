@@ -85,10 +85,10 @@ const CopyInvite = ({ invite }: Props) => {
         className={clsx(
           'flex items-center justify-center rounded-md py-1 pl-3 pr-1 ring-2 ring-black ring-opacity-5 transition duration-150 ease-in-out hover:ring-opacity-100',
           isFocused
-            ? 'ring-purple-600 ring-opacity-100'
+            ? 'ring-violet-600 ring-opacity-100'
             : 'ring-black ring-opacity-5',
           isCopied
-            ? 'ring-green-600 ring-opacity-100'
+            ? 'ring-emerald-600 ring-opacity-100'
             : 'ring-black ring-opacity-5',
         )}
       >
@@ -96,7 +96,7 @@ const CopyInvite = ({ invite }: Props) => {
           <input
             ref={inputRef}
             type="text"
-            className="focus:outline-none w-full truncate border-none py-0 pl-0 font-semibold text-black focus:ring-0"
+            className="w-full truncate border-none py-0 pl-0 font-semibold text-black focus:outline-none focus:ring-0"
             value={`${process.env.NEXT_PUBLIC_APP_URL}/${invite.code}`}
             onFocus={(e) => {
               e.target.select();
@@ -111,7 +111,7 @@ const CopyInvite = ({ invite }: Props) => {
           className={clsx(
             'rounded-lg',
             isCopied &&
-              '!bg-green-600 !text-white !ring-transparent !transition-colors hover:!bg-green-700 active:!bg-green-800',
+              '!bg-emerald-600 !text-white !ring-transparent !transition-colors hover:!bg-emerald-700 active:!bg-emerald-800',
           )}
           onClick={onCopy}
         >

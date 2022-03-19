@@ -155,7 +155,7 @@ export const MobileSidebar = () => {
 
 const Sidebar = () => {
   return (
-    <aside className="relative -ml-2 hidden w-64 flex-shrink-0 flex-col space-y-8 bg-white lg:mr-4 lg:flex xl:mr-8">
+    <aside className="relative -ml-2 hidden w-64 shrink-0 flex-col space-y-8 bg-white lg:mr-4 lg:flex xl:mr-8">
       <SidebarContent />
     </aside>
   );
