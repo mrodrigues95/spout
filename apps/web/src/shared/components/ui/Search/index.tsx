@@ -13,7 +13,7 @@ const Search = forwardRef<HTMLButtonElement & HTMLAnchorElement, Props>(
         <Button
           variant="unstyled"
           className={clsx(
-            'outline-none relative flex w-full items-center rounded-lg border-2 border-gray-200/80 bg-gray-100/75 px-2 py-1.5 text-sm leading-6 text-gray-400',
+            'relative flex w-full items-center rounded-lg border-2 border-gray-200/80 bg-gray-100/75 px-2 py-1.5 text-sm leading-6 text-gray-400 outline-none',
             'hover:border-gray-300 focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-white',
             className,
           )}

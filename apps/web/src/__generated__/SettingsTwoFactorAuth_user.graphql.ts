@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f3f43961e9039d39d397204661a8413c>>
+ * @generated SignedSource<<fe4bf0901c9a79a4476f3422e63aece3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,6 +12,7 @@ import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type SettingsTwoFactorAuth_user$data = {
   readonly emailConfirmed: boolean;
+  readonly phoneNumberConfirmed: boolean;
   readonly " $fragmentType": "SettingsTwoFactorAuth_user";
 };
 export type SettingsTwoFactorAuth_user = SettingsTwoFactorAuth_user$data;
@@ -32,12 +33,19 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "emailConfirmed",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "phoneNumberConfirmed",
+      "storageKey": null
     }
   ],
   "type": "User",
   "abstractKey": null
 };
 
-(node as any).hash = "94c6f56fd6bafe24208541160ad66681";
+(node as any).hash = "cbf0706492a9d3dc503c3ab2892e8377";
 
 export default node;

@@ -30,7 +30,7 @@ export const Item = ({ label, content, onClick }: ItemProps) => {
 
   const item = (
     <Component
-      className="outline-none relative flex w-full items-center justify-between space-x-4 rounded-md focus-visible:ring"
+      className="relative flex w-full items-center justify-between space-x-4 rounded-md outline-none focus-visible:ring"
       {...(content && {
         variant: 'unstyled',
         'aria-labelledby': `spout-details-label-${generateId()}`,

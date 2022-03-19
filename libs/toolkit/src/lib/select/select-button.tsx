@@ -28,7 +28,7 @@ export const SelectButton = ({
       className={twMerge(
         clsx(
           'relative w-full cursor-default rounded bg-white py-1 pl-2 pr-10 text-left text-sm ring-2 ring-black ring-opacity-5 transition duration-150 ease-in-out',
-          'focus:outline-none hover:ring-opacity-100 focus-visible:ring-opacity-100',
+          'hover:ring-opacity-100 focus:outline-none focus-visible:ring-opacity-100',
           className,
         ),
       )}

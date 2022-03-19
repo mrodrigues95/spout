@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7cc4158790f31f5fd84d393da1069638>>
+ * @generated SignedSource<<a42ee7faac3620d074a45494b6d15c12>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -91,6 +91,13 @@ return {
             "alias": null,
             "args": null,
             "kind": "ScalarField",
+            "name": "phoneNumberConfirmed",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "id",
             "storageKey": null
           }
@@ -100,12 +107,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "cfa4f81eeacb9758c408bb6d0402de20",
+    "cacheID": "87f8e2ed5246bb0d8313a7ac4bdd8518",
     "id": null,
     "metadata": {},
     "name": "SettingsAccountQuery",
     "operationKind": "query",
-    "text": "query SettingsAccountQuery {\n  me {\n    emailConfirmed\n    ...SettingsChangeEmail_user\n    ...SettingsTwoFactorAuth_user\n    id\n  }\n}\n\nfragment SettingsChangeEmail_user on User {\n  email\n  emailConfirmed\n}\n\nfragment SettingsTwoFactorAuth_user on User {\n  emailConfirmed\n}\n"
+    "text": "query SettingsAccountQuery {\n  me {\n    emailConfirmed\n    ...SettingsChangeEmail_user\n    ...SettingsTwoFactorAuth_user\n    id\n  }\n}\n\nfragment SettingsChangeEmail_user on User {\n  email\n  emailConfirmed\n}\n\nfragment SettingsTwoFactorAuth_user on User {\n  emailConfirmed\n  phoneNumberConfirmed\n}\n"
   }
 };
 })();

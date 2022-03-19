@@ -51,7 +51,7 @@ const DiscussionsNavigation = ({ classroom }: Props) => {
         <HorziontalNavigationItem className="mr-2">
           <Tooltip label="Create Discussion">
             <Button
-              className="outline-none h-full flex-1 select-none rounded-100 bg-indigo-400 p-4 text-white transition-all duration-150 ease-in-out hover:rounded-2xl focus:rounded-2xl focus:ring focus:ring-offset-2 focus:ring-offset-white"
+              className="h-full flex-1 select-none rounded-100 bg-indigo-400 p-4 text-white outline-none transition-all duration-150 ease-in-out hover:rounded-2xl focus:rounded-2xl focus:ring focus:ring-offset-2 focus:ring-offset-white"
               variant="unstyled"
             >
               <FontAwesomeIcon icon={faPlus} />
@@ -65,7 +65,7 @@ const DiscussionsNavigation = ({ classroom }: Props) => {
               <Link
                 key={discussion.id}
                 href={`/classrooms/${data.id}/${discussion.id}`}
-                className="outline-none h-full flex-1 select-none rounded-100 bg-indigo-400 p-4 text-white transition-all duration-150 ease-in-out hover:rounded-2xl focus:rounded-2xl focus:ring focus:ring-offset-2 focus:ring-offset-white"
+                className="h-full flex-1 select-none rounded-100 bg-indigo-400 p-4 text-white outline-none transition-all duration-150 ease-in-out hover:rounded-2xl focus:rounded-2xl focus:ring focus:ring-offset-2 focus:ring-offset-white"
                 variant="unstyled"
                 onMouseDown={(e) => e.preventDefault()}
               >

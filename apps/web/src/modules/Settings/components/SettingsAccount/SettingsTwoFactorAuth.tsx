@@ -5,6 +5,7 @@ import { SettingsTwoFactorAuth_user$key } from '../../../../__generated__/Settin
 const fragment = graphql`
   fragment SettingsTwoFactorAuth_user on User {
     emailConfirmed
+    phoneNumberConfirmed
   }
 `;
 
@@ -15,19 +16,21 @@ interface Props {
 const SettingsTwoFactorAuth = ({ ...props }: Props) => {
   const me = useFragment(fragment, props.me);
 
-  const description = me.emailConfirmed
-    ? "Protect your account by adding an extra layer of security. Once  configured, you'll need your password and a verification code to sign in."
-    : 'You must verify your email before you can enable two-factor authentication.';
+  const isConfirmed = me.emailConfirmed || me.phoneNumberConfirmed;
+
+  const description = isConfirmed
+    ? "Protect your account by adding an extra layer of security. Once configured, you'll need your password and a verification code to sign in."
+    : 'You must verify your email address or phone number before you can enable two-factor authentication.';
 
   return (
     <div>
       <div className="mt-5">
         <Alert
-          severity={me.emailConfirmed ? 'warning' : 'info'}
+          severity={isConfirmed ? 'warning' : 'info'}
           title="Two-factor authentication is not yet enabled"
           description={description}
         />
-        {me.emailConfirmed && (
+        {isConfirmed && (
           <Button variant="primary" className="mt-6 ml-auto block">
             Enable Two-Factor Auth
           </Button>

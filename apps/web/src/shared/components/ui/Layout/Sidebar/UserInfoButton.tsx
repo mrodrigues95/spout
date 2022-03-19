@@ -104,7 +104,7 @@ const UserInfoButton = ({ fetchKey }: Props) => {
         </Menu.Button>
         <Portal>
           <Menu.Items ref={container}>
-            <Menu.Group className="flex items-center space-x-3.5 px-2 py-2">
+            <Menu.Group className="flex items-center space-x-3.5 p-2">
               <Avatar
                 name={me!.name}
                 src={me!.avatarUrl}

@@ -10,7 +10,7 @@ export const MenuGroup = ({
   ...props
 }: MenuGroupProps) => {
   return (
-    <div className={twMerge(clsx('w-full px-1 py-1', className))} {...props}>
+    <div className={twMerge(clsx('w-full p-1', className))} {...props}>
       {children}
     </div>
   );

@@ -40,7 +40,7 @@ const ThemeButton = () => {
             value={theme}
             className={({ active }) =>
               clsx(
-                'outline-none relative flex flex-1 items-center rounded-lg',
+                'relative flex flex-1 items-center rounded-lg outline-none',
                 active && 'ring',
               )
             }

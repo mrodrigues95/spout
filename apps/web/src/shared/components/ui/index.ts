@@ -14,4 +14,5 @@ export { default as ConditionalWrapper } from './ConditionalWrapper';
 export { default as Quote } from './Quote';
 export { default as ErrorBoundary } from './ErrorBoundary';
 
+export * from './PhoneInput';
 export * from './Layout/Sidebar';

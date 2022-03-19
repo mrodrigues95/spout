@@ -26,8 +26,6 @@ interface Props {
 const SettingsAccount = ({ fetchKey }: Props) => {
   const data = useLazyLoadQuery<SettingsAccountQuery>(query, {}, { fetchKey });
 
-  // TODO: Disable/hide "Change Email" and "Two-factor Auth"
-  // if the user isn't verified.
   return (
     <div className="flex flex-col space-y-5 divide-y divide-gray-200">
       <div className="space-y-6">
