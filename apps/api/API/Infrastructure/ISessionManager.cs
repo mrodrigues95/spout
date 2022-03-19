@@ -20,5 +20,9 @@ namespace API.Infrastructure {
         Task<bool> InvalidateExceptForAsync(
             int sessionId,
             CancellationToken cancellationToken);
+
+        Task<bool> InvalidateAsync(
+            int userId,
+            CancellationToken cancellationToken);
     }
 }

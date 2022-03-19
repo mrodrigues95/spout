@@ -10,8 +10,13 @@ namespace API.Schema.Mutations.Auth.Inputs {
 
     public class ChangePasswordInputValidator : AbstractValidator<ChangePasswordInput> {
         public ChangePasswordInputValidator() {
-            RuleFor(x => x.CurrentPassword).NotEmpty().MinimumLength(6);
-            RuleFor(x => x.NewPassword).NotEmpty().MinimumLength(6);
+            RuleFor(x => x.CurrentPassword)
+                .NotEmpty()
+                .MinimumLength(6);
+
+            RuleFor(x => x.NewPassword)
+                .NotEmpty()
+                .MinimumLength(6);
         }
     }
 }

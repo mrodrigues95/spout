@@ -77,6 +77,21 @@ namespace API.Schema.Types.Users {
                 .Type<NonNullType<DateTimeType>>();
 
             descriptor
+                .Field(u => u.PasswordHash)
+                .Type<NonNullType<StringType>>()
+                .Ignore();
+
+            descriptor
+                .Field(u => u.SecurityStamp)
+                .Type<NonNullType<StringType>>()
+                .Ignore();
+
+            descriptor
+                .Field(u => u.ConcurrencyStamp)
+                .Type<NonNullType<StringType>>()
+                .Ignore();
+
+            descriptor
                 .Field(x => x.Classrooms)
                 .Type<NonNullType<ListType<NonNullType<ClassroomType>>>>()
                 .ResolveWith<UserResolvers>(x =>

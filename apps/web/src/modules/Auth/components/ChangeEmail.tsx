@@ -66,7 +66,7 @@ const ChangeEmail = () => {
           <Link
             href="/settings"
             variant="primary"
-            className="mt-4"
+            className="mt-8"
             fullWidth
             replace
           >

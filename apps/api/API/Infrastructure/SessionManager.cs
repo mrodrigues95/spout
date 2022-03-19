@@ -64,5 +64,13 @@ namespace API.Infrastructure {
             var success = await _ctx.SaveChangesAsync(cancellationToken) > 0;
             return success;
         }
+
+        public async Task<bool> InvalidateAsync(
+            int userId,
+            CancellationToken cancellationToken) {
+            _ctx.Sessions.RemoveRange(_ctx.Sessions.Where(x => x.UserId == userId));
+            var success = await _ctx.SaveChangesAsync(cancellationToken) > 0;
+            return success;
+        }
     }
 }

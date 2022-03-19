@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { graphql, useMutation } from 'react-relay';
 import Zod, { object, string } from 'zod';
-import { Form, useZodForm, Link } from '@spout/toolkit';
+import { Form, useZodForm, Link, Text } from '@spout/toolkit';
 import { Layout, useToast } from '../../../shared/components';
 import { useIsRedirecting } from '../../../shared/hooks/useIsRedirecting';
 import { useAuthRedirect, useInitializeIronSession } from '../hooks';
-import AuthCard from './AuthCard';
+import AuthContainer from './AuthContainer';
 import AuthError from './AuthError';
 import { LoginFormMutation } from '../../../__generated__/LoginFormMutation.graphql';
 
@@ -43,12 +43,6 @@ const LoginForm = () => {
     schema: loginSchema,
   });
 
-  const signUpLink = (
-    <Link href="/auth/signup" variant="link" preserveRedirect>
-      Sign up.
-    </Link>
-  );
-
   const onSubmit = async ({
     email,
     password,
@@ -67,17 +61,10 @@ const LoginForm = () => {
   };
 
   return (
-    <Layout title="Login" authenticated={false}>
-      <AuthCard
-        title="Welcome back!"
-        subtitle="Use the form below to login"
-        action={{
-          description: 'Dont have an account?',
-          link: signUpLink,
-        }}
-      >
-        <Form form={form} onSubmit={onSubmit} className="flex w-full flex-col">
-          <AuthError title="Login failed." error={loginError} />
+    <Layout title="Log In" authenticated={false}>
+      <AuthContainer title="Log in">
+        <Form form={form} onSubmit={onSubmit} className="w-full">
+          <AuthError title="Log in failed." error={loginError} />
           <Form.Input
             label="Email"
             placeholder="Email"
@@ -93,13 +80,41 @@ const LoginForm = () => {
             autoComplete="current-password"
             {...form.register('password')}
           />
-          <div className="space-y-1">
-            <Form.SubmitButton disabled={isInFlight || isRedirecting} fullWidth>
-              Login
-            </Form.SubmitButton>
-          </div>
+
+          <Form.SubmitButton
+            className="!mt-6"
+            loading={isInFlight}
+            disabled={isRedirecting}
+            fullWidth
+          >
+            Log in
+          </Form.SubmitButton>
         </Form>
-      </AuthCard>
+        <div className="mt-12 w-full space-y-4 text-center">
+          <Link
+            href="/auth/forgot"
+            variant="link"
+            className="text-sm"
+            preserveRedirect
+          >
+            Forgot password?
+          </Link>
+          <div className="w-full border-t-2 border-gray-100"></div>
+          <div className="mt-auto space-x-1.5">
+            <Text as="span" color="dark" size="sm">
+              Don&apos;t have an account?
+            </Text>
+            <Link
+              href="/auth/signup"
+              variant="link"
+              className="text-sm"
+              preserveRedirect
+            >
+              Sign up
+            </Link>
+          </div>
+        </div>
+      </AuthContainer>
     </Layout>
   );
 };

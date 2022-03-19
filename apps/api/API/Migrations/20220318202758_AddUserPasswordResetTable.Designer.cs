@@ -6,6 +6,7 @@ using API.Schema.Types.Messages;
 using API.Schema.Types.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -14,9 +15,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220318202758_AddUserPasswordResetTable")]
+    partial class AddUserPasswordResetTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -859,11 +861,16 @@ namespace API.Migrations
             modelBuilder.Entity("API.Data.Entities.UserPasswordReset", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Token")
+                        .HasColumnType("text")
+                        .HasColumnName("token");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -874,11 +881,6 @@ namespace API.Migrations
                     b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("expires_at");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("token");
 
                     b.Property<string>("TokenEncoded")
                         .IsRequired()
@@ -891,12 +893,7 @@ namespace API.Migrations
                         .HasColumnName("updated_at")
                         .HasDefaultValueSql("now()");
 
-                    b.Property<int?>("UserId")
-                        .IsRequired()
-                        .HasColumnType("integer")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id")
+                    b.HasKey("Id", "Token", "UserId")
                         .HasName("pk_user_password_resets");
 
                     b.HasIndex("Token")
@@ -904,10 +901,6 @@ namespace API.Migrations
 
                     b.HasIndex("UserId")
                         .HasDatabaseName("ix_user_password_resets_user_id");
-
-                    b.HasIndex("Token", "UserId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_user_password_resets_token_user_id");
 
                     b.ToTable("user_password_resets", (string)null);
                 });

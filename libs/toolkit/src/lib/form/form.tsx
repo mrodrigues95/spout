@@ -9,6 +9,7 @@ import {
   SubmitHandler,
 } from 'react-hook-form';
 import { ZodSchema, TypeOf } from 'zod';
+import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
 import { FormSubmitButton } from './form-submit-button';
 import { FormInput } from './form-input';
@@ -60,7 +61,7 @@ export const Form = <T extends FieldValues>({
     <FormProvider {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className={clsx('flex flex-col space-y-4', className)}
+        className={twMerge(clsx('flex flex-col space-y-3', className))}
         {...props}
       >
         {children}

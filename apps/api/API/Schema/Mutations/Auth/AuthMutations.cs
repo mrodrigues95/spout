@@ -325,11 +325,12 @@ namespace API.Schema.Mutations.Auth {
 
             await sessionManager.InvalidateExceptForAsync(session.Id, cancellationToken);
 
-            ctx.UserEmailChanges.Remove(emailChange);
             user.UpdatedAt = DateTime.UtcNow;
             user.UserName = emailChange.NewEmail;
             await userManager.UpdateAsync(user);
             await userManager.UpdateNormalizedUserNameAsync(user);
+
+            ctx.UserEmailChanges.Remove(emailChange);
             await ctx.SaveChangesAsync(cancellationToken);
 
             // The application cookie needs to be refreshed so that the user claims contain
@@ -337,6 +338,85 @@ namespace API.Schema.Mutations.Auth {
             await signInManager.RefreshSignInAsync(user);
 
             return new AuthPayload(user, session, true);
+        }
+
+        public async Task<AuthPayload> GeneratePasswordResetTokenAsync(
+            GeneratePasswordResetTokenInput input,
+            ApplicationDbContext ctx,
+            CancellationToken cancellationToken,
+            UserManager<User> userManager,
+            IEmailSender emailSender) {
+            var user = await userManager.FindByEmailAsync(input.Email);
+            if (user is null) {
+                // The email address that was provided doesn't actually belong to a current user
+                // so we don't throw any errors here in order to prevent user enumeration attacks.
+                return new AuthPayload(isLoggedIn: false);
+            }
+
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+            var passwordReset = new UserPasswordReset {
+                UserId = user.Id,
+                Token = token,
+                TokenEncoded = HttpUtility.UrlEncode(token),
+                ExpiresAt = DateTime.UtcNow.AddDays(1)
+            };
+            ctx.UserPasswordResets.Add(passwordReset);
+            await ctx.SaveChangesAsync(cancellationToken);
+
+            //await emailSender.SendEmailAsync(
+            //    toEmail: input.Email,
+            //    subject: "Reset Password for Spout",
+            //    message: "We received a request to reset your Spout account password. " +
+            //        "To reset your password, follow this link: " +
+            //        $"{_appUrl}/auth/reset?token={HttpUtility.UrlEncode(token)}. " +
+            //        "If you did not request a new password, please ignore this email.",
+            //    tag: "Password Reset");
+
+            return new AuthPayload(isLoggedIn: false);
+        }
+
+        [Error(typeof(InvalidTokenException))]
+        public async Task<AuthPayload> ResetPasswordAsync(
+            ResetPasswordInput input,
+            ApplicationDbContext ctx,
+            CancellationToken cancellationToken,
+            UserManager<User> userManager,
+            ISessionManager sessionManager,
+            IEmailSender emailSender) {
+            var passwordReset = await ctx.UserPasswordResets.SingleOrDefaultAsync(x =>
+                x.Token == input.Token, cancellationToken);
+            if (passwordReset is null) throw new InvalidTokenException(input.Token);
+
+            var user = await userManager.FindByIdAsync(passwordReset.UserId.ToString());
+
+            var result = await userManager.ResetPasswordAsync(
+                user, input.Token, input.NewPassword);
+            if (!result.Succeeded) {
+                ctx.UserPasswordResets.Remove(passwordReset);
+                await ctx.SaveChangesAsync(cancellationToken);
+                throw new InvalidTokenException(input.Token);
+            }
+
+            // Delete all active sessions for this user.
+            await sessionManager.InvalidateAsync(user.Id, cancellationToken);
+
+            user.UpdatedAt = DateTime.UtcNow;
+            await userManager.UpdateAsync(user);
+
+            ctx.UserPasswordResets.Remove(passwordReset);
+            await ctx.SaveChangesAsync(cancellationToken);
+
+            //await emailSender.SendEmailAsync(
+            //    toEmail: user.Email!,
+            //    subject: "Spout Password Changed",
+            //    message: "We noticed the password for your Spout account was recently changed. " +
+            //        "If this was you, then you can safely disregard this email. Otherwise, " +
+            //        "your account may be compromised. " +
+            //        "Please follow this link to reset your password: __",
+            //    tag: "Password Reset");
+
+            return new AuthPayload(isLoggedIn: false);
         }
 
         [Authorize]

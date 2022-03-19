@@ -769,6 +769,15 @@ type GenerateEmailVerificationTokenPayload {
   query: Query!
 }
 
+input GeneratePasswordResetTokenInput {
+  email: String!
+}
+
+type GeneratePasswordResetTokenPayload {
+  authPayload: AuthPayload
+  query: Query!
+}
+
 type GenerateSASPayload {
   file: File!
   sas: URL!
@@ -922,6 +931,13 @@ input ListFilterInputTypeOfUserFilterInput {
   all: UserFilterInput
   none: UserFilterInput
   some: UserFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfUserPasswordResetFilterInput {
+  all: UserPasswordResetFilterInput
+  none: UserPasswordResetFilterInput
+  some: UserPasswordResetFilterInput
   any: Boolean
 }
 
@@ -1127,6 +1143,10 @@ type Mutation {
     input: GenerateChangeEmailTokenInput!
   ): GenerateChangeEmailTokenPayload!
   changeEmail(input: ChangeEmailInput!): ChangeEmailPayload!
+  generatePasswordResetToken(
+    input: GeneratePasswordResetTokenInput!
+  ): GeneratePasswordResetTokenPayload!
+  resetPassword(input: ResetPasswordInput!): ResetPasswordPayload!
   refreshSession(input: RefreshSessionInput!): RefreshSessionPayload!
   generateUploadSAS(input: GenerateUploadSASInput!): GenerateUploadSASPayload!
   generateDownloadSAS(
@@ -1258,6 +1278,20 @@ input RefreshSessionInput {
 type RefreshSessionPayload {
   authPayload: AuthPayload
   errors: [RefreshSessionError!]
+  query: Query!
+}
+
+union ResetPasswordError = InvalidTokenError
+
+input ResetPasswordInput {
+  token: String!
+  newPassword: String!
+  confirmNewPassword: String!
+}
+
+type ResetPasswordPayload {
+  authPayload: AuthPayload
+  errors: [ResetPasswordError!]
   query: Query!
 }
 
@@ -1529,6 +1563,7 @@ type User implements Node {
   avatarUrl: String
   state: State
   emailChanges: [UserEmailChange!]!
+  passwordResets: [UserPasswordReset!]!
   messages: [Message!]!
   pinnedMessages: [Message!]!
   invites: [ClassroomInvite!]!
@@ -1536,9 +1571,6 @@ type User implements Node {
   userName: String
   normalizedUserName: String
   normalizedEmail: String
-  passwordHash: String
-  securityStamp: String
-  concurrencyStamp: String
   phoneNumber: String
   phoneNumberConfirmed: Boolean!
   twoFactorEnabled: Boolean!
@@ -1554,6 +1586,7 @@ type UserAlreadyInClassroomError implements Error {
 type UserEmailChange {
   id: Int!
   token: String
+  tokenEncoded: String
   newEmail: String
   user: User
   userId: Int
@@ -1567,6 +1600,7 @@ input UserEmailChangeFilterInput {
   or: [UserEmailChangeFilterInput!]
   id: ComparableInt32OperationFilterInput
   token: StringOperationFilterInput
+  tokenEncoded: StringOperationFilterInput
   newEmail: StringOperationFilterInput
   user: UserFilterInput
   userId: ComparableNullableOfInt32OperationFilterInput
@@ -1590,6 +1624,7 @@ input UserFilterInput {
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
   emailChanges: ListFilterInputTypeOfUserEmailChangeFilterInput
+  passwordResets: ListFilterInputTypeOfUserPasswordResetFilterInput
   sessions: ListFilterInputTypeOfSessionFilterInput
   messages: ListFilterInputTypeOfMessageFilterInput
   pinnedMessages: ListFilterInputTypeOfMessageFilterInput
@@ -1613,6 +1648,30 @@ input UserFilterInput {
 
 type UserNotFoundError implements Error {
   message: String!
+}
+
+type UserPasswordReset {
+  id: Int!
+  user: User
+  userId: Int
+  token: String
+  tokenEncoded: String
+  expiresAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input UserPasswordResetFilterInput {
+  and: [UserPasswordResetFilterInput!]
+  or: [UserPasswordResetFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  user: UserFilterInput
+  userId: ComparableNullableOfInt32OperationFilterInput
+  token: StringOperationFilterInput
+  tokenEncoded: StringOperationFilterInput
+  expiresAt: ComparableDateTimeOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
 }
 
 enum UserProfileColor {

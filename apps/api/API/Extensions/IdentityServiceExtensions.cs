@@ -25,17 +25,23 @@ namespace API.Extensions {
 
                 opt.Tokens.ChangeEmailTokenProvider = "CustomChangeEmailTokenProvider";
                 opt.Tokens.EmailConfirmationTokenProvider = "CustomEmailConfirmationTokenProvider";
+                opt.Tokens.PasswordResetTokenProvider = "CustomPasswordResetTokenProvider";
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders()
             .AddTokenProvider<CustomChangeEmailTokenProvider<User>>("CustomChangeEmailTokenProvider")
-            .AddTokenProvider<CustomEmailConfirmationTokenProvider<User>>("CustomEmailConfirmationTokenProvider");
+            .AddTokenProvider<CustomEmailConfirmationTokenProvider<User>>("CustomEmailConfirmationTokenProvider")
+            .AddTokenProvider<CustomPasswordResetTokenProvider<User>>("CustomPasswordResetTokenProvider");
 
             services.Configure<CustomChangeEmailTokenProviderOptions>(opt => {
                 opt.TokenLifespan = TimeSpan.FromDays(1);
             });
 
             services.Configure<CustomEmailConfirmationTokenProviderOptions>(opt => {
+                opt.TokenLifespan = TimeSpan.FromDays(1);
+            });
+
+            services.Configure<CustomPasswordResetTokenProviderOptions>(opt => {
                 opt.TokenLifespan = TimeSpan.FromDays(1);
             });
 
@@ -75,4 +81,16 @@ namespace API.Extensions {
     }
 
     public class CustomEmailConfirmationTokenProviderOptions : DataProtectionTokenProviderOptions { }
+
+    public class CustomPasswordResetTokenProvider<TUser>
+        : DataProtectorTokenProvider<TUser> where TUser : class {
+        public CustomPasswordResetTokenProvider(
+            IDataProtectionProvider dataProtectionProvider,
+            IOptions<CustomPasswordResetTokenProviderOptions> options,
+            ILogger<DataProtectorTokenProvider<TUser>> logger)
+                : base(dataProtectionProvider, options, logger) {
+        }
+    }
+
+    public class CustomPasswordResetTokenProviderOptions : DataProtectionTokenProviderOptions { }
 }

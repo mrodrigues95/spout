@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { graphql, useMutation } from 'react-relay';
 import Zod, { object, string } from 'zod';
-import { Form, useZodForm, Link } from '@spout/toolkit';
+import { Form, useZodForm, Link, Text } from '@spout/toolkit';
 import { Layout, useToast } from '../../../shared/components';
 import { useIsRedirecting } from '../../../shared/hooks/useIsRedirecting';
 import { useAuthRedirect, useInitializeIronSession } from '../hooks';
 import AuthError from './AuthError';
-import AuthCard from './AuthCard';
+import AuthContainer from './AuthContainer';
 import { SignUpFormMutation } from '../../../__generated__/SignUpFormMutation.graphql';
 
 const signUpSchema = object({
@@ -50,12 +50,6 @@ const SignUpForm = () => {
     schema: signUpSchema,
   });
 
-  const loginLink = (
-    <Link href="/auth/login" variant="link" preserveRedirect>
-      Login.
-    </Link>
-  );
-
   const onSubmit = async ({
     name,
     email,
@@ -76,14 +70,8 @@ const SignUpForm = () => {
 
   return (
     <Layout title="Sign Up" authenticated={false}>
-      <AuthCard
-        title="Create an account"
-        action={{
-          description: 'Already have an account?',
-          link: loginLink,
-        }}
-      >
-        <Form form={form} onSubmit={onSubmit} className="flex w-full flex-col">
+      <AuthContainer title="Sign up">
+        <Form form={form} onSubmit={onSubmit} className="w-full">
           <AuthError title="Sign Up failed." error={signUpError} />
           <Form.Input
             label="Name"
@@ -112,11 +100,28 @@ const SignUpForm = () => {
             type="password"
             {...form.register('confirmPassword')}
           />
-          <Form.SubmitButton disabled={isInFlight || isRedirecting}>
-            Sign Up
+          <Form.SubmitButton
+            className="!mt-6"
+            loading={isInFlight}
+            disabled={isRedirecting}
+          >
+            Sign up
           </Form.SubmitButton>
         </Form>
-      </AuthCard>
+        <div className="mt-12 space-x-1.5 text-center">
+          <Text as="span" color="dark" size="sm">
+            Already have an account?
+          </Text>
+          <Link
+            href="/auth/login"
+            variant="link"
+            className="text-sm"
+            preserveRedirect
+          >
+            Log in
+          </Link>
+        </div>
+      </AuthContainer>
     </Layout>
   );
 };

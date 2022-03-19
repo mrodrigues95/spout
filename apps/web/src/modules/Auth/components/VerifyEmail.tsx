@@ -131,7 +131,7 @@ const VerifyEmail = () => {
           </Title>
           <Button
             variant="primary"
-            className="mt-4"
+            className="mt-8"
             onClick={resendVerificationEmail}
             loading={isInFlight}
             fullWidth
