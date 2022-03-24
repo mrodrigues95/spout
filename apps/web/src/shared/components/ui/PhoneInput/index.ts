@@ -1,1 +1,2 @@
-export { default as PhoneInput } from './PhoneInput';
+export { default as PhoneVerificationInput } from './PhoneVerificationInput';
+export * from './hooks';

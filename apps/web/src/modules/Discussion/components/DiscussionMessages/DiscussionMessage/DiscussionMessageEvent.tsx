@@ -106,7 +106,7 @@ const DiscussionMessageEvent = ({ message }: Props) => {
 
   return (
     <div className="inline-flex w-full items-center justify-center py-2 px-2 sm:px-4">
-      <Card className="flex flex-col rounded-md bg-white p-3 shadow-sm ring-1 ring-gray-900/5">
+      <Card className="flex flex-col rounded-md bg-white p-3 shadow-sm ring-1 ring-gray-900/5 sm:max-w-[75%]">
         <div className="flex items-center space-x-2">
           <div className="inline-flex items-center space-x-2">
             <Avatar

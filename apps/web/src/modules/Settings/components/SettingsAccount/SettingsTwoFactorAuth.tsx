@@ -26,7 +26,7 @@ const SettingsTwoFactorAuth = ({ ...props }: Props) => {
     <div>
       <div className="mt-5">
         <Alert
-          severity={isConfirmed ? 'warning' : 'info'}
+          severity="info"
           title="Two-factor authentication is not yet enabled"
           description={description}
         />

@@ -1,10 +1,15 @@
 export { default as useMediaQuery, MEDIA_QUERIES } from './useMediaQuery';
 export * from './useIsCurrentRoute';
 export * from './useIsRedirecting';
+export * from './usePrevious';
 export * from './usePreviousEffect';
+export * from './usePreviousLayoutEffect';
 export * from './useThrottle';
 export * from './useIsMounted';
 export * from './files';
 export * from './useConnection';
 export * from './useKeyboardEvent';
 export * from './useTimeout';
+export * from './useInterval';
+export * from './useCountdown';
+export * from './useIsomorphicEffect';

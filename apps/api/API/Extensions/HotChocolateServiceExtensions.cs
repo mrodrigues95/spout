@@ -67,6 +67,7 @@ namespace API.Extensions {
                 .RegisterService<IEmailSender>()
                 .RegisterService<IBlobService>()
                 .RegisterService<ISessionManager>()
+                .RegisterService<ISMSService>()
                 .RegisterService<UserManager<User>>()
                 .RegisterService<SignInManager<User>>()
                 .RegisterDbContext<ApplicationDbContext>(DbContextKind.Pooled);

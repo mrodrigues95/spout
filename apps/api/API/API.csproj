@@ -31,5 +31,6 @@
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.3" />
     <PackageReference Include="Postmark" Version="4.7.0" />
+    <PackageReference Include="Twilio" Version="5.72.1" />
   </ItemGroup>
 </Project>

@@ -36,6 +36,7 @@ namespace API.Extensions {
 
             services.Configure<AzureStorageConfig>(config.GetSection("AzureStorageConfig"));
             services.Configure<PostmarkConfig>(config.GetSection("PostmarkConfig"));
+            services.Configure<TwilioConfig>(config.GetSection("TwilioConfig"));
 
             services.AddScoped(p =>
                 p.GetRequiredService<IDbContextFactory<ApplicationDbContext>>()
@@ -44,6 +45,7 @@ namespace API.Extensions {
             services.AddTransient<IBlobService, BlobService>();
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<ISessionManager, SessionManager>();
+            services.AddTransient<ISMSService, SMSService>();
 
             return services;
         }

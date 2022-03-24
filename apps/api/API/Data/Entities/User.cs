@@ -18,6 +18,7 @@ namespace API.Data.Entities {
 
         public ICollection<UserEmailChange> EmailChanges { get; set; } = new List<UserEmailChange>();
         public ICollection<UserPasswordReset> PasswordResets { get; set; } = new List<UserPasswordReset>();
+        public ICollection<UserPhoneNumberChange> PhoneNumberChanges { get; set; } = new List<UserPhoneNumberChange>();
         public ICollection<Session> Sessions { get; set; } = new List<Session>();
         public ICollection<Message> Messages { get; set; } = new List<Message>();
         public ICollection<Message> PinnedMessages { get; set; } = new List<Message>();

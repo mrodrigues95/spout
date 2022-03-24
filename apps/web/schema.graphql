@@ -136,6 +136,22 @@ type ChangePasswordPayload {
   query: Query!
 }
 
+union ChangePhoneNumberError =
+    UserNotFoundError
+  | SessionExpiredError
+  | InvalidTokenError
+
+input ChangePhoneNumberInput {
+  sessionId: ID!
+  token: String!
+}
+
+type ChangePhoneNumberPayload {
+  authPayload: AuthPayload
+  errors: [ChangePhoneNumberError!]
+  query: Query!
+}
+
 type Classroom implements Node {
   id: ID!
   guid: UUID!
@@ -747,6 +763,22 @@ type GenerateChangeEmailTokenPayload {
   query: Query!
 }
 
+union GenerateChangePhoneNumberTokenError =
+    UserNotFoundError
+  | InvalidPhoneNumberError
+  | SMSNotSentError
+
+input GenerateChangePhoneNumberTokenInput {
+  phoneNumber: String!
+  countryCode: String!
+}
+
+type GenerateChangePhoneNumberTokenPayload {
+  authPayload: AuthPayload
+  errors: [GenerateChangePhoneNumberTokenError!]
+  query: Query!
+}
+
 union GenerateDownloadSASError = FileNotFoundError | GenerateSignatureError
 
 input GenerateDownloadSASInput {
@@ -810,6 +842,10 @@ input IdOperationFilterInput {
 }
 
 type IncorrectCurrentPasswordError implements Error {
+  message: String!
+}
+
+type InvalidPhoneNumberError implements Error {
   message: String!
 }
 
@@ -938,6 +974,13 @@ input ListFilterInputTypeOfUserPasswordResetFilterInput {
   all: UserPasswordResetFilterInput
   none: UserPasswordResetFilterInput
   some: UserPasswordResetFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfUserPhoneNumberChangeFilterInput {
+  all: UserPhoneNumberChangeFilterInput
+  none: UserPhoneNumberChangeFilterInput
+  some: UserPhoneNumberChangeFilterInput
   any: Boolean
 }
 
@@ -1147,6 +1190,10 @@ type Mutation {
     input: GeneratePasswordResetTokenInput!
   ): GeneratePasswordResetTokenPayload!
   resetPassword(input: ResetPasswordInput!): ResetPasswordPayload!
+  generateChangePhoneNumberToken(
+    input: GenerateChangePhoneNumberTokenInput!
+  ): GenerateChangePhoneNumberTokenPayload!
+  changePhoneNumber(input: ChangePhoneNumberInput!): ChangePhoneNumberPayload!
   refreshSession(input: RefreshSessionInput!): RefreshSessionPayload!
   generateUploadSAS(input: GenerateUploadSASInput!): GenerateUploadSASPayload!
   generateDownloadSAS(
@@ -1362,6 +1409,10 @@ type SignUpPayload {
   query: Query!
 }
 
+type SMSNotSentError implements Error {
+  message: String!
+}
+
 enum SortEnumType {
   ASC
   DESC
@@ -1564,6 +1615,7 @@ type User implements Node {
   state: State
   emailChanges: [UserEmailChange!]!
   passwordResets: [UserPasswordReset!]!
+  phoneNumberChanges: [UserPhoneNumberChange!]!
   messages: [Message!]!
   pinnedMessages: [Message!]!
   invites: [ClassroomInvite!]!
@@ -1625,6 +1677,7 @@ input UserFilterInput {
   updatedAt: ComparableDateTimeOperationFilterInput
   emailChanges: ListFilterInputTypeOfUserEmailChangeFilterInput
   passwordResets: ListFilterInputTypeOfUserPasswordResetFilterInput
+  phoneNumberChanges: ListFilterInputTypeOfUserPhoneNumberChangeFilterInput
   sessions: ListFilterInputTypeOfSessionFilterInput
   messages: ListFilterInputTypeOfMessageFilterInput
   pinnedMessages: ListFilterInputTypeOfMessageFilterInput
@@ -1669,6 +1722,30 @@ input UserPasswordResetFilterInput {
   userId: ComparableNullableOfInt32OperationFilterInput
   token: StringOperationFilterInput
   tokenEncoded: StringOperationFilterInput
+  expiresAt: ComparableDateTimeOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+}
+
+type UserPhoneNumberChange {
+  id: Int!
+  token: String
+  newPhoneNumber: String
+  user: User
+  userId: Int
+  expiresAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input UserPhoneNumberChangeFilterInput {
+  and: [UserPhoneNumberChangeFilterInput!]
+  or: [UserPhoneNumberChangeFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  token: StringOperationFilterInput
+  newPhoneNumber: StringOperationFilterInput
+  user: UserFilterInput
+  userId: ComparableNullableOfInt32OperationFilterInput
   expiresAt: ComparableDateTimeOperationFilterInput
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput

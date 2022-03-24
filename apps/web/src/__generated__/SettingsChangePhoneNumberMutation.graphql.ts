@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7c56c58143be34178e0d4b2177c850c1>>
+ * @generated SignedSource<<cbf90958b497a38221d0a0db602d3eca>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,24 +9,27 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type GenerateChangeEmailTokenInput = {
-  newEmail: string;
-  password: string;
+export type ChangePhoneNumberInput = {
+  sessionId: string;
+  token: string;
 };
-export type SettingsChangeEmailMutation$variables = {
-  input: GenerateChangeEmailTokenInput;
+export type SettingsChangePhoneNumberMutation$variables = {
+  input: ChangePhoneNumberInput;
 };
-export type SettingsChangeEmailMutationVariables = SettingsChangeEmailMutation$variables;
-export type SettingsChangeEmailMutation$data = {
-  readonly generateChangeEmailToken: {
+export type SettingsChangePhoneNumberMutationVariables = SettingsChangePhoneNumberMutation$variables;
+export type SettingsChangePhoneNumberMutation$data = {
+  readonly changePhoneNumber: {
     readonly authPayload: {
       readonly user: {
-        readonly email: string;
-        readonly emailConfirmed: boolean;
+        readonly phoneNumber: string | null;
+        readonly phoneNumberConfirmed: boolean;
       } | null;
     } | null;
     readonly errors: ReadonlyArray<{
-      readonly __typename: "IncorrectCurrentPasswordError";
+      readonly __typename: "InvalidTokenError";
+      readonly message: string;
+    } | {
+      readonly __typename: "SessionExpiredError";
       readonly message: string;
     } | {
       // This will never be '%other', but we need some
@@ -35,10 +38,10 @@ export type SettingsChangeEmailMutation$data = {
     }> | null;
   };
 };
-export type SettingsChangeEmailMutationResponse = SettingsChangeEmailMutation$data;
-export type SettingsChangeEmailMutation = {
-  variables: SettingsChangeEmailMutationVariables;
-  response: SettingsChangeEmailMutation$data;
+export type SettingsChangePhoneNumberMutationResponse = SettingsChangePhoneNumberMutation$data;
+export type SettingsChangePhoneNumberMutation = {
+  variables: SettingsChangePhoneNumberMutationVariables;
+  response: SettingsChangePhoneNumberMutation$data;
 };
 
 const node: ConcreteRequest = (function(){
@@ -60,14 +63,14 @@ v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "email",
+  "name": "phoneNumber",
   "storageKey": null
 },
 v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "emailConfirmed",
+  "name": "phoneNumberConfirmed",
   "storageKey": null
 },
 v4 = {
@@ -83,20 +86,27 @@ v5 = {
   "kind": "ScalarField",
   "name": "message",
   "storageKey": null
-};
+},
+v6 = [
+  (v4/*: any*/),
+  (v5/*: any*/)
+],
+v7 = [
+  (v5/*: any*/)
+];
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "SettingsChangeEmailMutation",
+    "name": "SettingsChangePhoneNumberMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
-        "concreteType": "GenerateChangeEmailTokenPayload",
+        "concreteType": "ChangePhoneNumberPayload",
         "kind": "LinkedField",
-        "name": "generateChangeEmailToken",
+        "name": "changePhoneNumber",
         "plural": false,
         "selections": [
           {
@@ -133,11 +143,14 @@ return {
             "selections": [
               {
                 "kind": "InlineFragment",
-                "selections": [
-                  (v4/*: any*/),
-                  (v5/*: any*/)
-                ],
-                "type": "IncorrectCurrentPasswordError",
+                "selections": (v6/*: any*/),
+                "type": "InvalidTokenError",
+                "abstractKey": null
+              },
+              {
+                "kind": "InlineFragment",
+                "selections": (v6/*: any*/),
+                "type": "SessionExpiredError",
                 "abstractKey": null
               }
             ],
@@ -154,14 +167,14 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "SettingsChangeEmailMutation",
+    "name": "SettingsChangePhoneNumberMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
-        "concreteType": "GenerateChangeEmailTokenPayload",
+        "concreteType": "ChangePhoneNumberPayload",
         "kind": "LinkedField",
-        "name": "generateChangeEmailToken",
+        "name": "changePhoneNumber",
         "plural": false,
         "selections": [
           {
@@ -206,10 +219,14 @@ return {
               (v4/*: any*/),
               {
                 "kind": "InlineFragment",
-                "selections": [
-                  (v5/*: any*/)
-                ],
-                "type": "IncorrectCurrentPasswordError",
+                "selections": (v7/*: any*/),
+                "type": "InvalidTokenError",
+                "abstractKey": null
+              },
+              {
+                "kind": "InlineFragment",
+                "selections": (v7/*: any*/),
+                "type": "SessionExpiredError",
                 "abstractKey": null
               }
             ],
@@ -221,16 +238,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a4fa2f1b0a40c3ddaae82f71b7d06b9d",
+    "cacheID": "edd4dec343c368126920df9eb77150f9",
     "id": null,
     "metadata": {},
-    "name": "SettingsChangeEmailMutation",
+    "name": "SettingsChangePhoneNumberMutation",
     "operationKind": "mutation",
-    "text": "mutation SettingsChangeEmailMutation(\n  $input: GenerateChangeEmailTokenInput!\n) {\n  generateChangeEmailToken(input: $input) {\n    authPayload {\n      user {\n        email\n        emailConfirmed\n        id\n      }\n    }\n    errors {\n      __typename\n      ... on IncorrectCurrentPasswordError {\n        __typename\n        message\n      }\n    }\n  }\n}\n"
+    "text": "mutation SettingsChangePhoneNumberMutation(\n  $input: ChangePhoneNumberInput!\n) {\n  changePhoneNumber(input: $input) {\n    authPayload {\n      user {\n        phoneNumber\n        phoneNumberConfirmed\n        id\n      }\n    }\n    errors {\n      __typename\n      ... on InvalidTokenError {\n        __typename\n        message\n      }\n      ... on SessionExpiredError {\n        __typename\n        message\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "dd54fb436357fa253a6f553619282b76";
+(node as any).hash = "65723ee9bb1799aacfb01527f2df4920";
 
 export default node;

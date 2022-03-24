@@ -13,7 +13,8 @@ namespace API.Infrastructure {
         private readonly string _fromEmail;
 
         public EmailSender(
-            IOptions<PostmarkConfig> config, ILogger<EmailSender> logger) {
+            IOptions<PostmarkConfig> config,
+            ILogger<EmailSender> logger) {
             _logger = logger;
             _fromEmail = Environment.GetEnvironmentVariable("POSTMARK_FROM_EMAIL") ??
                 throw new ArgumentNullException(nameof(Environment));

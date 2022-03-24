@@ -12,9 +12,9 @@ import { SettingsAccountQuery } from '../../../../__generated__/SettingsAccountQ
 const query = graphql`
   query SettingsAccountQuery {
     me {
-      emailConfirmed
       ...SettingsChangeEmail_user
       ...SettingsTwoFactorAuth_user
+      ...SettingsChangePhoneNumber_user
     }
   }
 `;
@@ -31,7 +31,7 @@ const SettingsAccount = ({ fetchKey }: Props) => {
       <div className="space-y-6">
         <SettingsChangeEmail me={data.me!} />
         <SettingsChangePassword />
-        <SettingsChangePhoneNumber />
+        <SettingsChangePhoneNumber me={data.me!} />
       </div>
       <SettingsTwoFactorAuth me={data.me!} />
       <SettingsDeleteAccount />

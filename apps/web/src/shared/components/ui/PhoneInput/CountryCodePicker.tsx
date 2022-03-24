@@ -98,7 +98,7 @@ interface Props {
 
 const CountryCodePicker = ({ onChange: _onChange }: Props) => {
   const [selectedCountry, setSelectedCountry] = useState<Country>(
-    countriesIndexedByName['United States'],
+    countriesIndexedByName['Canada'],
   );
   const [trigger, container] = usePopper({
     placement: 'bottom-start',

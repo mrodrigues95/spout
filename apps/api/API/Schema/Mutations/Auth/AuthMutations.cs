@@ -96,7 +96,6 @@ namespace API.Schema.Mutations.Auth {
             var user = await userManager.FindByEmailAsync(input.Email);
             if (user is null) throw new LoginUserException();
 
-
             var loginUser = await signInManager.PasswordSignInAsync(user,
                 input.Password, true, false);
             if (!loginUser.Succeeded) throw new LoginUserException();
@@ -330,11 +329,10 @@ namespace API.Schema.Mutations.Auth {
             await userManager.UpdateAsync(user);
             await userManager.UpdateNormalizedUserNameAsync(user);
 
-            ctx.UserEmailChanges.Remove(emailChange);
+            var entitiesToRemove = ctx.UserEmailChanges.Where(x => x.UserId == user.Id);
+            ctx.UserEmailChanges.RemoveRange(entitiesToRemove);
             await ctx.SaveChangesAsync(cancellationToken);
 
-            // The application cookie needs to be refreshed so that the user claims contain
-            // the new email.
             await signInManager.RefreshSignInAsync(user);
 
             return new AuthPayload(user, session, true);
@@ -404,7 +402,8 @@ namespace API.Schema.Mutations.Auth {
             user.UpdatedAt = DateTime.UtcNow;
             await userManager.UpdateAsync(user);
 
-            ctx.UserPasswordResets.Remove(passwordReset);
+            var entitiesToRemove = ctx.UserPasswordResets.Where(x => x.UserId == user.Id);
+            ctx.UserPasswordResets.RemoveRange(entitiesToRemove);
             await ctx.SaveChangesAsync(cancellationToken);
 
             //await emailSender.SendEmailAsync(
@@ -417,6 +416,96 @@ namespace API.Schema.Mutations.Auth {
             //    tag: "Password Reset");
 
             return new AuthPayload(isLoggedIn: false);
+        }
+
+        [Authorize]
+        [Error(typeof(UserNotFoundException))]
+        [Error(typeof(InvalidPhoneNumberException))]
+        [Error(typeof(SMSNotSentException))]
+        public async Task<AuthPayload> GenerateChangePhoneNumberTokenAsync(
+            GenerateChangePhoneNumberTokenInput input,
+            ClaimsPrincipal userClaim,
+            UserManager<User> userManager,
+            ApplicationDbContext ctx,
+            CancellationToken cancellationToken,
+            ISMSService smsService) {
+            var user = await userManager.GetUserAsync(userClaim);
+            if (user is null) throw new UserNotFoundException();
+
+            // TODO: Check `carrier.type` for "mobile" since we only
+            // allow mobile numbers. The problem is Canadian numbers
+            // need some sort of agreement for this to work.
+            // See https://www.twilio.com/docs/lookup/api#lookups-carrier-info
+            var phoneNumberResource = await smsService.GetPhoneNumberAsync(
+                input.PhoneNumber, input.CountryCode);
+            if (phoneNumberResource is null) {
+                throw new InvalidPhoneNumberException(input.PhoneNumber);
+            }
+
+            var phoneNumber = phoneNumberResource.PhoneNumber.ToString();
+            var token = await userManager.GenerateChangePhoneNumberTokenAsync(user, phoneNumber);
+
+            // NOTE: We can only send messages to verified numbers for now due to a trial account.
+            var smsSuccessfullySent = await smsService.SendSMS(
+                $"Your Spout security code is: {token}", phoneNumber);
+            if (!smsSuccessfullySent) throw new SMSNotSentException(phoneNumber);
+
+            var phoneNumberChange = new UserPhoneNumberChange {
+                UserId = user.Id,
+                Token = token,
+                NewPhoneNumber = phoneNumber,
+                ExpiresAt = DateTime.UtcNow.AddMinutes(6)
+            };
+            ctx.UserPhoneNumberChanges.Add(phoneNumberChange);
+            await ctx.SaveChangesAsync(cancellationToken);
+
+            return new AuthPayload(user, isLoggedIn: true);
+        }
+
+        [Authorize]
+        [Error(typeof(UserNotFoundException))]
+        [Error(typeof(SessionExpiredException))]
+        [Error(typeof(InvalidTokenException))]
+        public async Task<AuthPayload> ChangePhoneNumberAsync(
+            ChangePhoneNumberInput input,
+            ClaimsPrincipal userClaim,
+            ISessionManager sessionManager,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            ApplicationDbContext ctx,
+            CancellationToken cancellationToken) {
+            var user = await userManager.GetUserAsync(userClaim);
+            if (user is null) throw new UserNotFoundException();
+
+            var session = await sessionManager.ValidateAsync(input.SessionId,
+                user, cancellationToken);
+            if (session is null) throw new SessionExpiredException();
+
+            var phoneNumberChange = await ctx.UserPhoneNumberChanges.SingleOrDefaultAsync(x =>
+                x.Token == input.Token
+                && x.UserId == user.Id, cancellationToken);
+            if (phoneNumberChange is null) throw new InvalidTokenException(input.Token);
+
+            var result = await userManager.ChangePhoneNumberAsync(user,
+                phoneNumberChange.NewPhoneNumber, phoneNumberChange.Token);
+            if (!result.Succeeded) {
+                ctx.UserPhoneNumberChanges.Remove(phoneNumberChange);
+                await ctx.SaveChangesAsync(cancellationToken);
+                throw new InvalidTokenException(input.Token);
+            }
+
+            var entitiesToRemove = ctx.UserPhoneNumberChanges.Where(x => x.UserId == user.Id);
+            ctx.UserPhoneNumberChanges.RemoveRange(entitiesToRemove);
+            await ctx.SaveChangesAsync(cancellationToken);
+
+            await sessionManager.InvalidateExceptForAsync(session.Id, cancellationToken);
+
+            user.UpdatedAt = DateTime.UtcNow;
+            await userManager.UpdateAsync(user);
+
+            await signInManager.RefreshSignInAsync(user);
+
+            return new AuthPayload(user, session, true);
         }
 
         [Authorize]

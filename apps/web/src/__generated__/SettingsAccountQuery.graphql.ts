@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a42ee7faac3620d074a45494b6d15c12>>
+ * @generated SignedSource<<dbd91f4cb68e1280273d6e954499f7db>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,8 +14,7 @@ export type SettingsAccountQuery$variables = {};
 export type SettingsAccountQueryVariables = SettingsAccountQuery$variables;
 export type SettingsAccountQuery$data = {
   readonly me: {
-    readonly emailConfirmed: boolean;
-    readonly " $fragmentSpreads": FragmentRefs<"SettingsChangeEmail_user" | "SettingsTwoFactorAuth_user">;
+    readonly " $fragmentSpreads": FragmentRefs<"SettingsChangeEmail_user" | "SettingsTwoFactorAuth_user" | "SettingsChangePhoneNumber_user">;
   } | null;
 };
 export type SettingsAccountQueryResponse = SettingsAccountQuery$data;
@@ -24,15 +23,7 @@ export type SettingsAccountQuery = {
   response: SettingsAccountQuery$data;
 };
 
-const node: ConcreteRequest = (function(){
-var v0 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "emailConfirmed",
-  "storageKey": null
-};
-return {
+const node: ConcreteRequest = {
   "fragment": {
     "argumentDefinitions": [],
     "kind": "Fragment",
@@ -47,7 +38,6 @@ return {
         "name": "me",
         "plural": false,
         "selections": [
-          (v0/*: any*/),
           {
             "args": null,
             "kind": "FragmentSpread",
@@ -57,6 +47,11 @@ return {
             "args": null,
             "kind": "FragmentSpread",
             "name": "SettingsTwoFactorAuth_user"
+          },
+          {
+            "args": null,
+            "kind": "FragmentSpread",
+            "name": "SettingsChangePhoneNumber_user"
           }
         ],
         "storageKey": null
@@ -79,7 +74,6 @@ return {
         "name": "me",
         "plural": false,
         "selections": [
-          (v0/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -91,7 +85,21 @@ return {
             "alias": null,
             "args": null,
             "kind": "ScalarField",
+            "name": "emailConfirmed",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "phoneNumberConfirmed",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "phoneNumber",
             "storageKey": null
           },
           {
@@ -107,16 +115,15 @@ return {
     ]
   },
   "params": {
-    "cacheID": "87f8e2ed5246bb0d8313a7ac4bdd8518",
+    "cacheID": "128cc5c953253ab5df926a917e937b62",
     "id": null,
     "metadata": {},
     "name": "SettingsAccountQuery",
     "operationKind": "query",
-    "text": "query SettingsAccountQuery {\n  me {\n    emailConfirmed\n    ...SettingsChangeEmail_user\n    ...SettingsTwoFactorAuth_user\n    id\n  }\n}\n\nfragment SettingsChangeEmail_user on User {\n  email\n  emailConfirmed\n}\n\nfragment SettingsTwoFactorAuth_user on User {\n  emailConfirmed\n  phoneNumberConfirmed\n}\n"
+    "text": "query SettingsAccountQuery {\n  me {\n    ...SettingsChangeEmail_user\n    ...SettingsTwoFactorAuth_user\n    ...SettingsChangePhoneNumber_user\n    id\n  }\n}\n\nfragment SettingsChangeEmail_user on User {\n  email\n  emailConfirmed\n}\n\nfragment SettingsChangePhoneNumber_user on User {\n  phoneNumber\n  phoneNumberConfirmed\n}\n\nfragment SettingsTwoFactorAuth_user on User {\n  emailConfirmed\n  phoneNumberConfirmed\n}\n"
   }
 };
-})();
 
-(node as any).hash = "e9ce0568094f53e3e8892aae762169a7";
+(node as any).hash = "4804da680711cda6e0dff4d1528f95b5";
 
 export default node;

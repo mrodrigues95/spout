@@ -1,7 +1,15 @@
 import { useCallback, useState } from 'react';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import Zod, { object, string } from 'zod';
-import { Button, Title, Alert, Modal, Form, useZodForm } from '@spout/toolkit';
+import {
+  Button,
+  Title,
+  Text,
+  Alert,
+  Modal,
+  Form,
+  useZodForm,
+} from '@spout/toolkit';
 import { useResendVerificationEmail } from './hooks';
 import { useTimeout } from '../../../../shared/hooks';
 import { useToast } from '../../../../shared/components';
@@ -79,7 +87,10 @@ const mutation = graphql`
   mutation SettingsChangeEmailMutation($input: GenerateChangeEmailTokenInput!) {
     generateChangeEmailToken(input: $input) {
       authPayload {
-        isLoggedIn
+        user {
+          email
+          emailConfirmed
+        }
       }
       errors {
         ... on IncorrectCurrentPasswordError {
@@ -236,9 +247,12 @@ const SettingsChangeEmail = ({ ...props }: Props) => {
         </div>
       )}
       <div className="flex items-center">
-        <Title as="h2" variant="h5" className="flex-1 font-medium">
-          Email
-        </Title>
+        <div className="flex-1">
+          <Title as="h2" variant="h5" className="font-medium">
+            Phone Number
+          </Title>
+          <Text size="sm">{me.email}</Text>
+        </div>
         <Button onClick={() => setIsOpen(true)}>Change Email</Button>
       </div>
       <Modal isOpen={isOpen} onClose={close}>

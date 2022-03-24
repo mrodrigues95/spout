@@ -11,21 +11,21 @@ using Microsoft.Extensions.Options;
 namespace API.Extensions {
     public static class IdentityServiceExtensions {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services) {
-            services.AddDefaultIdentity<User>(opt => {
-                opt.User.RequireUniqueEmail = true;
+            services.AddDefaultIdentity<User>(opts => {
+                opts.User.RequireUniqueEmail = true;
 
-                opt.SignIn.RequireConfirmedEmail = false;
-                opt.SignIn.RequireConfirmedAccount = false;
+                opts.SignIn.RequireConfirmedEmail = false;
+                opts.SignIn.RequireConfirmedAccount = false;
 
-                opt.Password.RequireNonAlphanumeric = false;
-                opt.Password.RequireDigit = false;
-                opt.Password.RequireUppercase = false;
-                opt.Password.RequireLowercase = false;
-                opt.Password.RequiredLength = 6;
+                opts.Password.RequireNonAlphanumeric = false;
+                opts.Password.RequireDigit = false;
+                opts.Password.RequireUppercase = false;
+                opts.Password.RequireLowercase = false;
+                opts.Password.RequiredLength = 6;
 
-                opt.Tokens.ChangeEmailTokenProvider = "CustomChangeEmailTokenProvider";
-                opt.Tokens.EmailConfirmationTokenProvider = "CustomEmailConfirmationTokenProvider";
-                opt.Tokens.PasswordResetTokenProvider = "CustomPasswordResetTokenProvider";
+                opts.Tokens.ChangeEmailTokenProvider = "CustomChangeEmailTokenProvider";
+                opts.Tokens.EmailConfirmationTokenProvider = "CustomEmailConfirmationTokenProvider";
+                opts.Tokens.PasswordResetTokenProvider = "CustomPasswordResetTokenProvider";
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders()
@@ -33,26 +33,31 @@ namespace API.Extensions {
             .AddTokenProvider<CustomEmailConfirmationTokenProvider<User>>("CustomEmailConfirmationTokenProvider")
             .AddTokenProvider<CustomPasswordResetTokenProvider<User>>("CustomPasswordResetTokenProvider");
 
-            services.Configure<CustomChangeEmailTokenProviderOptions>(opt => {
-                opt.TokenLifespan = TimeSpan.FromDays(1);
+            services.Configure<CustomChangeEmailTokenProviderOptions>(opts => {
+                opts.TokenLifespan = TimeSpan.FromDays(1);
             });
 
-            services.Configure<CustomEmailConfirmationTokenProviderOptions>(opt => {
-                opt.TokenLifespan = TimeSpan.FromDays(1);
+            services.Configure<CustomEmailConfirmationTokenProviderOptions>(opts => {
+                opts.TokenLifespan = TimeSpan.FromDays(1);
             });
 
-            services.Configure<CustomPasswordResetTokenProviderOptions>(opt => {
-                opt.TokenLifespan = TimeSpan.FromDays(1);
+            services.Configure<CustomPasswordResetTokenProviderOptions>(opts => {
+                opts.TokenLifespan = TimeSpan.FromDays(1);
             });
 
-            services.ConfigureApplicationCookie(opt => {
-                opt.Cookie.Name = "SP_IDENTITY";
-                opt.Cookie.HttpOnly = true;
-                opt.Cookie.SameSite = SameSiteMode.Strict;
-                opt.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                opt.ExpireTimeSpan = TimeSpan.FromDays(7);
-                opt.SlidingExpiration = true;
+            services.ConfigureApplicationCookie(opts => {
+                opts.Cookie.Name = "SP_IDENTITY";
+                opts.Cookie.HttpOnly = true;
+                opts.Cookie.SameSite = SameSiteMode.Strict;
+                opts.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                opts.ExpireTimeSpan = TimeSpan.FromDays(7);
+                opts.SlidingExpiration = true;
             });
+
+            // TODO: Refresh sign in when changing user details.
+            //services.Configure<SecurityStampValidatorOptions>(opts => {
+            //    opts.ValidationInterval = TimeSpan.FromSeconds(5);
+            //});
 
             return services;
         }

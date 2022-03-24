@@ -76,7 +76,7 @@ export const ButtonOrLink = forwardRef<
       fullWidth = false,
       loading = false,
       loadingText,
-      spinner = <Spinner variant="circle" size="sm" />,
+      spinner = <Spinner variant="circle" scheme="white" size="sm" />,
       className,
       children,
       leftIcon,

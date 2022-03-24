@@ -1,32 +1,71 @@
 import { useCallback, useMemo, useState } from 'react';
-import { object, string } from 'zod';
-import { isValidPhoneNumber, CountryCode } from 'libphonenumber-js';
+import Zod, { object, string } from 'zod';
+import {
+  isPossiblePhoneNumber,
+  parsePhoneNumber,
+  CountryCode,
+  PhoneNumber,
+} from 'libphonenumber-js/mobile';
 import { Button, useZodForm, generateId } from '@spout/toolkit';
 import CountryCodePicker from './CountryCodePicker';
 import { countriesIndexedByName, Country } from './utils';
+import { useSendPhoneVerificationTokenMutation } from './hooks';
 
 const getSchema = (country: Country) =>
   object({
     phoneNumber: string(),
   }).refine(
-    (data) => isValidPhoneNumber(data.phoneNumber, country.code as CountryCode),
+    (data) =>
+      // NOTE: Using `.isValid()` checks strictly for mobile numbers and will
+      // fail if its a non-mobile number which is what we want.
+      isPossiblePhoneNumber(data.phoneNumber, country.code) &&
+      parsePhoneNumber(data.phoneNumber, country.code).isValid(),
     {
       path: ['phoneNumber'],
     },
   );
 
-const PhoneInput = () => {
+interface Props {
+  onVerificationTokenSent: (phoneNumber: PhoneNumber) => void;
+}
+
+const PhoneVerificationInput = ({ onVerificationTokenSent }: Props) => {
   // TODO: Get the users location either via the Geolocation API or from a service
   // like https://members.ip-api.com/.
   const [country, setCountry] = useState<Country>(
-    countriesIndexedByName['United States'],
+    countriesIndexedByName['Canada'],
   );
-  const errorId = useMemo(() => `spout-phone-error-${generateId()}`, []);
+  const [sendCode, isInFlight] = useSendPhoneVerificationTokenMutation();
 
-  const form = useZodForm({ schema: getSchema(country) });
+  const phoneNumberSchema = useMemo(() => getSchema(country), [country]);
+
+  const form = useZodForm({ schema: phoneNumberSchema });
   const error = form.formState.errors['phoneNumber'];
 
-  const onSubmit = useCallback(() => console.log('test'), []);
+  const onSubmit = useCallback(
+    ({ phoneNumber }: Zod.infer<typeof phoneNumberSchema>) => {
+      const parsedPhoneNumber = parsePhoneNumber(
+        phoneNumber,
+        country.code as CountryCode,
+      );
+
+      sendCode({
+        phoneNumber: parsedPhoneNumber,
+        onSuccess: () => onVerificationTokenSent(parsedPhoneNumber),
+        onInvalidPhoneNumber: () =>
+          form.setError(
+            'phoneNumber',
+            {
+              type: 'manual',
+            },
+            { shouldFocus: true },
+          ),
+      });
+    },
+    [country.code, sendCode, onVerificationTokenSent, form],
+  );
+
+  const errorId = useMemo(() => `spout-phone-error-${generateId()}`, []);
 
   return (
     <div className="space-y-1">
@@ -57,7 +96,7 @@ const PhoneInput = () => {
               required
             />
           </label>
-          <Button type="submit" variant="primary">
+          <Button type="submit" variant="primary" loading={isInFlight}>
             Send
           </Button>
         </form>
@@ -66,4 +105,4 @@ const PhoneInput = () => {
   );
 };
 
-export default PhoneInput;
+export default PhoneVerificationInput;
