@@ -54,11 +54,6 @@ namespace API.Extensions {
                 opts.SlidingExpiration = true;
             });
 
-            // TODO: Refresh sign in when changing user details.
-            //services.Configure<SecurityStampValidatorOptions>(opts => {
-            //    opts.ValidationInterval = TimeSpan.FromSeconds(5);
-            //});
-
             return services;
         }
     }

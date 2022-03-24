@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9fdd1b35e9d647b3b080cba9b07bd4df>>
+ * @generated SignedSource<<4104d4180a9fe1978b55081a7fcfd9b5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,6 +16,7 @@ export type VerifyEmailResendEmailMutation$data = {
     readonly authPayload: {
       readonly user: {
         readonly email: string;
+        readonly emailConfirmed: boolean;
       } | null;
     } | null;
     readonly errors: ReadonlyArray<{
@@ -46,10 +47,17 @@ v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "__typename",
+  "name": "emailConfirmed",
   "storageKey": null
 },
 v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -87,7 +95,8 @@ return {
                 "name": "user",
                 "plural": false,
                 "selections": [
-                  (v0/*: any*/)
+                  (v0/*: any*/),
+                  (v1/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -105,8 +114,8 @@ return {
               {
                 "kind": "InlineFragment",
                 "selections": [
-                  (v1/*: any*/),
-                  (v2/*: any*/)
+                  (v2/*: any*/),
+                  (v3/*: any*/)
                 ],
                 "type": "EmailAlreadyVerifiedError",
                 "abstractKey": null
@@ -152,6 +161,7 @@ return {
                 "plural": false,
                 "selections": [
                   (v0/*: any*/),
+                  (v1/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -173,11 +183,11 @@ return {
             "name": "errors",
             "plural": true,
             "selections": [
-              (v1/*: any*/),
+              (v2/*: any*/),
               {
                 "kind": "InlineFragment",
                 "selections": [
-                  (v2/*: any*/)
+                  (v3/*: any*/)
                 ],
                 "type": "EmailAlreadyVerifiedError",
                 "abstractKey": null
@@ -191,16 +201,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "726dfcd7c8120dc6ac29ec1300b211f6",
+    "cacheID": "57f5bd624f82f4c1d0880d70a2787e25",
     "id": null,
     "metadata": {},
     "name": "VerifyEmailResendEmailMutation",
     "operationKind": "mutation",
-    "text": "mutation VerifyEmailResendEmailMutation {\n  generateEmailVerificationToken {\n    authPayload {\n      user {\n        email\n        id\n      }\n    }\n    errors {\n      __typename\n      ... on EmailAlreadyVerifiedError {\n        __typename\n        message\n      }\n    }\n  }\n}\n"
+    "text": "mutation VerifyEmailResendEmailMutation {\n  generateEmailVerificationToken {\n    authPayload {\n      user {\n        email\n        emailConfirmed\n        id\n      }\n    }\n    errors {\n      __typename\n      ... on EmailAlreadyVerifiedError {\n        __typename\n        message\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "2739152bcb1273a3c5cb2411d719d218";
+(node as any).hash = "66e70cffc9aa3d1942aa7fc3218414ad";
 
 export default node;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1c539fd4df4b40a33d4874369ff8cca4>>
+ * @generated SignedSource<<0443230554c067e3886121082cac0b2a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,6 +19,12 @@ export type ChangeEmailMutation$variables = {
 export type ChangeEmailMutationVariables = ChangeEmailMutation$variables;
 export type ChangeEmailMutation$data = {
   readonly changeEmail: {
+    readonly authPayload: {
+      readonly user: {
+        readonly email: string;
+        readonly emailConfirmed: boolean;
+      } | null;
+    } | null;
     readonly errors: ReadonlyArray<{
       readonly message?: string;
     }> | null;
@@ -46,6 +52,20 @@ v1 = [
   }
 ],
 v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "email",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "emailConfirmed",
+  "storageKey": null
+},
+v4 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -77,12 +97,36 @@ return {
           {
             "alias": null,
             "args": null,
+            "concreteType": "AuthPayload",
+            "kind": "LinkedField",
+            "name": "authPayload",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "User",
+                "kind": "LinkedField",
+                "name": "user",
+                "plural": false,
+                "selections": [
+                  (v2/*: any*/),
+                  (v3/*: any*/)
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
             "concreteType": null,
             "kind": "LinkedField",
             "name": "errors",
             "plural": true,
             "selections": [
-              (v2/*: any*/)
+              (v4/*: any*/)
             ],
             "storageKey": null
           }
@@ -110,6 +154,37 @@ return {
           {
             "alias": null,
             "args": null,
+            "concreteType": "AuthPayload",
+            "kind": "LinkedField",
+            "name": "authPayload",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "User",
+                "kind": "LinkedField",
+                "name": "user",
+                "plural": false,
+                "selections": [
+                  (v2/*: any*/),
+                  (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "id",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
             "concreteType": null,
             "kind": "LinkedField",
             "name": "errors",
@@ -122,7 +197,7 @@ return {
                 "name": "__typename",
                 "storageKey": null
               },
-              (v2/*: any*/)
+              (v4/*: any*/)
             ],
             "storageKey": null
           }
@@ -132,16 +207,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f93800013b8133780fbfccf29634cc15",
+    "cacheID": "b3c5c64731c1679bb3c8a8c9c9ac4cec",
     "id": null,
     "metadata": {},
     "name": "ChangeEmailMutation",
     "operationKind": "mutation",
-    "text": "mutation ChangeEmailMutation(\n  $input: ChangeEmailInput!\n) {\n  changeEmail(input: $input) {\n    errors {\n      __typename\n      ... on InvalidTokenError {\n        message\n      }\n    }\n  }\n}\n"
+    "text": "mutation ChangeEmailMutation(\n  $input: ChangeEmailInput!\n) {\n  changeEmail(input: $input) {\n    authPayload {\n      user {\n        email\n        emailConfirmed\n        id\n      }\n    }\n    errors {\n      __typename\n      ... on InvalidTokenError {\n        message\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "2500cf24357ef943e59225cbc08d4bd0";
+(node as any).hash = "696639fc15749f76d3044f57de8b555b";
 
 export default node;

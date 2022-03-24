@@ -104,8 +104,6 @@ const EnterVerificationCodeModal = ({
     onChangePhoneNumberSuccess,
   ]);
 
-  console.log(otpInputRef);
-
   return (
     <>
       <Modal.Header

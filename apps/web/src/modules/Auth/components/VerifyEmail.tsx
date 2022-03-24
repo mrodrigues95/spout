@@ -15,6 +15,7 @@ const resendEmailMutation = graphql`
       authPayload {
         user {
           email
+          emailConfirmed
         }
       }
       errors {
@@ -30,6 +31,12 @@ const resendEmailMutation = graphql`
 const verifyEmailMutation = graphql`
   mutation VerifyEmailMutation($input: VerifyEmailInput!) {
     verifyEmail(input: $input) {
+      authPayload {
+        user {
+          email
+          emailConfirmed
+        }
+      }
       errors {
         ... on InvalidTokenError {
           __typename

@@ -11,6 +11,12 @@ import { ChangeEmailMutation } from '../../../__generated__/ChangeEmailMutation.
 const mutation = graphql`
   mutation ChangeEmailMutation($input: ChangeEmailInput!) {
     changeEmail(input: $input) {
+      authPayload {
+        user {
+          email
+          emailConfirmed
+        }
+      }
       errors {
         ... on InvalidTokenError {
           message

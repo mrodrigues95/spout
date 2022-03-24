@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9910b4f31d6235f9bed90667a97d7fe0>>
+ * @generated SignedSource<<a63deabe8ed4b5a942670996bc811e19>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,6 +18,12 @@ export type VerifyEmailMutation$variables = {
 export type VerifyEmailMutationVariables = VerifyEmailMutation$variables;
 export type VerifyEmailMutation$data = {
   readonly verifyEmail: {
+    readonly authPayload: {
+      readonly user: {
+        readonly email: string;
+        readonly emailConfirmed: boolean;
+      } | null;
+    } | null;
     readonly errors: ReadonlyArray<{
       readonly __typename: "InvalidTokenError";
       readonly message: string;
@@ -56,22 +62,36 @@ v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "__typename",
+  "name": "email",
   "storageKey": null
 },
 v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "emailConfirmed",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "message",
   "storageKey": null
 },
-v4 = [
-  (v2/*: any*/),
-  (v3/*: any*/)
+v6 = [
+  (v4/*: any*/),
+  (v5/*: any*/)
 ],
-v5 = [
-  (v3/*: any*/)
+v7 = [
+  (v5/*: any*/)
 ];
 return {
   "fragment": {
@@ -91,6 +111,30 @@ return {
           {
             "alias": null,
             "args": null,
+            "concreteType": "AuthPayload",
+            "kind": "LinkedField",
+            "name": "authPayload",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "User",
+                "kind": "LinkedField",
+                "name": "user",
+                "plural": false,
+                "selections": [
+                  (v2/*: any*/),
+                  (v3/*: any*/)
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
             "concreteType": null,
             "kind": "LinkedField",
             "name": "errors",
@@ -98,13 +142,13 @@ return {
             "selections": [
               {
                 "kind": "InlineFragment",
-                "selections": (v4/*: any*/),
+                "selections": (v6/*: any*/),
                 "type": "InvalidTokenError",
                 "abstractKey": null
               },
               {
                 "kind": "InlineFragment",
-                "selections": (v4/*: any*/),
+                "selections": (v6/*: any*/),
                 "type": "EmailAlreadyVerifiedError",
                 "abstractKey": null
               }
@@ -135,21 +179,52 @@ return {
           {
             "alias": null,
             "args": null,
+            "concreteType": "AuthPayload",
+            "kind": "LinkedField",
+            "name": "authPayload",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "User",
+                "kind": "LinkedField",
+                "name": "user",
+                "plural": false,
+                "selections": [
+                  (v2/*: any*/),
+                  (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "id",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
             "concreteType": null,
             "kind": "LinkedField",
             "name": "errors",
             "plural": true,
             "selections": [
-              (v2/*: any*/),
+              (v4/*: any*/),
               {
                 "kind": "InlineFragment",
-                "selections": (v5/*: any*/),
+                "selections": (v7/*: any*/),
                 "type": "InvalidTokenError",
                 "abstractKey": null
               },
               {
                 "kind": "InlineFragment",
-                "selections": (v5/*: any*/),
+                "selections": (v7/*: any*/),
                 "type": "EmailAlreadyVerifiedError",
                 "abstractKey": null
               }
@@ -162,16 +237,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "5be644a770e0f904747087edc6ad133f",
+    "cacheID": "ed8a21da6550a4da4bb641bfdad4e56c",
     "id": null,
     "metadata": {},
     "name": "VerifyEmailMutation",
     "operationKind": "mutation",
-    "text": "mutation VerifyEmailMutation(\n  $input: VerifyEmailInput!\n) {\n  verifyEmail(input: $input) {\n    errors {\n      __typename\n      ... on InvalidTokenError {\n        __typename\n        message\n      }\n      ... on EmailAlreadyVerifiedError {\n        __typename\n        message\n      }\n    }\n  }\n}\n"
+    "text": "mutation VerifyEmailMutation(\n  $input: VerifyEmailInput!\n) {\n  verifyEmail(input: $input) {\n    authPayload {\n      user {\n        email\n        emailConfirmed\n        id\n      }\n    }\n    errors {\n      __typename\n      ... on InvalidTokenError {\n        __typename\n        message\n      }\n      ... on EmailAlreadyVerifiedError {\n        __typename\n        message\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "bc8d74c709d795c6bfe7d61fece490bb";
+(node as any).hash = "2f6343e2f57f731d80ec3da93126e736";
 
 export default node;

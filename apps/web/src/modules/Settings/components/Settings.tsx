@@ -1,17 +1,10 @@
-import { InferGetServerSidePropsType } from 'next';
-import { getServerSideProps } from '../../../pages/settings';
 import { Layout } from '../../../shared/components';
-import { SettingsProvider } from './SettingsProvider';
 import ViewSettings from './ViewSettings';
 
-const Settings = ({
-  sessionId,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const Settings = () => {
   return (
     <Layout title="Settings">
-      <SettingsProvider sessionId={sessionId!}>
-        <ViewSettings />
-      </SettingsProvider>
+      <ViewSettings />
     </Layout>
   );
 };

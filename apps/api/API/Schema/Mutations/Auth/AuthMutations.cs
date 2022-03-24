@@ -19,6 +19,8 @@ using HotChocolate.Types;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
+using PhoneNumbers;
 using Enums = API.Common.Enums;
 
 namespace API.Schema.Mutations.Auth {
@@ -144,6 +146,7 @@ namespace API.Schema.Mutations.Auth {
             ChangePasswordInput input,
             ClaimsPrincipal userClaim,
             UserManager<User> userManager,
+            SignInManager<User> signInManager,
             ISessionManager sessionManager,
             IEmailSender emailSender,
             CancellationToken cancellationToken) {
@@ -162,6 +165,8 @@ namespace API.Schema.Mutations.Auth {
 
             user.UpdatedAt = DateTime.UtcNow;
             await userManager.UpdateAsync(user);
+
+            await signInManager.RefreshSignInAsync(user);
 
             //await emailSender.SendEmailAsync(
             //    toEmail: user.Email!,
@@ -208,6 +213,7 @@ namespace API.Schema.Mutations.Auth {
             [GlobalUserEmail] string userEmail,
             VerifyEmailInput input,
             UserManager<User> userManager,
+            SignInManager<User> signInManager,
             IEmailSender emailSender) {
             var user = await userManager.FindByEmailAsync(userEmail);
             if (user is null) throw new UserNotFoundException();
@@ -217,6 +223,8 @@ namespace API.Schema.Mutations.Auth {
 
             var result = await userManager.ConfirmEmailAsync(user, input.Token);
             if (!result.Succeeded) throw new InvalidTokenException(input.Token);
+
+            await signInManager.RefreshSignInAsync(user);
 
             //await emailSender.SendEmailAsync(
             //    toEmail: user.Email!,
@@ -380,6 +388,7 @@ namespace API.Schema.Mutations.Auth {
             ApplicationDbContext ctx,
             CancellationToken cancellationToken,
             UserManager<User> userManager,
+            SignInManager<User> signInManager,
             ISessionManager sessionManager,
             IEmailSender emailSender) {
             var passwordReset = await ctx.UserPasswordResets.SingleOrDefaultAsync(x =>
@@ -405,6 +414,8 @@ namespace API.Schema.Mutations.Auth {
             var entitiesToRemove = ctx.UserPasswordResets.Where(x => x.UserId == user.Id);
             ctx.UserPasswordResets.RemoveRange(entitiesToRemove);
             await ctx.SaveChangesAsync(cancellationToken);
+
+            await signInManager.RefreshSignInAsync(user);
 
             //await emailSender.SendEmailAsync(
             //    toEmail: user.Email!,
@@ -432,14 +443,46 @@ namespace API.Schema.Mutations.Auth {
             var user = await userManager.GetUserAsync(userClaim);
             if (user is null) throw new UserNotFoundException();
 
-            // TODO: Check `carrier.type` for "mobile" since we only
-            // allow mobile numbers. The problem is Canadian numbers
-            // need some sort of agreement for this to work.
-            // See https://www.twilio.com/docs/lookup/api#lookups-carrier-info
             var phoneNumberResource = await smsService.GetPhoneNumberAsync(
                 input.PhoneNumber, input.CountryCode);
             if (phoneNumberResource is null) {
                 throw new InvalidPhoneNumberException(input.PhoneNumber);
+            }
+
+            // Canadian phone numbers require a special contract with the CLNPC to retrieve
+            // carrier information. For that reason, we fall back to validating Canadian
+            // numbers with `libphonenumber-csharp`, all other phone numbers can be
+            // validated with the Twilio Lookup API.
+            // See https://www.twilio.com/docs/lookup/api#lookups-carrier-info
+            if (phoneNumberResource.CountryCode.Equals("CA")) {
+                var util = PhoneNumberUtil.GetInstance();
+                var number = util.Parse(phoneNumberResource.PhoneNumber.ToString(),
+                    phoneNumberResource.CountryCode);
+                var type = util.GetNumberType(number);
+                var whitelistedTypes = new[] {
+                    PhoneNumberType.FIXED_LINE_OR_MOBILE,
+                    PhoneNumberType.MOBILE,
+                    PhoneNumberType.PERSONAL_NUMBER,
+                    PhoneNumberType.UNKNOWN
+                };
+
+                if (!whitelistedTypes.Contains(type)) {
+                    throw new InvalidPhoneNumberException(input.PhoneNumber);
+                }
+            } else {
+                var carrierJObject = JObject.FromObject(phoneNumberResource.Carrier);
+                JToken? typeToken;
+                if (carrierJObject.TryGetValue("type", out typeToken)) {
+                    var type = typeToken.Value<string?>();
+
+                    // Only mobile numbers are supported. `type` can also be null which
+                    // means the number is valid but no information could be returned
+                    // about it so we try to send a SMS anyways if that happens.
+                    // See: https://www.twilio.com/docs/lookup/api#phone-number-type-values
+                    if (!type?.Equals("mobile") ?? false) {
+                        throw new InvalidPhoneNumberException(input.PhoneNumber);
+                    }
+                }
             }
 
             var phoneNumber = phoneNumberResource.PhoneNumber.ToString();

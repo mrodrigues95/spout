@@ -3,8 +3,7 @@ import { graphql, useMutation } from 'react-relay';
 import Zod, { object, string } from 'zod';
 import { useRouter } from 'next/router';
 import { Button, Title, Modal, Form, useZodForm } from '@spout/toolkit';
-import { useSettings } from '../SettingsProvider';
-import { useToast } from '../../../../shared/components';
+import { useSession, useToast } from '../../../../shared/components';
 import { SettingsChangePasswordMutation } from '../../../../__generated__/SettingsChangePasswordMutation.graphql';
 
 const changePasswordSchema = object({
@@ -35,7 +34,7 @@ const mutation = graphql`
 
 const SettingsChangePassword = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { sessionId } = useSettings();
+  const { sessionId } = useSession();
   const { toast, handleError } = useToast();
   const router = useRouter();
   const [changePassword, isInFlight] =
@@ -53,7 +52,7 @@ const SettingsChangePassword = () => {
       changePassword({
         variables: {
           input: {
-            sessionId,
+            sessionId: sessionId!,
             currentPassword,
             newPassword,
           },
