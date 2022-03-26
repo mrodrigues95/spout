@@ -28,8 +28,14 @@ namespace API.Data.Configurations {
             builder.Property(u => u.ProfileColor)
                 .IsRequired();
 
+            builder.Property(u => u.PreferredProvider)
+                .IsRequired(false);
+
             builder.Property(u => u.AvatarUrl)
                 .HasMaxLength(2048)
+                .IsRequired(false);
+
+            builder.Property(u => u.TwoFactorEnabledAt)
                 .IsRequired(false);
 
             builder.Property(u => u.CreatedAt)

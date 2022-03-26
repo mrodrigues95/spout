@@ -2,5 +2,6 @@ apps/**/__generated__/**
 libs/**/__generated__/**
 apps/**/bin/**
 apps/**/obj/**
+apps/**/schema.graphql
 /dist
 /coverage

@@ -14,9 +14,7 @@ directive @defer(
   """
   label: String
 
-  """
-  Deferred when true.
-  """
+  """Deferred when true."""
   if: Boolean
 ) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 
@@ -34,14 +32,10 @@ directive @stream(
   """
   label: String
 
-  """
-  The initial elements that shall be send down to the consumer.
-  """
+  """The initial elements that shall be send down to the consumer."""
   initialCount: Int! = 0
 
-  """
-  Streamed when true.
-  """
+  """Streamed when true."""
   if: Boolean
 ) on FIELD
 
@@ -51,9 +45,7 @@ directive @authorize(
   """
   policy: String
 
-  """
-  Roles that are allowed to access the annotated resource.
-  """
+  """Roles that are allowed to access the annotated resource."""
   roles: [String!]
 
   """
@@ -84,6 +76,7 @@ type AuthPayload {
   user: User
   session: Session
   isLoggedIn: Boolean!
+  requiresTwoFactorLogin: Boolean!
 }
 
 type BlobDeletionError implements Error {
@@ -103,10 +96,7 @@ input BooleanOperationFilterInput {
   neq: Boolean
 }
 
-union ChangeEmailError =
-    UserNotFoundError
-  | InvalidTokenError
-  | SessionExpiredError
+union ChangeEmailError = UserNotFoundError | InvalidTokenError | SessionExpiredError
 
 input ChangeEmailInput {
   sessionId: ID!
@@ -119,10 +109,7 @@ type ChangeEmailPayload {
   query: Query!
 }
 
-union ChangePasswordError =
-    UserNotFoundError
-  | IncorrectCurrentPasswordError
-  | SessionExpiredError
+union ChangePasswordError = UserNotFoundError | IncorrectCurrentPasswordError | SessionExpiredError
 
 input ChangePasswordInput {
   sessionId: ID!
@@ -136,10 +123,7 @@ type ChangePasswordPayload {
   query: Query!
 }
 
-union ChangePhoneNumberError =
-    UserNotFoundError
-  | SessionExpiredError
-  | InvalidTokenError
+union ChangePhoneNumberError = UserNotFoundError | SessionExpiredError | InvalidTokenError
 
 input ChangePhoneNumberInput {
   sessionId: ID!
@@ -382,10 +366,7 @@ input ComparableNullableOfInt32OperationFilterInput {
   nlte: Int
 }
 
-union CompleteUploadError =
-    BlobNotFoundError
-  | BlobPropertiesError
-  | FileNotFoundError
+union CompleteUploadError = BlobNotFoundError | BlobPropertiesError | FileNotFoundError
 
 input CompleteUploadInput {
   fileId: ID!
@@ -431,15 +412,10 @@ type CreateDiscussionPayload {
   query: Query!
 }
 
-"""
-The `DateTime` scalar represents an ISO-8601 compliant date time type.
-"""
+"""The `DateTime` scalar represents an ISO-8601 compliant date time type."""
 scalar DateTime
 
-union DeleteFileError =
-    FileNotFoundError
-  | BlobNotFoundError
-  | BlobDeletionError
+union DeleteFileError = FileNotFoundError | BlobNotFoundError | BlobDeletionError
 
 input DeleteFileInput {
   fileId: ID!
@@ -502,6 +478,19 @@ input DelLogTypeSortInput {
   type: SortEnumType
 }
 
+union DisableTwoFactorError = UserNotFoundError | SessionExpiredError | IncorrectCurrentPasswordError
+
+input DisableTwoFactorInput {
+  sessionId: ID!
+  currentPassword: String!
+}
+
+type DisableTwoFactorPayload {
+  authPayload: AuthPayload
+  errors: [DisableTwoFactorError!]
+  query: Query!
+}
+
 type Discussion implements Node {
   id: ID!
   guid: UUID!
@@ -511,19 +500,13 @@ type Discussion implements Node {
   createdBy: User!
   classroom: Classroom!
   messages(
-    """
-    Returns the first _n_ elements from the list.
-    """
+    """Returns the first _n_ elements from the list."""
     first: Int
 
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
+    """Returns the elements in the list that come after the specified cursor."""
     after: String
 
-    """
-    Returns the last _n_ elements from the list.
-    """
+    """Returns the last _n_ elements from the list."""
     last: Int
 
     """
@@ -617,6 +600,19 @@ type EmailNotVerifiedError implements Error {
   message: String!
 }
 
+union EnableTwoFactorError = UserNotFoundError | SessionExpiredError | UnverifiedUserError | InvalidProviderError
+
+input EnableTwoFactorInput {
+  sessionId: ID!
+  provider: UserPreferredProvider!
+}
+
+type EnableTwoFactorPayload {
+  authPayload: AuthPayload
+  errors: [EnableTwoFactorError!]
+  query: Query!
+}
+
 interface Error {
   message: String!
 }
@@ -674,38 +670,24 @@ type FileNotFoundError implements Error {
   message: String!
 }
 
-"""
-A connection to a list of items.
-"""
+"""A connection to a list of items."""
 type FilesConnection {
-  """
-  Information to aid in pagination.
-  """
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
 
-  """
-  A list of edges.
-  """
+  """A list of edges."""
   edges: [FilesEdge!]
 
-  """
-  A flattened list of the nodes.
-  """
+  """A flattened list of the nodes."""
   nodes: [File!]
 }
 
-"""
-An edge in a connection.
-"""
+"""An edge in a connection."""
 type FilesEdge {
-  """
-  A cursor for use in pagination.
-  """
+  """A cursor for use in pagination."""
   cursor: String!
 
-  """
-  The item at the end of the edge.
-  """
+  """The item at the end of the edge."""
   node: File!
 }
 
@@ -746,11 +728,7 @@ input FileUploadStatusOperationFilterInput {
   nin: [FileUploadStatus!]
 }
 
-union GenerateChangeEmailTokenError =
-    UserNotFoundError
-  | IncorrectCurrentPasswordError
-  | EmailAlreadyRegisteredError
-  | EmailNotVerifiedError
+union GenerateChangeEmailTokenError = UserNotFoundError | IncorrectCurrentPasswordError | EmailAlreadyRegisteredError | EmailNotVerifiedError
 
 input GenerateChangeEmailTokenInput {
   newEmail: String!
@@ -763,10 +741,7 @@ type GenerateChangeEmailTokenPayload {
   query: Query!
 }
 
-union GenerateChangePhoneNumberTokenError =
-    UserNotFoundError
-  | InvalidPhoneNumberError
-  | SMSNotSentError
+union GenerateChangePhoneNumberTokenError = UserNotFoundError | InvalidPhoneNumberError | SMSNotSentError
 
 input GenerateChangePhoneNumberTokenInput {
   phoneNumber: String!
@@ -791,9 +766,7 @@ type GenerateDownloadSASPayload {
   query: Query!
 }
 
-union GenerateEmailVerificationTokenError =
-    UserNotFoundError
-  | EmailAlreadyVerifiedError
+union GenerateEmailVerificationTokenError = UserNotFoundError | EmailAlreadyVerifiedError
 
 type GenerateEmailVerificationTokenPayload {
   authPayload: AuthPayload
@@ -817,6 +790,14 @@ type GenerateSASPayload {
 
 type GenerateSignatureError implements Error {
   message: String!
+}
+
+union GenerateTwoFactorTokenError = LoginUserError
+
+type GenerateTwoFactorTokenPayload {
+  authPayload: AuthPayload
+  errors: [GenerateTwoFactorTokenError!]
+  query: Query!
 }
 
 union GenerateUploadSASError = GenerateSignatureError | ParseSignatureError
@@ -846,6 +827,10 @@ type IncorrectCurrentPasswordError implements Error {
 }
 
 type InvalidPhoneNumberError implements Error {
+  message: String!
+}
+
+type InvalidProviderError implements Error {
   message: String!
 }
 
@@ -879,9 +864,7 @@ input InviteFilterInput {
   logs: ListFilterInputTypeOfClassroomInviteFilterInput
 }
 
-union JoinClassroomError =
-    ClassroomInviteExpiredError
-  | UserAlreadyInClassroomError
+union JoinClassroomError = ClassroomInviteExpiredError | UserAlreadyInClassroomError
 
 input JoinClassroomInput {
   code: String!
@@ -1094,38 +1077,24 @@ input MessageFilterInput {
   messageLinks: ListFilterInputTypeOfMessageFilterInput
 }
 
-"""
-A connection to a list of items.
-"""
+"""A connection to a list of items."""
 type MessagesConnection {
-  """
-  Information to aid in pagination.
-  """
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
 
-  """
-  A list of edges.
-  """
+  """A list of edges."""
   edges: [MessagesEdge!]
 
-  """
-  A flattened list of the nodes.
-  """
+  """A flattened list of the nodes."""
   nodes: [Message!]
 }
 
-"""
-An edge in a connection.
-"""
+"""An edge in a connection."""
 type MessagesEdge {
-  """
-  A cursor for use in pagination.
-  """
+  """A cursor for use in pagination."""
   cursor: String!
 
-  """
-  The item at the end of the edge.
-  """
+  """The item at the end of the edge."""
   node: Message!
 }
 
@@ -1154,51 +1123,34 @@ type Mutation {
   updateUser(input: UpdateUserInput!): UpdateUserPayload!
   createClassroom(input: CreateClassroomInput!): CreateClassroomPayload!
   joinClassroom(input: JoinClassroomInput!): JoinClassroomPayload!
-  createClassroomInvite(
-    input: CreateClassroomInviteInput!
-  ): CreateClassroomInvitePayload!
-  sendDiscussionMessage(
-    input: SendDiscussionMessageInput!
-  ): SendDiscussionMessagePayload!
-  updateDiscussionMessage(
-    input: UpdateDiscussionMessageInput!
-  ): UpdateDiscussionMessagePayload!
-  pinDiscussionMessage(
-    input: PinDiscussionMessageInput!
-  ): PinDiscussionMessagePayload!
-  unpinDiscussionMessage(
-    input: UnpinDiscussionMessageInput!
-  ): UnpinDiscussionMessagePayload!
+  createClassroomInvite(input: CreateClassroomInviteInput!): CreateClassroomInvitePayload!
+  sendDiscussionMessage(input: SendDiscussionMessageInput!): SendDiscussionMessagePayload!
+  updateDiscussionMessage(input: UpdateDiscussionMessageInput!): UpdateDiscussionMessagePayload!
+  pinDiscussionMessage(input: PinDiscussionMessageInput!): PinDiscussionMessagePayload!
+  unpinDiscussionMessage(input: UnpinDiscussionMessageInput!): UnpinDiscussionMessagePayload!
   createDiscussion(input: CreateDiscussionInput!): CreateDiscussionPayload!
-  updateDiscussionTopic(
-    input: UpdateDiscussionTopicInput!
-  ): UpdateDiscussionTopicPayload!
-  updateDiscussionDescription(
-    input: UpdateDiscussionDescriptionInput!
-  ): UpdateDiscussionDescriptionPayload!
+  updateDiscussionTopic(input: UpdateDiscussionTopicInput!): UpdateDiscussionTopicPayload!
+  updateDiscussionDescription(input: UpdateDiscussionDescriptionInput!): UpdateDiscussionDescriptionPayload!
   signUp(input: SignUpInput!): SignUpPayload!
   login(input: LoginInput!): LoginPayload!
+  generateTwoFactorToken: GenerateTwoFactorTokenPayload!
+  verifyTwoFactorToken(input: VerifyTwoFactorTokenInput!): VerifyTwoFactorTokenPayload!
   logout(input: LogoutInput!): LogoutPayload!
+  verifyPassword(input: VerifyPasswordInput!): VerifyPasswordPayload!
+  enableTwoFactor(input: EnableTwoFactorInput!): EnableTwoFactorPayload!
+  disableTwoFactor(input: DisableTwoFactorInput!): DisableTwoFactorPayload!
   changePassword(input: ChangePasswordInput!): ChangePasswordPayload!
   generateEmailVerificationToken: GenerateEmailVerificationTokenPayload!
   verifyEmail(input: VerifyEmailInput!): VerifyEmailPayload!
-  generateChangeEmailToken(
-    input: GenerateChangeEmailTokenInput!
-  ): GenerateChangeEmailTokenPayload!
+  generateChangeEmailToken(input: GenerateChangeEmailTokenInput!): GenerateChangeEmailTokenPayload!
   changeEmail(input: ChangeEmailInput!): ChangeEmailPayload!
-  generatePasswordResetToken(
-    input: GeneratePasswordResetTokenInput!
-  ): GeneratePasswordResetTokenPayload!
+  generatePasswordResetToken(input: GeneratePasswordResetTokenInput!): GeneratePasswordResetTokenPayload!
   resetPassword(input: ResetPasswordInput!): ResetPasswordPayload!
-  generateChangePhoneNumberToken(
-    input: GenerateChangePhoneNumberTokenInput!
-  ): GenerateChangePhoneNumberTokenPayload!
+  generateChangePhoneNumberToken(input: GenerateChangePhoneNumberTokenInput!): GenerateChangePhoneNumberTokenPayload!
   changePhoneNumber(input: ChangePhoneNumberInput!): ChangePhoneNumberPayload!
   refreshSession(input: RefreshSessionInput!): RefreshSessionPayload!
   generateUploadSAS(input: GenerateUploadSASInput!): GenerateUploadSASPayload!
-  generateDownloadSAS(
-    input: GenerateDownloadSASInput!
-  ): GenerateDownloadSASPayload!
+  generateDownloadSAS(input: GenerateDownloadSASInput!): GenerateDownloadSASPayload!
   completeUpload(input: CompleteUploadInput!): CompleteUploadPayload!
   deleteFile(input: DeleteFileInput!): DeleteFilePayload!
 }
@@ -1217,9 +1169,14 @@ input NullableOfMessageEventOperationFilterInput {
   nin: [MessageEvent]
 }
 
-"""
-Information about pagination in a connection.
-"""
+input NullableOfUserPreferredProviderOperationFilterInput {
+  eq: UserPreferredProvider
+  neq: UserPreferredProvider
+  in: [UserPreferredProvider]
+  nin: [UserPreferredProvider]
+}
+
+"""Information about pagination in a connection."""
 type PageInfo {
   """
   Indicates whether more edges exist following the set defined by the clients arguments.
@@ -1231,14 +1188,10 @@ type PageInfo {
   """
   hasPreviousPage: Boolean!
 
-  """
-  When paginating backwards, the cursor to continue.
-  """
+  """When paginating backwards, the cursor to continue."""
   startCursor: String
 
-  """
-  When paginating forwards, the cursor to continue.
-  """
+  """When paginating forwards, the cursor to continue."""
   endCursor: String
 }
 
@@ -1246,9 +1199,7 @@ type ParseSignatureError implements Error {
   message: String!
 }
 
-union PinDiscussionMessageError =
-    DiscussionMessageNotFoundError
-  | DiscussionMessageAlreadyPinnedError
+union PinDiscussionMessageError = DiscussionMessageNotFoundError | DiscussionMessageAlreadyPinnedError
 
 input PinDiscussionMessageInput {
   messageId: ID!
@@ -1261,23 +1212,15 @@ type PinDiscussionMessagePayload {
 }
 
 type Query {
-  """
-  Fetches an object given its ID.
-  """
+  """Fetches an object given its ID."""
   node(
-    """
-    ID of the object.
-    """
+    """ID of the object."""
     id: ID!
   ): Node
 
-  """
-  Lookup nodes by a list of IDs.
-  """
+  """Lookup nodes by a list of IDs."""
   nodes(
-    """
-    The list of node IDs.
-    """
+    """The list of node IDs."""
     ids: [ID!]!
   ): [Node]!
   me: User
@@ -1292,19 +1235,13 @@ type Query {
   discussionById(id: ID!): Discussion!
   discussionsById(ids: [ID!]!): [Discussion!]!
   files(
-    """
-    Returns the first _n_ elements from the list.
-    """
+    """Returns the first _n_ elements from the list."""
     first: Int
 
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
+    """Returns the elements in the list that come after the specified cursor."""
     after: String
 
-    """
-    Returns the last _n_ elements from the list.
-    """
+    """Returns the last _n_ elements from the list."""
     last: Int
 
     """
@@ -1463,14 +1400,10 @@ input StringOperationFilterInput {
 }
 
 type Subscription {
-  onDiscussionMessageReceived(
-    discussionId: ID!
-  ): DiscussionMessageSubscriptionPayload!
+  onDiscussionMessageReceived(discussionId: ID!): DiscussionMessageSubscriptionPayload!
 }
 
-union UnpinDiscussionMessageError =
-    DiscussionMessageNotFoundError
-  | DiscussionMessageAlreadyNotPinnedError
+union UnpinDiscussionMessageError = DiscussionMessageNotFoundError | DiscussionMessageAlreadyNotPinnedError
 
 input UnpinDiscussionMessageInput {
   messageId: ID!
@@ -1480,6 +1413,10 @@ type UnpinDiscussionMessagePayload {
   message: Message
   errors: [UnpinDiscussionMessageError!]
   query: Query!
+}
+
+type UnverifiedUserError implements Error {
+  message: String!
 }
 
 union UpdateDiscussionDescriptionError = DiscussionNotFoundError
@@ -1605,6 +1542,7 @@ type User implements Node {
   name: String!
   email: String!
   profileColor: UserProfileColor!
+  preferredProvider: UserPreferredProvider
   emailConfirmed: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -1613,6 +1551,7 @@ type User implements Node {
   bio: String
   avatarUrl: String
   state: State
+  twoFactorEnabledAt: DateTime
   emailChanges: [UserEmailChange!]!
   passwordResets: [UserPasswordReset!]!
   phoneNumberChanges: [UserPhoneNumberChange!]!
@@ -1670,9 +1609,11 @@ input UserFilterInput {
   email: StringOperationFilterInput
   bio: StringOperationFilterInput
   profileColor: UserProfileColorOperationFilterInput
+  preferredProvider: NullableOfUserPreferredProviderOperationFilterInput
   avatarUrl: StringOperationFilterInput
   stateId: ComparableInt32OperationFilterInput
   state: StateFilterInput
+  twoFactorEnabledAt: ComparableNullableOfDateTimeOperationFilterInput
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
   emailChanges: ListFilterInputTypeOfUserEmailChangeFilterInput
@@ -1751,6 +1692,11 @@ input UserPhoneNumberChangeFilterInput {
   updatedAt: ComparableDateTimeOperationFilterInput
 }
 
+enum UserPreferredProvider {
+  EMAIL
+  PHONE
+}
+
 enum UserProfileColor {
   SKY
   PINK
@@ -1774,9 +1720,11 @@ input UserSortInput {
   email: SortEnumType
   bio: SortEnumType
   profileColor: SortEnumType
+  preferredProvider: SortEnumType
   avatarUrl: SortEnumType
   stateId: SortEnumType
   state: StateSortInput
+  twoFactorEnabledAt: SortEnumType
   createdAt: SortEnumType
   updatedAt: SortEnumType
   id: SortEnumType
@@ -1797,10 +1745,7 @@ input UserSortInput {
 
 scalar UUID
 
-union VerifyEmailError =
-    UserNotFoundError
-  | EmailAlreadyVerifiedError
-  | InvalidTokenError
+union VerifyEmailError = UserNotFoundError | EmailAlreadyVerifiedError | InvalidTokenError
 
 input VerifyEmailInput {
   token: String!
@@ -1809,6 +1754,30 @@ input VerifyEmailInput {
 type VerifyEmailPayload {
   authPayload: AuthPayload
   errors: [VerifyEmailError!]
+  query: Query!
+}
+
+union VerifyPasswordError = UserNotFoundError | IncorrectCurrentPasswordError
+
+input VerifyPasswordInput {
+  currentPassword: String!
+}
+
+type VerifyPasswordPayload {
+  authPayload: AuthPayload
+  errors: [VerifyPasswordError!]
+  query: Query!
+}
+
+union VerifyTwoFactorTokenError = LoginUserError | InvalidTokenError
+
+input VerifyTwoFactorTokenInput {
+  token: String!
+}
+
+type VerifyTwoFactorTokenPayload {
+  authPayload: AuthPayload
+  errors: [VerifyTwoFactorTokenError!]
   query: Query!
 }
 
@@ -1854,3 +1823,4 @@ input WhitelistedFileExtensionOperationFilterInput {
   in: [WhitelistedFileExtension!]
   nin: [WhitelistedFileExtension!]
 }
+

@@ -60,7 +60,7 @@ const UnverifiedEmailModal = ({ close, setIsEmailSent }: BaseModalProps) => {
             resendEmail({
               variables: {},
               onCompleted: () => setIsEmailSent(true),
-              onError: handleError,
+              onError: () => handleError(),
             })
           }
         >
@@ -144,7 +144,7 @@ const VerifiedEmailModal = ({
               return;
           }
         },
-        onError: handleError,
+        onError: () => handleError(),
       }),
     [changeEmail, handleError, setIsEmailSent, setNewEmail, form],
   );
@@ -237,7 +237,7 @@ const SettingsChangeEmail = ({ ...props }: Props) => {
                     setIsOpen(true);
                     setIsEmailSent(true);
                   },
-                  onError: handleError,
+                  onError: () => handleError(),
                 })
               }
             >
@@ -249,7 +249,7 @@ const SettingsChangeEmail = ({ ...props }: Props) => {
       <div className="flex items-center">
         <div className="flex-1">
           <Title as="h2" variant="h5" className="font-medium">
-            Phone Number
+            Email
           </Title>
           <Text size="sm">{me.email}</Text>
         </div>

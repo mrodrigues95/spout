@@ -4,6 +4,7 @@ import { useInterval } from './useInterval';
 interface TUseCountdown {
   initialCount: number;
   interval: number;
+  onCountdownComplete?(): void;
   stopAtZero?: boolean;
   resetAtZero?: boolean;
 }
@@ -11,6 +12,7 @@ interface TUseCountdown {
 export const useCountdown = ({
   initialCount,
   interval,
+  onCountdownComplete,
   stopAtZero = false,
   resetAtZero = false,
 }: TUseCountdown) => {
@@ -37,10 +39,20 @@ export const useCountdown = ({
   useEffect(() => {
     if (stopAtZero && counter === 0) {
       stop();
+      if (onCountdownComplete) onCountdownComplete();
     } else if (resetAtZero && counter === 0) {
       reset();
+      if (onCountdownComplete) onCountdownComplete();
     }
-  }, [counter, initialCount, stop, reset, stopAtZero, resetAtZero]);
+  }, [
+    counter,
+    initialCount,
+    stop,
+    reset,
+    stopAtZero,
+    resetAtZero,
+    onCountdownComplete,
+  ]);
 
   return [counter, { start, stop, reset, isCountingDown }] as const;
 };

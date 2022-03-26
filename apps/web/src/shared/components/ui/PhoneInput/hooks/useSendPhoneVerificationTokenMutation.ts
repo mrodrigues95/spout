@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { graphql, useMutation } from 'react-relay';
 import { PhoneNumber } from 'libphonenumber-js';
 import useToast from '../../Toast';
@@ -25,6 +25,7 @@ const mutation = graphql`
 
 export const useSendPhoneVerificationTokenMutation = () => {
   const [generateToken, isInFlight] = useMutation<TMutation>(mutation);
+  const [isError, setIsError] = useState(false);
   const { handleError } = useToast();
 
   const sendPhoneVerificationToken = useCallback(
@@ -48,9 +49,12 @@ export const useSendPhoneVerificationTokenMutation = () => {
         },
         onError: () => {
           handleError();
+          setIsError(true);
           if (onError) onError();
         },
         onCompleted: ({ generateChangePhoneNumberToken: { errors } }) => {
+          setIsError(false);
+
           if (!errors) {
             if (onSuccess) onSuccess();
             return;
@@ -72,5 +76,5 @@ export const useSendPhoneVerificationTokenMutation = () => {
     [generateToken, handleError],
   );
 
-  return [sendPhoneVerificationToken, isInFlight] as const;
+  return [sendPhoneVerificationToken, isInFlight, isError] as const;
 };

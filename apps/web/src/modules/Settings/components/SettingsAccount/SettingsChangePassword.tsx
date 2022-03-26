@@ -57,7 +57,7 @@ const SettingsChangePassword = () => {
             newPassword,
           },
         },
-        onError: handleError,
+        onError: () => handleError(),
         onCompleted: ({ changePassword: { errors } }) => {
           if (!errors) {
             setIsOpen(false);

@@ -25,6 +25,7 @@ using Enums = API.Common.Enums;
 
 namespace API.Schema.Mutations.Auth {
     // TODO: Create Postmark email templates for some of the resolvers below.
+    // TODO: Handle account lock outs.
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class AuthMutations {
         private readonly ILogger<AuthMutations> _logger;
@@ -98,18 +99,20 @@ namespace API.Schema.Mutations.Auth {
             var user = await userManager.FindByEmailAsync(input.Email);
             if (user is null) throw new LoginUserException();
 
-            var loginUser = await signInManager.PasswordSignInAsync(user,
+            var result = await signInManager.PasswordSignInAsync(user,
                 input.Password, true, false);
-            if (!loginUser.Succeeded) throw new LoginUserException();
+
+            if (result.RequiresTwoFactor) return new AuthPayload(user, false, true);
+            if (!result.Succeeded) throw new LoginUserException();
 
             var session = await sessionManager.CreateAsync(user, cancellationToken);
             if (session is null) {
-                _logger.LogError("Unable to refresh session.", user);
+                _logger.LogError("Unable to create session", user);
                 throw new LoginUserException();
             }
 
-            var isVerifiedUser = await userManager.IsEmailConfirmedAsync(user);
-            if (!isVerifiedUser) {
+            var isEmailConfirmed = await userManager.IsEmailConfirmedAsync(user);
+            if (!isEmailConfirmed) {
                 //var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
                 //await emailSender.SendEmailAsync(
                 //    toEmail: user.Email!,
@@ -118,6 +121,80 @@ namespace API.Schema.Mutations.Auth {
                 //        "your email address. Click this link to continue: " +
                 //        $"{_appUrl}/auth/verify?token={HttpUtility.UrlEncode(token)}",
                 //    tag: "Email Verification");
+            }
+
+            return new AuthPayload(user, session, true);
+        }
+
+        [Error(typeof(LoginUserException))]
+        public async Task<AuthPayload> GenerateTwoFactorTokenAsync(
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            IEmailSender emailSender,
+            ISMSService smsService) {
+            var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user is null) throw new LoginUserException();
+
+            if (user.PreferredProvider is null) {
+                _logger.LogError(
+                    "User was able to attempt a sign in without a preferred provider", user);
+                throw new LoginUserException();
+            }
+
+            var providers = await userManager.GetValidTwoFactorProvidersAsync(user);
+            if (!providers.Contains(user.PreferredProvider.ToString(), StringComparer.OrdinalIgnoreCase)) {
+                _logger.LogError(
+                    "User preferred provider is out of sync with their valid providers", user);
+                throw new LoginUserException();
+            }
+
+            var token = await userManager.GenerateTwoFactorTokenAsync(user,
+                From.UserPreferredProvider(user.PreferredProvider ?? default));
+
+            switch (user.PreferredProvider) {
+                case UserPreferredProvider.EMAIL:
+                    await emailSender.SendEmailAsync(
+                        toEmail: user.Email!,
+                        subject: "Your Two-Factor Authentication Code for Spout",
+                        message: $"Here's your authentication code: {token}. " +
+                        $"For security purposes, this code will expire in 5 minutes.",
+                        tag: "2FA");
+                    break;
+                case UserPreferredProvider.PHONE:
+                    await smsService.SendSMS(
+                        $"Your Spout two-factor authentication code is: {token}. " +
+                        $"For security purposes, this code will expire in 5 minutes.",
+                        user.PhoneNumber);
+                    break;
+                default:
+                    throw new ArgumentException(message: "Invalid enum value",
+                        paramName: nameof(user.PreferredProvider));
+            }
+
+            return new AuthPayload(user, false, true);
+        }
+
+        [Error(typeof(LoginUserException))]
+        [Error(typeof(InvalidTokenException))]
+        public async Task<AuthPayload> VerifyTwoFactorTokenAsync(
+            VerifyTwoFactorTokenInput input,
+            SignInManager<User> signInManager,
+            ISessionManager sessionManager,
+            CancellationToken cancellationToken) {
+            var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user is null) throw new LoginUserException();
+
+            var result = await signInManager.TwoFactorSignInAsync(
+                provider: From.UserPreferredProvider(user.PreferredProvider ?? default),
+                code: input.Token,
+                isPersistent: true,
+                rememberClient: false);
+            if (!result.Succeeded) throw new InvalidTokenException(input.Token);
+
+            var session = await sessionManager.CreateAsync(user, cancellationToken);
+            if (session is null) {
+                _logger.LogError("Unable to create session", user);
+                throw new LoginUserException();
             }
 
             return new AuthPayload(user, session, true);
@@ -136,6 +213,99 @@ namespace API.Schema.Mutations.Auth {
             await ctx.SaveChangesAsync(cancellationToken);
 
             return new AuthPayload(false);
+        }
+
+        [Authorize]
+        [Error(typeof(UserNotFoundException))]
+        [Error(typeof(IncorrectCurrentPasswordException))]
+        public async Task<AuthPayload> VerifyPasswordAsync(
+            VerifyPasswordInput input,
+            ClaimsPrincipal userClaim,
+            UserManager<User> userManager) {
+            var user = await userManager.GetUserAsync(userClaim);
+            if (user is null) throw new UserNotFoundException();
+
+            var isCorrectPassword = await userManager.CheckPasswordAsync(
+                user, input.CurrentPassword);
+            if (!isCorrectPassword) throw new IncorrectCurrentPasswordException();
+
+            return new AuthPayload(user, isLoggedIn: true);
+        }
+
+        [Authorize]
+        [Error(typeof(UserNotFoundException))]
+        [Error(typeof(SessionExpiredException))]
+        [Error(typeof(UnverifiedUserException))]
+        [Error(typeof(InvalidProviderException))]
+        public async Task<AuthPayload> EnableTwoFactorAsync(
+            EnableTwoFactorInput input,
+            ClaimsPrincipal userClaim,
+            SignInManager<User> signInManager,
+            UserManager<User> userManager,
+            ISessionManager sessionManager,
+            CancellationToken cancellationToken) {
+            var user = await userManager.GetUserAsync(userClaim);
+            if (user is null) throw new UserNotFoundException();
+
+            var session = await sessionManager.ValidateAsync(input.SessionId,
+                user, cancellationToken);
+            if (session is null) throw new SessionExpiredException();
+
+            if (!user.EmailConfirmed && !user.PhoneNumberConfirmed) {
+                throw new UnverifiedUserException();
+            }
+
+            var providers = await userManager.GetValidTwoFactorProvidersAsync(user);
+            if (!providers.Contains(input.Provider.ToString(), StringComparer.OrdinalIgnoreCase)) {
+                throw new InvalidProviderException(input.Provider.ToString());
+            }
+
+            await userManager.SetTwoFactorEnabledAsync(user, true);
+            await sessionManager.InvalidateExceptForAsync(session.Id, cancellationToken);
+
+            user.UpdatedAt = DateTime.UtcNow;
+            user.TwoFactorEnabledAt = DateTime.UtcNow;
+            user.PreferredProvider = input.Provider;
+            await userManager.UpdateAsync(user);
+
+            await signInManager.RefreshSignInAsync(user);
+
+            return new AuthPayload(user, session, true);
+        }
+
+        [Authorize]
+        [Error(typeof(UserNotFoundException))]
+        [Error(typeof(SessionExpiredException))]
+        [Error(typeof(IncorrectCurrentPasswordException))]
+        public async Task<AuthPayload> DisableTwoFactorAsync(
+            DisableTwoFactorInput input,
+            ClaimsPrincipal userClaim,
+            SignInManager<User> signInManager,
+            UserManager<User> userManager,
+            ISessionManager sessionManager,
+            CancellationToken cancellationToken) {
+            var user = await userManager.GetUserAsync(userClaim);
+            if (user is null) throw new UserNotFoundException();
+
+            var isCorrectPassword = await userManager.CheckPasswordAsync(
+                user, input.CurrentPassword);
+            if (!isCorrectPassword) throw new IncorrectCurrentPasswordException();
+
+            var session = await sessionManager.ValidateAsync(input.SessionId,
+                user, cancellationToken);
+            if (session is null) throw new SessionExpiredException();
+
+            await userManager.SetTwoFactorEnabledAsync(user, false);
+            await sessionManager.InvalidateExceptForAsync(session.Id, cancellationToken);
+
+            user.UpdatedAt = DateTime.UtcNow;
+            user.TwoFactorEnabledAt = null;
+            user.PreferredProvider = null;
+            await userManager.UpdateAsync(user);
+
+            await signInManager.RefreshSignInAsync(user);
+
+            return new AuthPayload(user, session, true);
         }
 
         [Authorize]

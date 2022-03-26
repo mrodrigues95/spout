@@ -34,7 +34,7 @@ const ForgotPassword = () => {
     ({ email }: Zod.infer<typeof forgotPasswordSchema>) =>
       sendPasswordResetEmail({
         variables: { input: { email } },
-        onError: handleError,
+        onError: () => handleError(),
         onCompleted: () => setEmailSent(true),
       }),
     [handleError, sendPasswordResetEmail],

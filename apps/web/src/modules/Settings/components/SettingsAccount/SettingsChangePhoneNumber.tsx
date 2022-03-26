@@ -2,20 +2,19 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { useRouter } from 'next/router';
 import { PhoneNumber } from 'libphonenumber-js';
-import OtpInput from 'react-otp-input';
-import clsx from 'clsx';
-import { Button, Title, Text, Modal, Spinner } from '@spout/toolkit';
+import { Button, Title, Text, Modal } from '@spout/toolkit';
 import {
   PhoneVerificationInput,
   useSendPhoneVerificationTokenMutation,
   useSession,
   useToast,
+  OtpInput,
+  OtpInputRef,
+  OTP_LENGTH,
 } from '../../../../shared/components';
-import { useCountdown, useTimeout } from '../../../../shared/hooks';
+import { useTimeout } from '../../../../shared/hooks';
 import { SettingsChangePhoneNumberMutation } from '../../../../__generated__/SettingsChangePhoneNumberMutation.graphql';
 import { SettingsChangePhoneNumber_user$key } from '../../../../__generated__/SettingsChangePhoneNumber_user.graphql';
-
-const OTP_LENGTH = 6;
 
 const mutation = graphql`
   mutation SettingsChangePhoneNumberMutation($input: ChangePhoneNumberInput!) {
@@ -51,30 +50,32 @@ const EnterVerificationCodeModal = ({
 }: EnterVerificationCodeModalProps) => {
   const [changePhoneNumber, isChangingPhoneNumber] =
     useMutation<SettingsChangePhoneNumberMutation>(mutation);
-  const [sendCode, isSendingCode] = useSendPhoneVerificationTokenMutation();
+  const [sendCode, isSendingCode, isSendingCodeError] =
+    useSendPhoneVerificationTokenMutation();
 
   const router = useRouter();
-  const otpInputRef = useRef<OtpInput>(null);
+  const ref = useRef<OtpInputRef>(null);
   const { sessionId } = useSession();
   const { handleError } = useToast();
   const [otp, setOtp] = useState('');
   const [isInvalidVerificationCode, setIsInvalidVerificationCode] =
     useState(false);
-  const [count, { start, reset, isCountingDown }] = useCountdown({
-    initialCount: 60,
-    interval: 1000,
-    resetAtZero: true,
-  });
+
+  const resetOtp = useCallback(() => {
+    setOtp('');
+    ref.current?.focusInput(0);
+  }, []);
 
   useEffect(() => {
     if (otp.length === OTP_LENGTH) {
       changePhoneNumber({
         variables: { input: { sessionId: sessionId!, token: otp } },
-        onError: handleError,
+        onError: () => {
+          handleError();
+          resetOtp();
+        },
         onCompleted: ({ changePhoneNumber: { errors } }) => {
           if (!errors) {
-            setIsInvalidVerificationCode(false);
-            setOtp('');
             onChangePhoneNumberSuccess();
             return;
           }
@@ -83,8 +84,7 @@ const EnterVerificationCodeModal = ({
           switch (error.__typename) {
             case 'InvalidTokenError':
               setIsInvalidVerificationCode(true);
-              setOtp('');
-              otpInputRef.current?.focusInput(0);
+              resetOtp();
               return;
             case 'SessionExpiredError':
               router.replace('/auth/login');
@@ -99,6 +99,7 @@ const EnterVerificationCodeModal = ({
     changePhoneNumber,
     otp,
     sessionId,
+    resetOtp,
     router,
     handleError,
     onChangePhoneNumberSuccess,
@@ -122,36 +123,22 @@ const EnterVerificationCodeModal = ({
         )}
         <OtpInput
           value={otp}
-          ref={otpInputRef}
+          ref={ref}
           onChange={(otp: string) => setOtp(otp)}
-          numInputs={OTP_LENGTH}
+          numInputs={6}
           shouldAutoFocus
           isInputNum
           isDisabled={isChangingPhoneNumber}
-          containerStyle="flex items-center justify-center w-full space-x-2.5 mb-2"
-          inputStyle={clsx(
-            '!w-11 !h-11 text-center p-0 w-full rounded-lg border-2 border-transparent bg-gray-100 font-medium outline-none ring-offset-4',
-            'disabled:opacity-60',
-            'focus:border-blue-700 focus:ring-4 focus:ring-blue-200',
-          )}
-        />
-        <div className="space-x-2 text-center">
-          <Text as="span" size="sm">
-            Didn&apos;t receive it?
-          </Text>
-          <Button
-            size="xs"
-            onClick={() => {
-              sendCode({ phoneNumber, onError: reset });
-              start();
+        >
+          <OtpInput.Resend
+            onResend={() => sendCode({ phoneNumber })}
+            shouldResetCountdown={isSendingCodeError}
+            buttonProps={{
+              loading: isSendingCode,
+              disabled: isChangingPhoneNumber,
             }}
-            disabled={isChangingPhoneNumber || isCountingDown}
-            loading={isSendingCode}
-            spinner={<Spinner variant="circle" scheme="black" size="xs" />}
-          >
-            {isCountingDown ? count : 'Resend Code'}
-          </Button>
-        </div>
+          />
+        </OtpInput>
       </Modal.Body>
     </>
   );

@@ -10,9 +10,11 @@ namespace API.Data.Entities {
         public override string? Email { get; set; }
         public string? Bio { get; set; }
         public UserProfileColor ProfileColor { get; set; }
+        public UserPreferredProvider? PreferredProvider { get; set; }
         public string? AvatarUrl { get; set; }
         public int StateId { get; set; }
         public State? State { get; set; }
+        public DateTime? TwoFactorEnabledAt { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 

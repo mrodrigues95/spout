@@ -13,3 +13,4 @@ export * from './useTimeout';
 export * from './useInterval';
 export * from './useCountdown';
 export * from './useIsomorphicEffect';
+export * from './useModalStepper';

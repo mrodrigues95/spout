@@ -78,6 +78,7 @@ namespace API.Extensions {
                 .AddDataLoader<UserByIdDataLoader>()
                 .AddType<UserType>()
                 .AddType<UserProfileColorType>()
+                .AddType<UserPreferredProviderType>()
                 .AddType<UserFilterInputType>();
 
             gql

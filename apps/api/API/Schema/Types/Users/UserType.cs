@@ -25,7 +25,13 @@ namespace API.Schema.Types.Users {
         ORANGE
     }
 
+    public enum UserPreferredProvider {
+        EMAIL,
+        PHONE
+    }
+
     public class UserProfileColorType : EnumType<UserProfileColor> { }
+    public class UserPreferredProviderType : EnumType<UserPreferredProvider> { }
 
     public class UserFilterInputType : FilterInputType<User> {
         protected override void Configure(IFilterInputTypeDescriptor<User> descriptor) {
@@ -63,6 +69,10 @@ namespace API.Schema.Types.Users {
             descriptor
                 .Field(u => u.ProfileColor)
                 .Type<NonNullType<UserProfileColorType>>();
+
+            descriptor
+                .Field(u => u.PreferredProvider)
+                .Type<UserPreferredProviderType>();
 
             descriptor
                 .Field(u => u.EmailConfirmed)

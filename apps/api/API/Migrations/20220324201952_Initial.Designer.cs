@@ -15,8 +15,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220318205556_ChangeCompositeKey")]
-    partial class ChangeCompositeKey
+    [Migration("20220324201952_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,6 +27,7 @@ namespace API.Migrations
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "file_upload_status", new[] { "queued", "completed", "error", "ignored" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "message_event", new[] { "change_topic", "change_description", "pinned_message", "unpinned_message" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "user_preferred_provider", new[] { "email", "phone" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "user_profile_color", new[] { "sky", "pink", "green", "purple", "rose", "gray", "orange" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "whitelisted_file_extension", new[] { "aac", "csv", "pdf", "xls", "xlsx", "ppt", "pptx", "bmp", "gif", "jpeg", "jpg", "jpe", "png", "tiff", "tif", "txt", "text", "rtf", "doc", "docx", "dot", "dotx", "dwg", "dwf", "dxf", "mp3", "mp4", "wav", "avi", "mov", "mpeg", "wmv", "zip" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -756,6 +757,10 @@ namespace API.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("phone_number_confirmed");
 
+                    b.Property<UserPreferredProvider?>("PreferredProvider")
+                        .HasColumnType("user_preferred_provider")
+                        .HasColumnName("preferred_provider");
+
                     b.Property<UserProfileColor>("ProfileColor")
                         .HasColumnType("user_profile_color")
                         .HasColumnName("profile_color");
@@ -912,6 +917,58 @@ namespace API.Migrations
                         .HasDatabaseName("ix_user_password_resets_token_user_id");
 
                     b.ToTable("user_password_resets", (string)null);
+                });
+
+            modelBuilder.Entity("API.Data.Entities.UserPhoneNumberChange", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<string>("NewPhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("new_phone_number");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("token");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int?>("UserId")
+                        .IsRequired()
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_phone_number_changes");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_user_phone_number_changes_user_id");
+
+                    b.HasIndex("Token", "UserId")
+                        .HasDatabaseName("ix_user_phone_number_changes_token_user_id");
+
+                    b.ToTable("user_phone_number_changes", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -1325,6 +1382,18 @@ namespace API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("API.Data.Entities.UserPhoneNumberChange", b =>
+                {
+                    b.HasOne("API.Data.Entities.User", "User")
+                        .WithMany("PhoneNumberChanges")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_phone_number_changes_users_user_id");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -1449,6 +1518,8 @@ namespace API.Migrations
                     b.Navigation("Messages");
 
                     b.Navigation("PasswordResets");
+
+                    b.Navigation("PhoneNumberChanges");
 
                     b.Navigation("PinnedMessages");
 

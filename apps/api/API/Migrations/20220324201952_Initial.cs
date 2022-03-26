@@ -13,6 +13,7 @@ namespace API.Migrations {
             migrationBuilder.AlterDatabase()
                 .Annotation("Npgsql:Enum:file_upload_status", "queued,completed,error,ignored")
                 .Annotation("Npgsql:Enum:message_event", "change_topic,change_description,pinned_message,unpinned_message")
+                .Annotation("Npgsql:Enum:user_preferred_provider", "email,phone")
                 .Annotation("Npgsql:Enum:user_profile_color", "sky,pink,green,purple,rose,gray,orange")
                 .Annotation("Npgsql:Enum:whitelisted_file_extension", "aac,csv,pdf,xls,xlsx,ppt,pptx,bmp,gif,jpeg,jpg,jpe,png,tiff,tif,txt,text,rtf,doc,docx,dot,dotx,dwg,dwf,dxf,mp3,mp4,wav,avi,mov,mpeg,wmv,zip");
 
@@ -120,6 +121,7 @@ namespace API.Migrations {
                     email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     bio = table.Column<string>(type: "character varying(190)", maxLength: 190, nullable: true),
                     profile_color = table.Column<UserProfileColor>(type: "user_profile_color", nullable: false),
+                    preferred_provider = table.Column<UserPreferredProvider>(type: "user_preferred_provider", nullable: true),
                     avatar_url = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true),
                     state_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
@@ -287,6 +289,50 @@ namespace API.Migrations {
                     table.PrimaryKey("pk_user_logins", x => new { x.login_provider, x.provider_key });
                     table.ForeignKey(
                         name: "fk_user_logins_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "user_password_resets",
+                columns: table => new {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    user_id = table.Column<int>(type: "integer", nullable: false),
+                    token = table.Column<string>(type: "text", nullable: false),
+                    token_encoded = table.Column<string>(type: "text", nullable: false),
+                    expires_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table => {
+                    table.PrimaryKey("pk_user_password_resets", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_user_password_resets_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "user_phone_number_changes",
+                columns: table => new {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    token = table.Column<string>(type: "text", nullable: false),
+                    new_phone_number = table.Column<string>(type: "text", nullable: false),
+                    user_id = table.Column<int>(type: "integer", nullable: false),
+                    expires_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table => {
+                    table.PrimaryKey("pk_user_phone_number_changes", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_user_phone_number_changes_users_user_id",
                         column: x => x.user_id,
                         principalTable: "users",
                         principalColumn: "id",
@@ -649,6 +695,32 @@ namespace API.Migrations {
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_user_password_resets_token",
+                table: "user_password_resets",
+                column: "token");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_user_password_resets_token_user_id",
+                table: "user_password_resets",
+                columns: new[] { "token", "user_id" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_user_password_resets_user_id",
+                table: "user_password_resets",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_user_phone_number_changes_token_user_id",
+                table: "user_phone_number_changes",
+                columns: new[] { "token", "user_id" });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_user_phone_number_changes_user_id",
+                table: "user_phone_number_changes",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_user_roles_role_id",
                 table: "user_roles",
                 column: "role_id");
@@ -694,6 +766,12 @@ namespace API.Migrations {
 
             migrationBuilder.DropTable(
                 name: "user_logins");
+
+            migrationBuilder.DropTable(
+                name: "user_password_resets");
+
+            migrationBuilder.DropTable(
+                name: "user_phone_number_changes");
 
             migrationBuilder.DropTable(
                 name: "user_roles");

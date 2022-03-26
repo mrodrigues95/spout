@@ -25,6 +25,7 @@ namespace API.Migrations
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "file_upload_status", new[] { "queued", "completed", "error", "ignored" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "message_event", new[] { "change_topic", "change_description", "pinned_message", "unpinned_message" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "user_preferred_provider", new[] { "email", "phone" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "user_profile_color", new[] { "sky", "pink", "green", "purple", "rose", "gray", "orange" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "whitelisted_file_extension", new[] { "aac", "csv", "pdf", "xls", "xlsx", "ppt", "pptx", "bmp", "gif", "jpeg", "jpg", "jpe", "png", "tiff", "tif", "txt", "text", "rtf", "doc", "docx", "dot", "dotx", "dwg", "dwf", "dxf", "mp3", "mp4", "wav", "avi", "mov", "mpeg", "wmv", "zip" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -754,6 +755,10 @@ namespace API.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("phone_number_confirmed");
 
+                    b.Property<UserPreferredProvider?>("PreferredProvider")
+                        .HasColumnType("user_preferred_provider")
+                        .HasColumnName("preferred_provider");
+
                     b.Property<UserProfileColor>("ProfileColor")
                         .HasColumnType("user_profile_color")
                         .HasColumnName("profile_color");
@@ -769,6 +774,10 @@ namespace API.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean")
                         .HasColumnName("two_factor_enabled");
+
+                    b.Property<DateTime?>("TwoFactorEnabledAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("two_factor_enabled_at");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()

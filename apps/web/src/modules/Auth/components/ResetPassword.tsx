@@ -50,7 +50,7 @@ const ResetPassword = () => {
             confirmNewPassword: confirmPassword,
           },
         },
-        onError: handleError,
+        onError: () => handleError(),
         onCompleted: ({ resetPassword: { errors } }) => {
           if (errors) {
             setStatus({ reset: false, expired: true });

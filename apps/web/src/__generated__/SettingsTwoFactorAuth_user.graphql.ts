@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fe4bf0901c9a79a4476f3422e63aece3>>
+ * @generated SignedSource<<58a35a2b530694763953eca2d031d496>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,8 @@ import { FragmentRefs } from "relay-runtime";
 export type SettingsTwoFactorAuth_user$data = {
   readonly emailConfirmed: boolean;
   readonly phoneNumberConfirmed: boolean;
+  readonly twoFactorEnabled: boolean;
+  readonly " $fragmentSpreads": FragmentRefs<"SettingsTwoFactorAuthChooseTwoFactorProviderModal_user" | "SettingsTwoFactorAuthTwoFactorSuccessfullyEnabledModal_user" | "SettingsTwoFactorAuthProviderCard_user">;
   readonly " $fragmentType": "SettingsTwoFactorAuth_user";
 };
 export type SettingsTwoFactorAuth_user = SettingsTwoFactorAuth_user$data;
@@ -40,12 +42,34 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "phoneNumberConfirmed",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "twoFactorEnabled",
+      "storageKey": null
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "SettingsTwoFactorAuthChooseTwoFactorProviderModal_user"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "SettingsTwoFactorAuthTwoFactorSuccessfullyEnabledModal_user"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "SettingsTwoFactorAuthProviderCard_user"
     }
   ],
   "type": "User",
   "abstractKey": null
 };
 
-(node as any).hash = "cbf0706492a9d3dc503c3ab2892e8377";
+(node as any).hash = "e259b4384037dfd15fe001fe58e11daf";
 
 export default node;

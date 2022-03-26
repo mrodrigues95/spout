@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<56c5155609a6ae61e4143c72d12a2df1>>
+ * @generated SignedSource<<c84e8e27b1f9cfda8a832d368a47480d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,37 +10,33 @@
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type UserPreferredProvider = "EMAIL" | "PHONE" | "%future added value";
-export type LoginInput = {
-  email: string;
-  password: string;
+export type DisableTwoFactorInput = {
+  sessionId: string;
+  currentPassword: string;
 };
-export type LoginFormMutation$variables = {
-  input: LoginInput;
+export type SettingsTwoFactorAuthProviderCardMutation$variables = {
+  input: DisableTwoFactorInput;
 };
-export type LoginFormMutationVariables = LoginFormMutation$variables;
-export type LoginFormMutation$data = {
-  readonly login: {
+export type SettingsTwoFactorAuthProviderCardMutationVariables = SettingsTwoFactorAuthProviderCardMutation$variables;
+export type SettingsTwoFactorAuthProviderCardMutation$data = {
+  readonly disableTwoFactor: {
     readonly authPayload: {
-      readonly isLoggedIn: boolean;
-      readonly requiresTwoFactorLogin: boolean;
       readonly user: {
         readonly preferredProvider: UserPreferredProvider | null;
-        readonly email: string;
-        readonly phoneNumber: string | null;
-      } | null;
-      readonly session: {
-        readonly id: string;
+        readonly twoFactorEnabled: boolean;
+        readonly twoFactorEnabledAt: string | null;
       } | null;
     } | null;
     readonly errors: ReadonlyArray<{
+      readonly __typename?: string;
       readonly message?: string;
     }> | null;
   };
 };
-export type LoginFormMutationResponse = LoginFormMutation$data;
-export type LoginFormMutation = {
-  variables: LoginFormMutationVariables;
-  response: LoginFormMutation$data;
+export type SettingsTwoFactorAuthProviderCardMutationResponse = SettingsTwoFactorAuthProviderCardMutation$data;
+export type SettingsTwoFactorAuthProviderCardMutation = {
+  variables: SettingsTwoFactorAuthProviderCardMutationVariables;
+  response: SettingsTwoFactorAuthProviderCardMutation$data;
 };
 
 const node: ConcreteRequest = (function(){
@@ -62,83 +58,50 @@ v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "isLoggedIn",
+  "name": "preferredProvider",
   "storageKey": null
 },
 v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "requiresTwoFactorLogin",
+  "name": "twoFactorEnabled",
   "storageKey": null
 },
 v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "preferredProvider",
+  "name": "twoFactorEnabledAt",
   "storageKey": null
 },
 v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "email",
+  "name": "__typename",
   "storageKey": null
 },
 v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "phoneNumber",
+  "name": "message",
   "storageKey": null
-},
-v7 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-},
-v8 = {
-  "alias": null,
-  "args": null,
-  "concreteType": "Session",
-  "kind": "LinkedField",
-  "name": "session",
-  "plural": false,
-  "selections": [
-    (v7/*: any*/)
-  ],
-  "storageKey": null
-},
-v9 = {
-  "kind": "InlineFragment",
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "message",
-      "storageKey": null
-    }
-  ],
-  "type": "LoginUserError",
-  "abstractKey": null
 };
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "LoginFormMutation",
+    "name": "SettingsTwoFactorAuthProviderCardMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
-        "concreteType": "LoginPayload",
+        "concreteType": "DisableTwoFactorPayload",
         "kind": "LinkedField",
-        "name": "login",
+        "name": "disableTwoFactor",
         "plural": false,
         "selections": [
           {
@@ -149,8 +112,6 @@ return {
             "name": "authPayload",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -159,13 +120,12 @@ return {
                 "name": "user",
                 "plural": false,
                 "selections": [
-                  (v4/*: any*/),
-                  (v5/*: any*/),
-                  (v6/*: any*/)
+                  (v2/*: any*/),
+                  (v3/*: any*/),
+                  (v4/*: any*/)
                 ],
                 "storageKey": null
-              },
-              (v8/*: any*/)
+              }
             ],
             "storageKey": null
           },
@@ -177,7 +137,15 @@ return {
             "name": "errors",
             "plural": true,
             "selections": [
-              (v9/*: any*/)
+              {
+                "kind": "InlineFragment",
+                "selections": [
+                  (v5/*: any*/),
+                  (v6/*: any*/)
+                ],
+                "type": "Error",
+                "abstractKey": "__isError"
+              }
             ],
             "storageKey": null
           }
@@ -192,14 +160,14 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "LoginFormMutation",
+    "name": "SettingsTwoFactorAuthProviderCardMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
-        "concreteType": "LoginPayload",
+        "concreteType": "DisableTwoFactorPayload",
         "kind": "LinkedField",
-        "name": "login",
+        "name": "disableTwoFactor",
         "plural": false,
         "selections": [
           {
@@ -210,8 +178,6 @@ return {
             "name": "authPayload",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -220,14 +186,19 @@ return {
                 "name": "user",
                 "plural": false,
                 "selections": [
+                  (v2/*: any*/),
+                  (v3/*: any*/),
                   (v4/*: any*/),
-                  (v5/*: any*/),
-                  (v6/*: any*/),
-                  (v7/*: any*/)
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "id",
+                    "storageKey": null
+                  }
                 ],
                 "storageKey": null
-              },
-              (v8/*: any*/)
+              }
             ],
             "storageKey": null
           },
@@ -239,14 +210,15 @@ return {
             "name": "errors",
             "plural": true,
             "selections": [
+              (v5/*: any*/),
               {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "__typename",
-                "storageKey": null
-              },
-              (v9/*: any*/)
+                "kind": "InlineFragment",
+                "selections": [
+                  (v6/*: any*/)
+                ],
+                "type": "Error",
+                "abstractKey": "__isError"
+              }
             ],
             "storageKey": null
           }
@@ -256,16 +228,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "9b28e4c7889182be69311970ed6e13cc",
+    "cacheID": "af8272a5d9a936d0ceafdf969ae15a49",
     "id": null,
     "metadata": {},
-    "name": "LoginFormMutation",
+    "name": "SettingsTwoFactorAuthProviderCardMutation",
     "operationKind": "mutation",
-    "text": "mutation LoginFormMutation(\n  $input: LoginInput!\n) {\n  login(input: $input) {\n    authPayload {\n      isLoggedIn\n      requiresTwoFactorLogin\n      user {\n        preferredProvider\n        email\n        phoneNumber\n        id\n      }\n      session {\n        id\n      }\n    }\n    errors {\n      __typename\n      ... on LoginUserError {\n        message\n      }\n    }\n  }\n}\n"
+    "text": "mutation SettingsTwoFactorAuthProviderCardMutation(\n  $input: DisableTwoFactorInput!\n) {\n  disableTwoFactor(input: $input) {\n    authPayload {\n      user {\n        preferredProvider\n        twoFactorEnabled\n        twoFactorEnabledAt\n        id\n      }\n    }\n    errors {\n      __typename\n      ... on Error {\n        __isError: __typename\n        __typename\n        message\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "25edaa00d3effa2aeeffe0a162f72243";
+(node as any).hash = "39b856deed9aaadb753ffb40e6a97697";
 
 export default node;

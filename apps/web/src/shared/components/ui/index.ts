@@ -15,4 +15,5 @@ export { default as Quote } from './Quote';
 export { default as ErrorBoundary } from './ErrorBoundary';
 
 export * from './PhoneInput';
+export * from './OtpInput';
 export * from './Layout/Sidebar';

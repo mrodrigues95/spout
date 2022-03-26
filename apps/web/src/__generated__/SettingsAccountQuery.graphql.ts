@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dbd91f4cb68e1280273d6e954499f7db>>
+ * @generated SignedSource<<ddc7073a4d8590290b71879618cc70cd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -99,7 +99,28 @@ const node: ConcreteRequest = {
             "alias": null,
             "args": null,
             "kind": "ScalarField",
+            "name": "twoFactorEnabled",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "phoneNumber",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "preferredProvider",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "twoFactorEnabledAt",
             "storageKey": null
           },
           {
@@ -115,12 +136,12 @@ const node: ConcreteRequest = {
     ]
   },
   "params": {
-    "cacheID": "128cc5c953253ab5df926a917e937b62",
+    "cacheID": "dca1331feea0a85ced3de389b31c86ba",
     "id": null,
     "metadata": {},
     "name": "SettingsAccountQuery",
     "operationKind": "query",
-    "text": "query SettingsAccountQuery {\n  me {\n    ...SettingsChangeEmail_user\n    ...SettingsTwoFactorAuth_user\n    ...SettingsChangePhoneNumber_user\n    id\n  }\n}\n\nfragment SettingsChangeEmail_user on User {\n  email\n  emailConfirmed\n}\n\nfragment SettingsChangePhoneNumber_user on User {\n  phoneNumber\n  phoneNumberConfirmed\n}\n\nfragment SettingsTwoFactorAuth_user on User {\n  emailConfirmed\n  phoneNumberConfirmed\n}\n"
+    "text": "query SettingsAccountQuery {\n  me {\n    ...SettingsChangeEmail_user\n    ...SettingsTwoFactorAuth_user\n    ...SettingsChangePhoneNumber_user\n    id\n  }\n}\n\nfragment SettingsChangeEmail_user on User {\n  email\n  emailConfirmed\n}\n\nfragment SettingsChangePhoneNumber_user on User {\n  phoneNumber\n  phoneNumberConfirmed\n}\n\nfragment SettingsTwoFactorAuthChooseTwoFactorProviderModal_user on User {\n  emailConfirmed\n  phoneNumberConfirmed\n}\n\nfragment SettingsTwoFactorAuthProviderCard_user on User {\n  preferredProvider\n  twoFactorEnabled\n  twoFactorEnabledAt\n}\n\nfragment SettingsTwoFactorAuthTwoFactorSuccessfullyEnabledModal_user on User {\n  email\n  phoneNumber\n  preferredProvider\n}\n\nfragment SettingsTwoFactorAuth_user on User {\n  emailConfirmed\n  phoneNumberConfirmed\n  twoFactorEnabled\n  ...SettingsTwoFactorAuthChooseTwoFactorProviderModal_user\n  ...SettingsTwoFactorAuthTwoFactorSuccessfullyEnabledModal_user\n  ...SettingsTwoFactorAuthProviderCard_user\n}\n"
   }
 };
 
