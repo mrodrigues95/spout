@@ -158,7 +158,7 @@ const SettingsTwoFactorAuthProviderCard = ({ ...props }: Props) => {
         <div className="space-y-1">
           <FontAwesomeIcon
             icon={isEmailPreferred ? faEnvelope : faPhone}
-            className="text-gray-700"
+            className="text-gray-500"
           />
           <Text as="span" weight="medium" className="ml-2">
             {isEmailPreferred ? 'Email' : 'Text Message (SMS)'}

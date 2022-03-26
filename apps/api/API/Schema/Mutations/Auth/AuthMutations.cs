@@ -24,8 +24,9 @@ using PhoneNumbers;
 using Enums = API.Common.Enums;
 
 namespace API.Schema.Mutations.Auth {
-    // TODO: Create Postmark email templates for some of the resolvers below.
+    // TODO: Create Postmark email templates.
     // TODO: Handle account lock outs.
+    // TODO: Handle two-factor recovery codes.
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class AuthMutations {
         private readonly ILogger<AuthMutations> _logger;
@@ -711,6 +712,41 @@ namespace API.Schema.Mutations.Auth {
             ctx.UserPhoneNumberChanges.RemoveRange(entitiesToRemove);
             await ctx.SaveChangesAsync(cancellationToken);
 
+            await sessionManager.InvalidateExceptForAsync(session.Id, cancellationToken);
+
+            user.UpdatedAt = DateTime.UtcNow;
+            await userManager.UpdateAsync(user);
+
+            await signInManager.RefreshSignInAsync(user);
+
+            return new AuthPayload(user, session, true);
+        }
+
+        [Authorize]
+        [Error(typeof(UserNotFoundException))]
+        [Error(typeof(SessionExpiredException))]
+        public async Task<AuthPayload> RemovePhoneNumberAsync(
+            RemovePhoneNumberInput input,
+            ClaimsPrincipal userClaim,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            ISessionManager sessionManager,
+            CancellationToken cancellationToken) {
+            var user = await userManager.GetUserAsync(userClaim);
+            if (user is null) throw new UserNotFoundException();
+
+            var session = await sessionManager.ValidateAsync(input.SessionId,
+                user, cancellationToken);
+            if (session is null) throw new SessionExpiredException();
+
+            var isTwoFactorEnabled = await userManager.GetTwoFactorEnabledAsync(user);
+            if (isTwoFactorEnabled && user.PreferredProvider.Equals(UserPreferredProvider.PHONE)) {
+                await userManager.SetTwoFactorEnabledAsync(user, false);
+                user.TwoFactorEnabledAt = null;
+                user.PreferredProvider = null;
+            }
+
+            await userManager.SetPhoneNumberAsync(user, null);
             await sessionManager.InvalidateExceptForAsync(session.Id, cancellationToken);
 
             user.UpdatedAt = DateTime.UtcNow;

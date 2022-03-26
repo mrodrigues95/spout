@@ -94,7 +94,7 @@ const SettingsChangePassword = () => {
       <Title as="h2" variant="h5" className="flex-1 font-medium">
         Password
       </Title>
-      <Button onClick={() => setIsOpen(true)}>Change Password</Button>
+      <Button onClick={() => setIsOpen(true)}>Edit</Button>
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <Modal.Overlay />
         <Form form={form} onSubmit={onSubmit}>

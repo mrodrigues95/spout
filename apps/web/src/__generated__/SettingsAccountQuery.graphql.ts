@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ddc7073a4d8590290b71879618cc70cd>>
+ * @generated SignedSource<<1b8a2a131229759f785a803fdbfd68ed>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -136,12 +136,12 @@ const node: ConcreteRequest = {
     ]
   },
   "params": {
-    "cacheID": "dca1331feea0a85ced3de389b31c86ba",
+    "cacheID": "66e47f44c17f35450537b140fc0e8a00",
     "id": null,
     "metadata": {},
     "name": "SettingsAccountQuery",
     "operationKind": "query",
-    "text": "query SettingsAccountQuery {\n  me {\n    ...SettingsChangeEmail_user\n    ...SettingsTwoFactorAuth_user\n    ...SettingsChangePhoneNumber_user\n    id\n  }\n}\n\nfragment SettingsChangeEmail_user on User {\n  email\n  emailConfirmed\n}\n\nfragment SettingsChangePhoneNumber_user on User {\n  phoneNumber\n  phoneNumberConfirmed\n}\n\nfragment SettingsTwoFactorAuthChooseTwoFactorProviderModal_user on User {\n  emailConfirmed\n  phoneNumberConfirmed\n}\n\nfragment SettingsTwoFactorAuthProviderCard_user on User {\n  preferredProvider\n  twoFactorEnabled\n  twoFactorEnabledAt\n}\n\nfragment SettingsTwoFactorAuthTwoFactorSuccessfullyEnabledModal_user on User {\n  email\n  phoneNumber\n  preferredProvider\n}\n\nfragment SettingsTwoFactorAuth_user on User {\n  emailConfirmed\n  phoneNumberConfirmed\n  twoFactorEnabled\n  ...SettingsTwoFactorAuthChooseTwoFactorProviderModal_user\n  ...SettingsTwoFactorAuthTwoFactorSuccessfullyEnabledModal_user\n  ...SettingsTwoFactorAuthProviderCard_user\n}\n"
+    "text": "query SettingsAccountQuery {\n  me {\n    ...SettingsChangeEmail_user\n    ...SettingsTwoFactorAuth_user\n    ...SettingsChangePhoneNumber_user\n    id\n  }\n}\n\nfragment SettingsChangeEmail_user on User {\n  email\n  emailConfirmed\n}\n\nfragment SettingsChangePhoneNumber_user on User {\n  phoneNumber\n  phoneNumberConfirmed\n  ...SettingsRemovePhoneNumber_user\n}\n\nfragment SettingsRemovePhoneNumberVerifyPhoneRemovalModal_user on User {\n  preferredProvider\n  twoFactorEnabled\n  phoneNumber\n}\n\nfragment SettingsRemovePhoneNumber_user on User {\n  ...SettingsRemovePhoneNumberVerifyPhoneRemovalModal_user\n}\n\nfragment SettingsTwoFactorAuthChooseTwoFactorProviderModal_user on User {\n  emailConfirmed\n  phoneNumberConfirmed\n}\n\nfragment SettingsTwoFactorAuthProviderCard_user on User {\n  preferredProvider\n  twoFactorEnabled\n  twoFactorEnabledAt\n}\n\nfragment SettingsTwoFactorAuthTwoFactorSuccessfullyEnabledModal_user on User {\n  email\n  phoneNumber\n  preferredProvider\n}\n\nfragment SettingsTwoFactorAuth_user on User {\n  emailConfirmed\n  phoneNumberConfirmed\n  twoFactorEnabled\n  ...SettingsTwoFactorAuthChooseTwoFactorProviderModal_user\n  ...SettingsTwoFactorAuthTwoFactorSuccessfullyEnabledModal_user\n  ...SettingsTwoFactorAuthProviderCard_user\n}\n"
   }
 };
 

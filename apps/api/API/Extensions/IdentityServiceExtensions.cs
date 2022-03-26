@@ -14,6 +14,8 @@ namespace API.Extensions {
             services.AddDefaultIdentity<User>(opts => {
                 opts.User.RequireUniqueEmail = true;
 
+                opts.Lockout.AllowedForNewUsers = false;
+
                 opts.SignIn.RequireConfirmedEmail = false;
                 opts.SignIn.RequireConfirmedAccount = false;
 

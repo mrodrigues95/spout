@@ -1148,6 +1148,7 @@ type Mutation {
   resetPassword(input: ResetPasswordInput!): ResetPasswordPayload!
   generateChangePhoneNumberToken(input: GenerateChangePhoneNumberTokenInput!): GenerateChangePhoneNumberTokenPayload!
   changePhoneNumber(input: ChangePhoneNumberInput!): ChangePhoneNumberPayload!
+  removePhoneNumber(input: RemovePhoneNumberInput!): RemovePhoneNumberPayload!
   refreshSession(input: RefreshSessionInput!): RefreshSessionPayload!
   generateUploadSAS(input: GenerateUploadSASInput!): GenerateUploadSASPayload!
   generateDownloadSAS(input: GenerateDownloadSASInput!): GenerateDownloadSASPayload!
@@ -1262,6 +1263,18 @@ input RefreshSessionInput {
 type RefreshSessionPayload {
   authPayload: AuthPayload
   errors: [RefreshSessionError!]
+  query: Query!
+}
+
+union RemovePhoneNumberError = UserNotFoundError | SessionExpiredError
+
+input RemovePhoneNumberInput {
+  sessionId: ID!
+}
+
+type RemovePhoneNumberPayload {
+  authPayload: AuthPayload
+  errors: [RemovePhoneNumberError!]
   query: Query!
 }
 

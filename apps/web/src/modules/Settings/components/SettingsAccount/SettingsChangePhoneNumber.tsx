@@ -13,31 +13,9 @@ import {
   OTP_LENGTH,
 } from '../../../../shared/components';
 import { useTimeout } from '../../../../shared/hooks';
+import SettingsRemovePhoneNumber from './SettingsRemovePhoneNumber';
 import { SettingsChangePhoneNumberMutation } from '../../../../__generated__/SettingsChangePhoneNumberMutation.graphql';
 import { SettingsChangePhoneNumber_user$key } from '../../../../__generated__/SettingsChangePhoneNumber_user.graphql';
-
-const mutation = graphql`
-  mutation SettingsChangePhoneNumberMutation($input: ChangePhoneNumberInput!) {
-    changePhoneNumber(input: $input) {
-      authPayload {
-        user {
-          phoneNumber
-          phoneNumberConfirmed
-        }
-      }
-      errors {
-        ... on InvalidTokenError {
-          __typename
-          message
-        }
-        ... on SessionExpiredError {
-          __typename
-          message
-        }
-      }
-    }
-  }
-`;
 
 interface EnterVerificationCodeModalProps {
   phoneNumber: PhoneNumber;
@@ -49,7 +27,31 @@ const EnterVerificationCodeModal = ({
   onChangePhoneNumberSuccess,
 }: EnterVerificationCodeModalProps) => {
   const [changePhoneNumber, isChangingPhoneNumber] =
-    useMutation<SettingsChangePhoneNumberMutation>(mutation);
+    useMutation<SettingsChangePhoneNumberMutation>(graphql`
+      mutation SettingsChangePhoneNumberMutation(
+        $input: ChangePhoneNumberInput!
+      ) {
+        changePhoneNumber(input: $input) {
+          authPayload {
+            user {
+              phoneNumber
+              phoneNumberConfirmed
+            }
+          }
+          errors {
+            ... on InvalidTokenError {
+              __typename
+              message
+            }
+            ... on SessionExpiredError {
+              __typename
+              message
+            }
+          }
+        }
+      }
+    `);
+
   const [sendCode, isSendingCode, isSendingCodeError] =
     useSendPhoneVerificationTokenMutation();
 
@@ -175,19 +177,21 @@ const EnterPhoneNumberModal = ({
   );
 };
 
-const fragment = graphql`
-  fragment SettingsChangePhoneNumber_user on User {
-    phoneNumber
-    phoneNumberConfirmed
-  }
-`;
-
 interface Props {
   me: SettingsChangePhoneNumber_user$key;
 }
 
 const SettingsChangePhoneNumber = ({ ...props }: Props) => {
-  const me = useFragment(fragment, props.me);
+  const me = useFragment(
+    graphql`
+      fragment SettingsChangePhoneNumber_user on User {
+        phoneNumber
+        phoneNumberConfirmed
+        ...SettingsRemovePhoneNumber_user
+      }
+    `,
+    props.me,
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState<PhoneNumber | null>(null);
   const { timeout } = useTimeout();
@@ -197,7 +201,6 @@ const SettingsChangePhoneNumber = ({ ...props }: Props) => {
     timeout(() => setPhoneNumber(null), 500);
   }, [timeout]);
 
-  // TODO: Implement removing phone numbers.
   return (
     <div className="flex items-center">
       <div className="flex-1">
@@ -210,8 +213,9 @@ const SettingsChangePhoneNumber = ({ ...props }: Props) => {
             : 'There is currently no phone number associated with your account.'}
         </Text>
       </div>
+      {me.phoneNumberConfirmed && <SettingsRemovePhoneNumber me={me} />}
       <Button onClick={() => setIsOpen(true)}>
-        {me.phoneNumberConfirmed ? 'Change Phone Number' : 'Add Phone Number'}
+        {me.phoneNumberConfirmed ? 'Edit' : 'Add'}
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         <Modal.Overlay />

@@ -50,8 +50,8 @@ export type AlertVariant = ValueOf<typeof VARIANTS>;
 
 export interface AlertProps {
   severity: keyof typeof VARIANTS;
-  title: string;
-  description?: string;
+  title: ReactNode;
+  description?: ReactNode;
   icon?: ReactNode;
   children?: ReactNode;
 }

@@ -11,7 +11,7 @@ import { Alert, Button, Form, Modal, useZodForm, Text } from '@spout/toolkit';
 import { useToast, useSession } from '../../../../shared/components';
 import { useModalStepper, useTimeout } from '../../../../shared/hooks';
 import SettingsTwoFactorAuthProviderCard from './SettingsTwoFactorAuthProviderCard';
-import { SettingsTwoFactorAuthVerifyPasswordMutation } from '../../../../__generated__/SettingsTwoFactorAuthVerifyPasswordMutation.graphql';
+import SettingsVerifyPasswordModal from './SettingsVerifyPasswordModal';
 import { SettingsTwoFactorAuthEnableTwoFactorMutation } from '../../../../__generated__/SettingsTwoFactorAuthEnableTwoFactorMutation.graphql';
 import { SettingsTwoFactorAuth_user$key } from '../../../../__generated__/SettingsTwoFactorAuth_user.graphql';
 import { SettingsTwoFactorAuthChooseTwoFactorProviderModal_user$key } from '../../../../__generated__/SettingsTwoFactorAuthChooseTwoFactorProviderModal_user.graphql';
@@ -311,95 +311,6 @@ const ChooseTwoFactorProviderModal = ({
   );
 };
 
-const currentPasswordSchema = object({
-  currentPassword: string().min(6, { message: '- Invalid password' }),
-});
-
-interface EnterPasswordModalProps {
-  onPasswordVerified(): void;
-  closeModal(): void;
-}
-
-const EnterPasswordModal = ({
-  onPasswordVerified,
-  closeModal,
-}: EnterPasswordModalProps) => {
-  const { handleError } = useToast();
-  const [verifyPassword, isInFlight] =
-    useMutation<SettingsTwoFactorAuthVerifyPasswordMutation>(graphql`
-      mutation SettingsTwoFactorAuthVerifyPasswordMutation(
-        $input: VerifyPasswordInput!
-      ) {
-        verifyPassword(input: $input) {
-          errors {
-            ... on IncorrectCurrentPasswordError {
-              message
-            }
-          }
-        }
-      }
-    `);
-
-  const form = useZodForm({
-    schema: currentPasswordSchema,
-  });
-
-  const onSubmit = useCallback(
-    ({ currentPassword }: Zod.infer<typeof currentPasswordSchema>) =>
-      verifyPassword({
-        variables: { input: { currentPassword } },
-        onCompleted: ({ verifyPassword: { errors } }) => {
-          if (!errors) {
-            onPasswordVerified();
-          } else {
-            form.setError(
-              'currentPassword',
-              {
-                type: 'manual',
-                message: '- Invalid password',
-              },
-              { shouldFocus: true },
-            );
-          }
-        },
-        onError: () => handleError(),
-      }),
-    [form, handleError, verifyPassword, onPasswordVerified],
-  );
-
-  return (
-    <Form form={form} onSubmit={onSubmit}>
-      <Modal.Header
-        title="Enter your password"
-        description="Before continuing, please enter your password."
-      />
-      <Modal.Body>
-        <Form.Input
-          label="Current password"
-          placeholder="Current password"
-          autoComplete="current-password"
-          type="password"
-          required
-          {...form.register('currentPassword')}
-        />
-      </Modal.Body>
-      <Modal.Footer>
-        <Button
-          size="sm"
-          variant="tertiary"
-          onClick={closeModal}
-          disabled={isInFlight}
-        >
-          Cancel
-        </Button>
-        <Form.SubmitButton size="sm" variant="primary" loading={isInFlight}>
-          Continue
-        </Form.SubmitButton>
-      </Modal.Footer>
-    </Form>
-  );
-};
-
 interface Props {
   me: SettingsTwoFactorAuth_user$key;
 }
@@ -432,7 +343,7 @@ const SettingsTwoFactorAuth = ({ ...props }: Props) => {
     modals: [
       {
         modal: (
-          <EnterPasswordModal
+          <SettingsVerifyPasswordModal
             onPasswordVerified={() => setCurrentStep(2)}
             closeModal={onClose}
           />
@@ -484,9 +395,7 @@ const SettingsTwoFactorAuth = ({ ...props }: Props) => {
             className="ml-auto block"
             onClick={() => setIsOpen(true)}
           >
-            {me.twoFactorEnabled
-              ? 'Change Two-Factor Auth'
-              : 'Enable Two-Factor Auth'}
+            {me.twoFactorEnabled ? 'Edit' : 'Enable Two-Factor Auth'}
           </Button>
         )}
       </div>

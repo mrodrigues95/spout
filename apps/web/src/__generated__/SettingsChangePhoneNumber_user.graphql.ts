@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<08fd2cde431a19fd684f53ddafbf7ff0>>
+ * @generated SignedSource<<3349cc6ae4949510a6c7ce8f2391e9ff>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,7 @@ import { FragmentRefs } from "relay-runtime";
 export type SettingsChangePhoneNumber_user$data = {
   readonly phoneNumber: string | null;
   readonly phoneNumberConfirmed: boolean;
+  readonly " $fragmentSpreads": FragmentRefs<"SettingsRemovePhoneNumber_user">;
   readonly " $fragmentType": "SettingsChangePhoneNumber_user";
 };
 export type SettingsChangePhoneNumber_user = SettingsChangePhoneNumber_user$data;
@@ -40,12 +41,17 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "phoneNumberConfirmed",
       "storageKey": null
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "SettingsRemovePhoneNumber_user"
     }
   ],
   "type": "User",
   "abstractKey": null
 };
 
-(node as any).hash = "21b48abcec559dcdaf9eae59275f65af";
+(node as any).hash = "276cc9803b1541de4e150d00e4c80eb5";
 
 export default node;

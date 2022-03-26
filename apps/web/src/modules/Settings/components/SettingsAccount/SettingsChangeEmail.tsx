@@ -253,7 +253,7 @@ const SettingsChangeEmail = ({ ...props }: Props) => {
           </Title>
           <Text size="sm">{me.email}</Text>
         </div>
-        <Button onClick={() => setIsOpen(true)}>Change Email</Button>
+        <Button onClick={() => setIsOpen(true)}>Edit</Button>
       </div>
       <Modal isOpen={isOpen} onClose={close}>
         <Modal.Overlay />
