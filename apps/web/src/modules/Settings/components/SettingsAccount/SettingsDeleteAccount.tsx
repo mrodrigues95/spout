@@ -1,6 +1,7 @@
 import { Text, Title, Button } from '@spout/toolkit';
 
 const SettingsDeleteAccount = () => {
+  // TODO: Implement this when we have a clearer path on user permissions.
   return (
     <div>
       <div className="mt-5">

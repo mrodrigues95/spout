@@ -74,8 +74,14 @@ const SettingsProfile = ({ fetchKey }: Props) => {
 
   const onSubmit = useCallback(
     (input: Zod.infer<typeof profileSchema>) =>
-      updateUser({ variables: { input }, onError: () => handleError() }),
-    [updateUser, handleError],
+      updateUser({
+        variables: { input },
+        onError: () => handleError(),
+        onCompleted: ({ updateUser: { user } }) => {
+          form.reset({ name: user!.name, bio: user!.bio ?? undefined });
+        },
+      }),
+    [updateUser, handleError, form],
   );
 
   return (
