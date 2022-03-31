@@ -58,7 +58,7 @@ namespace API.Schema.Mutations.Auth {
 
             var createUser = await userManager.CreateAsync(user, input.Password);
             if (!createUser.Succeeded) {
-                _logger.LogError("Unable to create new user for {user}. Result: {result}",
+                _logger.LogError("Unable to create new user for: {user}. Result: {result}",
                     user, createUser);
                 throw new SignUpNewUserException();
             }
@@ -73,7 +73,7 @@ namespace API.Schema.Mutations.Auth {
 
             var session = await sessionManager.CreateAsync(user, cancellationToken);
             if (session is null) {
-                _logger.LogError("Unable to refresh session.", user);
+                _logger.LogError("Unable to refresh session for user: {user}", user);
                 throw new SignUpNewUserException();
             }
 
@@ -108,7 +108,7 @@ namespace API.Schema.Mutations.Auth {
 
             var session = await sessionManager.CreateAsync(user, cancellationToken);
             if (session is null) {
-                _logger.LogError("Unable to create session", user);
+                _logger.LogError("Unable to create session for user: {user}", user);
                 throw new LoginUserException();
             }
 
@@ -138,14 +138,14 @@ namespace API.Schema.Mutations.Auth {
 
             if (user.PreferredProvider is null) {
                 _logger.LogError(
-                    "User was able to attempt a sign in without a preferred provider", user);
+                    "User was able to attempt a sign in without a preferred provider {user}", user);
                 throw new LoginUserException();
             }
 
             var providers = await userManager.GetValidTwoFactorProvidersAsync(user);
             if (!providers.Contains(user.PreferredProvider.ToString(), StringComparer.OrdinalIgnoreCase)) {
                 _logger.LogError(
-                    "User preferred provider is out of sync with their valid providers", user);
+                    "User preferred provider is out of sync with their valid providers {user}", user);
                 throw new LoginUserException();
             }
 
@@ -194,7 +194,7 @@ namespace API.Schema.Mutations.Auth {
 
             var session = await sessionManager.CreateAsync(user, cancellationToken);
             if (session is null) {
-                _logger.LogError("Unable to create session", user);
+                _logger.LogError("Unable to create session for user: {user}", user);
                 throw new LoginUserException();
             }
 
@@ -668,7 +668,7 @@ namespace API.Schema.Mutations.Auth {
                 UserId = user.Id,
                 Token = token,
                 NewPhoneNumber = phoneNumber,
-                ExpiresAt = DateTime.UtcNow.AddMinutes(6)
+                ExpiresAt = DateTime.UtcNow.AddMinutes(5)
             };
             ctx.UserPhoneNumberChanges.Add(phoneNumberChange);
             await ctx.SaveChangesAsync(cancellationToken);

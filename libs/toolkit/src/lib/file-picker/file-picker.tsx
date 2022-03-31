@@ -7,7 +7,7 @@ import {
 } from 'react';
 import { DropzoneOptions, useDropzone } from 'react-dropzone';
 
-export interface FileType extends File {
+export interface FileWithPreview extends File {
   preview?: string;
 }
 

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { graphql, useMutation } from 'react-relay';
 import { getFileExtensionFromFileName } from '@spout/toolkit';
 import { useBlob } from './useBlob';
@@ -59,13 +59,15 @@ const CompleteUploadMutation = graphql`
 `;
 
 export const useFileUpload = () => {
-  const blob = useBlob();
   const [generate] = useMutation<useFileUploadGenerateUploadSASMutation>(
     GenerateUploadSASMutation,
   );
   const [completeUpload] = useMutation<useFileUploadCompleteUploadMutation>(
     CompleteUploadMutation,
   );
+
+  const blob = useBlob();
+  const [isUploading, setIsUploading] = useState(false);
 
   const generateUploadSAS = useCallback(
     (file: File) => {
@@ -144,18 +146,28 @@ export const useFileUpload = () => {
   // TODO: Can probably improve this drastically with Azure Functions.
   const upload = useCallback(
     async (file: File) => {
+      setIsUploading(true);
+
       const { sas, file: _file } = (await generateUploadSAS(file)) || {};
-      if (!sas || !_file) return null;
+      if (!sas || !_file) {
+        setIsUploading(false);
+        return null;
+      }
 
       await uploadBlob(sas, file);
-      const updateFileResult = await updateFile(_file.id);
-      if (!updateFileResult) return null;
 
-      return _file;
+      const updateFileResult = await updateFile(_file.id);
+      if (!updateFileResult) {
+        setIsUploading(false);
+        return null;
+      }
+
+      setIsUploading(false);
+      return updateFileResult;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [generateUploadSAS, updateFile],
   );
 
-  return { upload };
+  return { upload, isUploading };
 };

@@ -1120,7 +1120,8 @@ input MessageSortInput {
 }
 
 type Mutation {
-  updateUser(input: UpdateUserInput!): UpdateUserPayload!
+  updateProfile(input: UpdateProfileInput!): UpdateProfilePayload!
+  updateAvatar(input: UpdateAvatarInput!): UpdateAvatarPayload!
   createClassroom(input: CreateClassroomInput!): CreateClassroomPayload!
   joinClassroom(input: JoinClassroomInput!): JoinClassroomPayload!
   createClassroomInvite(input: CreateClassroomInviteInput!): CreateClassroomInvitePayload!
@@ -1432,6 +1433,15 @@ type UnverifiedUserError implements Error {
   message: String!
 }
 
+input UpdateAvatarInput {
+  avatarUrl: String
+}
+
+type UpdateAvatarPayload {
+  user: User
+  query: Query!
+}
+
 union UpdateDiscussionDescriptionError = DiscussionNotFoundError
 
 input UpdateDiscussionDescriptionInput {
@@ -1471,12 +1481,12 @@ type UpdateDiscussionTopicPayload {
   query: Query!
 }
 
-input UpdateUserInput {
+input UpdateProfileInput {
   name: String!
   bio: String
 }
 
-type UpdateUserPayload {
+type UpdateProfilePayload {
   user: User
   query: Query!
 }

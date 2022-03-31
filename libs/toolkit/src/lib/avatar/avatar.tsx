@@ -1,7 +1,7 @@
 import { ComponentProps, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
-import Image from 'next/image';
+import Image, { ImageProps } from 'next/image';
 import clsx from 'clsx';
 
 const STYLES = {
@@ -50,21 +50,21 @@ const AvatarName = ({ name, ...props }: AvatarNameProps) => {
   );
 };
 
-export interface AvatarProps extends ComponentProps<'span'>, BaseAvatarProps {
-  isNextJs?: boolean;
+export interface AvatarProps extends Omit<ImageProps, 'src'>, BaseAvatarProps {
   rounded?: boolean;
   size?: keyof typeof STYLES['size'];
   scheme?: keyof typeof STYLES['scheme'];
+  containerProps?: ComponentProps<'span'>;
 }
 
 export const Avatar = ({
   src,
   name,
   className,
-  isNextJs = true,
   rounded = false,
   size = 'md',
   scheme = 'gray',
+  containerProps: _containerProps = {},
   ...props
 }: AvatarProps) => {
   const [error, setError] = useState(!src);
@@ -79,19 +79,19 @@ export const Avatar = ({
     <AvatarPlaceholderIcon />
   );
 
-  const imgProps = {
-    src: src!,
-    alt: name,
-    className: rounded ? 'rounded-full' : 'rounded-md',
-    onError: () => setError(true),
-  };
-
-  const ImageComponent = isNextJs ? (
-    <Image objectFit="cover" layout="fill" {...imgProps} />
-  ) : (
-    // eslint-disable-next-line jsx-a11y/alt-text
-    <img {...imgProps} />
+  const ImageComponent = (
+    <Image
+      objectFit="cover"
+      layout="fill"
+      src={src!}
+      alt={name}
+      className={clsx(rounded ? 'rounded-full' : 'rounded-md', className)}
+      onError={() => setError(true)}
+      {...props}
+    />
   );
+
+  const { className: containerClassName, ...containerProps } = _containerProps;
 
   return (
     <span
@@ -100,9 +100,9 @@ export const Avatar = ({
         rounded ? 'rounded-full' : 'rounded-md',
         STYLES.size[size],
         STYLES.scheme[scheme],
-        className,
+        containerClassName,
       )}
-      {...props}
+      {...containerProps}
     >
       {error ? ErrorFallbackComponent : ImageComponent}
     </span>

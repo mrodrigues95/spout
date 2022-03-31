@@ -12,7 +12,7 @@ export * from './lib/tabs';
 export * from './lib/card';
 export * from './lib/horizontal-navigation';
 export * from './lib/file-picker';
-export * from './lib/photo-cropper';
+export * from './lib/photo-editor';
 export * from './lib/select';
 export * from './lib/empty-state';
 export * from './lib/modal';

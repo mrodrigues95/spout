@@ -128,6 +128,9 @@ namespace API.Schema.Mutations.Files {
             return new GenerateSASPayload(file, sas);
         }
 
+        // TODO: Move this to Event Grid/Azure Functions.
+        // Currently, the front end needs to invoke this mutation after uploading
+        // a file but this can be done in Azure with Event Grid.
         [Authorize]
         [Error(typeof(BlobNotFoundException))]
         [Error(typeof(BlobPropertiesException))]

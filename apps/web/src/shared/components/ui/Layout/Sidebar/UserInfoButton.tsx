@@ -89,6 +89,7 @@ const UserInfoButton = ({ fetchKey }: Props) => {
               name={me!.name}
               src={me!.avatarUrl}
               profileColor={me!.profileColor}
+              priority
             />
           }
           rightIcon={<FontAwesomeIcon icon={faChevronRight} size="xs" />}
@@ -109,6 +110,7 @@ const UserInfoButton = ({ fetchKey }: Props) => {
                 name={me!.name}
                 src={me!.avatarUrl}
                 profileColor={me!.profileColor}
+                priority
               />
               <div className="flex min-w-0 flex-1 flex-col">
                 <Text

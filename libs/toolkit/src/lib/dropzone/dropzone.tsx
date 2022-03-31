@@ -1,17 +1,20 @@
+import { ComponentProps } from 'react';
+import { DropzoneOptions, useDropzone } from 'react-dropzone';
 import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
-import { DropzoneOptions, useDropzone } from 'react-dropzone';
 
 export interface DropzoneProps extends DropzoneOptions {
   primaryMessage?: string;
   secondaryMessage?: string;
+  inputProps?: ComponentProps<'input'>;
 }
 
 export const Dropzone = ({
   primaryMessage = 'Select a file to upload',
   secondaryMessage = 'or drag and drop it here',
   disabled = false,
+  inputProps,
   ...props
 }: DropzoneProps) => {
   const { getRootProps, getInputProps, isFocused, isDragActive } = useDropzone({
@@ -19,8 +22,6 @@ export const Dropzone = ({
     ...props,
   });
 
-  // TODO: Show success/loading/error icon bottom right.
-  // TODO: Create a hook to show error modal and timeout status icons.
   return (
     <section className="w-full flex-1">
       <div
@@ -37,7 +38,7 @@ export const Dropzone = ({
         })}
         role="button"
       >
-        <input {...getInputProps()} />
+        <input {...inputProps} {...getInputProps()} />
         <FontAwesomeIcon
           icon={faCloudArrowUp}
           className="rounded-full bg-indigo-100 p-2.5 text-indigo-700"

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6f356f08f35b964a4c99c6223ba940bf>>
+ * @generated SignedSource<<8b3ad4d685f071e5e14abd3d7697a3db>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,26 +9,24 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type UpdateProfileInput = {
-  name: string;
-  bio?: string | null;
+export type UpdateAvatarInput = {
+  avatarUrl?: string | null;
 };
-export type SettingsProfileMutation$variables = {
-  input: UpdateProfileInput;
+export type SettingsProfilePhotoMutation$variables = {
+  input: UpdateAvatarInput;
 };
-export type SettingsProfileMutationVariables = SettingsProfileMutation$variables;
-export type SettingsProfileMutation$data = {
-  readonly updateProfile: {
+export type SettingsProfilePhotoMutationVariables = SettingsProfilePhotoMutation$variables;
+export type SettingsProfilePhotoMutation$data = {
+  readonly updateAvatar: {
     readonly user: {
-      readonly name: string;
-      readonly bio: string | null;
+      readonly avatarUrl: string | null;
     } | null;
   };
 };
-export type SettingsProfileMutationResponse = SettingsProfileMutation$data;
-export type SettingsProfileMutation = {
-  variables: SettingsProfileMutationVariables;
-  response: SettingsProfileMutation$data;
+export type SettingsProfilePhotoMutationResponse = SettingsProfilePhotoMutation$data;
+export type SettingsProfilePhotoMutation = {
+  variables: SettingsProfilePhotoMutationVariables;
+  response: SettingsProfilePhotoMutation$data;
 };
 
 const node: ConcreteRequest = (function(){
@@ -50,14 +48,7 @@ v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "name",
-  "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "bio",
+  "name": "avatarUrl",
   "storageKey": null
 };
 return {
@@ -65,14 +56,14 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "SettingsProfileMutation",
+    "name": "SettingsProfilePhotoMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
-        "concreteType": "UpdateProfilePayload",
+        "concreteType": "UpdateAvatarPayload",
         "kind": "LinkedField",
-        "name": "updateProfile",
+        "name": "updateAvatar",
         "plural": false,
         "selections": [
           {
@@ -83,8 +74,7 @@ return {
             "name": "user",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/)
+              (v2/*: any*/)
             ],
             "storageKey": null
           }
@@ -99,14 +89,14 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "SettingsProfileMutation",
+    "name": "SettingsProfilePhotoMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
-        "concreteType": "UpdateProfilePayload",
+        "concreteType": "UpdateAvatarPayload",
         "kind": "LinkedField",
-        "name": "updateProfile",
+        "name": "updateAvatar",
         "plural": false,
         "selections": [
           {
@@ -118,7 +108,6 @@ return {
             "plural": false,
             "selections": [
               (v2/*: any*/),
-              (v3/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -135,16 +124,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d696724640e16939cbdb97aebec42d58",
+    "cacheID": "44dbd6d23fb7d6648e67ea0f7712bf44",
     "id": null,
     "metadata": {},
-    "name": "SettingsProfileMutation",
+    "name": "SettingsProfilePhotoMutation",
     "operationKind": "mutation",
-    "text": "mutation SettingsProfileMutation(\n  $input: UpdateProfileInput!\n) {\n  updateProfile(input: $input) {\n    user {\n      name\n      bio\n      id\n    }\n  }\n}\n"
+    "text": "mutation SettingsProfilePhotoMutation(\n  $input: UpdateAvatarInput!\n) {\n  updateAvatar(input: $input) {\n    user {\n      avatarUrl\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "fa5b870f0807ece2acb358de91b1b7a8";
+(node as any).hash = "a66395277186d59ea566ced8e9d97641";
 
 export default node;

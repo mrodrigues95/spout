@@ -110,10 +110,12 @@ export const ButtonOrLink = forwardRef<
         {...props}
       >
         {(leftIcon || loading) && (
-          <span className="mr-3.5">{loading ? spinner : leftIcon}</span>
+          <span className="mr-3.5 inline-flex">
+            {loading ? spinner : leftIcon}
+          </span>
         )}
         {loading ? loadingText || children : children}
-        {rightIcon && <span className="ml-3.5">{rightIcon}</span>}
+        {rightIcon && <span className="ml-3.5 inline-flex">{rightIcon}</span>}
       </ButtonOrLink>
     );
 

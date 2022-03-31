@@ -41,8 +41,8 @@ const query = graphql`
 `;
 
 const mutation = graphql`
-  mutation SettingsProfileMutation($input: UpdateUserInput!) {
-    updateUser(input: $input) {
+  mutation SettingsProfileMutation($input: UpdateProfileInput!) {
+    updateProfile(input: $input) {
       user {
         name
         bio
@@ -57,13 +57,16 @@ interface Props {
 
 const SettingsProfile = ({ fetchKey }: Props) => {
   const data = useLazyLoadQuery<SettingsProfileQuery>(query, {}, { fetchKey });
-  const [updateUser, isInFlight] =
+  const [updateProfile, isInFlight] =
     useMutation<SettingsProfileMutation>(mutation);
   const { handleError } = useToast();
 
   const form = useZodForm({
     schema: profileSchema,
-    defaultValues: { name: data.me!.name, bio: data.me!.bio ?? undefined },
+    defaultValues: {
+      name: data.me!.name,
+      bio: data.me!.bio ?? undefined,
+    },
   });
 
   const bio = useWatch({ name: 'bio', control: form.control });
@@ -74,14 +77,14 @@ const SettingsProfile = ({ fetchKey }: Props) => {
 
   const onSubmit = useCallback(
     (input: Zod.infer<typeof profileSchema>) =>
-      updateUser({
+      updateProfile({
         variables: { input },
         onError: () => handleError(),
-        onCompleted: ({ updateUser: { user } }) => {
+        onCompleted: ({ updateProfile: { user } }) => {
           form.reset({ name: user!.name, bio: user!.bio ?? undefined });
         },
       }),
-    [updateUser, handleError, form],
+    [updateProfile, handleError, form],
   );
 
   return (
@@ -97,13 +100,14 @@ const SettingsProfile = ({ fetchKey }: Props) => {
         <Button
           variant="secondary"
           onClick={() => form.reset()}
-          disabled={isInFlight}
+          disabled={isInFlight || !form.formState.isDirty}
         >
           Reset
         </Button>
         <Form.SubmitButton
           variant="primary"
           className="ml-2"
+          disabled={!form.formState.isDirty}
           loading={isInFlight}
         >
           Save
@@ -114,7 +118,7 @@ const SettingsProfile = ({ fetchKey }: Props) => {
           <Form.Input
             label="Name"
             placeholder="Name"
-            autoComplete="name"
+            autoComplete="off"
             labelProps={{ className: 'max-w-xs' }}
             className="!mb-5"
             {...form.register('name')}

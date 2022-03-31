@@ -27,7 +27,7 @@ module.exports = {
     return config;
   },
   images: {
-    domains: ['res.cloudinary.com'],
+    domains: ['res.cloudinary.com', 'spoutstorage.blob.core.windows.net'],
   },
   async redirects() {
     return [

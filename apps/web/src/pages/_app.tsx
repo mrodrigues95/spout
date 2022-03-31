@@ -36,7 +36,7 @@ const MyApp = ({ Component, pageProps }: MyAppProps) => {
         </SessionProvider>
       </RelayEnvironmentProvider>
       <Toaster
-        position="bottom-right"
+        position="top-center"
         toastOptions={{ duration: 4000, className: 'font-medium' }}
       />
       <NProgress />

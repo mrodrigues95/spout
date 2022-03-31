@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7c24e3dbb469378a393182441f8c9bc9>>
+ * @generated SignedSource<<1d1326bb33618d509f1cb00e7d94d779>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -29,12 +29,7 @@ export type SettingsRemovePhoneNumberMutation$data = {
       } | null;
     } | null;
     readonly errors: ReadonlyArray<{
-      readonly __typename: "SessionExpiredError";
-      readonly message: string;
-    } | {
-      // This will never be '%other', but we need some
-      // value in case none of the concrete values match.
-      readonly __typename: "%other";
+      readonly message?: string;
     }> | null;
   };
 };
@@ -95,18 +90,18 @@ v6 = {
   "storageKey": null
 },
 v7 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "__typename",
-  "storageKey": null
-},
-v8 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "message",
-  "storageKey": null
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "message",
+      "storageKey": null
+    }
+  ],
+  "type": "SessionExpiredError",
+  "abstractKey": null
 };
 return {
   "fragment": {
@@ -158,15 +153,7 @@ return {
             "name": "errors",
             "plural": true,
             "selections": [
-              {
-                "kind": "InlineFragment",
-                "selections": [
-                  (v7/*: any*/),
-                  (v8/*: any*/)
-                ],
-                "type": "SessionExpiredError",
-                "abstractKey": null
-              }
+              (v7/*: any*/)
             ],
             "storageKey": null
           }
@@ -233,15 +220,14 @@ return {
             "name": "errors",
             "plural": true,
             "selections": [
-              (v7/*: any*/),
               {
-                "kind": "InlineFragment",
-                "selections": [
-                  (v8/*: any*/)
-                ],
-                "type": "SessionExpiredError",
-                "abstractKey": null
-              }
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "__typename",
+                "storageKey": null
+              },
+              (v7/*: any*/)
             ],
             "storageKey": null
           }
@@ -251,16 +237,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "34f9463dcca9c03597f94c462451e9b5",
+    "cacheID": "d9ba53a5b45a9e3eeaefe7650538f2ab",
     "id": null,
     "metadata": {},
     "name": "SettingsRemovePhoneNumberMutation",
     "operationKind": "mutation",
-    "text": "mutation SettingsRemovePhoneNumberMutation(\n  $input: RemovePhoneNumberInput!\n) {\n  removePhoneNumber(input: $input) {\n    authPayload {\n      user {\n        phoneNumber\n        phoneNumberConfirmed\n        preferredProvider\n        twoFactorEnabled\n        twoFactorEnabledAt\n        id\n      }\n    }\n    errors {\n      __typename\n      ... on SessionExpiredError {\n        __typename\n        message\n      }\n    }\n  }\n}\n"
+    "text": "mutation SettingsRemovePhoneNumberMutation(\n  $input: RemovePhoneNumberInput!\n) {\n  removePhoneNumber(input: $input) {\n    authPayload {\n      user {\n        phoneNumber\n        phoneNumberConfirmed\n        preferredProvider\n        twoFactorEnabled\n        twoFactorEnabledAt\n        id\n      }\n    }\n    errors {\n      __typename\n      ... on SessionExpiredError {\n        message\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "6ec6612596f365059407983177d920e1";
+(node as any).hash = "279e196f3059e1720bb24ef456164aae";
 
 export default node;

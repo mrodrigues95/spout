@@ -207,14 +207,14 @@ const DiscussionMessage = () => {
         </div>
         <div className="flex w-10 shrink-0 items-center justify-center sm:w-14">
           {!isRecent || isFirstMessage ? (
-            <div className="rounded-md shadow-md">
-              <Avatar
-                src={message.createdBy.avatarUrl}
-                name={message.createdBy.name}
-                profileColor={message.createdBy.profileColor}
-                size={isMobile ? 'md' : 'sm'}
-              />
-            </div>
+            <Avatar
+              src={message.createdBy.avatarUrl}
+              name={message.createdBy.name}
+              profileColor={message.createdBy.profileColor}
+              size={isMobile ? 'md' : 'sm'}
+              containerProps={{ className: 'shadow-md' }}
+              priority
+            />
           ) : (
             <time
               className="hidden text-xs font-medium text-gray-500 sm:group-hover:inline-block"
