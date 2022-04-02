@@ -14,7 +14,7 @@ const messageSchema = object({
   path: ['message'],
 });
 
-const EditDiscussionMessage = () => {
+const EditMessage = () => {
   const {
     data: { message },
     actions: { edit },
@@ -83,4 +83,4 @@ const EditDiscussionMessage = () => {
   );
 };
 
-export default EditDiscussionMessage;
+export default EditMessage;

@@ -10,9 +10,9 @@ import {
 import { Title, Select, IconButton, Tooltip } from '@spout/toolkit';
 import { MEDIA_QUERIES, useMediaQuery } from '../../../../shared/hooks';
 import { useDiscussion } from '../DiscussionProvider';
-import { DiscussionHeader_discussion$key } from '../../../../__generated__/DiscussionHeader_discussion.graphql';
 import DiscussionHeaderNotifications from './DiscussionHeaderNotifications';
 import DiscussionHeaderPinnedMessages from './DiscussionHeaderPinnedMessages';
+import { DiscussionHeader_discussion$key } from './__generated__/DiscussionHeader_discussion.graphql';
 
 const fragment = graphql`
   fragment DiscussionHeader_discussion on Discussion {

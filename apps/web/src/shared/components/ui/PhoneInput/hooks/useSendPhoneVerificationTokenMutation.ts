@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { graphql, useMutation } from 'react-relay';
 import { PhoneNumber } from 'libphonenumber-js';
 import useToast from '../../Toast';
-import { useSendPhoneVerificationTokenMutation as TMutation } from '../../../../../__generated__/useSendPhoneVerificationTokenMutation.graphql';
+import { useSendPhoneVerificationTokenMutation as TMutation } from './__generated__/useSendPhoneVerificationTokenMutation.graphql';
 
 const mutation = graphql`
   mutation useSendPhoneVerificationTokenMutation(

@@ -3,12 +3,12 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useRouter } from 'next/router';
 import { NextSeo } from 'next-seo';
 import { Card, Header, Main } from '../../../shared/components';
-import { ViewDiscussionQuery } from '../../../__generated__/ViewDiscussionQuery.graphql';
 import DiscussionHeader from './DiscussionHeader';
 import DiscussionDetails from './DiscussionDetails';
 import DiscussionMessagesList from './DiscussionMessages/DiscussionMessagesList';
 import DiscussionMessageComposer from './DiscussionMessages/DiscussionMessageComposer';
 import { DiscussionProvider } from './DiscussionProvider';
+import { ViewDiscussionQuery } from './__generated__/ViewDiscussionQuery.graphql';
 
 const query = graphql`
   query ViewDiscussionQuery($id: ID!, $count: Int!, $cursor: String) {

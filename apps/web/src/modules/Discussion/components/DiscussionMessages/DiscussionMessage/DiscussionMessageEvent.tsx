@@ -6,11 +6,11 @@ import {
   faCommentDots,
 } from '@fortawesome/free-regular-svg-icons';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import clsx from 'clsx';
 import { Card, Avatar, Quote } from '../../../../../shared/components';
 import { formatMessageDate } from '../../../utils/dates';
 import { DiscussionMessage } from '../../../utils/messages';
-import { MessageEvent } from '../../../../../__generated__/DiscussionOptimisticMessageMutation.graphql';
-import clsx from 'clsx';
+import { MessageEvent } from './__generated__/DiscussionOptimisticMessageMutation.graphql';
 
 interface PinnedOrUnpinnedEventMessageProps {
   message: DiscussionMessage;

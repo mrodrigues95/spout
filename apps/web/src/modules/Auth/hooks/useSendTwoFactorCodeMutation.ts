@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { graphql, useMutation } from 'react-relay';
-import { useSendTwoFactorCodeMutation as TMutation } from '../../../__generated__/useSendTwoFactorCodeMutation.graphql';
+import { useSendTwoFactorCodeMutation as TMutation } from './__generated__/useSendTwoFactorCodeMutation.graphql';
 
 const mutation = graphql`
   mutation useSendTwoFactorCodeMutation {

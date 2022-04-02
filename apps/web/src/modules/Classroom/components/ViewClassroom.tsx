@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { Layout } from '../../../shared/components';
 import ClassroomOverviewProvider from './ClassroomOverview/ClassroomOverviewProvider';
 import DiscussionsNavigation from './ClassroomOverview/DiscussionsNavigation';
-import { ViewClassroomQuery } from '../../../__generated__/ViewClassroomQuery.graphql';
+import { ViewClassroomQuery } from './__generated__/ViewClassroomQuery.graphql';
 
 const query = graphql`
   query ViewClassroomQuery($id: ID!) {

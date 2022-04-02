@@ -12,7 +12,7 @@ import {
 import AuthContainer from './AuthContainer';
 import AuthError from './AuthError';
 import LoginTwoFactor from './LoginTwoFactor';
-import { LoginFormMutation } from '../../../__generated__/LoginFormMutation.graphql';
+import { LoginFormMutation } from './__generated__/LoginFormMutation.graphql';
 
 const mutation = graphql`
   mutation LoginFormMutation($input: LoginInput!) {

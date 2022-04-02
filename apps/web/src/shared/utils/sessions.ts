@@ -4,8 +4,8 @@ import { GetServerSidePropsContext } from 'next';
 import { IronSessionOptions, getIronSession, IronSession } from 'iron-session';
 import { differenceInSeconds } from 'date-fns';
 import { createRelayEnvironment } from './relay';
-import { sessionsQuery } from '../../__generated__/sessionsQuery.graphql';
-import { sessionsMutation } from '../../__generated__/sessionsMutation.graphql';
+import { sessionsQuery } from './__generated__/sessionsQuery.graphql';
+import { sessionsMutation } from './__generated__/sessionsMutation.graphql';
 
 if (typeof window === 'undefined' && !process.env.IRON_SESSION_COOKIE_SECRET) {
   console.warn(

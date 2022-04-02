@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useMutation, graphql } from 'react-relay';
 import { DiscussionMessage, Me } from '../../../../utils/messages';
-import { useUnpinDiscussionMessageMutation } from '../../../../../../__generated__/useUnpinDiscussionMessageMutation.graphql';
+import { useUnpinDiscussionMessageMutation } from './__generated__/useUnpinDiscussionMessageMutation.graphql';
 
 const mutation = graphql`
   mutation useUnpinDiscussionMessageMutation(

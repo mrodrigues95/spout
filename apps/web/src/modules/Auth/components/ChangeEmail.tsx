@@ -6,7 +6,7 @@ import { useSession } from '../../../shared/components';
 import EmailVerificationContainer, {
   EmailVerificationStatus,
 } from './EmailVerificationContainer';
-import { ChangeEmailMutation } from '../../../__generated__/ChangeEmailMutation.graphql';
+import { ChangeEmailMutation } from './__generated__/ChangeEmailMutation.graphql';
 
 const mutation = graphql`
   mutation ChangeEmailMutation($input: ChangeEmailInput!) {

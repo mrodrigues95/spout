@@ -8,10 +8,10 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import { Button, Text, Menu, usePopper, Skeleton, Link } from '@spout/toolkit';
-import { UserInfoButtonQuery } from '../../../../../__generated__/UserInfoButtonQuery.graphql';
-import { UserInfoButtonMutation } from '../../../../../__generated__/UserInfoButtonMutation.graphql';
 import { useAuthRedirect } from '../../../../../modules';
 import Avatar from '../../Avatar';
+import { UserInfoButtonQuery } from './__generated__/UserInfoButtonQuery.graphql';
+import { UserInfoButtonMutation } from './__generated__/UserInfoButtonMutation.graphql';
 
 export const UserInfoButtonSkeleton = () => {
   return (

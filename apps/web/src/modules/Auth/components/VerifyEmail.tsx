@@ -6,8 +6,8 @@ import { useSession } from '../../../shared/components';
 import EmailVerificationContainer, {
   EmailVerificationStatus,
 } from './EmailVerificationContainer';
-import { VerifyEmailMutation } from '../../../__generated__/VerifyEmailMutation.graphql';
-import { VerifyEmailResendEmailMutation } from '../../../__generated__/VerifyEmailResendEmailMutation.graphql';
+import { VerifyEmailMutation } from './__generated__/VerifyEmailMutation.graphql';
+import { VerifyEmailResendEmailMutation } from './__generated__/VerifyEmailResendEmailMutation.graphql';
 
 const resendEmailMutation = graphql`
   mutation VerifyEmailResendEmailMutation {

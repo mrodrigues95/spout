@@ -4,7 +4,7 @@ import Zod, { object, string } from 'zod';
 import { Form, Title, useZodForm, Text, Link } from '@spout/toolkit';
 import { Layout, useToast } from '../../../shared/components';
 import AuthContainer from './AuthContainer';
-import { ForgotPasswordMutation } from '../../../__generated__/ForgotPasswordMutation.graphql';
+import { ForgotPasswordMutation } from './__generated__/ForgotPasswordMutation.graphql';
 
 const forgotPasswordSchema = object({
   email: string().email({ message: '- Invalid email' }),

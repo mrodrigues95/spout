@@ -14,9 +14,9 @@ import {
   Tooltip,
 } from '@spout/toolkit';
 import { ConditionalWrapper, useToast } from '../../../../shared/components';
-import { TopicMutation } from '../../../../__generated__/TopicMutation.graphql';
-import { Topic_discussion$key } from '../../../../__generated__/Topic_discussion.graphql';
 import { MEDIA_QUERIES, useMediaQuery } from '../../../../shared/hooks';
+import { TopicMutation } from './__generated__/TopicMutation.graphql';
+import { Topic_discussion$key } from './__generated__/Topic_discussion.graphql';
 
 interface ItemProps {
   label: 'Topic' | 'Description';

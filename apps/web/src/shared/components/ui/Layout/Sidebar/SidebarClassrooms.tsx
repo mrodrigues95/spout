@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { Skeleton } from '@spout/toolkit';
 import clsx from 'clsx';
 import VerticalNav from '../../VerticalNav';
-import { SidebarClassroomsQuery } from '../../../../../__generated__/SidebarClassroomsQuery.graphql';
+import { SidebarClassroomsQuery } from './__generated__/SidebarClassroomsQuery.graphql';
 
 export const SidebarClassroomsSkeleton = () => {
   const stack = (

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { FileRejection } from 'react-dropzone';
 import { useEditor, EditorContent, Extension } from '@tiptap/react';
@@ -13,9 +13,8 @@ import {
 import { ComposerAttachments } from './ComposerAttachments';
 import ComposerToolbar from './ComposerToolbar';
 import { ComposerToolbarProvider } from './ComposerToolbarProvider';
-import { DiscussionMessageComposer_discussion$key } from '../../../../../__generated__/DiscussionMessageComposer_discussion.graphql';
-import { DiscussionMessageComposer_user$key } from '../../../../../__generated__/DiscussionMessageComposer_user.graphql';
-import { useEffect } from 'react';
+import { DiscussionMessageComposer_discussion$key } from './__generated__/DiscussionMessageComposer_discussion.graphql';
+import { DiscussionMessageComposer_user$key } from './__generated__/DiscussionMessageComposer_user.graphql';
 
 const discussionFragment = graphql`
   fragment DiscussionMessageComposer_discussion on Discussion {

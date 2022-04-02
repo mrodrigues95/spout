@@ -9,7 +9,6 @@ module.exports = {
       // This should match `relay.config.json`.
       src: 'apps/web/src',
       schema: 'apps/web/schema.graphql',
-      artifactDirectory: 'apps/web/src/__generated__',
       exclude: ['**/node_modules/**', '**/__generated__/**'],
       language: 'typescript',
       customScalars: {

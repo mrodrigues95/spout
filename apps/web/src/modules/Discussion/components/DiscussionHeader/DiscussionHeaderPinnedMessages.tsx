@@ -22,10 +22,10 @@ import {
   ErrorBoundary,
   ErrorFallback,
 } from '../../../../shared/components';
-import { DiscussionHeaderPinnedMessagesQuery } from '../../../../__generated__/DiscussionHeaderPinnedMessagesQuery.graphql';
-import { DiscussionHeaderPinnedMessages_list$key } from '../../../../__generated__/DiscussionHeaderPinnedMessages_list.graphql';
-import { DiscussionHeaderPinnedMessages_message$key } from '../../../../__generated__/DiscussionHeaderPinnedMessages_message.graphql';
 import { formatMessageDate } from '../../utils/dates';
+import { DiscussionHeaderPinnedMessagesQuery } from './__generated__/DiscussionHeaderPinnedMessagesQuery.graphql';
+import { DiscussionHeaderPinnedMessages_list$key } from './__generated__/DiscussionHeaderPinnedMessages_list.graphql';
+import { DiscussionHeaderPinnedMessages_message$key } from './__generated__/DiscussionHeaderPinnedMessages_message.graphql';
 
 interface DiscussionHeaderPinnedMessageProps {
   message: DiscussionHeaderPinnedMessages_message$key;

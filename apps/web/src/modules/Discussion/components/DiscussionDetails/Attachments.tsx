@@ -17,9 +17,9 @@ import clsx from 'clsx';
 import { FileIcon, IconLink, Spinner, Text, Tooltip } from '@spout/toolkit';
 import { Avatar, EmptyFallback } from '../../../../shared/components/ui';
 import { formatBytesToHumanReadable } from '../../../../shared/utils';
-import { AttachmentsQuery } from '../../../../__generated__/AttachmentsQuery.graphql';
-import { Attachments_files$key } from '../../../../__generated__/Attachments_files.graphql';
-import { Attachments_attachment$key } from '../../../../__generated__/Attachments_attachment.graphql';
+import { AttachmentsQuery } from './__generated__/AttachmentsQuery.graphql';
+import { Attachments_files$key } from './__generated__/Attachments_files.graphql';
+import { Attachments_attachment$key } from './__generated__/Attachments_attachment.graphql';
 
 interface AttachmentProps {
   index: number;

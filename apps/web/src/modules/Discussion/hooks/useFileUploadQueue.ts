@@ -3,7 +3,7 @@ import { graphql, useMutation } from 'react-relay';
 import { generateId } from '@spout/toolkit';
 import { useFileUpload } from '../../../shared/hooks/files';
 import { useToast } from '../../../shared/components';
-import { useFileUploadQueueMutation } from '../../../__generated__/useFileUploadQueueMutation.graphql';
+import { useFileUploadQueueMutation } from './__generated__/useFileUploadQueueMutation.graphql';
 
 const mutation = graphql`
   mutation useFileUploadQueueMutation($input: DeleteFileInput!) {

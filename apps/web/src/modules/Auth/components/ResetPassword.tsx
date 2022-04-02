@@ -5,7 +5,7 @@ import Zod, { object, string } from 'zod';
 import { Form, Title, useZodForm, Link } from '@spout/toolkit';
 import { Layout, useToast } from '../../../shared/components';
 import AuthContainer from './AuthContainer';
-import { ResetPasswordMutation } from '../../../__generated__/ResetPasswordMutation.graphql';
+import { ResetPasswordMutation } from './__generated__/ResetPasswordMutation.graphql';
 
 const resetPasswordSchema = object({
   password: string().min(6, { message: '- Invalid password' }),

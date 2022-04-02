@@ -16,7 +16,7 @@ import {
 } from '../hooks';
 import AuthError from './AuthError';
 import AuthContainer from './AuthContainer';
-import { LoginTwoFactorVerifyTokenMutation } from '../../../__generated__/LoginTwoFactorVerifyTokenMutation.graphql';
+import { LoginTwoFactorVerifyTokenMutation } from './__generated__/LoginTwoFactorVerifyTokenMutation.graphql';
 
 const mutation = graphql`
   mutation LoginTwoFactorVerifyTokenMutation(

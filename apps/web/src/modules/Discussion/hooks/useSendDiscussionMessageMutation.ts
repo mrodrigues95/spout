@@ -2,8 +2,8 @@ import { useCallback } from 'react';
 import { ConnectionHandler, graphql, useMutation } from 'react-relay';
 import {
   SendDiscussionMessageInput,
-  useSendDiscussionMessageMutation as useSendDiscussionMessageMutationType,
-} from '../../../__generated__/useSendDiscussionMessageMutation.graphql';
+  useSendDiscussionMessageMutation as TUseSendDiscussionMessageMutation,
+} from './__generated__/useSendDiscussionMessageMutation.graphql';
 
 const mutation = graphql`
   mutation useSendDiscussionMessageMutation(
@@ -20,7 +20,7 @@ const mutation = graphql`
 let tempId = 0;
 
 export const useSendDiscussionMessageMutation = () => {
-  const [commit] = useMutation<useSendDiscussionMessageMutationType>(mutation);
+  const [commit] = useMutation<TUseSendDiscussionMessageMutation>(mutation);
 
   const sendDiscussionMessage = useCallback(
     (

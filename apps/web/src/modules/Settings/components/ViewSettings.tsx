@@ -4,8 +4,8 @@ import { faIdCard, faCog } from '@fortawesome/free-solid-svg-icons';
 import { Tabs, Title } from '@spout/toolkit';
 import { Header, Main } from '../../../shared/components';
 import { MEDIA_QUERIES, useMediaQuery } from '../../../shared/hooks';
-import { SettingsProfile } from './SettingsProfile';
-import { SettingsAccount } from './SettingsAccount';
+import { Profile } from './Profile';
+import { Account } from './Account';
 
 const ViewSettings = () => {
   const isTablet = useMediaQuery(MEDIA_QUERIES.LARGE);
@@ -15,12 +15,12 @@ const ViewSettings = () => {
       {
         label: 'Profile',
         icon: <FontAwesomeIcon icon={faIdCard} className="mr-2" />,
-        component: <SettingsProfile />,
+        component: <Profile />,
       },
       {
         label: 'Account',
         icon: <FontAwesomeIcon icon={faCog} className="mr-2" />,
-        component: <SettingsAccount />,
+        component: <Account />,
       },
     ],
     [],

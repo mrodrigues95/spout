@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useMutation, graphql } from 'react-relay';
 import { DiscussionMessage } from '../../../../utils/messages';
-import { useEditDiscussionMessageMutation } from '../../../../../../__generated__/useEditDiscussionMessageMutation.graphql';
+import { useEditDiscussionMessageMutation } from './__generated__/useEditDiscussionMessageMutation.graphql';
 
 const mutation = graphql`
   mutation useEditDiscussionMessageMutation(

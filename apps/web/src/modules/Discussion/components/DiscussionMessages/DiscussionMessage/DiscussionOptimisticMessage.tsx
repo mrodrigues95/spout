@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState, memo, useMemo } from 'react';
 import { graphql, useMutation } from 'react-relay';
-import { DiscussionOptimisticMessageMutation } from '../../../../../__generated__/DiscussionOptimisticMessageMutation.graphql';
 import {
   OptimisticMessagesStore,
   useStore,
@@ -12,6 +11,7 @@ import {
   RecentMessages,
 } from '../../../utils/messages';
 import DiscussionMessage, { Props as DiscussionMessageProps } from '.';
+import { DiscussionOptimisticMessageMutation } from './__generated__/DiscussionOptimisticMessageMutation.graphql';
 
 const mutation = graphql`
   mutation DiscussionOptimisticMessageMutation(

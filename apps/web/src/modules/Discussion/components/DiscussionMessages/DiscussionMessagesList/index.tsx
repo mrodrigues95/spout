@@ -13,20 +13,20 @@ import {
   Item,
 } from '../../../utils/messages';
 import { useConnection } from '../../../../../shared/hooks';
+import { useShouldForceScrollToBottom } from '../../../hooks/useShouldForceScrollToBottom';
+import { Card } from '../../../../../shared/components';
 import {
   useDiscussionMessages,
   useDiscussionMessagesSubscription,
   usePrependDiscussionItems,
 } from '../../../hooks';
-import { Card } from '../../../../../shared/components';
-import { DiscussionMessagesList_user$key } from '../../../../../__generated__/DiscussionMessagesList_user.graphql';
-import { DiscussionMessagesList_discussion$key } from '../../../../../__generated__/DiscussionMessagesList_discussion.graphql';
 import DiscussionMessagesListHeader from './DiscussionMessagesListHeader';
 import DiscussionMessageDivider from '../DiscussionMessage/DiscussionMessageDivider';
 import DiscussionMessage from '../DiscussionMessage';
 import DiscussionMessageEvent from '../DiscussionMessage/DiscussionMessageEvent';
 import DiscussionOptimisticMessage from '../DiscussionMessage/DiscussionOptimisticMessage';
-import { useShouldForceScrollToBottom } from '../../../hooks/useShouldForceScrollToBottom';
+import { DiscussionMessagesList_user$key } from './__generated__/DiscussionMessagesList_user.graphql';
+import { DiscussionMessagesList_discussion$key } from './__generated__/DiscussionMessagesList_discussion.graphql';
 
 const discussionFragment = graphql`
   fragment DiscussionMessagesList_discussion on Discussion

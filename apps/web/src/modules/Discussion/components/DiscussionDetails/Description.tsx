@@ -3,9 +3,9 @@ import { graphql, useFragment, useMutation } from 'react-relay';
 import Zod, { object, string } from 'zod';
 import { Button as SButton, Form, Modal, useZodForm } from '@spout/toolkit';
 import { useToast } from '../../../../shared/components';
-import { DescriptionMutation } from '../../../../__generated__/DescriptionMutation.graphql';
-import { Description_discussion$key } from '../../../../__generated__/Description_discussion.graphql';
 import { Item } from './Topic';
+import { DescriptionMutation } from './__generated__/DescriptionMutation.graphql';
+import { Description_discussion$key } from './__generated__/Description_discussion.graphql';
 
 const fragment = graphql`
   fragment Description_discussion on Discussion {

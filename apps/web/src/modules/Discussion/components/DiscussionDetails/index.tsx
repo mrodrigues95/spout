@@ -1,4 +1,4 @@
-import { Fragment, ReactNode, Suspense, useMemo } from 'react';
+import { Fragment, ReactNode, Suspense, useMemo, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { graphql, useFragment } from 'react-relay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,8 +12,7 @@ import Participants from './Participants';
 import Attachments from './Attachments';
 import Topic from './Topic';
 import Description from './Description';
-import { DiscussionDetails_discussion$key } from '../../../../__generated__/DiscussionDetails_discussion.graphql';
-import { useEffect } from 'react';
+import { DiscussionDetails_discussion$key } from './__generated__/DiscussionDetails_discussion.graphql';
 
 interface MobileWrapperProps {
   children: ReactNode;

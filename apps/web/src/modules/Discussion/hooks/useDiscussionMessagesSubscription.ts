@@ -5,7 +5,7 @@ import {
   RecordProxy,
   RecordSourceSelectorProxy,
 } from 'relay-runtime';
-import { useDiscussionMessagesSubscription as useDiscussionMessagesSubscriptionType } from '../../../__generated__/useDiscussionMessagesSubscription.graphql';
+import { useDiscussionMessagesSubscription as TUseDiscussionMessagesSubscription } from './__generated__/useDiscussionMessagesSubscription.graphql';
 
 const subscription = graphql`
   subscription useDiscussionMessagesSubscription($discussionId: ID!) {
@@ -91,7 +91,7 @@ export const useDiscussionMessagesSubscription = (
   discussionId: string,
   creatorId: string,
 ) => {
-  const config: GraphQLSubscriptionConfig<useDiscussionMessagesSubscriptionType> =
+  const config: GraphQLSubscriptionConfig<TUseDiscussionMessagesSubscription> =
     useMemo(
       () => ({
         variables: { discussionId },
@@ -116,5 +116,5 @@ export const useDiscussionMessagesSubscription = (
       [discussionId, creatorId],
     );
 
-  useSubscription<useDiscussionMessagesSubscriptionType>(config);
+  useSubscription<TUseDiscussionMessagesSubscription>(config);
 };
