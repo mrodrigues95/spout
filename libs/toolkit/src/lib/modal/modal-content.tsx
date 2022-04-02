@@ -19,7 +19,7 @@ export const ModalContent = ({
     <Transition.Child {...transitions[transition!].content}>
       <section
         className={clsx(
-          'relative flex max-w-2xl flex-col rounded-md bg-white text-black shadow-xl',
+          'relative flex h-full max-w-2xl flex-col bg-white text-black shadow-xl sm:h-auto sm:rounded-md',
           className,
         )}
         {...props}

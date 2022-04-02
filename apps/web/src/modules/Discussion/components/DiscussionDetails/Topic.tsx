@@ -137,12 +137,12 @@ const Topic = ({ discussion }: Props) => {
     <>
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <Modal.Overlay />
-        <Form form={form} onSubmit={onSubmit}>
-          <Modal.Content>
-            <Modal.Header
-              title="Edit Topic"
-              description="Let people know what this discussion is focused on right now."
-            />
+        <Modal.Content>
+          <Modal.Header
+            title="Edit Topic"
+            description="Let people know what this discussion is focused on right now."
+          />
+          <Form form={form} onSubmit={onSubmit}>
             <Modal.Body>
               <Form.TextArea
                 label="Topic"
@@ -159,8 +159,8 @@ const Topic = ({ discussion }: Props) => {
                 Save
               </Form.SubmitButton>
             </Modal.Footer>
-          </Modal.Content>
-        </Form>
+          </Form>
+        </Modal.Content>
       </Modal>
       <Item
         label="Topic"

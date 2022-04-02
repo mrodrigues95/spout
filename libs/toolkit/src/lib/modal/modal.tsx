@@ -63,7 +63,7 @@ export const Modal = ({
         <Dialog
           as="div"
           className={clsx(
-            'fixed inset-0 z-50 flex items-center justify-center',
+            'fixed inset-0 z-50 block items-center justify-center sm:flex',
             className,
           )}
           onClose={onClose}

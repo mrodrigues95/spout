@@ -4,6 +4,7 @@ import Zod, { object, string } from 'zod';
 import { useRouter } from 'next/router';
 import { Button, Title, Modal, Form, useZodForm } from '@spout/toolkit';
 import { useSession, useToast } from '../../../../shared/components';
+import { MEDIA_QUERIES, useMediaQuery } from '../../../../shared/hooks';
 import { SettingsChangePasswordMutation } from '../../../../__generated__/SettingsChangePasswordMutation.graphql';
 
 const changePasswordSchema = object({
@@ -37,6 +38,7 @@ const SettingsChangePassword = () => {
   const { sessionId } = useSession();
   const { toast, handleError } = useToast();
   const router = useRouter();
+  const isTablet = useMediaQuery(MEDIA_QUERIES.LARGE);
   const [changePassword, isInFlight] =
     useMutation<SettingsChangePasswordMutation>(mutation);
 
@@ -94,12 +96,14 @@ const SettingsChangePassword = () => {
       <Title as="h2" variant="h5" className="flex-1 font-medium">
         Password
       </Title>
-      <Button onClick={() => setIsOpen(true)}>Edit</Button>
+      <Button onClick={() => setIsOpen(true)} size={isTablet ? 'md' : 'sm'}>
+        Edit
+      </Button>
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <Modal.Overlay />
-        <Form form={form} onSubmit={onSubmit}>
-          <Modal.Content className="w-[18rem] sm:w-[30rem]">
-            <Modal.Header title="Change your password" />
+        <Modal.Content>
+          <Modal.Header title="Change your password" />
+          <Form form={form} onSubmit={onSubmit}>
             <Modal.Body>
               <Form.Input
                 label="Current password"
@@ -139,8 +143,8 @@ const SettingsChangePassword = () => {
                 Save
               </Form.SubmitButton>
             </Modal.Footer>
-          </Modal.Content>
-        </Form>
+          </Form>
+        </Modal.Content>
       </Modal>
     </div>
   );

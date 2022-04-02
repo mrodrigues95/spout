@@ -80,13 +80,13 @@ const CreateClassroom = () => {
       </Button>
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <Modal.Overlay />
-        <Form form={form} onSubmit={onSubmit}>
-          <Modal.Content>
-            <Modal.Header
-              title="Create Your Classroom"
-              description="Classrooms help you better manage your discussions."
-              dismiss
-            />
+        <Modal.Content>
+          <Modal.Header
+            title="Create Your Classroom"
+            description="Classrooms help you better manage your discussions."
+            dismiss
+          />
+          <Form form={form} onSubmit={onSubmit}>
             <Modal.Body>
               <Form.Input
                 label="Classroom Name"
@@ -103,8 +103,8 @@ const CreateClassroom = () => {
                 Create Classroom
               </Form.SubmitButton>
             </Modal.Footer>
-          </Modal.Content>
-        </Form>
+          </Form>
+        </Modal.Content>
       </Modal>
     </>
   );

@@ -69,12 +69,12 @@ const Description = ({ discussion }: Props) => {
     <>
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <Modal.Overlay />
-        <Form form={form} onSubmit={onSubmit}>
-          <Modal.Content>
-            <Modal.Header
-              title="Edit Description"
-              description="Let people know what this discussion is for."
-            />
+        <Modal.Content>
+          <Modal.Header
+            title="Edit Description"
+            description="Let people know what this discussion is for."
+          />
+          <Form form={form} onSubmit={onSubmit}>
             <Modal.Body>
               <Form.TextArea
                 label="Description"
@@ -95,8 +95,8 @@ const Description = ({ discussion }: Props) => {
                 Save Changes
               </Form.SubmitButton>
             </Modal.Footer>
-          </Modal.Content>
-        </Form>
+          </Form>
+        </Modal.Content>
       </Modal>
       <Item
         label="Description"

@@ -12,7 +12,11 @@ import {
   OtpInputRef,
   OTP_LENGTH,
 } from '../../../../shared/components';
-import { useTimeout } from '../../../../shared/hooks';
+import {
+  MEDIA_QUERIES,
+  useMediaQuery,
+  useTimeout,
+} from '../../../../shared/hooks';
 import SettingsRemovePhoneNumber from './SettingsRemovePhoneNumber';
 import { SettingsChangePhoneNumberMutation } from '../../../../__generated__/SettingsChangePhoneNumberMutation.graphql';
 import { SettingsChangePhoneNumber_user$key } from '../../../../__generated__/SettingsChangePhoneNumber_user.graphql';
@@ -195,6 +199,7 @@ const SettingsChangePhoneNumber = ({ ...props }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState<PhoneNumber | null>(null);
   const { timeout } = useTimeout();
+  const isTablet = useMediaQuery(MEDIA_QUERIES.LARGE);
 
   const onClose = useCallback(() => {
     setIsOpen(false);
@@ -214,12 +219,12 @@ const SettingsChangePhoneNumber = ({ ...props }: Props) => {
         </Text>
       </div>
       {me.phoneNumberConfirmed && <SettingsRemovePhoneNumber me={me} />}
-      <Button onClick={() => setIsOpen(true)}>
+      <Button onClick={() => setIsOpen(true)} size={isTablet ? 'md' : 'sm'}>
         {me.phoneNumberConfirmed ? 'Edit' : 'Add'}
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         <Modal.Overlay />
-        <Modal.Content className="w-[18rem] sm:w-[30rem]">
+        <Modal.Content className="sm:w-[30rem]">
           {phoneNumber ? (
             <EnterVerificationCodeModal
               phoneNumber={phoneNumber}

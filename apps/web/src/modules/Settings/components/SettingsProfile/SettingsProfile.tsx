@@ -15,6 +15,7 @@ import {
   ErrorFallback,
   useToast,
 } from '../../../../shared/components';
+import { MEDIA_QUERIES, useMediaQuery } from '../../../../shared/hooks';
 import { SettingsProfileQuery } from '../../../../__generated__/SettingsProfileQuery.graphql';
 import { SettingsProfileMutation } from '../../../../__generated__/SettingsProfileMutation.graphql';
 import SettingsProfilePhoto from './SettingsProfilePhoto';
@@ -60,6 +61,7 @@ const SettingsProfile = ({ fetchKey }: Props) => {
   const [updateProfile, isInFlight] =
     useMutation<SettingsProfileMutation>(mutation);
   const { handleError } = useToast();
+  const isTablet = useMediaQuery(MEDIA_QUERIES.LARGE);
 
   const form = useZodForm({
     schema: profileSchema,
@@ -93,12 +95,17 @@ const SettingsProfile = ({ fetchKey }: Props) => {
       className="flex flex-col space-y-5 divide-y divide-gray-200"
       onSubmit={onSubmit}
     >
-      <div className="flex items-center">
-        <Title as="h2" variant="h4" className="flex-1 font-medium">
+      <div className="flex items-center space-x-2">
+        <Title
+          as="h2"
+          variant={isTablet ? 'h4' : 'h5'}
+          className="flex-1 font-medium"
+        >
           Update your profile details here
         </Title>
         <Button
           variant="secondary"
+          size={isTablet ? 'md' : 'sm'}
           onClick={() => form.reset()}
           disabled={isInFlight || !form.formState.isDirty}
         >
@@ -106,6 +113,7 @@ const SettingsProfile = ({ fetchKey }: Props) => {
         </Button>
         <Form.SubmitButton
           variant="primary"
+          size={isTablet ? 'md' : 'sm'}
           className="ml-2"
           disabled={!form.formState.isDirty}
           loading={isInFlight}

@@ -11,7 +11,11 @@ import {
   useZodForm,
 } from '@spout/toolkit';
 import { useResendVerificationEmail } from './hooks';
-import { useTimeout } from '../../../../shared/hooks';
+import {
+  MEDIA_QUERIES,
+  useMediaQuery,
+  useTimeout,
+} from '../../../../shared/hooks';
 import { useToast } from '../../../../shared/components';
 import { SettingsChangeEmail_user$key } from '../../../../__generated__/SettingsChangeEmail_user.graphql';
 import { SettingsChangeEmailMutation } from '../../../../__generated__/SettingsChangeEmailMutation.graphql';
@@ -150,48 +154,50 @@ const VerifiedEmailModal = ({
   );
 
   return (
-    <Form form={form} onSubmit={onSubmit}>
+    <>
       <Modal.Header title="Change your email address" />
-      <Modal.Body>
-        <Form.Input
-          label="Current email address"
-          type="email"
-          {...form.register('currentEmail')}
-          defaultValue={email}
-          disabled
-        />
-        <Form.Input
-          label="New email address"
-          placeholder="New email address"
-          type="email"
-          autoComplete="email"
-          autoFocus
-          required
-          {...form.register('newEmail')}
-        />
-        <Form.Input
-          label="Current password"
-          placeholder="Current Password"
-          autoComplete="current-password"
-          type="password"
-          required
-          {...form.register('currentPassword')}
-        />
-      </Modal.Body>
-      <Modal.Footer>
-        <Button
-          size="sm"
-          variant="tertiary"
-          onClick={close}
-          disabled={isInFlight}
-        >
-          Cancel
-        </Button>
-        <Form.SubmitButton size="sm" variant="primary" loading={isInFlight}>
-          Save
-        </Form.SubmitButton>
-      </Modal.Footer>
-    </Form>
+      <Form form={form} onSubmit={onSubmit}>
+        <Modal.Body>
+          <Form.Input
+            label="Current email address"
+            type="email"
+            {...form.register('currentEmail')}
+            defaultValue={email}
+            disabled
+          />
+          <Form.Input
+            label="New email address"
+            placeholder="New email address"
+            type="email"
+            autoComplete="email"
+            autoFocus
+            required
+            {...form.register('newEmail')}
+          />
+          <Form.Input
+            label="Current password"
+            placeholder="Current Password"
+            autoComplete="current-password"
+            type="password"
+            required
+            {...form.register('currentPassword')}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            size="sm"
+            variant="tertiary"
+            onClick={close}
+            disabled={isInFlight}
+          >
+            Cancel
+          </Button>
+          <Form.SubmitButton size="sm" variant="primary" loading={isInFlight}>
+            Save
+          </Form.SubmitButton>
+        </Modal.Footer>
+      </Form>
+    </>
   );
 };
 
@@ -214,6 +220,7 @@ const SettingsChangeEmail = ({ ...props }: Props) => {
   const [resendEmail] = useResendVerificationEmail();
   const { timeout } = useTimeout();
   const { handleError } = useToast();
+  const isTablet = useMediaQuery(MEDIA_QUERIES.LARGE);
 
   const close = useCallback(() => {
     setIsOpen(false);
@@ -253,11 +260,13 @@ const SettingsChangeEmail = ({ ...props }: Props) => {
           </Title>
           <Text size="sm">{me.email}</Text>
         </div>
-        <Button onClick={() => setIsOpen(true)}>Edit</Button>
+        <Button onClick={() => setIsOpen(true)} size={isTablet ? 'md' : 'sm'}>
+          Edit
+        </Button>
       </div>
       <Modal isOpen={isOpen} onClose={close}>
         <Modal.Overlay />
-        <Modal.Content className="w-[18rem] sm:w-[30rem]">
+        <Modal.Content>
           {isEmailSent ? (
             <VerificationEmailSentModal
               email={newEmail || me.email}

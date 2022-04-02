@@ -9,7 +9,12 @@ import Zod, { object, string } from 'zod';
 import clsx from 'clsx';
 import { Alert, Button, Form, Modal, useZodForm, Text } from '@spout/toolkit';
 import { useToast, useSession } from '../../../../shared/components';
-import { useModalStepper, useTimeout } from '../../../../shared/hooks';
+import {
+  MEDIA_QUERIES,
+  useMediaQuery,
+  useModalStepper,
+  useTimeout,
+} from '../../../../shared/hooks';
 import SettingsTwoFactorAuthProviderCard from './SettingsTwoFactorAuthProviderCard';
 import SettingsVerifyPasswordModal from './SettingsVerifyPasswordModal';
 import { SettingsTwoFactorAuthEnableTwoFactorMutation } from '../../../../__generated__/SettingsTwoFactorAuthEnableTwoFactorMutation.graphql';
@@ -257,7 +262,7 @@ const ChooseTwoFactorProviderModal = ({
               >
                 {({ checked }) => (
                   <>
-                    <div className="flex w-full items-center justify-between">
+                    <div className="flex w-full items-center justify-between space-x-4">
                       <div className="flex items-center">
                         <div className="text-sm">
                           <RadioGroup.Label
@@ -332,6 +337,7 @@ const SettingsTwoFactorAuth = ({ ...props }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const { timeout } = useTimeout();
   const [currentStep, setCurrentStep] = useState(1);
+  const isTablet = useMediaQuery(MEDIA_QUERIES.LARGE);
 
   const onClose = useCallback(() => {
     setIsOpen(false);
@@ -392,6 +398,7 @@ const SettingsTwoFactorAuth = ({ ...props }: Props) => {
         {(me.twoFactorEnabled || isConfirmed) && (
           <Button
             variant={me.twoFactorEnabled ? 'default' : 'primary'}
+            size={isTablet ? 'md' : 'sm'}
             className="ml-auto block"
             onClick={() => setIsOpen(true)}
           >
@@ -401,9 +408,7 @@ const SettingsTwoFactorAuth = ({ ...props }: Props) => {
       </div>
       <Modal isOpen={isOpen} onClose={onClose}>
         <Modal.Overlay />
-        <Modal.Content className="w-[18rem] sm:w-[30rem]">
-          {currentModalStep}
-        </Modal.Content>
+        <Modal.Content>{currentModalStep}</Modal.Content>
       </Modal>
     </div>
   );

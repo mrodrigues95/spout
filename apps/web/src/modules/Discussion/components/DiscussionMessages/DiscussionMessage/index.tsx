@@ -212,7 +212,7 @@ const DiscussionMessage = () => {
               name={message.createdBy.name}
               profileColor={message.createdBy.profileColor}
               size={isMobile ? 'md' : 'sm'}
-              containerProps={{ className: 'shadow-md' }}
+              containerProps={{ className: 'shadow-lg' }}
               priority
             />
           ) : (

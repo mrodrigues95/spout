@@ -92,7 +92,7 @@ const DisableTwoFactorAuthenticationModal = () => {
       </Button>
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <Modal.Overlay />
-        <Modal.Content className="w-[18rem] sm:w-[30rem]">
+        <Modal.Content>
           <Form form={form} onSubmit={onSubmit}>
             <Modal.Header
               title="Disable Two-Factor Authentication"
@@ -154,7 +154,7 @@ const SettingsTwoFactorAuthProviderCard = ({ ...props }: Props) => {
 
   return (
     <div className="flex flex-col justify-center rounded-lg bg-white shadow-sm ring-1 ring-gray-900/5">
-      <div className="flex items-center justify-between space-x-2.5 px-6 py-4">
+      <div className="flex items-center justify-between space-x-4 px-6 py-4">
         <div className="space-y-1">
           <FontAwesomeIcon
             icon={isEmailPreferred ? faEnvelope : faPhone}

@@ -159,9 +159,7 @@ const SettingsRemovePhoneNumber = ({ ...props }: Props) => {
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         <Modal.Overlay />
-        <Modal.Content className="w-[18rem] sm:w-[30rem]">
-          {currentModalStep}
-        </Modal.Content>
+        <Modal.Content>{currentModalStep}</Modal.Content>
       </Modal>
     </>
   );

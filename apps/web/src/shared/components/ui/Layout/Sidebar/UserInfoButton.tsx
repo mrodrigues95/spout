@@ -6,8 +6,8 @@ import {
   faGear,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Text, Menu, usePopper, Skeleton, Link } from '@spout/toolkit';
 import clsx from 'clsx';
+import { Button, Text, Menu, usePopper, Skeleton, Link } from '@spout/toolkit';
 import { UserInfoButtonQuery } from '../../../../../__generated__/UserInfoButtonQuery.graphql';
 import { UserInfoButtonMutation } from '../../../../../__generated__/UserInfoButtonMutation.graphql';
 import { useAuthRedirect } from '../../../../../modules';
@@ -89,6 +89,7 @@ const UserInfoButton = ({ fetchKey }: Props) => {
               name={me!.name}
               src={me!.avatarUrl}
               profileColor={me!.profileColor}
+              containerProps={{ className: 'shadow-lg' }}
               priority
             />
           }
@@ -110,6 +111,7 @@ const UserInfoButton = ({ fetchKey }: Props) => {
                 name={me!.name}
                 src={me!.avatarUrl}
                 profileColor={me!.profileColor}
+                containerProps={{ className: 'shadow-lg' }}
                 priority
               />
               <div className="flex min-w-0 flex-1 flex-col">

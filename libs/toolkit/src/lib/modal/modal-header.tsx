@@ -28,12 +28,12 @@ export const ModalHeader = ({
   const { onClose } = useContext(ModalContext)!;
 
   return (
-    <header className="flex items-center justify-center space-x-4 px-6 py-4">
+    <header className="flex items-center justify-center space-x-10 px-6 py-4">
       <div className="min-w-0 flex-1">
         <Dialog.Title
           as="h3"
           className={clsx(
-            'truncate text-lg font-semibold uppercase text-gray-900',
+            'truncate font-bold uppercase text-gray-900 sm:text-lg',
             titleProps?.className,
           )}
         >

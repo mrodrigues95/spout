@@ -3,10 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard, faCog } from '@fortawesome/free-solid-svg-icons';
 import { Tabs, Title } from '@spout/toolkit';
 import { Header, Main } from '../../../shared/components';
+import { MEDIA_QUERIES, useMediaQuery } from '../../../shared/hooks';
 import { SettingsProfile } from './SettingsProfile';
 import { SettingsAccount } from './SettingsAccount';
 
 const ViewSettings = () => {
+  const isTablet = useMediaQuery(MEDIA_QUERIES.LARGE);
+
   const tabs = useMemo(
     () => [
       {
@@ -26,7 +29,9 @@ const ViewSettings = () => {
   return (
     <>
       <Header>
-        <Title as="h1">Settings</Title>
+        <Title as="h1" variant={isTablet ? 'h1' : 'h3'}>
+          Settings
+        </Title>
       </Header>
       <Main>
         <Tabs>
