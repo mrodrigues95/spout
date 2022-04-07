@@ -30,7 +30,7 @@ export const FormLabel = ({
     <label
       className={twMerge(
         clsx(
-          'flex flex-col items-start justify-center space-y-2',
+          'flex flex-col items-start justify-center space-y-1.5 text-sm',
           error ? 'text-red-600' : 'text-gray-900',
           className,
         ),

@@ -79,17 +79,17 @@ export const Avatar = ({
     <AvatarPlaceholderIcon />
   );
 
-  const ImageComponent = (
+  const ImageComponent = src ? (
     <Image
       objectFit="cover"
       layout="fill"
-      src={src!}
+      src={src}
       alt={name}
       className={clsx(rounded ? 'rounded-full' : 'rounded-md', className)}
       onError={() => setError(true)}
       {...props}
     />
-  );
+  ) : null;
 
   const { className: containerClassName, ...containerProps } = _containerProps;
 

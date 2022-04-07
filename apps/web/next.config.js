@@ -35,6 +35,16 @@ module.exports = {
         destination: '/home',
         permanent: false,
       },
+      {
+        source: '/classrooms/:classroomId',
+        destination: '/classrooms/:classroomId/activity',
+        permanent: false,
+      },
+      {
+        source: '/classrooms/:classroomId/discussions',
+        destination: '/classrooms/:classroomId/activity',
+        permanent: false,
+      },
     ];
   },
 };

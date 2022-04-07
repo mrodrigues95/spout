@@ -36,8 +36,6 @@ const getFetchFn = (headers: Headers = {}): FetchFunction => {
       body: JSON.stringify(operationBody),
     });
 
-    console.log('Fetch opts: ', fetchOpts);
-
     const isServer = typeof window === 'undefined';
     const endpoint = isServer
       ? 'http://api:5000/api/graphql'

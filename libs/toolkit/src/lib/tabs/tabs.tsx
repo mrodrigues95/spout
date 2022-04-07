@@ -10,10 +10,11 @@ import { TabProvider } from './tab-provider';
 export const VARIANTS = {
   default: {
     tab: {
-      base: 'relative inline-flex items-center justify-center px-3 py-2.5 text-sm font-semibold border-b-2',
+      base: 'relative inline-flex items-center justify-center px-3 py-2.5 text-sm font-semibold focus:outline-none',
       active:
-        'text-blue-700 border-current hover:text-blue-900 focus:outline-none focus:ring-2 ring-offset-2 ring-offset-blue-400 ring-white ring-opacity-60',
-      inactive: 'text-gray-900 border-transparent',
+        'text-blue-700 border-b-2 border-current focus-visible:bg-blue-50 hover:text-blue-900',
+      inactive:
+        'text-gray-900 border-transparent focus-visible:bg-gray-100 hover:bg-gray-100',
     },
     tabList: 'flex space-x-10 border-b border-gray-200',
   },
@@ -29,6 +30,10 @@ export const VARIANTS = {
 
 export interface TabsProps {
   children: ReactNode;
+  manual?: boolean;
+  selectedIndex?: number;
+  onChange?: (index: number) => void;
+  defaultIndex?: number;
   variant?: keyof typeof VARIANTS;
   className?: string;
 }
@@ -37,14 +42,14 @@ export const Tabs = ({
   children,
   className,
   variant = 'default',
+  ...props
 }: TabsProps) => {
   return (
     <TabProvider variant={variant}>
-      <HeadlessTab.Group
-        as="div"
-        className={clsx('flex flex-1 flex-col', className)}
-      >
-        {children}
+      <HeadlessTab.Group {...props}>
+        <div className={clsx('flex flex-1 flex-col', className)}>
+          {children}
+        </div>
       </HeadlessTab.Group>
     </TabProvider>
   );

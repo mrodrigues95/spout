@@ -64,7 +64,7 @@ const DiscussionsNavigation = ({ classroom }: Props) => {
             <Tooltip label={discussion.name}>
               <Link
                 key={discussion.id}
-                href={`/classrooms/${data.id}/${discussion.id}`}
+                href={`/classrooms/${data.id}/discussions/${discussion.id}`}
                 className="h-full flex-1 select-none rounded-100 bg-indigo-400 p-4 text-white outline-none transition-all duration-150 ease-in-out hover:rounded-2xl focus:rounded-2xl focus:ring focus:ring-offset-2 focus:ring-offset-white"
                 variant="unstyled"
                 onMouseDown={(e) => e.preventDefault()}

@@ -68,7 +68,7 @@ const SidebarClassrooms = ({ fetchKey }: Props) => {
         return (
           <VerticalNav.Item
             key={classroom.id}
-            to={`/classrooms/${classroom.id}`}
+            to={`/classrooms/${classroom.id}/activity`}
             label={classroom.name}
             icon={
               <div

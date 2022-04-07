@@ -128,7 +128,7 @@ export const ButtonOrLink = forwardRef<
           : href!;
 
       return (
-        <Link href={finalHref} passHref replace>
+        <Link href={finalHref} passHref replace={replace}>
           {content}
         </Link>
       );

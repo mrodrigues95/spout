@@ -1,12 +1,30 @@
 import { Suspense } from 'react';
+import { Spinner } from '@spout/toolkit';
+import {
+  Layout,
+  ErrorBoundary,
+  ErrorFallback,
+} from '../../../shared/components';
 import ViewClassroom from './ViewClassroom';
 
 const Classrooms = () => {
-  // TODO: Create loading indicator and add error boundary.
   return (
-    <Suspense fallback={null}>
-      <ViewClassroom />
-    </Suspense>
+    <Layout title="Classroom">
+      <ErrorBoundary
+        FallbackComponent={({ resetErrorBoundary }) => (
+          <ErrorFallback
+            heading="We couldn't load this classroom."
+            action={resetErrorBoundary}
+          />
+        )}
+      >
+        {({ fetchKey }) => (
+          <Suspense fallback={<Spinner center size="lg" className="flex-1" />}>
+            <ViewClassroom fetchKey={fetchKey} />
+          </Suspense>
+        )}
+      </ErrorBoundary>
+    </Layout>
   );
 };
 
