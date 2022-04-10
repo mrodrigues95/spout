@@ -1,4 +1,4 @@
-import { forwardRef, useMemo } from 'react';
+import { forwardRef, Suspense, useMemo } from 'react';
 import {
   graphql,
   useFragment,
@@ -15,7 +15,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 import { FileIcon, IconLink, Spinner, Text, Tooltip } from '@spout/toolkit';
-import { Avatar, EmptyFallback } from '../../../../shared/components/ui';
+import {
+  Avatar,
+  EmptyFallback,
+  ErrorBoundary,
+  ErrorFallback,
+} from '../../../../shared/components';
 import { formatBytesToHumanReadable } from '../../../../shared/utils';
 import { AttachmentsQuery } from './__generated__/AttachmentsQuery.graphql';
 import { Attachments_files$key } from './__generated__/Attachments_files.graphql';
@@ -186,8 +191,12 @@ const AttachmentsList = ({ ...props }: AttachmentsListProps) => {
   );
 };
 
+interface Props {
+  fetchKey: number;
+}
+
 // TODO: Refresh attachments when a file is uploaded.
-const Attachments = () => {
+const Attachments = ({ fetchKey }: Props) => {
   const router = useRouter();
   const data = useLazyLoadQuery<AttachmentsQuery>(
     graphql`
@@ -196,10 +205,29 @@ const Attachments = () => {
       }
     `,
     { id: router.query.discussionId as string, count: 50 },
-    { fetchPolicy: 'store-and-network' },
+    { fetchPolicy: 'store-and-network', fetchKey },
   );
 
   return <AttachmentsList files={data} />;
 };
 
-export default Attachments;
+const AttachmentsWithSuspense = () => {
+  return (
+    <ErrorBoundary
+      FallbackComponent={({ resetErrorBoundary }) => (
+        <ErrorFallback
+          heading="We couldn't load any attachments."
+          action={resetErrorBoundary}
+        />
+      )}
+    >
+      {({ fetchKey }) => (
+        <Suspense fallback={<Spinner center size="lg" className="flex-1" />}>
+          <Attachments fetchKey={fetchKey} />
+        </Suspense>
+      )}
+    </ErrorBoundary>
+  );
+};
+
+export default AttachmentsWithSuspense;

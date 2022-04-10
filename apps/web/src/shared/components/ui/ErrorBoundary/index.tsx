@@ -8,7 +8,7 @@ interface RenderProp {
   fetchKey: number;
 }
 
-type Props = {
+export type Props = {
   children({ fetchKey }: RenderProp): ReactNode;
 } & ErrorBoundaryProps;
 

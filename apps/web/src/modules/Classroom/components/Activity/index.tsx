@@ -28,9 +28,7 @@ const Activity = ({ fetchKey }: Props) => {
     { fetchKey },
   );
 
-  console.log(data);
-
-  return <p>Activity here</p>;
+  return <p>{data.classroomById.name}</p>;
 };
 
 const ActivityWithSuspense = () => {

@@ -9,7 +9,7 @@ import ViewClassroom from './ViewClassroom';
 
 const Classrooms = () => {
   return (
-    <Layout title="Classroom">
+    <Layout title="Classroom" horizontal>
       <ErrorBoundary
         FallbackComponent={({ resetErrorBoundary }) => (
           <ErrorFallback

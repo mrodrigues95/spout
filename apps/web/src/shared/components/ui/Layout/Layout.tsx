@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { NextSeo } from 'next-seo';
 import clsx from 'clsx';
-import Sidebar from './Sidebar';
+import { Sidebar } from './Sidebar';
 
 interface Props {
   title?: string;

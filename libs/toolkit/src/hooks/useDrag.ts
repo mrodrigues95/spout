@@ -5,7 +5,7 @@ export const useDrag = () => {
   const [dragging, setDragging] = useState(false);
   const position = useRef(0);
 
-  const dragStart = useCallback((ev: MouseEvent) => {
+  const dragStart = useCallback(<T = HTMLDivElement>(ev: MouseEvent<T>) => {
     position.current = ev.clientX;
     setClicked(true);
   }, []);
@@ -19,17 +19,20 @@ export const useDrag = () => {
     [],
   );
 
-  const dragMove = (ev: MouseEvent, cb: (posDif: number) => void) => {
-    const newDiff = position.current - ev.clientX;
-    const movedEnough = Math.abs(newDiff) > 5;
+  const dragMove = useCallback(
+    <T = HTMLDivElement>(ev: MouseEvent<T>, cb: (posDif: number) => void) => {
+      const newDiff = position.current - ev.clientX;
+      const movedEnough = Math.abs(newDiff) > 5;
 
-    if (clicked && movedEnough) setDragging(true);
+      if (clicked && movedEnough) setDragging(true);
 
-    if (dragging && movedEnough) {
-      position.current = ev.clientX;
-      cb(newDiff);
-    }
-  };
+      if (dragging && movedEnough) {
+        position.current = ev.clientX;
+        cb(newDiff);
+      }
+    },
+    [clicked, dragging],
+  );
 
   return {
     dragStart,

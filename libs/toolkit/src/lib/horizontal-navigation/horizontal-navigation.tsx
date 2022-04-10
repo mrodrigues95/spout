@@ -1,56 +1,71 @@
 import {
-  ComponentProps,
-  ElementType,
-  MouseEvent,
-  RefObject,
   useCallback,
   useRef,
   WheelEvent,
+  MouseEvent,
+  ComponentProps,
+  useState,
+  useEffect,
 } from 'react';
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { useDrag } from '@spout/utils';
-import clsx from 'clsx';
+import { Tab } from '@headlessui/react';
+import {
+  HorizontalNavigationItem,
+  getHorizontalNavigationItemStyles,
+} from './horizontal-navigation-item';
+import { HorizontalNavigationDivider } from './horizontal-navigation-divider';
+import { HorizontalNavigationArrow } from './horizontal-navigation-arrow';
+import { useDrag } from '../../hooks';
 
-interface Props<T extends ElementType> {
-  as?: T;
-  hideScroll?: boolean;
+const SCROLL_ARROW_AMOUNT = 200;
+
+export interface HorizontalNavigationProps
+  extends Omit<ComponentProps<'div'>, 'onChange'> {
+  defaultIndex?: number;
+  selectedIndex?: number;
+  onChange?: (index: number) => void;
 }
 
-export type HorizontalNavigationProps<T extends ElementType = any> = Props<T> &
-  Omit<ComponentProps<T>, keyof Props<T>>;
-
-export const HorizontalNavigation = <T extends ElementType = 'div'>({
-  as,
-  className,
+export const HorizontalNavigation = ({
+  defaultIndex,
+  selectedIndex,
+  onChange,
   children,
-  hideScroll = false,
   ...props
-}: HorizontalNavigationProps<T>) => {
+}: HorizontalNavigationProps) => {
   const { dragStart, dragStop, dragMove } = useDrag();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [arrows, setArrows] = useState({ showLeft: false, showRight: false });
 
-  const onWheel = useCallback(
-    (ev: WheelEvent, scrollRef: RefObject<HTMLDivElement>) => {
-      const isTouchpad = Math.abs(ev.deltaX) !== 0 || Math.abs(ev.deltaY) < 15;
+  const checkScrollPosition = useCallback(() => {
+    if (scrollRef.current) {
+      setArrows({
+        showLeft: Math.abs(scrollRef.current.scrollLeft) !== 0,
+        showRight:
+          scrollRef.current.scrollLeft !==
+          scrollRef.current.scrollWidth - scrollRef.current.clientWidth,
+      });
+    }
+  }, []);
 
-      if (isTouchpad) {
-        ev.stopPropagation();
-        return;
-      }
+  const onWheel = useCallback((ev: WheelEvent<HTMLDivElement>) => {
+    const isTouchpad = Math.abs(ev.deltaX) !== 0 || Math.abs(ev.deltaY) < 15;
 
-      if (!scrollRef.current) return;
+    if (isTouchpad) {
+      ev.stopPropagation();
+      return;
+    }
 
-      if (ev.deltaY < 0) {
-        scrollRef.current.scrollLeft += 100;
-      } else if (ev.deltaY > 0) {
-        scrollRef.current.scrollLeft -= 100;
-      }
-    },
-    [],
-  );
+    if (!scrollRef.current) return;
+
+    if (ev.deltaY > 0) {
+      scrollRef.current.scrollLeft += 100;
+    } else if (ev.deltaY < 0) {
+      scrollRef.current.scrollLeft -= 100;
+    }
+  }, []);
 
   const handleDrag = useCallback(
-    (ev: MouseEvent) => {
+    (ev: MouseEvent<HTMLDivElement>) => {
       dragMove(ev, (posDiff) => {
         if (scrollRef.current) {
           scrollRef.current.scrollLeft += posDiff;
@@ -60,24 +75,56 @@ export const HorizontalNavigation = <T extends ElementType = 'div'>({
     [dragMove],
   );
 
-  const Component = as || 'div';
+  const scrollTo = useCallback((shift: number) => {
+    scrollRef.current?.scrollTo({
+      top: 0,
+      left: scrollRef.current.scrollLeft + shift,
+      behavior: 'smooth',
+    });
+  }, []);
+
+  useEffect(() => {
+    checkScrollPosition();
+  }, [checkScrollPosition]);
 
   return (
-    <Component
-      onWheel={(e) => onWheel(e, scrollRef)}
-      onMouseMove={handleDrag}
-      onMouseDown={dragStart}
-      onMouseUp={dragStop}
-      onMouseLeave={dragStop}
-      ref={scrollRef}
-      className={clsx(
-        'relative flex overflow-y-hidden',
-        hideScroll && 'overflow-x-hidden',
-        className,
-      )}
-      {...props}
+    <Tab.Group
+      defaultIndex={defaultIndex}
+      selectedIndex={selectedIndex}
+      onChange={onChange}
+      manual
     >
-      {children}
-    </Component>
+      <Tab.List className="relative flex w-full overflow-hidden">
+        {arrows.showLeft && (
+          <HorizontalNavigationArrow
+            onClick={() => scrollTo(-SCROLL_ARROW_AMOUNT)}
+            isLeftArrow
+          />
+        )}
+        <div
+          onWheel={onWheel}
+          onMouseMove={handleDrag}
+          onMouseDown={dragStart}
+          onMouseUp={dragStop}
+          onMouseLeave={dragStop}
+          onScroll={checkScrollPosition}
+          ref={scrollRef}
+          className="relative flex flex-1 space-x-2 overflow-hidden py-2.5 px-1.5"
+          {...props}
+        >
+          {children}
+        </div>
+        {arrows.showRight && (
+          <HorizontalNavigationArrow
+            onClick={() => scrollTo(SCROLL_ARROW_AMOUNT)}
+          />
+        )}
+      </Tab.List>
+    </Tab.Group>
   );
 };
+
+export { getHorizontalNavigationItemStyles };
+
+HorizontalNavigation.Divider = HorizontalNavigationDivider;
+HorizontalNavigation.Item = HorizontalNavigationItem;

@@ -1,5 +1,5 @@
 export { default as useMediaQuery, MEDIA_QUERIES } from './useMediaQuery';
-export * from './useIsCurrentRoute';
+export * from './useMatchesAnyRoute';
 export * from './useIsRedirecting';
 export * from './usePrevious';
 export * from './usePreviousEffect';

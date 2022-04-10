@@ -1,14 +1,18 @@
-import { Fragment, ReactNode, Suspense, useMemo, useEffect } from 'react';
+import { Fragment, ReactNode, useEffect, useMemo } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { graphql, useFragment } from 'react-relay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { Title, Tabs } from '@spout/toolkit';
-import { ConditionalWrapper, Image } from '../../../../shared/components';
+import {
+  ClassroomParticipants,
+  ConditionalWrapper,
+  Image,
+  PanelRight,
+} from '../../../../shared/components';
 import { getRandomAvatar } from '../../../../shared/utils/getRandomAvatar';
 import { MEDIA_QUERIES, useMediaQuery } from '../../../../shared/hooks';
 import { useDiscussion } from '../DiscussionProvider';
-import Participants from './Participants';
 import Attachments from './Attachments';
 import Topic from './Topic';
 import Description from './Description';
@@ -64,7 +68,6 @@ const fragment = graphql`
     ...Description_discussion
     classroom {
       name
-      ...Participants_classroom
     }
   }
 `;
@@ -88,20 +91,16 @@ const DiscussionDetails = ({ discussion }: Props) => {
         id: 1,
         icon: <FontAwesomeIcon icon={faUsers} />,
         ariaLabel: 'Participants',
-        component: <Participants classroom={data.classroom} />,
+        component: <ClassroomParticipants />,
       },
       {
         id: 2,
         icon: <FontAwesomeIcon icon={faFileAlt} />,
         ariaLabel: 'Attachments',
-        component: (
-          <Suspense fallback={null}>
-            <Attachments />
-          </Suspense>
-        ),
+        component: <Attachments />,
       },
     ],
-    [data.classroom],
+    [],
   );
 
   if (!showDetails) return null;
@@ -111,7 +110,7 @@ const DiscussionDetails = ({ discussion }: Props) => {
       condition={!isLaptop}
       wrapper={(children) => <MobileWrapper>{children}</MobileWrapper>}
     >
-      <section className="flex flex-1 flex-col space-y-8 lg:ml-4 lg:w-64 lg:flex-initial xl:ml-8">
+      <PanelRight>
         <div className="flex flex-col items-center">
           <Image src={getRandomAvatar()} alt="" size="xl" rounded />
           <Title className="mt-2" as="h2" variant="h4">
@@ -143,7 +142,7 @@ const DiscussionDetails = ({ discussion }: Props) => {
             </Tabs.Panels>
           </Tabs>
         </div>
-      </section>
+      </PanelRight>
     </ConditionalWrapper>
   );
 };

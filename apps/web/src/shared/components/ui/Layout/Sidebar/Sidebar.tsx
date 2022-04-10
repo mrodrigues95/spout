@@ -10,7 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@spout/toolkit';
 import { getRandomAvatar } from '../../../../utils';
-import { ErrorFallback } from '../../../../../shared/components';
+import { ErrorFallback } from '../../..';
 import { useMediaQuery, MEDIA_QUERIES } from '../../../../hooks';
 import Image from '../../Image';
 import VerticalNav from '../../VerticalNav';

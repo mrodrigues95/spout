@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<60911d520538b49721d465d45e9e34aa>>
+ * @generated SignedSource<<cabc1cc908b8c477db85a580e0d65509>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -73,21 +73,7 @@ v6 = [
   (v4/*: any*/),
   (v5/*: any*/)
 ],
-v7 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "avatarUrl",
-  "storageKey": null
-},
-v8 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "profileColor",
-  "storageKey": null
-},
-v9 = [
+v7 = [
   {
     "kind": "Variable",
     "name": "before",
@@ -106,27 +92,39 @@ v9 = [
     }
   }
 ],
-v10 = {
+v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "content",
   "storageKey": null
 },
-v11 = [
+v9 = [
   (v4/*: any*/),
   (v5/*: any*/),
-  (v7/*: any*/),
-  (v8/*: any*/)
+  {
+    "alias": null,
+    "args": null,
+    "kind": "ScalarField",
+    "name": "avatarUrl",
+    "storageKey": null
+  },
+  {
+    "alias": null,
+    "args": null,
+    "kind": "ScalarField",
+    "name": "profileColor",
+    "storageKey": null
+  }
 ],
-v12 = {
+v10 = {
   "alias": null,
   "args": null,
   "concreteType": "User",
   "kind": "LinkedField",
   "name": "createdBy",
   "plural": false,
-  "selections": (v11/*: any*/),
+  "selections": (v9/*: any*/),
   "storageKey": null
 };
 return {
@@ -248,22 +246,7 @@ return {
                 "selections": (v6/*: any*/),
                 "storageKey": null
               },
-              (v5/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "User",
-                "kind": "LinkedField",
-                "name": "users",
-                "plural": true,
-                "selections": [
-                  (v4/*: any*/),
-                  (v7/*: any*/),
-                  (v5/*: any*/),
-                  (v8/*: any*/)
-                ],
-                "storageKey": null
-              }
+              (v5/*: any*/)
             ],
             "storageKey": null
           },
@@ -283,7 +266,7 @@ return {
           },
           {
             "alias": null,
-            "args": (v9/*: any*/),
+            "args": (v7/*: any*/),
             "concreteType": "MessagesConnection",
             "kind": "LinkedField",
             "name": "messages",
@@ -306,7 +289,7 @@ return {
                     "plural": false,
                     "selections": [
                       (v4/*: any*/),
-                      (v10/*: any*/),
+                      (v8/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -362,7 +345,7 @@ return {
                         ],
                         "storageKey": null
                       },
-                      (v12/*: any*/),
+                      (v10/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -382,8 +365,8 @@ return {
                         "plural": false,
                         "selections": [
                           (v4/*: any*/),
-                          (v10/*: any*/),
-                          (v12/*: any*/)
+                          (v8/*: any*/),
+                          (v10/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -437,7 +420,7 @@ return {
           },
           {
             "alias": null,
-            "args": (v9/*: any*/),
+            "args": (v7/*: any*/),
             "filters": [
               "order"
             ],
@@ -456,18 +439,18 @@ return {
         "kind": "LinkedField",
         "name": "me",
         "plural": false,
-        "selections": (v11/*: any*/),
+        "selections": (v9/*: any*/),
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "3fc2ab4123e4554806bf4d9ae2cd680b",
+    "cacheID": "7a4bc7598ca7ba72e5552f3b379d38c9",
     "id": null,
     "metadata": {},
     "name": "ViewDiscussionQuery",
     "operationKind": "query",
-    "text": "query ViewDiscussionQuery(\n  $id: ID!\n  $count: Int!\n  $cursor: String\n) {\n  discussionById(id: $id) {\n    id\n    name\n    ...DiscussionHeader_discussion\n    ...DiscussionDetails_discussion\n    ...DiscussionMessagesList_discussion_1G22uz\n    ...DiscussionMessageComposer_discussion\n  }\n  me {\n    ...DiscussionMessagesList_user\n    ...DiscussionMessageComposer_user\n    id\n  }\n}\n\nfragment Description_discussion on Discussion {\n  id\n  description\n}\n\nfragment DiscussionDetails_discussion on Discussion {\n  name\n  ...Topic_discussion\n  ...Description_discussion\n  classroom {\n    name\n    ...Participants_classroom\n    id\n  }\n}\n\nfragment DiscussionHeader_discussion on Discussion {\n  id\n  name\n  classroom {\n    id\n    discussions {\n      id\n      name\n    }\n  }\n}\n\nfragment DiscussionMessageComposer_discussion on Discussion {\n  id\n  name\n}\n\nfragment DiscussionMessageComposer_user on User {\n  id\n  name\n  avatarUrl\n  profileColor\n}\n\nfragment DiscussionMessagesListHeader_discussion on Discussion {\n  name\n  topic\n  description\n}\n\nfragment DiscussionMessagesList_discussion_1G22uz on Discussion {\n  id\n  ...DiscussionMessagesListHeader_discussion\n  messages(last: $count, before: $cursor, order: {createdAt: ASC}) {\n    edges {\n      node {\n        id\n        content\n        createdAt\n        isEvent\n        messageEvent\n        attachments {\n          id\n          location\n          name\n          contentLength\n          extension\n        }\n        createdBy {\n          id\n          name\n          avatarUrl\n          profileColor\n        }\n        pinnedBy {\n          id\n          name\n        }\n        parentMessage {\n          id\n          content\n          createdBy {\n            id\n            name\n            avatarUrl\n            profileColor\n          }\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n\nfragment DiscussionMessagesList_user on User {\n  id\n  name\n  avatarUrl\n  profileColor\n}\n\nfragment Participants_classroom on Classroom {\n  users {\n    id\n    avatarUrl\n    name\n    profileColor\n  }\n}\n\nfragment Topic_discussion on Discussion {\n  id\n  topic\n}\n"
+    "text": "query ViewDiscussionQuery(\n  $id: ID!\n  $count: Int!\n  $cursor: String\n) {\n  discussionById(id: $id) {\n    id\n    name\n    ...DiscussionHeader_discussion\n    ...DiscussionDetails_discussion\n    ...DiscussionMessagesList_discussion_1G22uz\n    ...DiscussionMessageComposer_discussion\n  }\n  me {\n    ...DiscussionMessagesList_user\n    ...DiscussionMessageComposer_user\n    id\n  }\n}\n\nfragment Description_discussion on Discussion {\n  id\n  description\n}\n\nfragment DiscussionDetails_discussion on Discussion {\n  name\n  ...Topic_discussion\n  ...Description_discussion\n  classroom {\n    name\n    id\n  }\n}\n\nfragment DiscussionHeader_discussion on Discussion {\n  id\n  name\n  classroom {\n    id\n    discussions {\n      id\n      name\n    }\n  }\n}\n\nfragment DiscussionMessageComposer_discussion on Discussion {\n  id\n  name\n}\n\nfragment DiscussionMessageComposer_user on User {\n  id\n  name\n  avatarUrl\n  profileColor\n}\n\nfragment DiscussionMessagesListHeader_discussion on Discussion {\n  name\n  topic\n  description\n}\n\nfragment DiscussionMessagesList_discussion_1G22uz on Discussion {\n  id\n  ...DiscussionMessagesListHeader_discussion\n  messages(last: $count, before: $cursor, order: {createdAt: ASC}) {\n    edges {\n      node {\n        id\n        content\n        createdAt\n        isEvent\n        messageEvent\n        attachments {\n          id\n          location\n          name\n          contentLength\n          extension\n        }\n        createdBy {\n          id\n          name\n          avatarUrl\n          profileColor\n        }\n        pinnedBy {\n          id\n          name\n        }\n        parentMessage {\n          id\n          content\n          createdBy {\n            id\n            name\n            avatarUrl\n            profileColor\n          }\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n\nfragment DiscussionMessagesList_user on User {\n  id\n  name\n  avatarUrl\n  profileColor\n}\n\nfragment Topic_discussion on Discussion {\n  id\n  topic\n}\n"
   }
 };
 })();

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c1192a28a15126adbf6d9925368bd03b>>
+ * @generated SignedSource<<6dc36afe5f216b2acd686d2a57e82b0d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,7 +17,7 @@ export type ViewClassroomQueryVariables = ViewClassroomQuery$variables;
 export type ViewClassroomQuery$data = {
   readonly classroomById: {
     readonly name: string;
-    readonly " $fragmentSpreads": FragmentRefs<"DiscussionsNavigation_discussions">;
+    readonly " $fragmentSpreads": FragmentRefs<"ClassroomHeader_classroom" | "DiscussionsMenu_discussions">;
   };
 };
 export type ViewClassroomQueryResponse = ViewClassroomQuery$data;
@@ -74,7 +74,12 @@ return {
           {
             "args": null,
             "kind": "FragmentSpread",
-            "name": "DiscussionsNavigation_discussions"
+            "name": "ClassroomHeader_classroom"
+          },
+          {
+            "args": null,
+            "kind": "FragmentSpread",
+            "name": "DiscussionsMenu_discussions"
           }
         ],
         "storageKey": null
@@ -118,16 +123,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "70403e8fdbebf3f28f184b462e98617c",
+    "cacheID": "5eee2741361afe7e83d0cb9b9658e89c",
     "id": null,
     "metadata": {},
     "name": "ViewClassroomQuery",
     "operationKind": "query",
-    "text": "query ViewClassroomQuery(\n  $id: ID!\n) {\n  classroomById(id: $id) {\n    name\n    ...DiscussionsNavigation_discussions\n    id\n  }\n}\n\nfragment DiscussionsNavigation_discussions on Classroom {\n  id\n  discussions {\n    id\n    name\n  }\n}\n"
+    "text": "query ViewClassroomQuery(\n  $id: ID!\n) {\n  classroomById(id: $id) {\n    name\n    ...ClassroomHeader_classroom\n    ...DiscussionsMenu_discussions\n    id\n  }\n}\n\nfragment ClassroomHeader_classroom on Classroom {\n  name\n}\n\nfragment DiscussionsMenu_discussions on Classroom {\n  id\n  discussions {\n    id\n    name\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "1dd236e6313420fd3b1cba39f7a039c1";
+(node as any).hash = "d24701926eb9a69e863214cb4904d764";
 
 export default node;

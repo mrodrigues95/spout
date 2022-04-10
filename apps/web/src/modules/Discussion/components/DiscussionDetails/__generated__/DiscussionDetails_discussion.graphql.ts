@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a7b49780ca872c732e2c4f2ab21a8693>>
+ * @generated SignedSource<<6fa1ebbe9d942297dfe1ee8ad1112a64>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,7 +14,6 @@ export type DiscussionDetails_discussion$data = {
   readonly name: string;
   readonly classroom: {
     readonly name: string;
-    readonly " $fragmentSpreads": FragmentRefs<"Participants_classroom">;
   };
   readonly " $fragmentSpreads": FragmentRefs<"Topic_discussion" | "Description_discussion">;
   readonly " $fragmentType": "DiscussionDetails_discussion";
@@ -58,12 +57,7 @@ return {
       "name": "classroom",
       "plural": false,
       "selections": [
-        (v0/*: any*/),
-        {
-          "args": null,
-          "kind": "FragmentSpread",
-          "name": "Participants_classroom"
-        }
+        (v0/*: any*/)
       ],
       "storageKey": null
     }
@@ -73,6 +67,6 @@ return {
 };
 })();
 
-(node as any).hash = "30262c1429ef4ae3a25600195c4a03ad";
+(node as any).hash = "49ae8dfcf0542e7ebb9fcc7032756728";
 
 export default node;

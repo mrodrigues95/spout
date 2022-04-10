@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import { Story, Meta } from '@storybook/react';
-import clsx from 'clsx';
+import { Fragment } from 'react';
 import {
   HorizontalNavigation,
   HorizontalNavigationProps,
@@ -11,34 +10,15 @@ export default {
   title: 'HorizontalNavigation',
 } as Meta;
 
-const prefix = 'test';
-const getId = (index: number) => `${prefix}${index}`;
-
-const getItems = () =>
-  Array(40)
-    .fill(0)
-    .map((_, ind) => ({ id: getId(ind) }));
-
-const Template: Story<HorizontalNavigationProps> = ({ ...args }) => {
-  const [items] = useState(getItems);
-
-  return (
-    <HorizontalNavigation {...args}>
-      {items.map(({ id }) => (
-        <button
-          key={id}
-          type="button"
-          className={clsx('relative rounded bg-indigo-400 p-4 text-white')}
-          onClick={() => console.log(id)}
-        >
-          {id}
-        </button>
+const Template: Story<HorizontalNavigationProps> = () => (
+  <HorizontalNavigation>
+    {Array(40)
+      .fill(<HorizontalNavigation.Item>S</HorizontalNavigation.Item>)
+      .map((item, idx) => (
+        <Fragment key={idx}>{item}</Fragment>
       ))}
-    </HorizontalNavigation>
-  );
-};
+  </HorizontalNavigation>
+);
 
 export const Primary = Template.bind({});
-Primary.args = {
-  hideScroll: true,
-};
+Primary.args = {};

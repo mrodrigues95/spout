@@ -81,7 +81,7 @@ const SidebarClassrooms = ({ fetchKey }: Props) => {
               />
             }
             routes={[
-              `/classrooms/${classroom.id}/${router.query.discussionId}`,
+              `/classrooms/${classroom.id}/discussions/${router.query.discussionId}`,
             ]}
           />
         );

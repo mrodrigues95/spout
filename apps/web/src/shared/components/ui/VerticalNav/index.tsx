@@ -1,7 +1,7 @@
 import { ComponentProps, ReactElement, ReactNode } from 'react';
 import { Link, Title } from '@spout/toolkit';
 import clsx from 'clsx';
-import { useIsCurrentRoute } from '../../../hooks';
+import { useMatchesAnyRoute } from '../../../hooks';
 
 interface VerticalNavGroupHeaderProps {
   title: string;
@@ -59,7 +59,7 @@ const VerticalNavItem = ({
   className,
   ...props
 }: VerticalNavItemProps) => {
-  const selected = useIsCurrentRoute([to || '__', ...routes]);
+  const selected = useMatchesAnyRoute([to || '__', ...routes]);
 
   return (
     <li className={isGroup ? '!mt-8' : undefined} {...props}>
