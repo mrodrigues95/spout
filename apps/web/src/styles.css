@@ -20,6 +20,10 @@ form {
   margin-block-end: 0;
 }
 
+.underline-line-through {
+  text-decoration: underline line-through;
+}
+
 #nprogress {
   @apply pointer-events-none z-50;
 }

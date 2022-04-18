@@ -195,7 +195,7 @@ const DiscussionMessage = () => {
     >
       <div
         className={clsx(
-          'group relative flex items-baseline px-2 hover:bg-indigo-100/50 sm:px-4',
+          'group relative flex px-2 hover:bg-indigo-100/50 sm:px-4',
           isPinned && 'bg-indigo-100/50',
           isMyMessage ? 'flex-row-reverse space-x-reverse' : 'flex-row',
           optimisticMessageOpts?.loading ? 'opacity-50' : 'opacity-100',
@@ -205,7 +205,7 @@ const DiscussionMessage = () => {
         <div>
           <DiscussionMessageActions />
         </div>
-        <div className="flex w-10 shrink-0 items-center justify-center sm:w-14">
+        <div className="flex w-10 min-w-0 shrink-0 items-baseline justify-center sm:w-14">
           {!isRecent || isFirstMessage ? (
             <Avatar
               src={message.createdBy.avatarUrl}
@@ -226,8 +226,8 @@ const DiscussionMessage = () => {
         </div>
         <div
           className={clsx(
-            'ml-2 flex w-full flex-col sm:w-[75%]',
-            isMyMessage ? 'items-end' : 'items-start',
+            'flex w-full flex-col sm:w-[75%]',
+            isMyMessage ? 'mr-2 items-end' : 'ml-2 items-start',
           )}
         >
           <DiscussionMessageHeader />

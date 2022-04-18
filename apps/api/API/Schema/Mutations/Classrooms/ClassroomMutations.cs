@@ -13,11 +13,18 @@ using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Enums = API.Common.Enums;
 
 namespace API.Schema.Mutations.Classrooms {
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class ClassroomMutations {
+        private readonly ILogger<ClassroomMutations> _logger;
+
+        public ClassroomMutations(ILogger<ClassroomMutations> logger) {
+            _logger = logger;
+        }
+
         [Authorize]
         public async Task<Classroom> CreateClassroomAsync(
             [GlobalUserId] int userId,
@@ -25,7 +32,7 @@ namespace API.Schema.Mutations.Classrooms {
             ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
             var classroom = new Classroom {
-                Name = input.Name,
+                Name = input.Name.Trim(),
                 StateId = (int)Enums.State.Active
             };
 
@@ -37,6 +44,44 @@ namespace API.Schema.Mutations.Classrooms {
 
             ctx.Classrooms.Add(classroom);
             await ctx.SaveChangesAsync(cancellationToken);
+
+            return classroom;
+        }
+
+        [Authorize]
+        [Error(typeof(ClassroomNotFoundException))]
+        public async Task<Classroom> UpsertClassroomSyllabusAsync(
+            UpsertClassroomSyllabusInput input,
+            ApplicationDbContext ctx,
+            CancellationToken cancellationToken) {
+            var classroom = await ctx.Classrooms
+                .Include(c => c.Syllabus)
+                .SingleOrDefaultAsync(c => c.Id == input.ClassroomId);
+            if (classroom is null) throw new ClassroomNotFoundException();
+
+            var shouldUpsert = input.Content is not null;
+            if (shouldUpsert) {
+                if (classroom.Syllabus is null) {
+                    classroom.Syllabus = new ClassroomSyllabus {
+                        ClassroomId = classroom.Id,
+                        Content = input.Content
+                    };
+                    await ctx.SaveChangesAsync(cancellationToken);
+                } else {
+                    classroom.Syllabus!.Content = input.Content;
+                    classroom.Syllabus!.UpdatedAt = DateTime.UtcNow;
+                    await ctx.SaveChangesAsync(cancellationToken);
+                }
+            } else {
+                if (classroom.Syllabus is not null) {
+                    ctx.ClassroomSyllabus.Remove(classroom.Syllabus!);
+                    await ctx.SaveChangesAsync(cancellationToken);
+                } else {
+                    _logger.LogError(
+                        "Unable to delete classroom syllabus for classroom: {classroom}. " +
+                        "Input: {input}", classroom, input);
+                }
+            }
 
             return classroom;
         }

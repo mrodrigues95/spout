@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a833204532caf4ca1ac7e17a067e5a6c>>
+ * @generated SignedSource<<667c16a81951e4b6c862e192cb40a409>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,14 +8,18 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { Fragment, ReaderFragment } from 'relay-runtime';
+import { ReaderFragment, RefetchableFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type DiscussionsMenu_discussions$data = {
   readonly id: string;
-  readonly discussions: ReadonlyArray<{
-    readonly id: string;
-    readonly name: string;
-  }>;
+  readonly discussions: {
+    readonly edges: ReadonlyArray<{
+      readonly node: {
+        readonly id: string;
+        readonly name: string;
+      };
+    }> | null;
+  } | null;
   readonly " $fragmentType": "DiscussionsMenu_discussions";
 };
 export type DiscussionsMenu_discussions = DiscussionsMenu_discussions$data;
@@ -25,7 +29,10 @@ export type DiscussionsMenu_discussions$key = {
 };
 
 const node: ReaderFragment = (function(){
-var v0 = {
+var v0 = [
+  "discussions"
+],
+v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -33,26 +40,122 @@ var v0 = {
   "storageKey": null
 };
 return {
-  "argumentDefinitions": [],
+  "argumentDefinitions": [
+    {
+      "defaultValue": 50,
+      "kind": "LocalArgument",
+      "name": "count"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "cursor"
+    }
+  ],
   "kind": "Fragment",
-  "metadata": null,
+  "metadata": {
+    "connection": [
+      {
+        "count": "count",
+        "cursor": "cursor",
+        "direction": "forward",
+        "path": (v0/*: any*/)
+      }
+    ],
+    "refetch": {
+      "connection": {
+        "forward": {
+          "count": "count",
+          "cursor": "cursor"
+        },
+        "backward": null,
+        "path": (v0/*: any*/)
+      },
+      "fragmentPathInResult": [
+        "node"
+      ],
+      "operation": require('./DiscussionsMenuListPaginationQuery.graphql'),
+      "identifierField": "id"
+    }
+  },
   "name": "DiscussionsMenu_discussions",
   "selections": [
-    (v0/*: any*/),
+    (v1/*: any*/),
     {
-      "alias": null,
+      "alias": "discussions",
       "args": null,
-      "concreteType": "Discussion",
+      "concreteType": "DiscussionsConnection",
       "kind": "LinkedField",
-      "name": "discussions",
-      "plural": true,
+      "name": "__DiscussionsMenu_classroom_discussions_connection",
+      "plural": false,
       "selections": [
-        (v0/*: any*/),
         {
           "alias": null,
           "args": null,
-          "kind": "ScalarField",
-          "name": "name",
+          "concreteType": "DiscussionsEdge",
+          "kind": "LinkedField",
+          "name": "edges",
+          "plural": true,
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "concreteType": "Discussion",
+              "kind": "LinkedField",
+              "name": "node",
+              "plural": false,
+              "selections": [
+                (v1/*: any*/),
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "name",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "__typename",
+                  "storageKey": null
+                }
+              ],
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "cursor",
+              "storageKey": null
+            }
+          ],
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "concreteType": "PageInfo",
+          "kind": "LinkedField",
+          "name": "pageInfo",
+          "plural": false,
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "endCursor",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "hasNextPage",
+              "storageKey": null
+            }
+          ],
           "storageKey": null
         }
       ],
@@ -64,6 +167,6 @@ return {
 };
 })();
 
-(node as any).hash = "8f8ff1330890a5c30e2e1155ee0ff5d4";
+(node as any).hash = "583e7c7ce2c8c551c992d627fe8e5ce3";
 
 export default node;

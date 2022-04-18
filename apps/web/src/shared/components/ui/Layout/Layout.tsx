@@ -26,6 +26,7 @@ export const Layout = ({
             className={clsx(
               'relative flex min-w-0 flex-1',
               horizontal ? 'flex-row' : 'flex-col',
+              authenticated && 'lg:pl-[16.5rem]',
             )}
           >
             {children}

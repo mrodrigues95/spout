@@ -26,7 +26,7 @@ import ThemeButton from './ThemeButton';
 const SidebarContent = () => {
   return (
     <>
-      <div className="px-2">
+      <div className="px-2 xl:pt-2">
         <div className="flex items-center space-x-4">
           <Image src={getRandomAvatar()} alt="Spout" size="sm" rounded />
           <span className="text-lg font-bold">spout</span>
@@ -155,7 +155,7 @@ export const MobileSidebar = () => {
 
 const Sidebar = () => {
   return (
-    <aside className="relative -ml-2 hidden w-64 shrink-0 flex-col space-y-8 bg-white lg:mr-4 lg:flex xl:mr-8">
+    <aside className="left-[max(0px,calc(50% - 45rem))] fixed inset-y-0 z-20 -ml-2 hidden h-full w-64 shrink-0 flex-col space-y-8 bg-white py-2 lg:flex lg:py-4">
       <SidebarContent />
     </aside>
   );

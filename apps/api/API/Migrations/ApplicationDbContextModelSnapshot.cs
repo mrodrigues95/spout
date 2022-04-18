@@ -67,6 +67,10 @@ namespace API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("state_id");
 
+                    b.Property<int?>("SyllabusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("syllabus_id");
+
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -127,6 +131,51 @@ namespace API.Migrations
                         .HasDatabaseName("ix_classroom_invites_user_id");
 
                     b.ToTable("classroom_invites", (string)null);
+                });
+
+            modelBuilder.Entity("API.Data.Entities.ClassroomSyllabus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClassroomId")
+                        .HasColumnType("integer")
+                        .HasColumnName("classroom_id");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(12000)
+                        .HasColumnType("character varying(12000)")
+                        .HasColumnName("content");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("guid");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.HasKey("Id")
+                        .HasName("pk_classroom_syllabus");
+
+                    b.HasIndex("ClassroomId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_classroom_syllabus_classroom_id");
+
+                    b.ToTable("classroom_syllabus", (string)null);
                 });
 
             modelBuilder.Entity("API.Data.Entities.ClassroomUser", b =>
@@ -1190,6 +1239,18 @@ namespace API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("API.Data.Entities.ClassroomSyllabus", b =>
+                {
+                    b.HasOne("API.Data.Entities.Classroom", "Classroom")
+                        .WithOne("Syllabus")
+                        .HasForeignKey("API.Data.Entities.ClassroomSyllabus", "ClassroomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_classroom_syllabus_classrooms_classroom_id");
+
+                    b.Navigation("Classroom");
+                });
+
             modelBuilder.Entity("API.Data.Entities.ClassroomUser", b =>
                 {
                     b.HasOne("API.Data.Entities.Classroom", "Classroom")
@@ -1458,6 +1519,8 @@ namespace API.Migrations
                     b.Navigation("Discussions");
 
                     b.Navigation("Invites");
+
+                    b.Navigation("Syllabus");
 
                     b.Navigation("Users");
                 });

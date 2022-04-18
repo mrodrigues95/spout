@@ -5,8 +5,6 @@ import {
   faArrowRightFromBracket,
   faGear,
 } from '@fortawesome/free-solid-svg-icons';
-import clsx from 'clsx';
-import { Button } from '../button';
 import { Menu, MenuProps } from './menu';
 import { usePopper } from '../../hooks';
 
@@ -30,41 +28,13 @@ const Template: Story<MenuProps> = () => {
       <Portal>
         <Menu.Items ref={container}>
           <Menu.Group>
-            <Menu.Item>
-              {({ active }) => (
-                <Button
-                  leftIcon={<FontAwesomeIcon icon={faGear} />}
-                  variant="tertiary"
-                  size="sm"
-                  className={clsx(
-                    'block',
-                    active
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'bg-white text-gray-500',
-                  )}
-                  fullWidth
-                >
-                  Settings
-                </Button>
-              )}
+            <Menu.Item leftIcon={<FontAwesomeIcon icon={faGear} />}>
+              Settings
             </Menu.Item>
-            <Menu.Item>
-              {({ active }) => (
-                <Button
-                  leftIcon={<FontAwesomeIcon icon={faArrowRightFromBracket} />}
-                  variant="tertiary"
-                  size="sm"
-                  className={clsx(
-                    'block',
-                    active
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'bg-white text-gray-500',
-                  )}
-                  fullWidth
-                >
-                  Logout
-                </Button>
-              )}
+            <Menu.Item
+              leftIcon={<FontAwesomeIcon icon={faArrowRightFromBracket} />}
+            >
+              Logout
             </Menu.Item>
           </Menu.Group>
         </Menu.Items>

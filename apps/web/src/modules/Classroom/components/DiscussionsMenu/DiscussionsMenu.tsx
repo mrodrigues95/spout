@@ -1,4 +1,4 @@
-import { graphql, useFragment } from 'react-relay';
+import { graphql, usePaginationFragment } from 'react-relay';
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -9,14 +9,25 @@ import {
   getHorizontalNavigationItemStyles,
   Tooltip,
 } from '@spout/toolkit';
+import { useConnection } from '../../../../shared/hooks';
 import { DiscussionsMenu_discussions$key } from './__generated__/DiscussionsMenu_discussions.graphql';
 
 const fragment = graphql`
-  fragment DiscussionsMenu_discussions on Classroom {
+  fragment DiscussionsMenu_discussions on Classroom
+  @argumentDefinitions(
+    count: { type: "Int", defaultValue: 50 }
+    cursor: { type: "String" }
+  )
+  @refetchable(queryName: "DiscussionsMenuListPaginationQuery") {
     id
-    discussions {
-      id
-      name
+    discussions(first: $count, after: $cursor)
+      @connection(key: "DiscussionsMenu_classroom_discussions") {
+      edges {
+        node {
+          id
+          name
+        }
+      }
     }
   }
 `;
@@ -27,7 +38,9 @@ interface Props {
 
 const DiscussionsMenu = ({ ...props }: Props) => {
   const router = useRouter();
-  const classroom = useFragment(fragment, props.classroom);
+  const { data: classroom } = usePaginationFragment(fragment, props.classroom);
+
+  const discussions = useConnection(classroom.discussions);
 
   const styles = getHorizontalNavigationItemStyles();
 
@@ -52,14 +65,14 @@ const DiscussionsMenu = ({ ...props }: Props) => {
           // event handlers (onClick, etc.) so there is no way to listen to
           // events. This means selecting the first discussion via keyboard
           // will not do anything.
-          const discussion = classroom.discussions[idx];
+          const discussion = discussions[idx];
           router.push(
             `/classrooms/${classroom.id}/discussions/${discussion.id}`,
           );
         }}
       >
         <HorizontalNavigation.Divider />
-        {classroom.discussions.map((discussion) => (
+        {discussions.map((discussion) => (
           <Tooltip key={discussion.id} label={discussion.name}>
             <div>
               <HorizontalNavigation.Item

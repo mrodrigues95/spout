@@ -45,6 +45,10 @@ namespace API.Data.Configurations {
             builder.HasOne(c => c.State)
                 .WithMany(s => s!.Classrooms)
                 .HasForeignKey(c => c.StateId);
+
+            builder.HasOne(c => c.Syllabus)
+                .WithOne(cs => cs.Classroom)
+                .HasForeignKey<ClassroomSyllabus>(cs => cs.ClassroomId);
         }
     }
 }

@@ -25,11 +25,11 @@ export const EmptyState = ({
       {...props}
     >
       {icon}
-      <div>
+      <div className="space-y-1">
         <p className="text-center text-lg font-medium text-gray-900">
           {heading}
         </p>
-        {body && <p className="font-medium text-gray-500">{body}</p>}
+        {body && <p className="text-sm text-gray-500">{body}</p>}
       </div>
       {children}
     </div>

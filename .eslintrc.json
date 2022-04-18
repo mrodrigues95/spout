@@ -31,6 +31,7 @@
           "error",
           {
             "ts-ignore": "allow-with-description",
+            "ts-nocheck": "allow-with-description",
             "ts-expect-error": "allow-with-description"
           }
         ],

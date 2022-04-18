@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
-import { formatMessageDate } from '../../../utils/dates';
+import { formatMessageDate } from '../../../../../shared/utils';
 import {
   DiscussionMessage,
   Me,

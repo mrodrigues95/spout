@@ -58,7 +58,7 @@ namespace API.Extensions {
                 .AddDiagnosticEventListener<CustomDiagnosticEventListener>();
 
             gql
-                .SetPagingOptions(new PagingOptions { MaxPageSize = 50 })
+                .SetPagingOptions(new PagingOptions { MaxPageSize = 100, IncludeTotalCount = true })
                 .ModifyRequestOptions(opts => {
                     opts.IncludeExceptionDetails = env == Environments.Development;
                 });
@@ -91,7 +91,8 @@ namespace API.Extensions {
                 .AddTypeExtension<ClassroomQueries>()
                 .AddTypeExtension<ClassroomMutations>()
                 .AddDataLoader<ClassroomByIdDataLoader>()
-                .AddType<ClassroomType>();
+                .AddType<ClassroomType>()
+                .AddType<ClassroomSyllabusType>();
 
             gql
                 .AddTypeExtension<DiscussionQueries>()

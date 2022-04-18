@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2e0e9c149362e60c1418037c2966d9d8>>
+ * @generated SignedSource<<85136dee5aa97ebbb7d72f8a7b8d3759>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,19 +9,14 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Query } from 'relay-runtime';
-export type UserProfileColor = "SKY" | "PINK" | "GREEN" | "PURPLE" | "ROSE" | "GRAY" | "ORANGE" | "%future added value";
+import { FragmentRefs } from "relay-runtime";
 export type ClassroomParticipantsQuery$variables = {
   id: string;
 };
 export type ClassroomParticipantsQueryVariables = ClassroomParticipantsQuery$variables;
 export type ClassroomParticipantsQuery$data = {
   readonly classroomById: {
-    readonly users: ReadonlyArray<{
-      readonly id: string;
-      readonly avatarUrl: string | null;
-      readonly name: string;
-      readonly profileColor: UserProfileColor;
-    }>;
+    readonly " $fragmentSpreads": FragmentRefs<"ClassroomParticipants_classroom">;
   };
 };
 export type ClassroomParticipantsQueryResponse = ClassroomParticipantsQuery$data;
@@ -45,44 +40,18 @@ v1 = [
     "variableName": "id"
   }
 ],
-v2 = {
+v2 = [
+  {
+    "kind": "Literal",
+    "name": "first",
+    "value": 50
+  }
+],
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
-  "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
-  "concreteType": "User",
-  "kind": "LinkedField",
-  "name": "users",
-  "plural": true,
-  "selections": [
-    (v2/*: any*/),
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "avatarUrl",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "name",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "profileColor",
-      "storageKey": null
-    }
-  ],
   "storageKey": null
 };
 return {
@@ -100,7 +69,11 @@ return {
         "name": "classroomById",
         "plural": false,
         "selections": [
-          (v3/*: any*/)
+          {
+            "args": null,
+            "kind": "FragmentSpread",
+            "name": "ClassroomParticipants_classroom"
+          }
         ],
         "storageKey": null
       }
@@ -122,24 +95,126 @@ return {
         "name": "classroomById",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
-          (v2/*: any*/)
+          {
+            "alias": null,
+            "args": (v2/*: any*/),
+            "concreteType": "UsersConnection",
+            "kind": "LinkedField",
+            "name": "users",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "UsersEdge",
+                "kind": "LinkedField",
+                "name": "edges",
+                "plural": true,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "User",
+                    "kind": "LinkedField",
+                    "name": "node",
+                    "plural": false,
+                    "selections": [
+                      (v3/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "avatarUrl",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "name",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "profileColor",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "__typename",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "cursor",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "PageInfo",
+                "kind": "LinkedField",
+                "name": "pageInfo",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "endCursor",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "hasNextPage",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": "users(first:50)"
+          },
+          {
+            "alias": null,
+            "args": (v2/*: any*/),
+            "filters": null,
+            "handle": "connection",
+            "key": "ClassroomParticipantsList_classroom_users",
+            "kind": "LinkedHandle",
+            "name": "users"
+          },
+          (v3/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "9eb25682393f79f1b8c9dd529c1894a9",
+    "cacheID": "fbfa6e736fc02054b4068cdacbe99bb8",
     "id": null,
     "metadata": {},
     "name": "ClassroomParticipantsQuery",
     "operationKind": "query",
-    "text": "query ClassroomParticipantsQuery(\n  $id: ID!\n) {\n  classroomById(id: $id) {\n    users {\n      id\n      avatarUrl\n      name\n      profileColor\n    }\n    id\n  }\n}\n"
+    "text": "query ClassroomParticipantsQuery(\n  $id: ID!\n) {\n  classroomById(id: $id) {\n    ...ClassroomParticipants_classroom\n    id\n  }\n}\n\nfragment ClassroomParticipants_classroom on Classroom {\n  users(first: 50) {\n    edges {\n      node {\n        id\n        avatarUrl\n        name\n        profileColor\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n"
   }
 };
 })();
 
-(node as any).hash = "3f8a62615a12c8d919edf4db32fc92a5";
+(node as any).hash = "33a35b3cce4f9ebed2bad98fe8c6ebde";
 
 export default node;

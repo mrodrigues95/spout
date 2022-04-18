@@ -1,21 +1,24 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using API.Attributes;
 using API.Data;
-using API.Data.Entities;
 using API.Schema.Queries.Classrooms;
-using API.Schema.Queries.Discussions;
 using API.Schema.Queries.Users;
+using API.Schema.Types.Discussions;
 using API.Schema.Types.Users;
 using HotChocolate;
+using HotChocolate.Data.Filters.Expressions;
+using HotChocolate.Data.Sorting.Expressions;
+using HotChocolate.Resolvers;
 using HotChocolate.Types;
+using HotChocolate.Types.Pagination;
+using HotChocolate.Types.Pagination.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Entities = API.Data.Entities;
 
 namespace API.Schema.Types.Classrooms {
-    public class ClassroomType : ObjectType<Classroom> {
-        protected override void Configure(IObjectTypeDescriptor<Classroom> descriptor) {
+    public class ClassroomType : ObjectType<Entities.Classroom> {
+        protected override void Configure(IObjectTypeDescriptor<Entities.Classroom> descriptor) {
             descriptor
                 .ImplementsNode()
                 .IdField(c => c.Id)
@@ -32,7 +35,10 @@ namespace API.Schema.Types.Classrooms {
 
             descriptor
                 .Field(c => c.StateId)
-                .Type<NonNullType<IntType>>()
+                .Ignore();
+
+            descriptor
+                .Field(c => c.SyllabusId)
                 .Ignore();
 
             descriptor
@@ -47,68 +53,98 @@ namespace API.Schema.Types.Classrooms {
                 .Field("createdBy")
                 .Type<NonNullType<UserType>>()
                 .ResolveWith<ClassroomResolvers>(x =>
-                    x.GetCreatedByAsync(default!, default!, default!, default!, default!))
+                    x.GetCreatedByAsync(default!, default!, default!, default!))
+                .UseDbContext<ApplicationDbContext>();
+
+            descriptor
+                .Field("syllabus")
+                .Type<ClassroomSyllabusType>()
+                .ResolveWith<ClassroomResolvers>(x =>
+                    x.GetClassroomSyllabusAsync(default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>();
 
             descriptor
                 .Field(c => c.Users)
+                .Type<NonNullType<ListType<NonNullType<UserType>>>>()
                 .ResolveWith<ClassroomResolvers>(x =>
                     x.GetUsersAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
+                .UsePaging<NonNullType<UserType>>()
+                .UseFiltering()
+                .UseSorting()
                 .Name("users");
 
             descriptor
                 .Field(c => c.Discussions)
+                .Type<NonNullType<ListType<NonNullType<DiscussionType>>>>()
                 .ResolveWith<ClassroomResolvers>(x =>
                     x.GetDiscussionsAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
+                .UsePaging<NonNullType<DiscussionType>>()
+                .UseFiltering()
+                .UseSorting()
                 .Name("discussions");
         }
 
         private class ClassroomResolvers {
-            public async Task<User> GetCreatedByAsync(
-                [Parent] Classroom classroom,
-                [GlobalUserId] int userId,
-                ApplicationDbContext dbContext,
+            public async Task<Entities.User> GetCreatedByAsync(
+                [Parent] Entities.Classroom classroom,
+                ApplicationDbContext ctx,
                 UserByIdDataLoader userById,
                 CancellationToken cancellationToken) {
-                var id = await dbContext.ClassroomUsers
-                    .Where(cu => cu.IsCreator == true &&
-                        cu.UserId == userId &&
-                        cu.ClassroomId == classroom.Id)
-                    .Include(cu => cu.User)
+                var id = await ctx.ClassroomUsers
+                    .Where(cu => cu.ClassroomId == classroom.Id &&
+                        cu.IsCreator == true)
                     .Select(cu => cu.UserId)
                     .SingleOrDefaultAsync();
 
                 return await userById.LoadAsync(id, cancellationToken);
             }
 
-            public async Task<IEnumerable<User>> GetUsersAsync(
-                [Parent] Classroom classroom,
-                ApplicationDbContext dbContext,
-                UserByIdDataLoader userById,
+            public async Task<Entities.ClassroomSyllabus?> GetClassroomSyllabusAsync(
+                [Parent] Entities.Classroom classroom,
+                ApplicationDbContext ctx,
+                CancellationToken cancellationToken)
+                => await ctx.ClassroomSyllabus
+                    .Where(cs => cs.ClassroomId == classroom.Id)
+                    .SingleOrDefaultAsync(cancellationToken);
+
+            public async Task<Connection<Entities.User?>> GetUsersAsync(
+                [Parent] Entities.Classroom classroom,
+                ApplicationDbContext dbCtx,
+                IResolverContext resolverCtx,
                 CancellationToken cancellationToken) {
-                var userIds = await dbContext.Classrooms
+                var query = dbCtx.Classrooms
                     .Where(c => c.Id == classroom.Id)
                     .Include(c => c.Users)
-                    .SelectMany(c => c.Users.Select(u => u.UserId))
-                    .ToArrayAsync(cancellationToken);
+                    .SelectMany(c => c.Users.Select(u => u.User))
+                    .AsQueryable();
 
-                return await userById.LoadAsync(userIds, cancellationToken);
+                var connection = await query
+                    .Filter(resolverCtx)
+                    .Sort(resolverCtx)
+                    .ApplyCursorPaginationAsync(resolverCtx, cancellationToken: cancellationToken);
+
+                return connection;
             }
 
-            public async Task<IEnumerable<Discussion>> GetDiscussionsAsync(
-                [Parent] Classroom classroom,
-                ApplicationDbContext dbContext,
-                DiscussionByIdDataLoader discussionById,
+            public async Task<Connection<Entities.Discussion>> GetDiscussionsAsync(
+                [Parent] Entities.Classroom classroom,
+                ApplicationDbContext dbCtx,
+                IResolverContext resolverCtx,
                 CancellationToken cancellationToken) {
-                var discussionIds = await dbContext.Classrooms
+                var query = dbCtx.Classrooms
                     .Where(c => c.Id == classroom.Id)
                     .Include(c => c.Discussions)
-                    .SelectMany(c => c.Discussions.Select(d => d.Id))
-                    .ToArrayAsync(cancellationToken);
+                    .SelectMany(c => c.Discussions)
+                    .AsQueryable();
 
-                return await discussionById.LoadAsync(discussionIds, cancellationToken);
+                var connection = await query
+                    .Filter(resolverCtx)
+                    .Sort(resolverCtx)
+                    .ApplyCursorPaginationAsync(resolverCtx, cancellationToken: cancellationToken);
+
+                return connection;
             }
         }
     }

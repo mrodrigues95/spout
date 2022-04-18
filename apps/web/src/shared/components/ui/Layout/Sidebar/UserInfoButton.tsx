@@ -6,8 +6,7 @@ import {
   faGear,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import clsx from 'clsx';
-import { Button, Text, Menu, usePopper, Skeleton, Link } from '@spout/toolkit';
+import { Text, Menu, usePopper, Skeleton } from '@spout/toolkit';
 import { useAuthRedirect } from '../../../../../modules';
 import Avatar from '../../Avatar';
 import { UserInfoButtonQuery } from './__generated__/UserInfoButtonQuery.graphql';
@@ -130,45 +129,17 @@ const UserInfoButton = ({ fetchKey }: Props) => {
               </div>
             </Menu.Group>
             <Menu.Group>
-              <Menu.Item>
-                {({ active }) => (
-                  <Link
-                    href="/settings"
-                    leftIcon={<FontAwesomeIcon icon={faGear} />}
-                    variant="tertiary"
-                    size="sm"
-                    className={clsx(
-                      'block',
-                      active
-                        ? 'bg-gray-100 text-gray-900'
-                        : 'bg-white text-gray-500',
-                    )}
-                    fullWidth
-                  >
-                    Settings
-                  </Link>
-                )}
+              <Menu.Item
+                href="/settings"
+                leftIcon={<FontAwesomeIcon icon={faGear} />}
+              >
+                Settings
               </Menu.Item>
-              <Menu.Item>
-                {({ active }) => (
-                  <Button
-                    leftIcon={
-                      <FontAwesomeIcon icon={faArrowRightFromBracket} />
-                    }
-                    variant="tertiary"
-                    size="sm"
-                    className={clsx(
-                      'block',
-                      active
-                        ? 'bg-gray-100 text-gray-900'
-                        : 'bg-white text-gray-500',
-                    )}
-                    fullWidth
-                    onClick={removeSession}
-                  >
-                    Logout
-                  </Button>
-                )}
+              <Menu.Item
+                leftIcon={<FontAwesomeIcon icon={faArrowRightFromBracket} />}
+                onClick={removeSession}
+              >
+                Logout
               </Menu.Item>
             </Menu.Group>
           </Menu.Items>

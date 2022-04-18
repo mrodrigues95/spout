@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { Skeleton } from '@spout/toolkit';
 import clsx from 'clsx';
 import VerticalNav from '../../VerticalNav';
+import { getRandomColor } from '../../../../../shared/utils';
 import { SidebarClassroomsQuery } from './__generated__/SidebarClassroomsQuery.graphql';
 
 export const SidebarClassroomsSkeleton = () => {
@@ -21,19 +22,6 @@ export const SidebarClassroomsSkeleton = () => {
       {stack}
     </>
   );
-};
-
-// TODO: Implement classroom colors and grab these from the api.
-const getRandomColor = () => {
-  const colors: Record<string, { border: string; bg: string }> = {
-    red: { border: 'border-red-300', bg: 'bg-red-400' },
-    blue: { border: 'border-blue-300', bg: 'bg-blue-400' },
-    purple: { border: 'border-violet-300', bg: 'bg-violet-400' },
-    lime: { border: 'border-lime-300', bg: 'bg-lime-400' },
-    pink: { border: 'border-pink-300', bg: 'bg-pink-400' },
-  };
-  const keys = Object.keys(colors);
-  return colors[keys[Math.floor(Math.random() * keys.length)]];
 };
 
 interface Props {
@@ -81,6 +69,9 @@ const SidebarClassrooms = ({ fetchKey }: Props) => {
               />
             }
             routes={[
+              `/classrooms/${classroom.id}/overview`,
+              `/classrooms/${classroom.id}/announcements`,
+              `/classrooms/${classroom.id}/important`,
               `/classrooms/${classroom.id}/discussions/${router.query.discussionId}`,
             ]}
           />

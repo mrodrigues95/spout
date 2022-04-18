@@ -108,7 +108,7 @@ export const Tooltip = ({
       <AnimatePresence>
         {isOpen && (
           <Portal>
-            <div ref={container}>
+            <div ref={container} className="z-50">
               <motion.span
                 id={id}
                 role="tooltip"

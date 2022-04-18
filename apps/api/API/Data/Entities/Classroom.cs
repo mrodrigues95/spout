@@ -3,14 +3,11 @@ using System.Collections.Generic;
 
 namespace API.Data.Entities {
     public class Classroom {
-        private string? _name;
-
         public int Id { get; set; }
         public Guid Guid { get; set; } = Guid.NewGuid();
-        public string? Name {
-            get => _name;
-            set { _name = value?.Trim(); }
-        }
+        public string? Name { get; set; }
+        public int? SyllabusId { get; set; }
+        public ClassroomSyllabus? Syllabus { get; set; }
         public int StateId { get; set; }
         public State? State { get; set; }
         public int? DelLogId { get; set; }

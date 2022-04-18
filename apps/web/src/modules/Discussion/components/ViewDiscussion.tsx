@@ -7,8 +7,8 @@ import DiscussionHeader from './DiscussionHeader';
 import DiscussionDetails from './DiscussionDetails';
 import DiscussionMessagesList from './DiscussionMessages/DiscussionMessagesList';
 import DiscussionMessageComposer from './DiscussionMessages/DiscussionMessageComposer';
-import { DiscussionProvider } from './DiscussionProvider';
 import { ViewDiscussionQuery } from './__generated__/ViewDiscussionQuery.graphql';
+import { DiscussionProvider } from './DiscussionProvider';
 
 const query = graphql`
   query ViewDiscussionQuery($id: ID!, $count: Int!, $cursor: String) {

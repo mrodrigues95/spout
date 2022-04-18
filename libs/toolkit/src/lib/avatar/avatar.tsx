@@ -2,6 +2,7 @@ import { ComponentProps, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import Image, { ImageProps } from 'next/image';
+import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
 
 const STYLES = {
@@ -95,12 +96,14 @@ export const Avatar = ({
 
   return (
     <span
-      className={clsx(
-        'relative inline-flex shrink-0 items-center justify-center border-transparent text-center font-semibold uppercase',
-        rounded ? 'rounded-full' : 'rounded-md',
-        STYLES.size[size],
-        STYLES.scheme[scheme],
-        containerClassName,
+      className={twMerge(
+        clsx(
+          'relative inline-flex min-w-0 shrink-0 items-center justify-center border-transparent text-center font-semibold uppercase',
+          rounded ? 'rounded-full' : 'rounded-md',
+          STYLES.size[size],
+          STYLES.scheme[scheme],
+          containerClassName,
+        ),
       )}
       {...containerProps}
     >

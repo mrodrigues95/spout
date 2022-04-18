@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cabc1cc908b8c477db85a580e0d65509>>
+ * @generated SignedSource<<ffc5f944825f15bfbd2f8ccdd4c3122b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -70,10 +70,37 @@ v5 = {
   "storageKey": null
 },
 v6 = [
-  (v4/*: any*/),
-  (v5/*: any*/)
+  {
+    "kind": "Literal",
+    "name": "first",
+    "value": 50
+  },
+  {
+    "kind": "Literal",
+    "name": "order",
+    "value": {
+      "name": "ASC"
+    }
+  }
 ],
-v7 = [
+v7 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v8 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "cursor",
+  "storageKey": null
+},
+v9 = [
+  "order"
+],
+v10 = [
   {
     "kind": "Variable",
     "name": "before",
@@ -92,14 +119,14 @@ v7 = [
     }
   }
 ],
-v8 = {
+v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "content",
   "storageKey": null
 },
-v9 = [
+v12 = [
   (v4/*: any*/),
   (v5/*: any*/),
   {
@@ -117,14 +144,14 @@ v9 = [
     "storageKey": null
   }
 ],
-v10 = {
+v13 = {
   "alias": null,
   "args": null,
   "concreteType": "User",
   "kind": "LinkedField",
   "name": "createdBy",
   "plural": false,
-  "selections": (v9/*: any*/),
+  "selections": (v12/*: any*/),
   "storageKey": null
 };
 return {
@@ -238,13 +265,74 @@ return {
               (v4/*: any*/),
               {
                 "alias": null,
-                "args": null,
-                "concreteType": "Discussion",
+                "args": (v6/*: any*/),
+                "concreteType": "DiscussionsConnection",
                 "kind": "LinkedField",
                 "name": "discussions",
-                "plural": true,
-                "selections": (v6/*: any*/),
-                "storageKey": null
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "DiscussionsEdge",
+                    "kind": "LinkedField",
+                    "name": "edges",
+                    "plural": true,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "Discussion",
+                        "kind": "LinkedField",
+                        "name": "node",
+                        "plural": false,
+                        "selections": [
+                          (v4/*: any*/),
+                          (v5/*: any*/),
+                          (v7/*: any*/)
+                        ],
+                        "storageKey": null
+                      },
+                      (v8/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "PageInfo",
+                    "kind": "LinkedField",
+                    "name": "pageInfo",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "endCursor",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "hasNextPage",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": "discussions(first:50,order:{\"name\":\"ASC\"})"
+              },
+              {
+                "alias": null,
+                "args": (v6/*: any*/),
+                "filters": (v9/*: any*/),
+                "handle": "connection",
+                "key": "DiscussionHeader_classroom_discussions",
+                "kind": "LinkedHandle",
+                "name": "discussions"
               },
               (v5/*: any*/)
             ],
@@ -266,7 +354,7 @@ return {
           },
           {
             "alias": null,
-            "args": (v7/*: any*/),
+            "args": (v10/*: any*/),
             "concreteType": "MessagesConnection",
             "kind": "LinkedField",
             "name": "messages",
@@ -289,7 +377,7 @@ return {
                     "plural": false,
                     "selections": [
                       (v4/*: any*/),
-                      (v8/*: any*/),
+                      (v11/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -345,7 +433,7 @@ return {
                         ],
                         "storageKey": null
                       },
-                      (v10/*: any*/),
+                      (v13/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -353,7 +441,10 @@ return {
                         "kind": "LinkedField",
                         "name": "pinnedBy",
                         "plural": false,
-                        "selections": (v6/*: any*/),
+                        "selections": [
+                          (v4/*: any*/),
+                          (v5/*: any*/)
+                        ],
                         "storageKey": null
                       },
                       {
@@ -365,28 +456,16 @@ return {
                         "plural": false,
                         "selections": [
                           (v4/*: any*/),
-                          (v8/*: any*/),
-                          (v10/*: any*/)
+                          (v11/*: any*/),
+                          (v13/*: any*/)
                         ],
                         "storageKey": null
                       },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "__typename",
-                        "storageKey": null
-                      }
+                      (v7/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "cursor",
-                    "storageKey": null
-                  }
+                  (v8/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -420,10 +499,8 @@ return {
           },
           {
             "alias": null,
-            "args": (v7/*: any*/),
-            "filters": [
-              "order"
-            ],
+            "args": (v10/*: any*/),
+            "filters": (v9/*: any*/),
             "handle": "connection",
             "key": "DiscussionMessagesList_discussion_messages",
             "kind": "LinkedHandle",
@@ -439,18 +516,18 @@ return {
         "kind": "LinkedField",
         "name": "me",
         "plural": false,
-        "selections": (v9/*: any*/),
+        "selections": (v12/*: any*/),
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "7a4bc7598ca7ba72e5552f3b379d38c9",
+    "cacheID": "6d9845c933628897820cccaa806380e2",
     "id": null,
     "metadata": {},
     "name": "ViewDiscussionQuery",
     "operationKind": "query",
-    "text": "query ViewDiscussionQuery(\n  $id: ID!\n  $count: Int!\n  $cursor: String\n) {\n  discussionById(id: $id) {\n    id\n    name\n    ...DiscussionHeader_discussion\n    ...DiscussionDetails_discussion\n    ...DiscussionMessagesList_discussion_1G22uz\n    ...DiscussionMessageComposer_discussion\n  }\n  me {\n    ...DiscussionMessagesList_user\n    ...DiscussionMessageComposer_user\n    id\n  }\n}\n\nfragment Description_discussion on Discussion {\n  id\n  description\n}\n\nfragment DiscussionDetails_discussion on Discussion {\n  name\n  ...Topic_discussion\n  ...Description_discussion\n  classroom {\n    name\n    id\n  }\n}\n\nfragment DiscussionHeader_discussion on Discussion {\n  id\n  name\n  classroom {\n    id\n    discussions {\n      id\n      name\n    }\n  }\n}\n\nfragment DiscussionMessageComposer_discussion on Discussion {\n  id\n  name\n}\n\nfragment DiscussionMessageComposer_user on User {\n  id\n  name\n  avatarUrl\n  profileColor\n}\n\nfragment DiscussionMessagesListHeader_discussion on Discussion {\n  name\n  topic\n  description\n}\n\nfragment DiscussionMessagesList_discussion_1G22uz on Discussion {\n  id\n  ...DiscussionMessagesListHeader_discussion\n  messages(last: $count, before: $cursor, order: {createdAt: ASC}) {\n    edges {\n      node {\n        id\n        content\n        createdAt\n        isEvent\n        messageEvent\n        attachments {\n          id\n          location\n          name\n          contentLength\n          extension\n        }\n        createdBy {\n          id\n          name\n          avatarUrl\n          profileColor\n        }\n        pinnedBy {\n          id\n          name\n        }\n        parentMessage {\n          id\n          content\n          createdBy {\n            id\n            name\n            avatarUrl\n            profileColor\n          }\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n\nfragment DiscussionMessagesList_user on User {\n  id\n  name\n  avatarUrl\n  profileColor\n}\n\nfragment Topic_discussion on Discussion {\n  id\n  topic\n}\n"
+    "text": "query ViewDiscussionQuery(\n  $id: ID!\n  $count: Int!\n  $cursor: String\n) {\n  discussionById(id: $id) {\n    id\n    name\n    ...DiscussionHeader_discussion\n    ...DiscussionDetails_discussion\n    ...DiscussionMessagesList_discussion_1G22uz\n    ...DiscussionMessageComposer_discussion\n  }\n  me {\n    ...DiscussionMessagesList_user\n    ...DiscussionMessageComposer_user\n    id\n  }\n}\n\nfragment Description_discussion on Discussion {\n  id\n  description\n}\n\nfragment DiscussionDetails_discussion on Discussion {\n  name\n  ...Topic_discussion\n  ...Description_discussion\n  classroom {\n    name\n    id\n  }\n}\n\nfragment DiscussionHeader_discussion on Discussion {\n  id\n  name\n  classroom {\n    id\n    discussions(first: 50, order: {name: ASC}) {\n      edges {\n        node {\n          id\n          name\n          __typename\n        }\n        cursor\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n  }\n}\n\nfragment DiscussionMessageComposer_discussion on Discussion {\n  id\n  name\n}\n\nfragment DiscussionMessageComposer_user on User {\n  id\n  name\n  avatarUrl\n  profileColor\n}\n\nfragment DiscussionMessagesListHeader_discussion on Discussion {\n  name\n  topic\n  description\n}\n\nfragment DiscussionMessagesList_discussion_1G22uz on Discussion {\n  id\n  ...DiscussionMessagesListHeader_discussion\n  messages(last: $count, before: $cursor, order: {createdAt: ASC}) {\n    edges {\n      node {\n        id\n        content\n        createdAt\n        isEvent\n        messageEvent\n        attachments {\n          id\n          location\n          name\n          contentLength\n          extension\n        }\n        createdBy {\n          id\n          name\n          avatarUrl\n          profileColor\n        }\n        pinnedBy {\n          id\n          name\n        }\n        parentMessage {\n          id\n          content\n          createdBy {\n            id\n            name\n            avatarUrl\n            profileColor\n          }\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n\nfragment DiscussionMessagesList_user on User {\n  id\n  name\n  avatarUrl\n  profileColor\n}\n\nfragment Topic_discussion on Discussion {\n  id\n  topic\n}\n"
   }
 };
 })();

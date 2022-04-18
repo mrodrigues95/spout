@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using API.Attributes;
 using API.Data;
 using API.Data.Entities;
+using API.Schema.Mutations.Classrooms.Exceptions;
 using API.Schema.Mutations.Discussions.Exceptions;
 using API.Schema.Mutations.Discussions.Inputs;
 using API.Schema.Types.Messages;

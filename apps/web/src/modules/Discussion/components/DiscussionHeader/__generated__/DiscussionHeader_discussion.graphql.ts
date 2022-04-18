@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cbb98ec4bc68e5e7ecface891395f8ae>>
+ * @generated SignedSource<<cb4e8432dfaac74e543f03209d2b76a5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,17 +8,21 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { Fragment, ReaderFragment } from 'relay-runtime';
+import { ReaderFragment, RefetchableFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type DiscussionHeader_discussion$data = {
   readonly id: string;
   readonly name: string;
   readonly classroom: {
     readonly id: string;
-    readonly discussions: ReadonlyArray<{
-      readonly id: string;
-      readonly name: string;
-    }>;
+    readonly discussions: {
+      readonly edges: ReadonlyArray<{
+        readonly node: {
+          readonly id: string;
+          readonly name: string;
+        };
+      }> | null;
+    } | null;
   };
   readonly " $fragmentType": "DiscussionHeader_discussion";
 };
@@ -29,14 +33,18 @@ export type DiscussionHeader_discussion$key = {
 };
 
 const node: ReaderFragment = (function(){
-var v0 = {
+var v0 = [
+  "classroom",
+  "discussions"
+],
+v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v1 = {
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -44,13 +52,48 @@ v1 = {
   "storageKey": null
 };
 return {
-  "argumentDefinitions": [],
+  "argumentDefinitions": [
+    {
+      "defaultValue": 50,
+      "kind": "LocalArgument",
+      "name": "count"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "cursor"
+    }
+  ],
   "kind": "Fragment",
-  "metadata": null,
+  "metadata": {
+    "connection": [
+      {
+        "count": "count",
+        "cursor": "cursor",
+        "direction": "forward",
+        "path": (v0/*: any*/)
+      }
+    ],
+    "refetch": {
+      "connection": {
+        "forward": {
+          "count": "count",
+          "cursor": "cursor"
+        },
+        "backward": null,
+        "path": (v0/*: any*/)
+      },
+      "fragmentPathInResult": [
+        "node"
+      ],
+      "operation": require('./DiscussionHeaderPaginationQuery.graphql'),
+      "identifierField": "id"
+    }
+  },
   "name": "DiscussionHeader_discussion",
   "selections": [
-    (v0/*: any*/),
     (v1/*: any*/),
+    (v2/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -59,19 +102,88 @@ return {
       "name": "classroom",
       "plural": false,
       "selections": [
-        (v0/*: any*/),
+        (v1/*: any*/),
         {
-          "alias": null,
-          "args": null,
-          "concreteType": "Discussion",
-          "kind": "LinkedField",
-          "name": "discussions",
-          "plural": true,
-          "selections": [
-            (v0/*: any*/),
-            (v1/*: any*/)
+          "alias": "discussions",
+          "args": [
+            {
+              "kind": "Literal",
+              "name": "order",
+              "value": {
+                "name": "ASC"
+              }
+            }
           ],
-          "storageKey": null
+          "concreteType": "DiscussionsConnection",
+          "kind": "LinkedField",
+          "name": "__DiscussionHeader_classroom_discussions_connection",
+          "plural": false,
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "concreteType": "DiscussionsEdge",
+              "kind": "LinkedField",
+              "name": "edges",
+              "plural": true,
+              "selections": [
+                {
+                  "alias": null,
+                  "args": null,
+                  "concreteType": "Discussion",
+                  "kind": "LinkedField",
+                  "name": "node",
+                  "plural": false,
+                  "selections": [
+                    (v1/*: any*/),
+                    (v2/*: any*/),
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "__typename",
+                      "storageKey": null
+                    }
+                  ],
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "cursor",
+                  "storageKey": null
+                }
+              ],
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "concreteType": "PageInfo",
+              "kind": "LinkedField",
+              "name": "pageInfo",
+              "plural": false,
+              "selections": [
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "endCursor",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "hasNextPage",
+                  "storageKey": null
+                }
+              ],
+              "storageKey": null
+            }
+          ],
+          "storageKey": "__DiscussionHeader_classroom_discussions_connection(order:{\"name\":\"ASC\"})"
         }
       ],
       "storageKey": null
@@ -82,6 +194,6 @@ return {
 };
 })();
 
-(node as any).hash = "ad04a609c9132a32144b9d36aa425fe9";
+(node as any).hash = "be7ca1d5d5c7c100d030bab2db67e462";
 
 export default node;

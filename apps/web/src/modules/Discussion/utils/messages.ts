@@ -1,5 +1,5 @@
 import { differenceInMinutes, format } from 'date-fns';
-import { getTime } from './dates';
+import { getTime } from '../../../shared/utils';
 import { DiscussionMessagesList_discussion$data } from '../components/DiscussionMessages/DiscussionMessagesList/__generated__/DiscussionMessagesList_discussion.graphql';
 import { DiscussionMessagesList_user$data } from '../components/DiscussionMessages/DiscussionMessagesList/__generated__/DiscussionMessagesList_user.graphql';
 

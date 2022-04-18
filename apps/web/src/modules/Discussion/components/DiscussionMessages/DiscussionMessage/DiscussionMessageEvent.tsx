@@ -8,7 +8,7 @@ import {
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 import { Card, Avatar, Quote } from '../../../../../shared/components';
-import { formatMessageDate } from '../../../utils/dates';
+import { formatMessageDate } from '../../../../../shared/utils';
 import { DiscussionMessage } from '../../../utils/messages';
 import { MessageEvent } from './__generated__/DiscussionOptimisticMessageMutation.graphql';
 

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6dc36afe5f216b2acd686d2a57e82b0d>>
+ * @generated SignedSource<<2bfeb2089d0f76981a693d740aedcf0f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -54,7 +54,14 @@ v3 = {
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
-};
+},
+v4 = [
+  {
+    "kind": "Literal",
+    "name": "first",
+    "value": 50
+  }
+];
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
@@ -106,16 +113,86 @@ return {
           (v3/*: any*/),
           {
             "alias": null,
-            "args": null,
-            "concreteType": "Discussion",
+            "args": (v4/*: any*/),
+            "concreteType": "DiscussionsConnection",
             "kind": "LinkedField",
             "name": "discussions",
-            "plural": true,
+            "plural": false,
             "selections": [
-              (v3/*: any*/),
-              (v2/*: any*/)
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "DiscussionsEdge",
+                "kind": "LinkedField",
+                "name": "edges",
+                "plural": true,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Discussion",
+                    "kind": "LinkedField",
+                    "name": "node",
+                    "plural": false,
+                    "selections": [
+                      (v3/*: any*/),
+                      (v2/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "__typename",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "cursor",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "PageInfo",
+                "kind": "LinkedField",
+                "name": "pageInfo",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "endCursor",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "hasNextPage",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              }
             ],
-            "storageKey": null
+            "storageKey": "discussions(first:50)"
+          },
+          {
+            "alias": null,
+            "args": (v4/*: any*/),
+            "filters": null,
+            "handle": "connection",
+            "key": "DiscussionsMenu_classroom_discussions",
+            "kind": "LinkedHandle",
+            "name": "discussions"
           }
         ],
         "storageKey": null
@@ -123,12 +200,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "5eee2741361afe7e83d0cb9b9658e89c",
+    "cacheID": "f7f7c112134b9b5289ee870339d7ca20",
     "id": null,
     "metadata": {},
     "name": "ViewClassroomQuery",
     "operationKind": "query",
-    "text": "query ViewClassroomQuery(\n  $id: ID!\n) {\n  classroomById(id: $id) {\n    name\n    ...ClassroomHeader_classroom\n    ...DiscussionsMenu_discussions\n    id\n  }\n}\n\nfragment ClassroomHeader_classroom on Classroom {\n  name\n}\n\nfragment DiscussionsMenu_discussions on Classroom {\n  id\n  discussions {\n    id\n    name\n  }\n}\n"
+    "text": "query ViewClassroomQuery(\n  $id: ID!\n) {\n  classroomById(id: $id) {\n    name\n    ...ClassroomHeader_classroom\n    ...DiscussionsMenu_discussions\n    id\n  }\n}\n\nfragment ClassroomHeader_classroom on Classroom {\n  name\n}\n\nfragment DiscussionsMenu_discussions on Classroom {\n  id\n  discussions(first: 50) {\n    edges {\n      node {\n        id\n        name\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

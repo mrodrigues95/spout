@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { graphql, useFragment } from 'react-relay';
+import { graphql, usePaginationFragment } from 'react-relay';
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -8,21 +8,35 @@ import {
   faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { Title, Select, IconButton, Tooltip } from '@spout/toolkit';
-import { MEDIA_QUERIES, useMediaQuery } from '../../../../shared/hooks';
+import {
+  MEDIA_QUERIES,
+  useMediaQuery,
+  useConnection,
+} from '../../../../shared/hooks';
 import { useDiscussion } from '../DiscussionProvider';
 import DiscussionHeaderNotifications from './DiscussionHeaderNotifications';
 import DiscussionHeaderPinnedMessages from './DiscussionHeaderPinnedMessages';
 import { DiscussionHeader_discussion$key } from './__generated__/DiscussionHeader_discussion.graphql';
 
 const fragment = graphql`
-  fragment DiscussionHeader_discussion on Discussion {
+  fragment DiscussionHeader_discussion on Discussion
+  @argumentDefinitions(
+    count: { type: "Int", defaultValue: 50 }
+    cursor: { type: "String" }
+  )
+  @refetchable(queryName: "DiscussionHeaderPaginationQuery") {
     id
     name
     classroom {
       id
-      discussions {
-        id
-        name
+      discussions(first: $count, after: $cursor, order: { name: ASC })
+        @connection(key: "DiscussionHeader_classroom_discussions") {
+        edges {
+          node {
+            id
+            name
+          }
+        }
       }
     }
   }
@@ -32,28 +46,33 @@ interface Props {
   discussion: DiscussionHeader_discussion$key;
 }
 
-const DiscussionHeader = ({ discussion }: Props) => {
-  const data = useFragment(fragment, discussion);
+const DiscussionHeader = ({ ...props }: Props) => {
+  const { data: discussion } = usePaginationFragment(
+    fragment,
+    props.discussion,
+  );
   const isDesktop = useMediaQuery(MEDIA_QUERIES.XL);
   const { setShowDetails } = useDiscussion()!;
 
   const router = useRouter();
-  const [selectedDiscussionId, setSelectedDiscussionId] = useState(data.id);
+  const [selectedDiscussionId, setSelectedDiscussionId] = useState(
+    discussion.id,
+  );
 
   useEffect(() => {
-    if (selectedDiscussionId !== data.id) {
-      router.push(`/classrooms/${data.classroom.id}/${selectedDiscussionId}`);
+    if (selectedDiscussionId !== discussion.id) {
+      router.push(
+        `/classrooms/${discussion.classroom.id}/${selectedDiscussionId}`,
+      );
     }
-  }, [data.classroom.id, data.id, router, selectedDiscussionId]);
+  }, [discussion.classroom.id, discussion.id, router, selectedDiscussionId]);
 
-  const discussions = [...(data.classroom.discussions ?? [])].sort((d1, d2) =>
-    d1.name.localeCompare(d2.name),
-  );
+  const discussions = useConnection(discussion.classroom.discussions);
 
   return (
     <div className="flex min-w-0 flex-1 items-center justify-between">
       <Title as="h1" variant="h5" className="mr-4 truncate">
-        # {data.name}
+        # {discussion.name}
       </Title>
       <div className="flex items-center space-x-2">
         <Select
@@ -63,7 +82,7 @@ const DiscussionHeader = ({ discussion }: Props) => {
         >
           <Select.Button
             className="w-48 xl:w-72"
-            label={data.name}
+            label={discussion.name}
             icon={<FontAwesomeIcon icon={faChevronDown} size="xs" />}
           />
           <Select.Options>

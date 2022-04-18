@@ -143,8 +143,41 @@ type Classroom implements Node {
   createdAt: DateTime!
   updatedAt: DateTime!
   createdBy: User!
-  users: [User!]!
-  discussions: [Discussion!]!
+  syllabus: ClassroomSyllabus
+  users(
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: UserFilterInput
+    order: [UserSortInput!]
+  ): UsersConnection
+  discussions(
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: DiscussionFilterInput
+    order: [DiscussionSortInput!]
+  ): DiscussionsConnection
   state: State
   delLogId: Int
   delLog: DelLog
@@ -158,6 +191,8 @@ input ClassroomFilterInput {
   id: ComparableInt32OperationFilterInput
   guid: ComparableGuidOperationFilterInput
   name: StringOperationFilterInput
+  syllabusId: ComparableNullableOfInt32OperationFilterInput
+  syllabus: ClassroomSyllabusFilterInput
   stateId: ComparableInt32OperationFilterInput
   state: StateFilterInput
   delLogId: ComparableNullableOfInt32OperationFilterInput
@@ -210,11 +245,44 @@ input ClassroomSortInput {
   id: SortEnumType
   guid: SortEnumType
   name: SortEnumType
+  syllabusId: SortEnumType
+  syllabus: ClassroomSyllabusSortInput
   stateId: SortEnumType
   state: StateSortInput
   delLogId: SortEnumType
   delLog: DelLogSortInput
   deletedAt: SortEnumType
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
+}
+
+type ClassroomSyllabus {
+  id: Int!
+  guid: UUID!
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  classroom: Classroom
+}
+
+input ClassroomSyllabusFilterInput {
+  and: [ClassroomSyllabusFilterInput!]
+  or: [ClassroomSyllabusFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  guid: ComparableGuidOperationFilterInput
+  classroomId: ComparableInt32OperationFilterInput
+  classroom: ClassroomFilterInput
+  content: StringOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+}
+
+input ClassroomSyllabusSortInput {
+  id: SortEnumType
+  guid: SortEnumType
+  classroomId: SortEnumType
+  classroom: ClassroomSortInput
+  content: SortEnumType
   createdAt: SortEnumType
   updatedAt: SortEnumType
 }
@@ -569,6 +637,28 @@ type DiscussionNotFoundError implements Error {
   message: String!
 }
 
+"""A connection to a list of items."""
+type DiscussionsConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [DiscussionsEdge!]
+
+  """A flattened list of the nodes."""
+  nodes: [Discussion!]
+  totalCount: Int!
+}
+
+"""An edge in a connection."""
+type DiscussionsEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: Discussion!
+}
+
 input DiscussionSortInput {
   id: SortEnumType
   guid: SortEnumType
@@ -680,6 +770,7 @@ type FilesConnection {
 
   """A flattened list of the nodes."""
   nodes: [File!]
+  totalCount: Int!
 }
 
 """An edge in a connection."""
@@ -1087,6 +1178,7 @@ type MessagesConnection {
 
   """A flattened list of the nodes."""
   nodes: [Message!]
+  totalCount: Int!
 }
 
 """An edge in a connection."""
@@ -1123,6 +1215,7 @@ type Mutation {
   updateProfile(input: UpdateProfileInput!): UpdateProfilePayload!
   updateAvatar(input: UpdateAvatarInput!): UpdateAvatarPayload!
   createClassroom(input: CreateClassroomInput!): CreateClassroomPayload!
+  upsertClassroomSyllabus(input: UpsertClassroomSyllabusInput!): UpsertClassroomSyllabusPayload!
   joinClassroom(input: JoinClassroomInput!): JoinClassroomPayload!
   createClassroomInvite(input: CreateClassroomInviteInput!): CreateClassroomInvitePayload!
   sendDiscussionMessage(input: SendDiscussionMessageInput!): SendDiscussionMessagePayload!
@@ -1491,6 +1584,19 @@ type UpdateProfilePayload {
   query: Query!
 }
 
+union UpsertClassroomSyllabusError = ClassroomNotFoundError
+
+input UpsertClassroomSyllabusInput {
+  classroomId: ID!
+  content: String
+}
+
+type UpsertClassroomSyllabusPayload {
+  classroom: Classroom
+  errors: [UpsertClassroomSyllabusError!]
+  query: Query!
+}
+
 input UriFilterInput {
   and: [UriFilterInput!]
   or: [UriFilterInput!]
@@ -1735,6 +1841,28 @@ input UserProfileColorOperationFilterInput {
   neq: UserProfileColor
   in: [UserProfileColor!]
   nin: [UserProfileColor!]
+}
+
+"""A connection to a list of items."""
+type UsersConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [UsersEdge!]
+
+  """A flattened list of the nodes."""
+  nodes: [User!]
+  totalCount: Int!
+}
+
+"""An edge in a connection."""
+type UsersEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: User!
 }
 
 input UserSortInput {

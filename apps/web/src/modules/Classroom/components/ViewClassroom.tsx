@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
+import { useRouter } from 'next/router';
+import { NextSeo } from 'next-seo';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBook,
@@ -7,18 +9,17 @@ import {
   faCalendarDays,
   faTimeline,
 } from '@fortawesome/free-solid-svg-icons';
-import { useRouter } from 'next/router';
-import { NextSeo } from 'next-seo';
-import { Tabs, Title } from '@spout/toolkit';
+import { Tabs, Text } from '@spout/toolkit';
 import {
   ClassroomParticipants,
   Main,
   PanelRight,
 } from '../../../shared/components';
-import Activity from './Activity';
 import { DiscussionsMenu } from './DiscussionsMenu';
-import { ViewClassroomQuery } from './__generated__/ViewClassroomQuery.graphql';
 import { ClassroomHeader } from './ClassroomHeader';
+import { Activity } from './Activity';
+import { Overview } from './Overview';
+import { ViewClassroomQuery } from './__generated__/ViewClassroomQuery.graphql';
 
 const tabs = [
   {
@@ -31,7 +32,7 @@ const tabs = [
     label: 'Overview',
     slug: 'overview',
     icon: <FontAwesomeIcon icon={faBook} className="mr-2" />,
-    component: 'overview here',
+    component: <Overview />,
   },
   {
     label: 'Announcements',
@@ -116,7 +117,7 @@ const ViewClassroom = ({ fetchKey }: Props) => {
             </Tabs.List>
             <Tabs.Panels>
               {tabs.map((tab) => (
-                <Tabs.Panel key={tab.label}>
+                <Tabs.Panel key={tab.label} className="mb-8">
                   {tab.slug === currentRoute ? tab.component : null}
                 </Tabs.Panel>
               ))}
@@ -125,9 +126,9 @@ const ViewClassroom = ({ fetchKey }: Props) => {
         </Main>
       </div>
       <PanelRight className="space-y-2">
-        <Title as="h2" variant="h5" className="px-2">
+        <Text color="dark" weight="semibold">
           Participants
-        </Title>
+        </Text>
         <ClassroomParticipants />
       </PanelRight>
     </>
