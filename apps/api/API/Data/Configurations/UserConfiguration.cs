@@ -54,6 +54,10 @@ namespace API.Data.Configurations {
                 .WithOne(uc => uc.User!)
                 .HasForeignKey(uc => uc.UserId);
 
+            builder.HasMany(u => u.ClassroomAnnouncements)
+                .WithOne(ca => ca.CreatedBy!)
+                .HasForeignKey(ca => ca.CreatedById);
+
             builder.HasMany(u => u.Sessions)
                 .WithOne(s => s.User!)
                 .HasForeignKey(s => s.UserId);

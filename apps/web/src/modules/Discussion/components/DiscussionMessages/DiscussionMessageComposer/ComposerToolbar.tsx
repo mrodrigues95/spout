@@ -34,7 +34,6 @@ const ComposerToolbar = () => {
         disabled={!message.raw || isUploadingFiles}
         className="rounded-full"
         variant="primary"
-        size="sm"
       />
     </div>
   );

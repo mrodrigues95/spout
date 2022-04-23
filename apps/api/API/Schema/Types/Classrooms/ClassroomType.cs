@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using API.Data;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Users;
+using API.Schema.Types.ClassroomAnnouncements;
+using API.Schema.Types.ClassroomSyllabus;
 using API.Schema.Types.Discussions;
 using API.Schema.Types.Users;
 using HotChocolate;
@@ -64,6 +66,16 @@ namespace API.Schema.Types.Classrooms {
                 .UseDbContext<ApplicationDbContext>();
 
             descriptor
+                .Field("announcements")
+                .Type<NonNullType<ListType<NonNullType<ClassroomAnnouncementType>>>>()
+                .ResolveWith<ClassroomResolvers>(x =>
+                    x.GetClassroomAnnouncementsAsync(default!, default!, default!, default!))
+                .UseDbContext<ApplicationDbContext>()
+                .UsePaging<NonNullType<ClassroomAnnouncementType>>()
+                .UseFiltering()
+                .UseSorting();
+
+            descriptor
                 .Field(c => c.Users)
                 .Type<NonNullType<ListType<NonNullType<UserType>>>>()
                 .ResolveWith<ClassroomResolvers>(x =>
@@ -118,6 +130,25 @@ namespace API.Schema.Types.Classrooms {
                     .Where(c => c.Id == classroom.Id)
                     .Include(c => c.Users)
                     .SelectMany(c => c.Users.Select(u => u.User))
+                    .AsQueryable();
+
+                var connection = await query
+                    .Filter(resolverCtx)
+                    .Sort(resolverCtx)
+                    .ApplyCursorPaginationAsync(resolverCtx, cancellationToken: cancellationToken);
+
+                return connection;
+            }
+
+            public async Task<Connection<Entities.ClassroomAnnouncement>> GetClassroomAnnouncementsAsync(
+                [Parent] Entities.Classroom classroom,
+                ApplicationDbContext dbCtx,
+                IResolverContext resolverCtx,
+                CancellationToken cancellationToken) {
+                var query = dbCtx.Classrooms
+                    .Where(c => c.Id == classroom.Id)
+                    .Include(c => c.Announcements)
+                    .SelectMany(c => c.Announcements)
                     .AsQueryable();
 
                 var connection = await query

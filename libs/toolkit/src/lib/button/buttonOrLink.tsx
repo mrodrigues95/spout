@@ -18,10 +18,10 @@ const STYLES = {
       lg: 'py-2 px-4 text-lg',
     },
     icon: {
-      xs: 'p-1 text-xs',
-      sm: 'p-2 text-sm',
-      md: 'p-3 text-md',
-      lg: 'p-4 text-lg',
+      xs: 'p-1 w-4 h-4 text-xs',
+      sm: 'p-1.5 w-6 h-6 text-sm',
+      md: 'p-2 w-8 h-8 text-md',
+      lg: 'p-2.5 w-10 h-10 text-lg',
     },
   },
   variant: {

@@ -1,13 +1,14 @@
-import { useRef } from 'react';
+import { ComponentProps, ReactElement, useRef } from 'react';
 import { EditorThemeClasses, LexicalEditor } from 'lexical';
 import LexicalComposer from '@lexical/react/LexicalComposer';
 import { HistoryPlugin as LexicalHistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import LexicalRichTextPlugin from '@lexical/react/LexicalRichTextPlugin';
-import LexicalContentEditable from '@lexical/react/LexicalContentEditable';
 import LexicalMarkdownShortcutPlugin from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import LexicalListPlugin from '@lexical/react/LexicalListPlugin';
 
 import clsx from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import ContentEditable from './ContentEditable';
 import { editorNodes } from './nodes';
 import {
   ToolbarPlugin,
@@ -20,7 +21,7 @@ import {
 } from './plugins';
 
 const EditorPlaceholder = () => (
-  <div className="pointer-events-none absolute top-16 left-0 inline-block select-none overflow-hidden whitespace-pre-wrap px-3 font-light text-gray-400 outline-none">
+  <div className="pointer-events-none absolute top-[3.875rem] left-0 inline-block select-none overflow-hidden whitespace-pre-wrap px-3 font-light text-gray-400 outline-none">
     Enter some text...
   </div>
 );
@@ -80,8 +81,9 @@ const theme: EditorThemeClasses = {
 };
 
 interface Props extends ActionsPluginProps {
-  initialContent?: string | null;
-  readOnly: boolean;
+  readOnly?: boolean;
+  contentEditable?: ReactElement;
+  containerProps?: ComponentProps<'div'>;
 }
 
 const Editor = ({
@@ -90,8 +92,10 @@ const Editor = ({
   onCancel,
   showDelete,
   isSaving,
-  readOnly,
-  initialContent,
+  readOnly = true,
+  containerProps: _containerProps = {},
+  contentEditable,
+  initialStringifiedEditorState,
 }: Props) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const initialConfig: InitialConfig = {
@@ -101,46 +105,48 @@ const Editor = ({
     readOnly,
   };
 
+  const { className, ...containerProps } = _containerProps;
+
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <div
         ref={scrollRef}
-        className="relative rounded-lg text-left shadow-md ring-1 ring-gray-900/5"
+        className={twMerge(
+          clsx(
+            'relative rounded-lg text-left ring-2 ring-gray-900/5',
+            readOnly ? 'shadow-sm' : 'shadow-md',
+            className,
+          ),
+        )}
+        {...containerProps}
       >
-        {readOnly ? (
-          <LexicalRichTextPlugin
-            contentEditable={
-              <LexicalContentEditable className="relative cursor-text resize-none rounded-lg p-4 outline-none" />
-            }
-            placeholder={null}
-            initialEditorState={initialContent || undefined}
-          />
-        ) : (
+        <ReadOnlyPlugin readOnly={readOnly} />
+        <MaxIndentLevelPlugin maxDepth={7} />
+        <CodeHighlightPlugin />
+        <LexicalHistoryPlugin />
+        <LexicalListPlugin />
+        <LexicalMarkdownShortcutPlugin />
+        {!readOnly && (
           <>
             <ToolbarPlugin />
             <AutoFocusPlugin />
-            <MaxIndentLevelPlugin maxDepth={7} />
-            <CodeHighlightPlugin />
-            <LexicalHistoryPlugin />
-            <LexicalListPlugin />
-            <LexicalMarkdownShortcutPlugin />
-            <LexicalRichTextPlugin
-              contentEditable={
-                <LexicalContentEditable className="relative max-h-[30rem] min-h-[20rem] cursor-text resize-none overflow-y-auto rounded-lg bg-white px-2.5 py-2 outline-none" />
-              }
-              placeholder={<EditorPlaceholder />}
-              initialEditorState={initialContent || undefined}
-            />
-            <ActionsPlugin
-              onDelete={onDelete}
-              onSave={onSave}
-              onCancel={onCancel}
-              isSaving={isSaving}
-              showDelete={showDelete}
-            />
           </>
         )}
-        <ReadOnlyPlugin readOnly={readOnly} />
+        <LexicalRichTextPlugin
+          contentEditable={contentEditable ?? <ContentEditable />}
+          placeholder={<EditorPlaceholder />}
+          initialEditorState={initialStringifiedEditorState || undefined}
+        />
+        {!readOnly && (
+          <ActionsPlugin
+            onDelete={onDelete}
+            onSave={onSave}
+            onCancel={onCancel}
+            isSaving={isSaving}
+            showDelete={showDelete}
+            initialStringifiedEditorState={initialStringifiedEditorState}
+          />
+        )}
       </div>
     </LexicalComposer>
   );

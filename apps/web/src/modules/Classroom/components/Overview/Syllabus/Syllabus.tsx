@@ -111,7 +111,7 @@ const Syllabus = ({ ...props }: Props) => {
           onCancel={() => setIsEditing(false)}
           isSaving={isInFlight}
           readOnly={!isEditing}
-          initialContent={classroom.syllabus?.content}
+          initialStringifiedEditorState={classroom.syllabus?.content}
           showDelete={!!classroom.syllabus}
         />
       ) : (

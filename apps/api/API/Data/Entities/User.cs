@@ -25,6 +25,7 @@ namespace API.Data.Entities {
         public ICollection<Message> Messages { get; set; } = new List<Message>();
         public ICollection<Message> PinnedMessages { get; set; } = new List<Message>();
         public ICollection<ClassroomUser> Classrooms { get; set; } = new List<ClassroomUser>();
+        public ICollection<ClassroomAnnouncement> ClassroomAnnouncements { get; set; } = new List<ClassroomAnnouncement>();
         public ICollection<ClassroomInvite> Invites { get; set; } = new List<ClassroomInvite>();
         public ICollection<File> FileUploads { get; set; } = new List<File>();
     }

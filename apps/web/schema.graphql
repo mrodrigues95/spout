@@ -67,6 +67,28 @@ directive @specifiedBy(
   url: String!
 ) on SCALAR
 
+"""A connection to a list of items."""
+type AnnouncementsConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [AnnouncementsEdge!]
+
+  """A flattened list of the nodes."""
+  nodes: [ClassroomAnnouncement!]
+  totalCount: Int!
+}
+
+"""An edge in a connection."""
+type AnnouncementsEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: ClassroomAnnouncement!
+}
+
 enum ApplyPolicy {
   BEFORE_RESOLVER
   AFTER_RESOLVER
@@ -144,6 +166,23 @@ type Classroom implements Node {
   updatedAt: DateTime!
   createdBy: User!
   syllabus: ClassroomSyllabus
+  announcements(
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: ClassroomAnnouncementFilterInput
+    order: [ClassroomAnnouncementSortInput!]
+  ): AnnouncementsConnection
   users(
     """Returns the first _n_ elements from the list."""
     first: Int
@@ -185,6 +224,46 @@ type Classroom implements Node {
   invites: [ClassroomInvite!]!
 }
 
+type ClassroomAnnouncement implements Node {
+  id: ID!
+  guid: UUID!
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  createdBy: User!
+  classroom: Classroom!
+}
+
+input ClassroomAnnouncementFilterInput {
+  and: [ClassroomAnnouncementFilterInput!]
+  or: [ClassroomAnnouncementFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  guid: ComparableGuidOperationFilterInput
+  createdById: ComparableInt32OperationFilterInput
+  createdBy: UserFilterInput
+  classroomId: ComparableInt32OperationFilterInput
+  classroom: ClassroomFilterInput
+  content: StringOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+}
+
+type ClassroomAnnouncementNotFoundError implements Error {
+  message: String!
+}
+
+input ClassroomAnnouncementSortInput {
+  id: SortEnumType
+  guid: SortEnumType
+  createdById: SortEnumType
+  createdBy: UserSortInput
+  classroomId: SortEnumType
+  classroom: ClassroomSortInput
+  content: SortEnumType
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
+}
+
 input ClassroomFilterInput {
   and: [ClassroomFilterInput!]
   or: [ClassroomFilterInput!]
@@ -203,6 +282,7 @@ input ClassroomFilterInput {
   discussions: ListFilterInputTypeOfDiscussionFilterInput
   users: ListFilterInputTypeOfClassroomUserFilterInput
   invites: ListFilterInputTypeOfClassroomInviteFilterInput
+  announcements: ListFilterInputTypeOfClassroomAnnouncementFilterInput
 }
 
 type ClassroomInvite {
@@ -446,6 +526,19 @@ type CompleteUploadPayload {
   query: Query!
 }
 
+union CreateClassroomAnnouncementError = ClassroomNotFoundError
+
+input CreateClassroomAnnouncementInput {
+  classroomId: ID!
+  content: String!
+}
+
+type CreateClassroomAnnouncementPayload {
+  classroomAnnouncement: ClassroomAnnouncement
+  errors: [CreateClassroomAnnouncementError!]
+  query: Query!
+}
+
 input CreateClassroomInput {
   name: String!
 }
@@ -482,6 +575,18 @@ type CreateDiscussionPayload {
 
 """The `DateTime` scalar represents an ISO-8601 compliant date time type."""
 scalar DateTime
+
+union DeleteClassroomAnnouncementError = ClassroomAnnouncementNotFoundError
+
+input DeleteClassroomAnnouncementInput {
+  classroomAnnouncementId: ID!
+}
+
+type DeleteClassroomAnnouncementPayload {
+  classroomAnnouncement: ClassroomAnnouncement
+  errors: [DeleteClassroomAnnouncementError!]
+  query: Query!
+}
 
 union DeleteFileError = FileNotFoundError | BlobNotFoundError | BlobDeletionError
 
@@ -967,6 +1072,13 @@ type JoinClassroomPayload {
   query: Query!
 }
 
+input ListFilterInputTypeOfClassroomAnnouncementFilterInput {
+  all: ClassroomAnnouncementFilterInput
+  none: ClassroomAnnouncementFilterInput
+  some: ClassroomAnnouncementFilterInput
+  any: Boolean
+}
+
 input ListFilterInputTypeOfClassroomFilterInput {
   all: ClassroomFilterInput
   none: ClassroomFilterInput
@@ -1215,9 +1327,12 @@ type Mutation {
   updateProfile(input: UpdateProfileInput!): UpdateProfilePayload!
   updateAvatar(input: UpdateAvatarInput!): UpdateAvatarPayload!
   createClassroom(input: CreateClassroomInput!): CreateClassroomPayload!
-  upsertClassroomSyllabus(input: UpsertClassroomSyllabusInput!): UpsertClassroomSyllabusPayload!
   joinClassroom(input: JoinClassroomInput!): JoinClassroomPayload!
   createClassroomInvite(input: CreateClassroomInviteInput!): CreateClassroomInvitePayload!
+  createClassroomAnnouncement(input: CreateClassroomAnnouncementInput!): CreateClassroomAnnouncementPayload!
+  updateClassroomAnnouncement(input: UpdateClassroomAnnouncementInput!): UpdateClassroomAnnouncementPayload!
+  deleteClassroomAnnouncement(input: DeleteClassroomAnnouncementInput!): DeleteClassroomAnnouncementPayload!
+  upsertClassroomSyllabus(input: UpsertClassroomSyllabusInput!): UpsertClassroomSyllabusPayload!
   sendDiscussionMessage(input: SendDiscussionMessageInput!): SendDiscussionMessagePayload!
   updateDiscussionMessage(input: UpdateDiscussionMessageInput!): UpdateDiscussionMessagePayload!
   pinDiscussionMessage(input: PinDiscussionMessageInput!): PinDiscussionMessagePayload!
@@ -1535,6 +1650,19 @@ type UpdateAvatarPayload {
   query: Query!
 }
 
+union UpdateClassroomAnnouncementError = ClassroomAnnouncementNotFoundError
+
+input UpdateClassroomAnnouncementInput {
+  classroomAnnouncementId: ID!
+  content: String!
+}
+
+type UpdateClassroomAnnouncementPayload {
+  classroomAnnouncement: ClassroomAnnouncement
+  errors: [UpdateClassroomAnnouncementError!]
+  query: Query!
+}
+
 union UpdateDiscussionDescriptionError = DiscussionNotFoundError
 
 input UpdateDiscussionDescriptionInput {
@@ -1686,6 +1814,7 @@ type User implements Node {
   phoneNumberChanges: [UserPhoneNumberChange!]!
   messages: [Message!]!
   pinnedMessages: [Message!]!
+  classroomAnnouncements: [ClassroomAnnouncement!]!
   invites: [ClassroomInvite!]!
   fileUploads: [File!]!
   userName: String
@@ -1752,6 +1881,7 @@ input UserFilterInput {
   messages: ListFilterInputTypeOfMessageFilterInput
   pinnedMessages: ListFilterInputTypeOfMessageFilterInput
   classrooms: ListFilterInputTypeOfClassroomUserFilterInput
+  classroomAnnouncements: ListFilterInputTypeOfClassroomAnnouncementFilterInput
   invites: ListFilterInputTypeOfClassroomInviteFilterInput
   fileUploads: ListFilterInputTypeOfFileFilterInput
   userName: StringOperationFilterInput

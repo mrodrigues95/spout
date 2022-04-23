@@ -19,6 +19,7 @@ import { DiscussionsMenu } from './DiscussionsMenu';
 import { ClassroomHeader } from './ClassroomHeader';
 import { Activity } from './Activity';
 import { Overview } from './Overview';
+import { Announcements } from './Announcements';
 import { ViewClassroomQuery } from './__generated__/ViewClassroomQuery.graphql';
 
 const tabs = [
@@ -38,7 +39,7 @@ const tabs = [
     label: 'Announcements',
     slug: 'announcements',
     icon: <FontAwesomeIcon icon={faBullhorn} className="mr-2" />,
-    component: 'announcements here',
+    component: <Announcements />,
   },
   {
     label: 'Important Dates',
@@ -115,7 +116,7 @@ const ViewClassroom = ({ fetchKey }: Props) => {
                 </Tabs.Tab>
               ))}
             </Tabs.List>
-            <Tabs.Panels>
+            <Tabs.Panels className="h-full">
               {tabs.map((tab) => (
                 <Tabs.Panel key={tab.label} className="mb-8">
                   {tab.slug === currentRoute ? tab.component : null}

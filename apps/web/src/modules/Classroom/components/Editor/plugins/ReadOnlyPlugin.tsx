@@ -2,10 +2,10 @@ import { useLayoutEffect } from 'react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 
 interface Props {
-  readOnly: boolean;
+  readOnly?: boolean;
 }
 
-const ReadOnlyPlugin = ({ readOnly }: Props) => {
+const ReadOnlyPlugin = ({ readOnly = true }: Props) => {
   const [editor] = useLexicalComposerContext();
 
   useLayoutEffect(() => {

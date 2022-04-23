@@ -1,21 +1,35 @@
 import { Menu as HeadlessMenu } from '@headlessui/react';
 import clsx from 'clsx';
+import { twMerge } from 'tailwind-merge';
 import { ButtonOrLink, ButtonOrLinkProps } from '../button';
 
 export interface MenuItemProps extends ButtonOrLinkProps {}
 
-export const MenuItem = ({ href, className, ...props }: MenuItemProps) => {
+export const MenuItem = ({
+  href,
+  className,
+  variant = 'tertiary',
+  ...props
+}: MenuItemProps) => {
   const isLink = typeof href !== 'undefined';
 
   return (
     <HeadlessMenu.Item>
       {({ active }) => (
         <ButtonOrLink
-          variant="tertiary"
+          variant={variant}
           size="sm"
-          className={clsx(
-            'justify-start',
-            active ? 'bg-gray-100 text-gray-900' : 'bg-white text-gray-500',
+          className={twMerge(
+            clsx(
+              'justify-start',
+              variant === 'tertiary' &&
+                (active
+                  ? 'bg-gray-100 text-gray-900'
+                  : 'bg-white text-gray-500'),
+              variant === 'danger' &&
+                (active ? 'bg-red-100 text-red-600' : 'bg-white text-red-600'),
+              className,
+            ),
           )}
           fullWidth
           href={href}

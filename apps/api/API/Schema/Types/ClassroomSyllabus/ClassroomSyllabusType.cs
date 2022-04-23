@@ -1,9 +1,9 @@
-using API.Data.Entities;
 using HotChocolate.Types;
+using Entities = API.Data.Entities;
 
-namespace API.Schema.Types.Classrooms {
-    public class ClassroomSyllabusType : ObjectType<ClassroomSyllabus> {
-        protected override void Configure(IObjectTypeDescriptor<ClassroomSyllabus> descriptor) {
+namespace API.Schema.Types.ClassroomSyllabus {
+    public class ClassroomSyllabusType : ObjectType<Entities.ClassroomSyllabus> {
+        protected override void Configure(IObjectTypeDescriptor<Entities.ClassroomSyllabus> descriptor) {
             descriptor
                 .Field(cs => cs.Id)
                 .Type<NonNullType<IntType>>();

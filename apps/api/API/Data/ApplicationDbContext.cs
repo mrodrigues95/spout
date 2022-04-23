@@ -24,6 +24,7 @@ namespace API.Data {
         public DbSet<Classroom> Classrooms { get; set; } = default!;
         public DbSet<ClassroomUser> ClassroomUsers { get; set; } = default!;
         public DbSet<ClassroomInvite> ClassroomInvites { get; set; } = default!;
+        public DbSet<ClassroomAnnouncement> ClassroomAnnouncements { get; set; } = default!;
         public DbSet<ClassroomSyllabus> ClassroomSyllabus { get; set; } = default!;
         public DbSet<Discussion> Discussions { get; set; } = default!;
         public DbSet<Message> Messages { get; set; } = default!;

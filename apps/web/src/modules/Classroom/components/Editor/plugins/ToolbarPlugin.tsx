@@ -454,7 +454,7 @@ export default function ToolbarPlugin(): React$Node {
   });
 
   return (
-    <div className="mb-1 flex items-center divide-x-2 divide-gray-100 overflow-auto rounded-t-lg border-b border-gray-200 bg-white px-2.5 py-2">
+    <div className="flex items-center divide-x-2 divide-gray-100 overflow-auto rounded-t-lg border-b border-gray-200 bg-white px-2.5 py-2">
       <div className="space-x-1.5 px-2">
         <IconButton
           disabled={!canUndo}

@@ -39,17 +39,19 @@ const useIsEditorEmpty = (editor: LexicalEditor) => {
 };
 
 export interface Props {
-  onCancel(): void;
-  onSave(stringifiedEditorState: string): void;
+  onCancel?(): void;
+  onSave?(stringifiedEditorState: string): void;
   onDelete?(): void;
   isSaving?: boolean;
   showDelete?: boolean;
+  initialStringifiedEditorState?: string | null;
 }
 
 const ActionsPlugin = ({
   onCancel,
   onSave,
   onDelete,
+  initialStringifiedEditorState,
   isSaving = false,
   showDelete = false,
 }: Props) => {
@@ -60,11 +62,11 @@ const ActionsPlugin = ({
     const stringifiedEditorState = JSON.stringify(
       editor.getEditorState().toJSON(),
     );
-    onSave(stringifiedEditorState);
+    onSave?.(stringifiedEditorState);
   }, [editor, onSave]);
 
   return (
-    <div className="flex justify-end space-x-1.5 px-2.5 py-2">
+    <div className="flex justify-end space-x-2 px-2.5 pt-5 pb-2">
       {showDelete && (
         <IconButton
           aria-label="Delete"
@@ -79,7 +81,16 @@ const ActionsPlugin = ({
       <Button
         size="sm"
         variant="tertiary"
-        onClick={onCancel}
+        onClick={() => {
+          if (initialStringifiedEditorState) {
+            // Reset back to initial state.
+            const editorState = editor.parseEditorState(
+              initialStringifiedEditorState,
+            );
+            editor.setEditorState(editorState);
+          }
+          if (onCancel) onCancel();
+        }}
         disabled={isSaving}
       >
         Cancel

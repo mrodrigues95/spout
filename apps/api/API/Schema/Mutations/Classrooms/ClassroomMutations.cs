@@ -49,44 +49,6 @@ namespace API.Schema.Mutations.Classrooms {
         }
 
         [Authorize]
-        [Error(typeof(ClassroomNotFoundException))]
-        public async Task<Classroom> UpsertClassroomSyllabusAsync(
-            UpsertClassroomSyllabusInput input,
-            ApplicationDbContext ctx,
-            CancellationToken cancellationToken) {
-            var classroom = await ctx.Classrooms
-                .Include(c => c.Syllabus)
-                .SingleOrDefaultAsync(c => c.Id == input.ClassroomId);
-            if (classroom is null) throw new ClassroomNotFoundException();
-
-            var shouldUpsert = input.Content is not null;
-            if (shouldUpsert) {
-                if (classroom.Syllabus is null) {
-                    classroom.Syllabus = new ClassroomSyllabus {
-                        ClassroomId = classroom.Id,
-                        Content = input.Content
-                    };
-                    await ctx.SaveChangesAsync(cancellationToken);
-                } else {
-                    classroom.Syllabus!.Content = input.Content;
-                    classroom.Syllabus!.UpdatedAt = DateTime.UtcNow;
-                    await ctx.SaveChangesAsync(cancellationToken);
-                }
-            } else {
-                if (classroom.Syllabus is not null) {
-                    ctx.ClassroomSyllabus.Remove(classroom.Syllabus!);
-                    await ctx.SaveChangesAsync(cancellationToken);
-                } else {
-                    _logger.LogError(
-                        "Unable to delete classroom syllabus for classroom: {classroom}. " +
-                        "Input: {input}", classroom, input);
-                }
-            }
-
-            return classroom;
-        }
-
-        [Authorize]
         [Error(typeof(ClassroomInviteExpiredException))]
         [Error(typeof(UserAlreadyInClassroomException))]
         public async Task<Classroom?> JoinClassroomAsync(

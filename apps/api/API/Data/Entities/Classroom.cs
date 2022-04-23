@@ -19,5 +19,6 @@ namespace API.Data.Entities {
         public ICollection<Discussion> Discussions { get; set; } = new List<Discussion>();
         public ICollection<ClassroomUser> Users { get; set; } = new List<ClassroomUser>();
         public ICollection<ClassroomInvite> Invites { get; set; } = new List<ClassroomInvite>();
+        public ICollection<ClassroomAnnouncement> Announcements { get; set; } = new List<ClassroomAnnouncement>();
     }
 }

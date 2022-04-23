@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9c86eca10b7be40ac729b1ab5d714681>>
+ * @generated SignedSource<<982e69324bbab15e02a94b8c5cd1cea6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,7 +19,7 @@ export type OverviewQuery$data = {
     readonly syllabus: {
       readonly content: string;
     } | null;
-    readonly " $fragmentSpreads": FragmentRefs<"Header_classroom" | "Syllabus_classroom" | "SyllabusAttachments_classroom">;
+    readonly " $fragmentSpreads": FragmentRefs<"Header_classroom" | "Syllabus_classroom">;
   };
 };
 export type OverviewQueryResponse = OverviewQuery$data;
@@ -109,11 +109,6 @@ return {
             "args": null,
             "kind": "FragmentSpread",
             "name": "Syllabus_classroom"
-          },
-          {
-            "args": null,
-            "kind": "FragmentSpread",
-            "name": "SyllabusAttachments_classroom"
           }
         ],
         "storageKey": null
@@ -210,16 +205,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "fb7fe1f48b20d00e05ac5a7818c8dceb",
+    "cacheID": "026b3f3e63b3bab03e8733efac7719fc",
     "id": null,
     "metadata": {},
     "name": "OverviewQuery",
     "operationKind": "query",
-    "text": "query OverviewQuery(\n  $id: ID!\n) {\n  classroomById(id: $id) {\n    syllabus {\n      content\n    }\n    ...Header_classroom\n    ...Syllabus_classroom\n    ...SyllabusAttachments_classroom\n    id\n  }\n}\n\nfragment Header_classroom on Classroom {\n  name\n  createdBy {\n    name\n    avatarUrl\n    profileColor\n    id\n  }\n  discussions {\n    totalCount\n  }\n  users {\n    totalCount\n  }\n}\n\nfragment SyllabusAttachments_classroom on Classroom {\n  syllabus {\n    content\n  }\n}\n\nfragment Syllabus_classroom on Classroom {\n  id\n  name\n  syllabus {\n    content\n    updatedAt\n  }\n  createdBy {\n    name\n    avatarUrl\n    profileColor\n    id\n  }\n}\n"
+    "text": "query OverviewQuery(\n  $id: ID!\n) {\n  classroomById(id: $id) {\n    syllabus {\n      content\n    }\n    ...Header_classroom\n    ...Syllabus_classroom\n    id\n  }\n}\n\nfragment Header_classroom on Classroom {\n  name\n  createdBy {\n    name\n    avatarUrl\n    profileColor\n    id\n  }\n  discussions {\n    totalCount\n  }\n  users {\n    totalCount\n  }\n}\n\nfragment Syllabus_classroom on Classroom {\n  id\n  name\n  syllabus {\n    content\n    updatedAt\n  }\n  createdBy {\n    name\n    avatarUrl\n    profileColor\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "1125266756729880e63c6cf40c90b32a";
+(node as any).hash = "20be90eb0b3a95e9685620fb339a6b30";
 
 export default node;

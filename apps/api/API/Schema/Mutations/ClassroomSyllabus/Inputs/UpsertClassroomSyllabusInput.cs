@@ -2,7 +2,7 @@ using API.Data.Entities;
 using FluentValidation;
 using HotChocolate.Types.Relay;
 
-namespace API.Schema.Mutations.Classrooms.Inputs {
+namespace API.Schema.Mutations.ClassroomSyllabus.Inputs {
     public record UpsertClassroomSyllabusInput(
         [property: ID(nameof(Classroom))] int ClassroomId,
         string? Content);
