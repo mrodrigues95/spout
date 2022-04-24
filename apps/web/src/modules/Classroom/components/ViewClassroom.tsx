@@ -4,9 +4,9 @@ import { useRouter } from 'next/router';
 import { NextSeo } from 'next-seo';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  faBell,
   faBook,
   faBullhorn,
-  faCalendarDays,
   faTimeline,
 } from '@fortawesome/free-solid-svg-icons';
 import { Tabs, Text } from '@spout/toolkit';
@@ -20,6 +20,7 @@ import { ClassroomHeader } from './ClassroomHeader';
 import { Activity } from './Activity';
 import { Overview } from './Overview';
 import { Announcements } from './Announcements';
+import { Reminders } from './Reminders';
 import { ViewClassroomQuery } from './__generated__/ViewClassroomQuery.graphql';
 
 const tabs = [
@@ -42,10 +43,10 @@ const tabs = [
     component: <Announcements />,
   },
   {
-    label: 'Important Dates',
-    slug: 'important',
-    icon: <FontAwesomeIcon icon={faCalendarDays} className="mr-2" />,
-    component: 'important dates here',
+    label: 'Reminders',
+    slug: 'reminders',
+    icon: <FontAwesomeIcon icon={faBell} className="mr-2" />,
+    component: <Reminders />,
   },
 ];
 

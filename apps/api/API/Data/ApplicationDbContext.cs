@@ -1,5 +1,6 @@
 using System.Reflection;
 using API.Data.Entities;
+using API.Schema.Types.ClassroomReminders;
 using API.Schema.Types.Files;
 using API.Schema.Types.Messages;
 using API.Schema.Types.Users;
@@ -25,6 +26,7 @@ namespace API.Data {
         public DbSet<ClassroomUser> ClassroomUsers { get; set; } = default!;
         public DbSet<ClassroomInvite> ClassroomInvites { get; set; } = default!;
         public DbSet<ClassroomAnnouncement> ClassroomAnnouncements { get; set; } = default!;
+        public DbSet<ClassroomReminder> ClassroomReminders { get; set; } = default!;
         public DbSet<ClassroomSyllabus> ClassroomSyllabus { get; set; } = default!;
         public DbSet<Discussion> Discussions { get; set; } = default!;
         public DbSet<Message> Messages { get; set; } = default!;
@@ -53,6 +55,7 @@ namespace API.Data {
             builder.HasPostgresEnum<UserPreferredProvider>();
             builder.HasPostgresEnum<WhitelistedFileExtension>();
             builder.HasPostgresEnum<FileUploadStatus>();
+            builder.HasPostgresEnum<ClassroomReminderImportance>();
 
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
@@ -63,6 +66,7 @@ namespace API.Data {
             NpgsqlConnection.GlobalTypeMapper.MapEnum<UserPreferredProvider>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<WhitelistedFileExtension>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<FileUploadStatus>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<ClassroomReminderImportance>();
         }
     }
 }

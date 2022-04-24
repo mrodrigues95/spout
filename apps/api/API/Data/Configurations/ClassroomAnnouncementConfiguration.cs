@@ -10,6 +10,10 @@ namespace API.Data.Configurations {
                 .HasKey(ca => ca.Id);
 
             builder
+                .Property(ca => ca.Guid)
+                .IsRequired(true);
+
+            builder
                 .Property(ca => ca.Content)
                 .HasMaxLength(12000)
                 .IsRequired(true);

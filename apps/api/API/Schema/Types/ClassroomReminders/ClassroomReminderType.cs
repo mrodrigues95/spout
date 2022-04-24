@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using API.Data;
 using API.Data.Entities;
-using API.Schema.Queries.ClassroomAnnouncements;
+using API.Schema.Queries.ClassroomReminders;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Users;
 using API.Schema.Types.Classrooms;
@@ -10,56 +10,72 @@ using API.Schema.Types.Users;
 using HotChocolate;
 using HotChocolate.Types;
 
-namespace API.Schema.Types.ClassroomAnnouncements {
-    public class ClassroomAnnouncementType : ObjectType<ClassroomAnnouncement> {
-        protected override void Configure(IObjectTypeDescriptor<ClassroomAnnouncement> descriptor) {
+namespace API.Schema.Types.ClassroomReminders {
+    public enum ClassroomReminderImportance {
+        LOW,
+        MEDIUM,
+        HIGH
+    }
+
+    public class ClassroomReminderImportanceType : EnumType<ClassroomReminderImportance> { }
+
+    public class ClassroomReminderType : ObjectType<ClassroomReminder> {
+        protected override void Configure(IObjectTypeDescriptor<ClassroomReminder> descriptor) {
             descriptor
                 .ImplementsNode()
-                .IdField(ca => ca.Id)
+                .IdField(cr => cr.Id)
                 .ResolveNode((ctx, id)
-                    => ctx.DataLoader<ClassroomAnnouncementByIdDataLoader>().LoadAsync(
+                    => ctx.DataLoader<ClassroomReminderByIdDataLoader>().LoadAsync(
                     id, ctx.RequestAborted)!);
 
             descriptor
-                .Field(ca => ca.Guid)
+                .Field(cr => cr.Guid)
                 .Type<NonNullType<UuidType>>();
 
             descriptor
-                .Field(ca => ca.Content)
+                .Field(cr => cr.Title)
                 .Type<NonNullType<StringType>>();
 
             descriptor
-                 .Field(ca => ca.CreatedAt)
+                .Field(cr => cr.Description)
+                .Type<StringType>();
+
+            descriptor
+                 .Field(cr => cr.DueAt)
                  .Type<NonNullType<DateTimeType>>();
 
             descriptor
-                .Field(ca => ca.UpdatedAt)
+                 .Field(cr => cr.CreatedAt)
+                 .Type<NonNullType<DateTimeType>>();
+
+            descriptor
+                .Field(cr => cr.UpdatedAt)
                 .Type<NonNullType<DateTimeType>>();
 
             descriptor
-                .Field(ca => ca.CreatedBy)
+                .Field(cr => cr.CreatedBy)
                 .Type<NonNullType<UserType>>()
-                .ResolveWith<ClassroomAnnouncementResolvers>(ca =>
-                    ca.GetCreatedByAsync(default!, default!, default!))
+                .ResolveWith<ClassroomReminderResolvers>(cr =>
+                    cr.GetCreatedByAsync(default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>();
 
             descriptor
-                .Field(ca => ca.Classroom)
+                .Field(cr => cr.Classroom)
                 .Type<NonNullType<ClassroomType>>()
-                .ResolveWith<ClassroomAnnouncementResolvers>(ca =>
-                    ca.GetClassroomAsync(default!, default!, default!))
+                .ResolveWith<ClassroomReminderResolvers>(cr =>
+                    cr.GetClassroomAsync(default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>();
 
             descriptor
-                .Field(ca => ca.ClassroomId)
+                .Field(cr => cr.ClassroomId)
                 .Ignore();
 
             descriptor
-                .Field(ca => ca.CreatedById)
+                .Field(cr => cr.CreatedById)
                 .Ignore();
         }
 
-        private class ClassroomAnnouncementResolvers {
+        private class ClassroomReminderResolvers {
             public async Task<User> GetCreatedByAsync(
             [Parent] ClassroomAnnouncement classroomAnnouncement,
             UserByIdDataLoader userById,

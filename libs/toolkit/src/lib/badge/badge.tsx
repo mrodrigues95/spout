@@ -10,6 +10,8 @@ const styles = {
   scheme: {
     pink: 'bg-pink-100 text-pink-700',
     green: 'bg-emerald-100 text-emerald-700',
+    yellow: 'bg-yellow-100 text-yellow-700',
+    red: 'bg-red-100 text-red-700',
     gray: 'bg-gray-100 text-gray-700',
   },
 };
@@ -32,7 +34,7 @@ export const Badge = ({
   return (
     <span
       className={clsx(
-        'inline-flex font-semibold uppercase leading-5',
+        'inline-flex items-center justify-center font-semibold uppercase leading-5',
         styles.scheme[scheme],
         styles.size[size],
         pill ? 'rounded-full' : 'rounded',

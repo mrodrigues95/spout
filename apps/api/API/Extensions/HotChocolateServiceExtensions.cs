@@ -7,12 +7,14 @@ using API.Data.Entities;
 using API.Infrastructure;
 using API.Schema.Mutations.Auth;
 using API.Schema.Mutations.ClassroomAnnouncements;
+using API.Schema.Mutations.ClassroomReminders;
 using API.Schema.Mutations.Classrooms;
 using API.Schema.Mutations.ClassroomSyllabus;
 using API.Schema.Mutations.Discussions;
 using API.Schema.Mutations.Files;
 using API.Schema.Mutations.Users;
 using API.Schema.Queries.ClassroomAnnouncements;
+using API.Schema.Queries.ClassroomReminders;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Discussions;
 using API.Schema.Queries.Files;
@@ -21,6 +23,7 @@ using API.Schema.Queries.Sessions;
 using API.Schema.Queries.Users;
 using API.Schema.Subscriptions.Discussions;
 using API.Schema.Types.ClassroomAnnouncements;
+using API.Schema.Types.ClassroomReminders;
 using API.Schema.Types.Classrooms;
 using API.Schema.Types.ClassroomSyllabus;
 using API.Schema.Types.Discussions;
@@ -102,6 +105,12 @@ namespace API.Extensions {
                 .AddTypeExtension<ClassroomAnnouncementMutations>()
                 .AddDataLoader<ClassroomAnnouncementByIdDataLoader>()
                 .AddType<ClassroomAnnouncementType>();
+
+            gql
+                .AddDataLoader<ClassroomReminderByIdDataLoader>()
+                .AddTypeExtension<ClassroomReminderMutations>()
+                .AddType<ClassroomReminderImportanceType>()
+                .AddType<ClassroomReminderType>();
 
             gql
                 .AddTypeExtension<ClassroomSyllabusMutations>()

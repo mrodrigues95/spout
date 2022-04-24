@@ -3,7 +3,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Button, Spinner, Title } from '@spout/toolkit';
+import { Button, Spinner, Title, Text } from '@spout/toolkit';
 import { ErrorBoundary, ErrorFallback } from '../../../../shared/components';
 import AnnouncementsList from './AnnouncementsList';
 import CreateAnnouncement from './CreateAnnouncement';
@@ -37,11 +37,14 @@ const Announcements = ({ fetchKey }: Props) => {
   );
 
   return (
-    <article className="flex h-full flex-col space-y-2.5">
+    <article className="flex h-full flex-col space-y-6">
       <div className="!-mt-1.5 flex items-center justify-between">
-        <Title as="h2" variant="h4">
-          Announcements
-        </Title>
+        <div>
+          <Title as="h2" variant="h4">
+            Announcements
+          </Title>
+          <Text size="sm">Manage your announcements</Text>
+        </div>
         <Button
           variant="secondary"
           size="sm"

@@ -58,6 +58,10 @@ namespace API.Data.Configurations {
                 .WithOne(ca => ca.CreatedBy!)
                 .HasForeignKey(ca => ca.CreatedById);
 
+            builder.HasMany(u => u.ClassroomReminders)
+                .WithOne(cr => cr.CreatedBy!)
+                .HasForeignKey(cr => cr.CreatedById);
+
             builder.HasMany(u => u.Sessions)
                 .WithOne(s => s.User!)
                 .HasForeignKey(s => s.UserId);

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -5,6 +7,7 @@ using API.Data;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Users;
 using API.Schema.Types.ClassroomAnnouncements;
+using API.Schema.Types.ClassroomReminders;
 using API.Schema.Types.ClassroomSyllabus;
 using API.Schema.Types.Discussions;
 using API.Schema.Types.Users;
@@ -62,16 +65,26 @@ namespace API.Schema.Types.Classrooms {
                 .Field("syllabus")
                 .Type<ClassroomSyllabusType>()
                 .ResolveWith<ClassroomResolvers>(x =>
-                    x.GetClassroomSyllabusAsync(default!, default!, default!))
+                    x.GetSyllabusAsync(default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>();
 
             descriptor
                 .Field("announcements")
                 .Type<NonNullType<ListType<NonNullType<ClassroomAnnouncementType>>>>()
                 .ResolveWith<ClassroomResolvers>(x =>
-                    x.GetClassroomAnnouncementsAsync(default!, default!, default!, default!))
+                    x.GetAnnouncementsAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .UsePaging<NonNullType<ClassroomAnnouncementType>>()
+                .UseFiltering()
+                .UseSorting();
+
+            descriptor
+                .Field("reminders")
+                .Type<NonNullType<ListType<NonNullType<ClassroomReminderType>>>>()
+                .ResolveWith<ClassroomResolvers>(x =>
+                    x.GetRemindersAsync(default!, default!, default!, default!))
+                .UseDbContext<ApplicationDbContext>()
+                .UsePaging<NonNullType<ClassroomReminderType>>()
                 .UseFiltering()
                 .UseSorting();
 
@@ -113,7 +126,7 @@ namespace API.Schema.Types.Classrooms {
                 return await userById.LoadAsync(id, cancellationToken);
             }
 
-            public async Task<Entities.ClassroomSyllabus?> GetClassroomSyllabusAsync(
+            public async Task<Entities.ClassroomSyllabus?> GetSyllabusAsync(
                 [Parent] Entities.Classroom classroom,
                 ApplicationDbContext ctx,
                 CancellationToken cancellationToken)
@@ -140,7 +153,7 @@ namespace API.Schema.Types.Classrooms {
                 return connection;
             }
 
-            public async Task<Connection<Entities.ClassroomAnnouncement>> GetClassroomAnnouncementsAsync(
+            public async Task<Connection<Entities.ClassroomAnnouncement>> GetAnnouncementsAsync(
                 [Parent] Entities.Classroom classroom,
                 ApplicationDbContext dbCtx,
                 IResolverContext resolverCtx,
@@ -149,6 +162,28 @@ namespace API.Schema.Types.Classrooms {
                     .Where(c => c.Id == classroom.Id)
                     .Include(c => c.Announcements)
                     .SelectMany(c => c.Announcements)
+                    .AsQueryable();
+
+                var connection = await query
+                    .Filter(resolverCtx)
+                    .Sort(resolverCtx)
+                    .ApplyCursorPaginationAsync(resolverCtx, cancellationToken: cancellationToken);
+
+                return connection;
+            }
+
+            public async Task<Connection<Entities.ClassroomReminder>> GetRemindersAsync(
+                [Parent] Entities.Classroom classroom,
+                ApplicationDbContext dbCtx,
+                IResolverContext resolverCtx,
+                CancellationToken cancellationToken) {
+                // TODO: This should be grouped once Hot Chocolate implements data aggregation.
+                // Right now, we are grouping on the front-end instead.
+                // See: https://github.com/ChilliCream/hotchocolate/discussions/2963.
+                var query = dbCtx.Classrooms
+                    .Where(c => c.Id == classroom.Id)
+                    .Include(c => c.Reminders)
+                    .SelectMany(c => c.Reminders)
                     .AsQueryable();
 
                 var connection = await query

@@ -87,7 +87,6 @@ const Announcement = ({ ...props }: AnnouncementProps) => {
           name={announcement.createdBy.name}
           profileColor={announcement.createdBy.profileColor}
           containerProps={{ className: 'shadow-md mr-2.5' }}
-          rounded
         />
         <div className="mr-auto">
           <Text size="sm" weight="semibold" className="-mb-1">
