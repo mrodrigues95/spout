@@ -24,15 +24,16 @@ const Template: Story<SelectProps> = () => {
   return (
     <Select label="People" value={value} onChange={setValue}>
       <Select.Button
-        label={value ? value.name : 'Select'}
-        variant={value ? 'default' : 'placeholder'}
-        icon={
+        variant="secondary"
+        rightIcon={
           <FontAwesomeIcon
             icon={faChevronRight}
             className="h-5 w-5 -rotate-90 transform text-black"
           />
         }
-      />
+      >
+        {value ? value.name : 'Select'}
+      </Select.Button>
       <Select.Options>
         {people.map((person, idx) => (
           <Select.Option

@@ -1,7 +1,6 @@
-import { ComponentProps, ReactNode, useContext } from 'react';
-import { Transition } from '@headlessui/react';
+import { ComponentProps, Fragment, ReactNode } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
 import clsx from 'clsx';
-import { ModalContext, transitions } from './modal';
 
 interface ModalContentProps extends ComponentProps<'section'> {
   children: ReactNode;
@@ -13,11 +12,18 @@ export const ModalContent = ({
   className,
   ...props
 }: ModalContentProps) => {
-  const { transition } = useContext(ModalContext)!;
-
   return (
-    <Transition.Child {...transitions[transition!].content}>
-      <section
+    <Transition.Child
+      as={Fragment}
+      enter="ease-out duration-300"
+      enterFrom="opacity-0 scale-95"
+      enterTo="opacity-100 scale-100"
+      leave="ease-in duration-200"
+      leaveFrom="opacity-100 scale-100"
+      leaveTo="opacity-0 scale-95"
+    >
+      <Dialog.Panel
+        as="section"
         className={clsx(
           'relative flex h-full max-w-2xl flex-col bg-white text-black shadow-xl sm:h-auto sm:rounded-md',
           className,
@@ -25,7 +31,7 @@ export const ModalContent = ({
         {...props}
       >
         {children}
-      </section>
+      </Dialog.Panel>
     </Transition.Child>
   );
 };

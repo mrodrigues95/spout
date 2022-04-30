@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2e2b763c7c555052f8f88dd682a5bec7>>
+ * @generated SignedSource<<fe24a12fe17f1ce2c0cb5c8516d85276>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,6 +19,7 @@ export type RemindersList_classroom$data = {
         readonly description: string | null;
         readonly importance: ClassroomReminderImportance;
         readonly dueAt: string;
+        readonly createdAt: string;
       };
     }> | null;
     readonly pageInfo: {
@@ -50,6 +51,16 @@ return {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "cursor"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "order"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "where"
     }
   ],
   "kind": "Fragment",
@@ -84,11 +95,14 @@ return {
       "alias": "reminders",
       "args": [
         {
-          "kind": "Literal",
+          "kind": "Variable",
           "name": "order",
-          "value": {
-            "dueAt": "ASC"
-          }
+          "variableName": "order"
+        },
+        {
+          "kind": "Variable",
+          "name": "where",
+          "variableName": "where"
         }
       ],
       "concreteType": "RemindersConnection",
@@ -144,6 +158,13 @@ return {
                   "alias": null,
                   "args": null,
                   "kind": "ScalarField",
+                  "name": "createdAt",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
                   "name": "__typename",
                   "storageKey": null
                 }
@@ -186,7 +207,7 @@ return {
           "storageKey": null
         }
       ],
-      "storageKey": "__RemindersList_reminders_connection(order:{\"dueAt\":\"ASC\"})"
+      "storageKey": null
     },
     {
       "alias": null,
@@ -201,6 +222,6 @@ return {
 };
 })();
 
-(node as any).hash = "84b96bb607e9d32ac64f77834b701a1a";
+(node as any).hash = "9faff505cbfae994c6fc2854b3cbdbec";
 
 export default node;

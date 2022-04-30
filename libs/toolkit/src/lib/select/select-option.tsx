@@ -18,7 +18,7 @@ export const SelectOption = ({
     <Listbox.Option
       className={({ active }) =>
         clsx(
-          'relative cursor-pointer select-none py-2 pl-10 pr-4',
+          'relative cursor-pointer select-none py-2 pl-9 pr-4 focus:outline-none',
           active ? 'bg-gray-100' : 'bg-white',
         )
       }

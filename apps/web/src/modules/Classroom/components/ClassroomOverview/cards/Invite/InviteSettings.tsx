@@ -54,15 +54,16 @@ const InviteSettings = ({ control }: Props) => {
         render={({ field: { value, onChange } }) => (
           <Select label="Expire after" value={value} onChange={onChange}>
             <Select.Button
-              label={value ? value.label : 'Select'}
-              variant={value ? 'default' : 'placeholder'}
-              icon={
+              variant="secondary"
+              rightIcon={
                 <FontAwesomeIcon
                   icon={faChevronCircleRight}
                   className="h-5 w-5 text-black"
                 />
               }
-            />
+            >
+              {value ? value.label : 'Select'}
+            </Select.Button>
             <Select.Options>
               {Object.entries(MAX_AGE).map(([key, props]) => (
                 <Select.Option
@@ -83,15 +84,16 @@ const InviteSettings = ({ control }: Props) => {
         render={({ field: { value, onChange } }) => (
           <Select label="Max number of uses" value={value} onChange={onChange}>
             <Select.Button
-              label={value ? value.label : 'Select'}
-              variant={value ? 'default' : 'placeholder'}
-              icon={
+              variant="secondary"
+              rightIcon={
                 <FontAwesomeIcon
                   icon={faChevronCircleRight}
                   className="h-5 w-5 text-black"
                 />
               }
-            />
+            >
+              {value ? value.label : 'Select'}
+            </Select.Button>
             <Select.Options>
               {Object.entries(MAX_USES).map(([key, props]) => (
                 <Select.Option

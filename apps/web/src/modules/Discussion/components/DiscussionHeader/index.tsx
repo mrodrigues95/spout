@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
+import { Portal } from '@headlessui/react';
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheck,
-  faChevronDown,
   faInfoCircle,
+  faSort,
 } from '@fortawesome/free-solid-svg-icons';
-import { Title, Select, IconButton, Tooltip } from '@spout/toolkit';
+import { Title, Select, IconButton, Tooltip, usePopper } from '@spout/toolkit';
 import {
   MEDIA_QUERIES,
   useMediaQuery,
@@ -69,6 +70,12 @@ const DiscussionHeader = ({ ...props }: Props) => {
 
   const discussions = useConnection(discussion.classroom.discussions);
 
+  const [trigger, container] = usePopper({
+    placement: 'bottom-start',
+    strategy: 'fixed',
+    modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
+  });
+
   return (
     <div className="flex min-w-0 flex-1 items-center justify-between">
       <Title as="h1" variant="h5" className="mr-4 truncate">
@@ -81,20 +88,25 @@ const DiscussionHeader = ({ ...props }: Props) => {
           onChange={setSelectedDiscussionId}
         >
           <Select.Button
-            className="w-48 xl:w-72"
-            label={discussion.name}
-            icon={<FontAwesomeIcon icon={faChevronDown} size="xs" />}
-          />
-          <Select.Options>
-            {discussions.map((discussion) => (
-              <Select.Option
-                key={discussion.id}
-                value={discussion.id}
-                label={discussion.name}
-                selectedIcon={<FontAwesomeIcon icon={faCheck} size="xs" />}
-              />
-            ))}
-          </Select.Options>
+            variant="secondary"
+            size="sm"
+            rightIcon={<FontAwesomeIcon icon={faSort} size="xs" />}
+            ref={trigger}
+          >
+            {discussion.name}
+          </Select.Button>
+          <Portal>
+            <Select.Options ref={container}>
+              {discussions.map((discussion) => (
+                <Select.Option
+                  key={discussion.id}
+                  value={discussion.id}
+                  label={discussion.name}
+                  selectedIcon={<FontAwesomeIcon icon={faCheck} size="xs" />}
+                />
+              ))}
+            </Select.Options>
+          </Portal>
         </Select>
         <DiscussionHeaderNotifications />
         <DiscussionHeaderPinnedMessages />

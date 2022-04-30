@@ -8,10 +8,12 @@ import { Spinner } from '@spout/toolkit';
 import { useConnection } from '../.././../../shared/hooks';
 import { EmptyFallback } from '../../../../shared/components';
 import Reminder from './Reminder';
+import { RemindersSortOption } from './RemindersSortSelect';
 import {
   RemindersList_classroom$data,
   RemindersList_classroom$key,
 } from './__generated__/RemindersList_classroom.graphql';
+import { useReminders } from './RemindersProvider';
 
 export type ClassroomReminder = NonNullable<
   NonNullable<RemindersList_classroom$data['reminders']>['edges']
@@ -23,25 +25,45 @@ type GroupedClassroomReminders = {
 
 const groupReminders = (
   nodes: ClassroomReminder[],
-  groupByKey: keyof ClassroomReminder,
+  groupByKey: RemindersSortOption['identifierKey'],
 ) =>
   nodes.reduce((group: GroupedClassroomReminders, node) => {
-    const key = node[groupByKey]!;
-    const dateKey = new Date(key);
-    const dateKeyFormatted = isToday(dateKey)
-      ? 'Today'
-      : isTomorrow(dateKey)
-      ? 'Tomorrow'
-      : format(new Date(dateKey), 'EEEE, MMMM do');
+    if (groupByKey === 'createdAt' || groupByKey === 'dueAt') {
+      const dateKey = new Date(node[groupByKey]!);
+      const dateKeyFormatted = isToday(dateKey)
+        ? 'Today'
+        : isTomorrow(dateKey)
+        ? 'Tomorrow'
+        : format(new Date(dateKey), 'EEEE, MMMM do');
 
-    return {
-      ...group,
-      [dateKeyFormatted]: [...(group[dateKeyFormatted] || []), node],
-    };
+      return {
+        ...group,
+        [dateKeyFormatted]: [...(group[dateKeyFormatted] || []), node],
+      };
+    } else {
+      const importanceKey = node[groupByKey]!;
+      const importanceKeyFormatted =
+        importanceKey === 'HIGH'
+          ? 'High'
+          : importanceKey === 'MEDIUM'
+          ? 'Medium'
+          : 'Low';
+
+      return {
+        ...group,
+        [importanceKeyFormatted]: [
+          ...(group[importanceKeyFormatted] || []),
+          node,
+        ],
+      };
+    }
   }, {} as GroupedClassroomReminders);
 
-const computeVirtuosoGroups = (reminders: ClassroomReminder[]) => {
-  const groups = groupReminders(reminders, 'dueAt');
+const computeVirtuosoGroups = (
+  reminders: ClassroomReminder[],
+  groupByKey: RemindersSortOption['identifierKey'],
+) => {
+  const groups = groupReminders(reminders, groupByKey);
   const groupKeys = Object.keys(groups);
   const groupCounts = Object.values(groups).map(
     (reminders) => reminders.length,
@@ -54,9 +76,14 @@ const computeVirtuosoGroups = (reminders: ClassroomReminder[]) => {
 // implements data aggregation.
 const fragment = graphql`
   fragment RemindersList_classroom on Classroom
-  @argumentDefinitions(count: { type: "Int!" }, cursor: { type: "String" })
+  @argumentDefinitions(
+    count: { type: "Int!" }
+    cursor: { type: "String" }
+    where: { type: "ClassroomReminderFilterInput" }
+    order: { type: "[ClassroomReminderSortInput!]" }
+  )
   @refetchable(queryName: "RemindersListPaginationQuery") {
-    reminders(first: $count, after: $cursor, order: { dueAt: ASC })
+    reminders(first: $count, after: $cursor, where: $where, order: $order)
       @connection(key: "RemindersList_reminders") {
       edges {
         node {
@@ -64,6 +91,7 @@ const fragment = graphql`
           description
           importance
           dueAt
+          createdAt
         }
       }
       pageInfo {
@@ -84,73 +112,67 @@ const RemindersList = ({ ...props }: RemindersListProps) => {
     props.classroom,
   );
 
+  const { sortBy } = useReminders()!;
+
   const reminders = useConnection(data.reminders);
   const { groupKeys, groupCounts } = useMemo(
-    () => computeVirtuosoGroups(reminders),
-    [reminders],
+    () => computeVirtuosoGroups(reminders, sortBy.identifierKey),
+    [reminders, sortBy],
   );
 
   return (
-    <div className="rounded-lg p-2 shadow-sm ring-2 ring-gray-900/5">
-      <GroupedVirtuoso
-        useWindowScroll
-        endReached={hasNext ? () => loadNext(50) : undefined}
-        groupCounts={groupCounts}
-        groupContent={(index) => {
-          return (
-            <div className="font-semibold leading-5">{groupKeys[index]}</div>
-          );
-        }}
-        itemContent={(index) => <Reminder reminder={reminders[index]} />}
-        components={{
-          Footer: () =>
-            isLoadingNext ? (
-              <Spinner
-                className="py-4"
-                variant="circle"
-                size="sm"
-                scheme="black"
-                center
-              />
-            ) : null,
-          Group: ({ children, ...props }) => (
-            <li
-              {...props}
-              role="listitem"
-              className="rounded-lg bg-gray-100 p-2"
-            >
-              {children}
-            </li>
-          ),
-          Item: ({ children, ...props }) => (
-            <li
-              {...props}
-              role="listitem"
-              className="relative ml-2 border-l-2 border-gray-200 py-1.5 pl-4"
-            >
-              {/* <span className="absolute bottom-0 -left-[0.5rem] h-[2.05rem] w-2 bg-red-200 z-10 rounded-t-full"></span> */}
-              {children}
-            </li>
-          ),
-          EmptyPlaceholder: () => (
-            <EmptyFallback
-              icon={<FontAwesomeIcon icon={faHandSparkles} size="2x" />}
-              className="!mt-12"
+    <GroupedVirtuoso
+      useWindowScroll
+      endReached={hasNext ? () => loadNext(50) : undefined}
+      groupCounts={groupCounts}
+      groupContent={(index) => (
+        <div className="font-semibold leading-5">{groupKeys[index]}</div>
+      )}
+      itemContent={(index) => <Reminder reminder={reminders[index]} />}
+      components={{
+        Footer: () =>
+          isLoadingNext ? (
+            <Spinner
+              className="py-4"
+              variant="circle"
+              size="sm"
+              scheme="black"
+              center
             />
-          ),
-          List: forwardRef(function List(props, ref) {
-            return (
-              <ol
-                {...props}
-                // @ts-ignore: `Virtuoso/List` interface is not polymorphic and expects a `div`.
-                ref={ref}
-                role="list"
-              />
-            );
-          }) as Components['List'],
-        }}
-      />
-    </div>
+          ) : null,
+        Group: ({ children, ...props }) => (
+          <li {...props} role="listitem" className="rounded-lg bg-gray-100 p-2">
+            {children}
+          </li>
+        ),
+        Item: ({ children, ...props }) => (
+          <li
+            {...props}
+            role="listitem"
+            className="relative ml-2 border-l-2 border-gray-200 py-1.5 pl-4"
+          >
+            {/* <span className="absolute bottom-0 -left-[0.5rem] h-[2.05rem] w-2 bg-red-200 z-10 rounded-t-full"></span> */}
+            {children}
+          </li>
+        ),
+        EmptyPlaceholder: () => (
+          <EmptyFallback
+            icon={<FontAwesomeIcon icon={faHandSparkles} size="2x" />}
+            className="!mt-12"
+          />
+        ),
+        List: forwardRef(function List(props, ref) {
+          return (
+            <ol
+              {...props}
+              // @ts-ignore: `Virtuoso/List` interface is not polymorphic and expects a `div`.
+              ref={ref}
+              role="list"
+            />
+          );
+        }) as Components['List'],
+      }}
+    />
   );
 };
 

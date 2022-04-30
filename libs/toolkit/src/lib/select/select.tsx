@@ -11,6 +11,7 @@ export interface SelectProps<T extends unknown = string> {
   value: T;
   onChange: (value: T) => void;
   children: ReactNode;
+  multiple?: boolean;
   className?: string;
 }
 
@@ -19,6 +20,7 @@ export const Select = <T extends unknown = string>({
   value,
   onChange,
   children,
+  multiple = false,
   className,
   ...props
 }: SelectProps<T>) => {
@@ -28,6 +30,7 @@ export const Select = <T extends unknown = string>({
       className={clsx('relative space-y-1', className)}
       value={value}
       onChange={onChange}
+      multiple={multiple}
       {...props}
     >
       {label && (
