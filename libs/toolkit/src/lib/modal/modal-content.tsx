@@ -1,5 +1,6 @@
 import { ComponentProps, Fragment, ReactNode } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
+import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
 
 interface ModalContentProps extends ComponentProps<'section'> {
@@ -24,9 +25,11 @@ export const ModalContent = ({
     >
       <Dialog.Panel
         as="section"
-        className={clsx(
-          'relative flex h-full max-w-2xl flex-col bg-white text-black shadow-xl sm:h-auto sm:rounded-md',
-          className,
+        className={twMerge(
+          clsx(
+            'relative flex h-full max-w-2xl flex-col bg-white text-black shadow-xl sm:h-auto sm:rounded-md',
+            className,
+          ),
         )}
         {...props}
       >

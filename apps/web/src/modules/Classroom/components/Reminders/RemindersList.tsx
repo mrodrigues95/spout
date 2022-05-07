@@ -1,4 +1,4 @@
-import { forwardRef, useMemo } from 'react';
+import { forwardRef, useEffect, useMemo } from 'react';
 import { Components, GroupedVirtuoso } from 'react-virtuoso';
 import { graphql, usePaginationFragment } from 'react-relay';
 import { format, isToday, isTomorrow } from 'date-fns';
@@ -14,8 +14,9 @@ import {
   RemindersList_classroom$key,
 } from './__generated__/RemindersList_classroom.graphql';
 import { useReminders } from './RemindersProvider';
+import { formatFilterInput, formatOrderInput } from './Reminders';
 
-export type ClassroomReminder = NonNullable<
+type ClassroomReminder = NonNullable<
   NonNullable<RemindersList_classroom$data['reminders']>['edges']
 >[number]['node'];
 
@@ -28,7 +29,7 @@ const groupReminders = (
   groupByKey: RemindersSortOption['identifierKey'],
 ) =>
   nodes.reduce((group: GroupedClassroomReminders, node) => {
-    if (groupByKey === 'createdAt' || groupByKey === 'dueAt') {
+    if (groupByKey === 'dueAt') {
       const dateKey = new Date(node[groupByKey]!);
       const dateKeyFormatted = isToday(dateKey)
         ? 'Today'
@@ -77,7 +78,7 @@ const computeVirtuosoGroups = (
 const fragment = graphql`
   fragment RemindersList_classroom on Classroom
   @argumentDefinitions(
-    count: { type: "Int!" }
+    count: { type: "Int", defaultValue: 50 }
     cursor: { type: "String" }
     where: { type: "ClassroomReminderFilterInput" }
     order: { type: "[ClassroomReminderSortInput!]" }
@@ -87,11 +88,9 @@ const fragment = graphql`
       @connection(key: "RemindersList_reminders") {
       edges {
         node {
-          title
-          description
           importance
           dueAt
-          createdAt
+          ...Reminder_classroomReminder
         }
       }
       pageInfo {
@@ -107,18 +106,30 @@ interface RemindersListProps {
 }
 
 const RemindersList = ({ ...props }: RemindersListProps) => {
-  const { data, loadNext, hasNext, isLoadingNext } = usePaginationFragment(
-    fragment,
-    props.classroom,
-  );
+  const { data, loadNext, hasNext, isLoadingNext, refetch } =
+    usePaginationFragment(fragment, props.classroom);
 
-  const { sortBy } = useReminders()!;
+  const { sortBy, filters, shouldRefetch, setShouldRefetch } = useReminders()!;
 
   const reminders = useConnection(data.reminders);
   const { groupKeys, groupCounts } = useMemo(
     () => computeVirtuosoGroups(reminders, sortBy.identifierKey),
     [reminders, sortBy],
   );
+
+  useEffect(() => {
+    if (shouldRefetch) {
+      refetch(
+        {
+          first: 50,
+          where: formatFilterInput(filters),
+          order: formatOrderInput(sortBy),
+        },
+        { fetchPolicy: 'network-only' },
+      );
+      setShouldRefetch(false);
+    }
+  }, [refetch, setShouldRefetch, filters, sortBy, shouldRefetch]);
 
   return (
     <GroupedVirtuoso
@@ -141,7 +152,11 @@ const RemindersList = ({ ...props }: RemindersListProps) => {
             />
           ) : null,
         Group: ({ children, ...props }) => (
-          <li {...props} role="listitem" className="rounded-lg bg-gray-100 p-2">
+          <li
+            {...props}
+            role="listitem"
+            className="z-20 rounded-lg bg-gray-100 p-2"
+          >
             {children}
           </li>
         ),

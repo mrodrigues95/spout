@@ -1,3 +1,5 @@
+export * from './lib/radio-group';
+export * from './lib/date-picker';
 export * from './lib/input';
 export * from './lib/alert';
 export * from './lib/dropzone';

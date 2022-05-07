@@ -10,18 +10,14 @@
     background-repeat: repeat;
     background-attachment: scroll;
   }
+
+  .underline-line-through {
+    text-decoration: underline line-through;
+  }
 }
 
 body {
   @apply font-sans antialiased;
-}
-
-form {
-  margin-block-end: 0;
-}
-
-.underline-line-through {
-  text-decoration: underline line-through;
 }
 
 #nprogress {
@@ -30,4 +26,16 @@ form {
 
 #nprogress .bar {
   @apply fixed top-0 left-0 z-50 h-0.5 w-full bg-emerald-600;
+}
+
+.react-datepicker {
+  @apply font-sans antialiased;
+}
+
+.react-datepicker__header {
+  @apply border-0 bg-white;
+}
+
+.react-datepicker__day-name {
+  @apply font-semibold;
 }

@@ -5,13 +5,13 @@ import { Select, usePopper } from '@spout/toolkit';
 import { useReminders } from './RemindersProvider';
 
 interface SortInput {
-  key: 'createdAt' | 'dueAt' | 'importance';
+  key: 'dueAt' | 'importance';
   direction: 'ASC' | 'DESC';
 }
 
 export interface RemindersSortOption {
   label: string;
-  identifierKey: 'createdAt' | 'dueAt' | 'importance';
+  identifierKey: 'dueAt' | 'importance';
   input: SortInput[];
 }
 
@@ -20,11 +20,6 @@ export const SORT_OPTIONS: RemindersSortOption[] = [
     label: 'Due Date',
     identifierKey: 'dueAt',
     input: [{ key: 'dueAt', direction: 'DESC' }],
-  },
-  {
-    label: 'Creation Date',
-    identifierKey: 'createdAt',
-    input: [{ key: 'createdAt', direction: 'DESC' }],
   },
   {
     label: 'Importance',

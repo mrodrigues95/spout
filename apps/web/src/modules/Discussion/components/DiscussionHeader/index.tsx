@@ -63,7 +63,7 @@ const DiscussionHeader = ({ ...props }: Props) => {
   useEffect(() => {
     if (selectedDiscussionId !== discussion.id) {
       router.push(
-        `/classrooms/${discussion.classroom.id}/${selectedDiscussionId}`,
+        `/classrooms/${discussion.classroom.id}/discussions/${selectedDiscussionId}`,
       );
     }
   }, [discussion.classroom.id, discussion.id, router, selectedDiscussionId]);

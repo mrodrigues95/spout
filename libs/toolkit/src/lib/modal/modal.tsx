@@ -32,7 +32,6 @@ export const Modal = ({
   initialFocus,
   ...props
 }: ModalProps) => {
-  console.log(isOpen);
   return (
     <ModalContext.Provider value={{ isOpen, onClose }}>
       <Transition appear show={isOpen} as={Fragment}>

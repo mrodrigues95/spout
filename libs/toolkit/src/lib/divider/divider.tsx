@@ -3,11 +3,11 @@ import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
 
 export interface DividerProps extends ComponentProps<'hr'> {
-  vertical?: boolean;
+  orientation?: 'vertical' | 'horizontal';
 }
 
 export const Divider = ({
-  vertical = false,
+  orientation = 'horizontal',
   className,
   ...props
 }: DividerProps) => {
@@ -15,8 +15,10 @@ export const Divider = ({
     <hr
       className={twMerge(
         clsx(
-          'my-auto h-2/4 border-l-2 border-gray-300 text-center',
-          vertical ? 'my-auto h-2/4 border-l-2' : 'mx-auto w-2/4 border-t-2',
+          'border-gray-300/60 text-center',
+          orientation === 'vertical'
+            ? 'my-auto h-full border-l'
+            : 'mx-auto w-full border-b',
           className,
         ),
       )}

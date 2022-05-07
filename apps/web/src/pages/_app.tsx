@@ -5,7 +5,8 @@ import { Toaster } from 'react-hot-toast';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { NProgress, SessionProvider } from '../shared/components';
 import { useEnvironment } from '../shared/utils';
-import 'cropperjs/dist/cropper.css';
+
+import 'react-datepicker/dist/react-datepicker.css';
 import '../styles.css';
 
 export interface MyPageProps {
@@ -36,7 +37,7 @@ const MyApp = ({ Component, pageProps }: MyAppProps) => {
         </SessionProvider>
       </RelayEnvironmentProvider>
       <Toaster
-        position="top-center"
+        position="bottom-center"
         toastOptions={{ duration: 4000, className: 'font-medium' }}
       />
       <NProgress />

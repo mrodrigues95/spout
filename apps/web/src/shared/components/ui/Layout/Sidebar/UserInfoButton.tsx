@@ -88,7 +88,7 @@ const UserInfoButton = ({ fetchKey }: Props) => {
               name={me!.name}
               src={me!.avatarUrl}
               profileColor={me!.profileColor}
-              containerProps={{ className: 'shadow-lg' }}
+              containerProps={{ className: 'shadow-sm' }}
               priority
             />
           }
@@ -110,7 +110,7 @@ const UserInfoButton = ({ fetchKey }: Props) => {
                 name={me!.name}
                 src={me!.avatarUrl}
                 profileColor={me!.profileColor}
-                containerProps={{ className: 'shadow-lg' }}
+                containerProps={{ className: 'shadow-sm' }}
                 priority
               />
               <div className="flex min-w-0 flex-1 flex-col">

@@ -1,5 +1,5 @@
 import { Story, Meta } from '@storybook/react';
-import { object, string } from 'zod';
+import { date, object, string } from 'zod';
 import { Form, FormProps, useZodForm } from './form';
 
 export default {
@@ -11,18 +11,23 @@ const loginSchema = object({
   email: string().email({ message: '- Invalid email' }),
   password: string().min(6, { message: '- Invalid password' }),
   comment: string().min(1, { message: '- Invalid comment' }),
+  dob: date({
+    required_error: '- Invalid date',
+    invalid_type_error: '- Invalid date',
+  }),
 });
 
 export const Primary: Story<FormProps> = () => {
   const form = useZodForm({
     schema: loginSchema,
+    defaultValues: { dob: new Date() },
   });
 
   return (
     <Form
       className="flex w-full flex-col"
       form={form}
-      onSubmit={() => console.log('Submitted!')}
+      onSubmit={(values) => console.log(values)}
     >
       <Form.Input
         label="Email"
@@ -40,6 +45,13 @@ export const Primary: Story<FormProps> = () => {
         label="Comment"
         placeholder="Comment"
         {...form.register('comment')}
+      />
+      <Form.DatePicker
+        controller={{
+          name: 'dob',
+          control: form.control,
+        }}
+        inputProps={{ label: 'Date of birth', placeholder: 'Date of Birth' }}
       />
       <Form.SubmitButton>Submit</Form.SubmitButton>
     </Form>

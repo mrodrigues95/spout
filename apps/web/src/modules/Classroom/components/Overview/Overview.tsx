@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useRouter } from 'next/router';
-import { Divider, Spinner } from '@spout/toolkit';
+import { Spinner } from '@spout/toolkit';
 import { ErrorBoundary, ErrorFallback } from '../../../../shared/components';
 import Header from './Header';
 import { Syllabus } from './Syllabus';
@@ -36,7 +36,6 @@ const Overview = ({ fetchKey }: Props) => {
   return (
     <div className="flex flex-col space-y-4">
       <Header classroom={data.classroomById} />
-      <Divider className="border-t border-gray-200" />
       <Syllabus classroom={data.classroomById} />
     </div>
   );

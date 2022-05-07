@@ -1,4 +1,3 @@
-import { zodResolver } from '@hookform/resolvers/zod/dist/zod';
 import { ComponentProps } from 'react';
 import {
   useForm,
@@ -8,12 +7,14 @@ import {
   FieldValues,
   SubmitHandler,
 } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { ZodSchema, TypeOf } from 'zod';
 import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
 import { FormSubmitButton } from './form-submit-button';
 import { FormInput } from './form-input';
 import { FormTextArea } from './form-textarea';
+import { FormDatePicker } from './form-datepicker';
 
 interface UseZodFormProps<T extends ZodSchema<any>>
   extends UseFormProps<TypeOf<T>> {
@@ -73,3 +74,4 @@ export const Form = <T extends FieldValues>({
 Form.SubmitButton = FormSubmitButton;
 Form.Input = FormInput;
 Form.TextArea = FormTextArea;
+Form.DatePicker = FormDatePicker;

@@ -2,12 +2,18 @@ import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import { useController } from 'react-hook-form';
 import { useRouter } from 'next/router';
-import { RadioGroup } from '@headlessui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import Zod, { object, string } from 'zod';
-import clsx from 'clsx';
-import { Alert, Button, Form, Modal, useZodForm, Text } from '@spout/toolkit';
+import {
+  Alert,
+  Button,
+  Form,
+  Modal,
+  useZodForm,
+  Text,
+  RadioGroup,
+} from '@spout/toolkit';
 import { useToast, useSession } from '../../../../shared/components';
 import {
   MEDIA_QUERIES,
@@ -163,13 +169,6 @@ const ChooseTwoFactorProviderModal = ({
     },
   });
 
-  const {
-    field: { onChange, value },
-  } = useController({
-    name: 'provider',
-    control: form.control,
-  });
-
   const onSubmit = useCallback(
     ({ provider }: Zod.infer<typeof twoFactorSchema>) => {
       enableTwoFactor({
@@ -213,6 +212,11 @@ const ChooseTwoFactorProviderModal = ({
     [enableTwoFactor, handleError, sessionId, onTwoFactorEnabled, router],
   );
 
+  const { field } = useController({
+    name: 'provider',
+    control: form.control,
+  });
+
   return (
     <Form form={form} onSubmit={onSubmit}>
       <Modal.Header
@@ -238,65 +242,31 @@ const ChooseTwoFactorProviderModal = ({
             <div className="mx-auto w-2/4 border-t-2 border-gray-200 text-center"></div>
           </>
         )}
-        <RadioGroup value={value} onChange={onChange}>
+        <RadioGroup {...field}>
           <RadioGroup.Label className="sr-only">
             Two-Factor Authentication method
           </RadioGroup.Label>
-          <div className="space-y-2.5">
+          <RadioGroup.Options className="space-y-2.5">
             {twoFactorOptions.map((opt) => (
               <RadioGroup.Option
                 key={opt.name}
                 value={opt.value}
                 disabled={opt.disabled}
-                className={({ active, checked }) =>
-                  clsx(
-                    'relative flex cursor-pointer select-none rounded-lg border-2 border-transparent px-5 py-4',
-                    'focus:outline-none',
-                    active && 'border-blue-700 ring-4 ring-blue-200',
-                    checked && 'border-blue-700 bg-blue-50/75',
-                    opt.disabled
-                      ? 'cursor-auto opacity-60'
-                      : 'cursor-pointer opacity-100',
-                  )
-                }
+                className="px-4 py-2.5"
               >
                 {({ checked }) => (
                   <>
-                    <div className="flex w-full items-center justify-between space-x-4">
-                      <div className="flex items-center">
-                        <div className="text-sm">
-                          <RadioGroup.Label
-                            as="p"
-                            className={clsx(
-                              'font-semibold',
-                              checked ? 'text-gray-900' : 'text-gray-500',
-                            )}
-                          >
-                            {opt.name}
-                          </RadioGroup.Label>
-                          <RadioGroup.Description
-                            as="span"
-                            className={clsx(
-                              checked ? 'text-gray-700' : 'text-gray-500',
-                            )}
-                          >
-                            {opt.description}
-                          </RadioGroup.Description>
-                        </div>
-                      </div>
-                      {checked && (
-                        <FontAwesomeIcon
-                          icon={faCheckCircle}
-                          className="flex-shrink-0 text-blue-700"
-                          size="lg"
-                        />
-                      )}
-                    </div>
+                    <RadioGroup.OptionLabel checked={checked}>
+                      {opt.name}
+                    </RadioGroup.OptionLabel>
+                    <RadioGroup.OptionDescription checked={checked}>
+                      {opt.description}
+                    </RadioGroup.OptionDescription>
                   </>
                 )}
               </RadioGroup.Option>
             ))}
-          </div>
+          </RadioGroup.Options>
         </RadioGroup>
       </Modal.Body>
       <Modal.Footer>

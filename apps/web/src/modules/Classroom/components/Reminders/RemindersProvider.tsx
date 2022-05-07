@@ -7,6 +7,8 @@ interface TRemindersContext {
   setSortBy(value: RemindersSortOption): void;
   filters: RemindersFilterOption[];
   setFilters(value: RemindersFilterOption[]): void;
+  shouldRefetch: boolean;
+  setShouldRefetch(value: boolean): void;
 }
 
 const RemindersContext = createContext<TRemindersContext | null>(null);
@@ -20,11 +22,20 @@ export const RemindersProvider = ({
   setSortBy,
   filters,
   setFilters,
+  shouldRefetch,
+  setShouldRefetch,
   children,
 }: Props) => {
   const context = useMemo(
-    () => ({ sortBy, setSortBy, filters, setFilters }),
-    [sortBy, setSortBy, filters, setFilters],
+    () => ({
+      sortBy,
+      setSortBy,
+      filters,
+      setFilters,
+      shouldRefetch,
+      setShouldRefetch,
+    }),
+    [sortBy, setSortBy, filters, setFilters, shouldRefetch, setShouldRefetch],
   );
 
   return (

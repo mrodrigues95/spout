@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4a0b3281975a0d728dcbc24a26231464>>
+ * @generated SignedSource<<37e39ab6d5a047c9115a6cf4d8cd97cc>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -714,15 +714,13 @@ export type DelLogTypeSortInput = {
 };
 export type RemindersQuery$variables = {
   id: string;
-  count: number;
-  cursor?: string | null;
   where?: ClassroomReminderFilterInput | null;
   order?: ReadonlyArray<ClassroomReminderSortInput> | null;
 };
 export type RemindersQueryVariables = RemindersQuery$variables;
 export type RemindersQuery$data = {
   readonly classroomById: {
-    readonly " $fragmentSpreads": FragmentRefs<"RemindersList_classroom">;
+    readonly " $fragmentSpreads": FragmentRefs<"CreateReminder_classroom" | "RemindersList_classroom">;
   };
 };
 export type RemindersQueryResponse = RemindersQuery$data;
@@ -735,74 +733,57 @@ const node: ConcreteRequest = (function(){
 var v0 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "count"
+  "name": "id"
 },
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "cursor"
+  "name": "order"
 },
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "id"
-},
-v3 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
-  "name": "order"
-},
-v4 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
   "name": "where"
 },
-v5 = [
+v3 = [
   {
     "kind": "Variable",
     "name": "id",
     "variableName": "id"
   }
 ],
-v6 = {
+v4 = {
   "kind": "Variable",
   "name": "order",
   "variableName": "order"
 },
-v7 = {
+v5 = {
   "kind": "Variable",
   "name": "where",
   "variableName": "where"
 },
-v8 = [
-  {
-    "kind": "Variable",
-    "name": "after",
-    "variableName": "cursor"
-  },
-  {
-    "kind": "Variable",
-    "name": "first",
-    "variableName": "count"
-  },
-  (v6/*: any*/),
-  (v7/*: any*/)
-],
-v9 = {
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
-};
+},
+v7 = [
+  {
+    "kind": "Literal",
+    "name": "first",
+    "value": 50
+  },
+  (v4/*: any*/),
+  (v5/*: any*/)
+];
 return {
   "fragment": {
     "argumentDefinitions": [
       (v0/*: any*/),
       (v1/*: any*/),
-      (v2/*: any*/),
-      (v3/*: any*/),
-      (v4/*: any*/)
+      (v2/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -810,26 +791,21 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v5/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": "Classroom",
         "kind": "LinkedField",
         "name": "classroomById",
         "plural": false,
         "selections": [
           {
+            "args": null,
+            "kind": "FragmentSpread",
+            "name": "CreateReminder_classroom"
+          },
+          {
             "args": [
-              {
-                "kind": "Variable",
-                "name": "count",
-                "variableName": "count"
-              },
-              {
-                "kind": "Variable",
-                "name": "cursor",
-                "variableName": "cursor"
-              },
-              (v6/*: any*/),
-              (v7/*: any*/)
+              (v4/*: any*/),
+              (v5/*: any*/)
             ],
             "kind": "FragmentSpread",
             "name": "RemindersList_classroom"
@@ -844,26 +820,25 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v2/*: any*/),
       (v0/*: any*/),
-      (v1/*: any*/),
-      (v4/*: any*/),
-      (v3/*: any*/)
+      (v2/*: any*/),
+      (v1/*: any*/)
     ],
     "kind": "Operation",
     "name": "RemindersQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v5/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": "Classroom",
         "kind": "LinkedField",
         "name": "classroomById",
         "plural": false,
         "selections": [
+          (v6/*: any*/),
           {
             "alias": null,
-            "args": (v8/*: any*/),
+            "args": (v7/*: any*/),
             "concreteType": "RemindersConnection",
             "kind": "LinkedField",
             "name": "reminders",
@@ -889,20 +864,6 @@ return {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "title",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "description",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
                         "name": "importance",
                         "storageKey": null
                       },
@@ -917,10 +878,17 @@ return {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "createdAt",
+                        "name": "title",
                         "storageKey": null
                       },
-                      (v9/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "description",
+                        "storageKey": null
+                      },
+                      (v6/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -971,7 +939,7 @@ return {
           },
           {
             "alias": null,
-            "args": (v8/*: any*/),
+            "args": (v7/*: any*/),
             "filters": [
               "where",
               "order"
@@ -980,24 +948,23 @@ return {
             "key": "RemindersList_reminders",
             "kind": "LinkedHandle",
             "name": "reminders"
-          },
-          (v9/*: any*/)
+          }
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "a5d43a42c539b6b667dbd6985909d18c",
+    "cacheID": "9cd0906fe5c626eb5680e9c31a8d9723",
     "id": null,
     "metadata": {},
     "name": "RemindersQuery",
     "operationKind": "query",
-    "text": "query RemindersQuery(\n  $id: ID!\n  $count: Int!\n  $cursor: String\n  $where: ClassroomReminderFilterInput\n  $order: [ClassroomReminderSortInput!]\n) {\n  classroomById(id: $id) {\n    ...RemindersList_classroom_2KVBjJ\n    id\n  }\n}\n\nfragment RemindersList_classroom_2KVBjJ on Classroom {\n  reminders(first: $count, after: $cursor, where: $where, order: $order) {\n    edges {\n      node {\n        title\n        description\n        importance\n        dueAt\n        createdAt\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n"
+    "text": "query RemindersQuery(\n  $id: ID!\n  $where: ClassroomReminderFilterInput\n  $order: [ClassroomReminderSortInput!]\n) {\n  classroomById(id: $id) {\n    ...CreateReminder_classroom\n    ...RemindersList_classroom_28pUDr\n    id\n  }\n}\n\nfragment CreateReminder_classroom on Classroom {\n  id\n}\n\nfragment Reminder_classroomReminder on ClassroomReminder {\n  title\n  description\n  importance\n  dueAt\n}\n\nfragment RemindersList_classroom_28pUDr on Classroom {\n  reminders(first: 50, where: $where, order: $order) {\n    edges {\n      node {\n        importance\n        dueAt\n        ...Reminder_classroomReminder\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n"
   }
 };
 })();
 
-(node as any).hash = "07bfd393f91d26ad31805f68a6dcb83a";
+(node as any).hash = "24a9d8eebe0d6a092b3308b4239d13bc";
 
 export default node;

@@ -1,5 +1,5 @@
+import { forwardRef, useLayoutEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { forwardRef } from 'react';
 import TextareaAutosize, {
   TextareaAutosizeProps,
 } from 'react-textarea-autosize';
@@ -29,10 +29,16 @@ export const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
     },
     ref,
   ) => {
+    const [isRerendered, setIsRerendered] = useState(false);
     const {
       formState: { errors },
     } = useFormContext();
     const error = errors[name!];
+
+    // Temp fix for https://github.com/Andarist/react-textarea-autosize/issues/337#issuecomment-1037061958
+    useLayoutEffect(() => setIsRerendered(true), []);
+
+    if (!isRerendered) return null;
 
     return (
       <>

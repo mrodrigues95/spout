@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<976c3f3362e80ed6a5aeeaceef7fc4a2>>
+ * @generated SignedSource<<72abe8376148f00b5b747f3372fa472d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -713,7 +713,7 @@ export type ClassroomReminderImportanceOperationFilterInput = {
   nin?: ReadonlyArray<ClassroomReminderImportance> | null;
 };
 export type RemindersListPaginationQuery$variables = {
-  count: number;
+  count?: number | null;
   cursor?: string | null;
   order?: ReadonlyArray<ClassroomReminderSortInput> | null;
   where?: ClassroomReminderFilterInput | null;
@@ -733,7 +733,7 @@ export type RemindersListPaginationQuery = {
 
 const node: ConcreteRequest = (function(){
 var v0 = {
-  "defaultValue": null,
+  "defaultValue": 50,
   "kind": "LocalArgument",
   "name": "count"
 },
@@ -901,20 +901,6 @@ return {
                             "alias": null,
                             "args": null,
                             "kind": "ScalarField",
-                            "name": "title",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "description",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
                             "name": "importance",
                             "storageKey": null
                           },
@@ -929,7 +915,14 @@ return {
                             "alias": null,
                             "args": null,
                             "kind": "ScalarField",
-                            "name": "createdAt",
+                            "name": "title",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "description",
                             "storageKey": null
                           },
                           (v9/*: any*/),
@@ -997,16 +990,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "25936165ec96181fe4af729797bf1776",
+    "cacheID": "eb96068ba955becf951b1c0e9f4760d7",
     "id": null,
     "metadata": {},
     "name": "RemindersListPaginationQuery",
     "operationKind": "query",
-    "text": "query RemindersListPaginationQuery(\n  $count: Int!\n  $cursor: String\n  $order: [ClassroomReminderSortInput!]\n  $where: ClassroomReminderFilterInput\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...RemindersList_classroom_2KVBjJ\n    id\n  }\n}\n\nfragment RemindersList_classroom_2KVBjJ on Classroom {\n  reminders(first: $count, after: $cursor, where: $where, order: $order) {\n    edges {\n      node {\n        title\n        description\n        importance\n        dueAt\n        createdAt\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n"
+    "text": "query RemindersListPaginationQuery(\n  $count: Int = 50\n  $cursor: String\n  $order: [ClassroomReminderSortInput!]\n  $where: ClassroomReminderFilterInput\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...RemindersList_classroom_2KVBjJ\n    id\n  }\n}\n\nfragment Reminder_classroomReminder on ClassroomReminder {\n  title\n  description\n  importance\n  dueAt\n}\n\nfragment RemindersList_classroom_2KVBjJ on Classroom {\n  reminders(first: $count, after: $cursor, where: $where, order: $order) {\n    edges {\n      node {\n        importance\n        dueAt\n        ...Reminder_classroomReminder\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n"
   }
 };
 })();
 
-(node as any).hash = "9faff505cbfae994c6fc2854b3cbdbec";
+(node as any).hash = "d456cbb81ca3d10a35aeb95b8860a6d5";
 
 export default node;
