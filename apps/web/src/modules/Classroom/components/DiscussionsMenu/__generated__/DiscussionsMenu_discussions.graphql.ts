@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<667c16a81951e4b6c862e192cb40a409>>
+ * @generated SignedSource<<0387a71d4b14316f3ff596d165a55ef6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -20,6 +20,7 @@ export type DiscussionsMenu_discussions$data = {
       };
     }> | null;
   } | null;
+  readonly " $fragmentSpreads": FragmentRefs<"CreateDiscussion_classroom">;
   readonly " $fragmentType": "DiscussionsMenu_discussions";
 };
 export type DiscussionsMenu_discussions = DiscussionsMenu_discussions$data;
@@ -82,11 +83,24 @@ return {
   "selections": [
     (v1/*: any*/),
     {
-      "alias": "discussions",
       "args": null,
+      "kind": "FragmentSpread",
+      "name": "CreateDiscussion_classroom"
+    },
+    {
+      "alias": "discussions",
+      "args": [
+        {
+          "kind": "Literal",
+          "name": "order",
+          "value": {
+            "name": "ASC"
+          }
+        }
+      ],
       "concreteType": "DiscussionsConnection",
       "kind": "LinkedField",
-      "name": "__DiscussionsMenu_classroom_discussions_connection",
+      "name": "__DiscussionsMenu_discussions_connection",
       "plural": false,
       "selections": [
         {
@@ -159,7 +173,7 @@ return {
           "storageKey": null
         }
       ],
-      "storageKey": null
+      "storageKey": "__DiscussionsMenu_discussions_connection(order:{\"name\":\"ASC\"})"
     }
   ],
   "type": "Classroom",
@@ -167,6 +181,6 @@ return {
 };
 })();
 
-(node as any).hash = "583e7c7ce2c8c551c992d627fe8e5ce3";
+(node as any).hash = "284ab578734033a8c5edd467872ea823";
 
 export default node;

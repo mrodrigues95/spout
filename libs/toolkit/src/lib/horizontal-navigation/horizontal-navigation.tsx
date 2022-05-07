@@ -1,7 +1,6 @@
 import {
   useCallback,
   useRef,
-  WheelEvent,
   MouseEvent,
   ComponentProps,
   useState,
@@ -38,6 +37,7 @@ export const HorizontalNavigation = ({
 
   const checkScrollPosition = useCallback(() => {
     if (scrollRef.current) {
+      // TODO: Right navigation arrow shows sometimes when there is nothing to scroll (bad calculation).
       setArrows({
         showLeft: Math.abs(scrollRef.current.scrollLeft) !== 0,
         showRight:
@@ -47,22 +47,23 @@ export const HorizontalNavigation = ({
     }
   }, []);
 
-  const onWheel = useCallback((ev: WheelEvent<HTMLDivElement>) => {
-    const isTouchpad = Math.abs(ev.deltaX) !== 0 || Math.abs(ev.deltaY) < 15;
+  // TODO: Focus trap scrolling within the menu when window scrolling is enabled.
+  // const onWheel = useCallback((ev: WheelEvent<HTMLDivElement>) => {
+  //   const isTouchpad = Math.abs(ev.deltaX) !== 0 || Math.abs(ev.deltaY) < 15;
 
-    if (isTouchpad) {
-      ev.stopPropagation();
-      return;
-    }
+  //   if (isTouchpad) {
+  //     ev.stopPropagation();
+  //     return;
+  //   }
 
-    if (!scrollRef.current) return;
+  //   if (!scrollRef.current) return;
 
-    if (ev.deltaY > 0) {
-      scrollRef.current.scrollLeft += 100;
-    } else if (ev.deltaY < 0) {
-      scrollRef.current.scrollLeft -= 100;
-    }
-  }, []);
+  //   if (ev.deltaY > 0) {
+  //     scrollRef.current.scrollLeft += 100;
+  //   } else if (ev.deltaY < 0) {
+  //     scrollRef.current.scrollLeft -= 100;
+  //   }
+  // }, []);
 
   const handleDrag = useCallback(
     (ev: MouseEvent<HTMLDivElement>) => {
@@ -102,7 +103,7 @@ export const HorizontalNavigation = ({
           />
         )}
         <div
-          onWheel={onWheel}
+          // onWheel={onWheel}
           onMouseMove={handleDrag}
           onMouseDown={dragStart}
           onMouseUp={dragStop}

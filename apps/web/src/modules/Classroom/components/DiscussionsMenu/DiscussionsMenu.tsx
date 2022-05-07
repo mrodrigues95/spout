@@ -1,16 +1,9 @@
 import { graphql, usePaginationFragment } from 'react-relay';
 import { useRouter } from 'next/router';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import clsx from 'clsx';
-import {
-  Button,
-  HorizontalNavigation,
-  getHorizontalNavigationItemStyles,
-  Tooltip,
-} from '@spout/toolkit';
+import { HorizontalNavigation, Tooltip } from '@spout/toolkit';
 import { useConnection } from '../../../../shared/hooks';
 import { DiscussionsMenu_discussions$key } from './__generated__/DiscussionsMenu_discussions.graphql';
+import CreateDiscussion from './CreateDiscussion';
 
 const fragment = graphql`
   fragment DiscussionsMenu_discussions on Classroom
@@ -20,8 +13,9 @@ const fragment = graphql`
   )
   @refetchable(queryName: "DiscussionsMenuListPaginationQuery") {
     id
-    discussions(first: $count, after: $cursor)
-      @connection(key: "DiscussionsMenu_classroom_discussions") {
+    ...CreateDiscussion_classroom
+    discussions(first: $count, after: $cursor, order: { name: ASC })
+      @connection(key: "DiscussionsMenu_discussions") {
       edges {
         node {
           id
@@ -42,20 +36,9 @@ const DiscussionsMenu = ({ ...props }: Props) => {
 
   const discussions = useConnection(classroom.discussions);
 
-  const styles = getHorizontalNavigationItemStyles();
-
   return (
     <div className="flex items-center ">
-      <Tooltip label="Create Discussion">
-        <Button
-          className={clsx(styles.base, styles.active)}
-          variant="unstyled"
-          onClick={() => console.log('clicked')}
-          aria-label="Create discussion"
-        >
-          <FontAwesomeIcon icon={faPlus} />
-        </Button>
-      </Tooltip>
+      <CreateDiscussion classroom={classroom} />
       <HorizontalNavigation
         onChange={(idx) => {
           // TODO: Find a workaround for selecting the first discussion

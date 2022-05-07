@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2bfeb2089d0f76981a693d740aedcf0f>>
+ * @generated SignedSource<<65cb9b4a6d15af98bdafd00107276f82>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -60,6 +60,13 @@ v4 = [
     "kind": "Literal",
     "name": "first",
     "value": 50
+  },
+  {
+    "kind": "Literal",
+    "name": "order",
+    "value": {
+      "name": "ASC"
+    }
   }
 ];
 return {
@@ -183,14 +190,16 @@ return {
                 "storageKey": null
               }
             ],
-            "storageKey": "discussions(first:50)"
+            "storageKey": "discussions(first:50,order:{\"name\":\"ASC\"})"
           },
           {
             "alias": null,
             "args": (v4/*: any*/),
-            "filters": null,
+            "filters": [
+              "order"
+            ],
             "handle": "connection",
-            "key": "DiscussionsMenu_classroom_discussions",
+            "key": "DiscussionsMenu_discussions",
             "kind": "LinkedHandle",
             "name": "discussions"
           }
@@ -200,12 +209,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f7f7c112134b9b5289ee870339d7ca20",
+    "cacheID": "e17946f2794d175efa4aa16e80d0d42a",
     "id": null,
     "metadata": {},
     "name": "ViewClassroomQuery",
     "operationKind": "query",
-    "text": "query ViewClassroomQuery(\n  $id: ID!\n) {\n  classroomById(id: $id) {\n    name\n    ...ClassroomHeader_classroom\n    ...DiscussionsMenu_discussions\n    id\n  }\n}\n\nfragment ClassroomHeader_classroom on Classroom {\n  name\n}\n\nfragment DiscussionsMenu_discussions on Classroom {\n  id\n  discussions(first: 50) {\n    edges {\n      node {\n        id\n        name\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query ViewClassroomQuery(\n  $id: ID!\n) {\n  classroomById(id: $id) {\n    name\n    ...ClassroomHeader_classroom\n    ...DiscussionsMenu_discussions\n    id\n  }\n}\n\nfragment ClassroomHeader_classroom on Classroom {\n  name\n}\n\nfragment CreateDiscussion_classroom on Classroom {\n  id\n}\n\nfragment DiscussionsMenu_discussions on Classroom {\n  id\n  ...CreateDiscussion_classroom\n  discussions(first: 50, order: {name: ASC}) {\n    edges {\n      node {\n        id\n        name\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

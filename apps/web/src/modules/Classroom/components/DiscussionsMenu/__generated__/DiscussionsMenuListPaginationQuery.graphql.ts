@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f1cd3cb515da74a8419b2cd00c17e76c>>
+ * @generated SignedSource<<5f0d56360622fc3f934fc89dd64ddbf2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -76,6 +76,13 @@ v4 = [
     "kind": "Variable",
     "name": "first",
     "variableName": "count"
+  },
+  {
+    "kind": "Literal",
+    "name": "order",
+    "value": {
+      "name": "ASC"
+    }
   }
 ];
 return {
@@ -212,9 +219,11 @@ return {
               {
                 "alias": null,
                 "args": (v4/*: any*/),
-                "filters": null,
+                "filters": [
+                  "order"
+                ],
                 "handle": "connection",
-                "key": "DiscussionsMenu_classroom_discussions",
+                "key": "DiscussionsMenu_discussions",
                 "kind": "LinkedHandle",
                 "name": "discussions"
               }
@@ -228,16 +237,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "65fbef9be08521347f840b94e712a774",
+    "cacheID": "5233c011a0be5a635b9988a8175b33d0",
     "id": null,
     "metadata": {},
     "name": "DiscussionsMenuListPaginationQuery",
     "operationKind": "query",
-    "text": "query DiscussionsMenuListPaginationQuery(\n  $count: Int = 50\n  $cursor: String\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...DiscussionsMenu_discussions_1G22uz\n    id\n  }\n}\n\nfragment DiscussionsMenu_discussions_1G22uz on Classroom {\n  id\n  discussions(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        name\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query DiscussionsMenuListPaginationQuery(\n  $count: Int = 50\n  $cursor: String\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...DiscussionsMenu_discussions_1G22uz\n    id\n  }\n}\n\nfragment CreateDiscussion_classroom on Classroom {\n  id\n}\n\nfragment DiscussionsMenu_discussions_1G22uz on Classroom {\n  id\n  ...CreateDiscussion_classroom\n  discussions(first: $count, after: $cursor, order: {name: ASC}) {\n    edges {\n      node {\n        id\n        name\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "583e7c7ce2c8c551c992d627fe8e5ce3";
+(node as any).hash = "284ab578734033a8c5edd467872ea823";
 
 export default node;
