@@ -1,4 +1,5 @@
-import { Fragment, Suspense, useState } from 'react';
+import { Fragment, Suspense, useCallback, useState } from 'react';
+import { FetchPolicy } from 'relay-runtime';
 import { Dialog, Transition } from '@headlessui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -16,14 +17,29 @@ import Image from '../../Image';
 import VerticalNav from '../../VerticalNav';
 import Search from '../../Search';
 import ErrorBoundary from '../../ErrorBoundary';
-import CreateClassroom from './CreateClassroom';
+import CreateOrJoinClassroom from './CreateOrJoinClassroom';
 import SidebarClassrooms, {
   SidebarClassroomsSkeleton,
 } from './SidebarClassrooms';
 import UserInfoButton, { UserInfoButtonSkeleton } from './UserInfoButton';
 import ThemeButton from './ThemeButton';
 
+export interface QueryOptions {
+  fetchKey: number;
+  fetchPolicy?: FetchPolicy;
+}
+
 const SidebarContent = () => {
+  const [classroomQueryOptions, setClassroomQueryOptions] =
+    useState<QueryOptions>({ fetchKey: 0, fetchPolicy: 'store-or-network' });
+
+  const refreshClassroomsQuery = useCallback(() => {
+    setClassroomQueryOptions((prev) => ({
+      fetchKey: prev.fetchKey + 1,
+      fetchPolicy: 'store-and-network',
+    }));
+  }, []);
+
   return (
     <>
       <div className="px-2 xl:pt-2">
@@ -54,7 +70,9 @@ const SidebarContent = () => {
             <VerticalNav.Item
               isGroup
               groupTitle="Classrooms"
-              groupActions={<CreateClassroom />}
+              groupActions={
+                <CreateOrJoinClassroom refreshQuery={refreshClassroomsQuery} />
+              }
             >
               <ErrorBoundary
                 FallbackComponent={({ resetErrorBoundary }) => (
@@ -67,7 +85,15 @@ const SidebarContent = () => {
               >
                 {({ fetchKey }) => (
                   <Suspense fallback={<SidebarClassroomsSkeleton />}>
-                    <SidebarClassrooms fetchKey={fetchKey} />
+                    <SidebarClassrooms
+                      queryOptions={{
+                        ...classroomQueryOptions,
+                        fetchKey: Math.max(
+                          classroomQueryOptions.fetchKey,
+                          fetchKey,
+                        ),
+                      }}
+                    />
                   </Suspense>
                 )}
               </ErrorBoundary>
@@ -143,9 +169,9 @@ export const MobileSidebar = () => {
             leaveFrom="translate-x-0"
             leaveTo="-translate-x-full"
           >
-            <div className="relative flex h-full w-80 max-w-[calc(100%-4rem)] flex-col space-y-8 overflow-y-auto rounded-r-3xl bg-white px-1 py-4 shadow-2xl ring ring-gray-200">
+            <Dialog.Panel className="relative flex h-full w-80 max-w-[calc(100%-4rem)] flex-col space-y-8 overflow-y-auto rounded-r-3xl bg-white px-1 py-4 shadow-2xl ring ring-gray-200">
               <SidebarContent />
-            </div>
+            </Dialog.Panel>
           </Transition.Child>
         </Dialog>
       </Transition>

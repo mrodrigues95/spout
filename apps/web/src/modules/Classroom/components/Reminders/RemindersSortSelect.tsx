@@ -1,5 +1,5 @@
 import { Portal } from '@headlessui/react';
-import { faCheck, faSort } from '@fortawesome/free-solid-svg-icons';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Select, usePopper } from '@spout/toolkit';
 import { useReminders } from './RemindersProvider';
@@ -41,12 +41,7 @@ const RemindersSortSelect = () => {
 
   return (
     <Select value={sortBy} onChange={setSortBy}>
-      <Select.Button
-        rightIcon={<FontAwesomeIcon icon={faSort} size="xs" />}
-        ref={trigger}
-        variant="tertiary"
-        size="sm"
-      >
+      <Select.Button ref={trigger} variant="tertiary" size="sm">
         {sortBy.label}
       </Select.Button>
       <Portal>

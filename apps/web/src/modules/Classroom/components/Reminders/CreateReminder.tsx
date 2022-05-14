@@ -34,7 +34,7 @@ const mergeDateTime = (date: Date, time: Date) =>
     minutes: time.getMinutes(),
   });
 
-const createReminderSchema = z
+const schema = z
   .object({
     title: z
       .string()
@@ -115,7 +115,7 @@ const CreateReminder = ({ ...props }: Props) => {
   const { toast, handleError } = useToast();
 
   const form = useZodForm({
-    schema: createReminderSchema,
+    schema: schema,
     defaultValues: {
       date: new Date(),
       time: new Date(),
@@ -135,7 +135,7 @@ const CreateReminder = ({ ...props }: Props) => {
       date,
       time,
       importance,
-    }: z.infer<typeof createReminderSchema>) => {
+    }: z.infer<typeof schema>) => {
       const dueAt = mergeDateTime(date, time);
 
       createReminder({

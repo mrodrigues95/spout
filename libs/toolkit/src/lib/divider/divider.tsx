@@ -12,17 +12,19 @@ export const Divider = ({
   ...props
 }: DividerProps) => {
   return (
-    <hr
+    <div
+      role="separator"
+      aria-orientation={orientation === 'vertical' ? 'vertical' : 'horizontal'}
       className={twMerge(
         clsx(
           'border-gray-300/60 text-center',
           orientation === 'vertical'
-            ? 'my-auto h-full border-l'
-            : 'mx-auto w-full border-b',
+            ? 'my-auto h-full border-l-2'
+            : 'mx-auto w-full border-b-2',
           className,
         ),
       )}
       {...props}
-    />
+    ></div>
   );
 };

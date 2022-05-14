@@ -8,6 +8,7 @@ import { Input } from '../input';
 
 export interface DatePickerProps extends ReactDatePickerProps {}
 
+// TODO: Use this instead: https://react-spectrum.adobe.com/react-aria/useDatePicker.html
 export const DatePicker = ({ ...props }: DatePickerProps) => {
   return (
     <ReactDatePicker

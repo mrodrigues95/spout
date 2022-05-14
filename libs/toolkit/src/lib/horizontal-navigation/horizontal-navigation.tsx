@@ -2,11 +2,13 @@ import {
   useCallback,
   useRef,
   MouseEvent,
+  WheelEvent,
   ComponentProps,
   useState,
   useEffect,
 } from 'react';
 import { Tab } from '@headlessui/react';
+import { usePreventScroll } from '@react-aria/overlays';
 import {
   HorizontalNavigationItem,
   getHorizontalNavigationItemStyles,
@@ -34,6 +36,9 @@ export const HorizontalNavigation = ({
   const { dragStart, dragStop, dragMove } = useDrag();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [arrows, setArrows] = useState({ showLeft: false, showRight: false });
+  const [shouldLockBodyScroll, setShouldLockBodyScroll] = useState(false);
+
+  usePreventScroll({ isDisabled: !shouldLockBodyScroll });
 
   const checkScrollPosition = useCallback(() => {
     if (scrollRef.current) {
@@ -47,23 +52,22 @@ export const HorizontalNavigation = ({
     }
   }, []);
 
-  // TODO: Focus trap scrolling within the menu when window scrolling is enabled.
-  // const onWheel = useCallback((ev: WheelEvent<HTMLDivElement>) => {
-  //   const isTouchpad = Math.abs(ev.deltaX) !== 0 || Math.abs(ev.deltaY) < 15;
+  const onWheel = useCallback((ev: WheelEvent<HTMLDivElement>) => {
+    const isTouchpad = Math.abs(ev.deltaX) !== 0 || Math.abs(ev.deltaY) < 15;
 
-  //   if (isTouchpad) {
-  //     ev.stopPropagation();
-  //     return;
-  //   }
+    if (isTouchpad) {
+      ev.stopPropagation();
+      return;
+    }
 
-  //   if (!scrollRef.current) return;
+    if (!scrollRef.current) return;
 
-  //   if (ev.deltaY > 0) {
-  //     scrollRef.current.scrollLeft += 100;
-  //   } else if (ev.deltaY < 0) {
-  //     scrollRef.current.scrollLeft -= 100;
-  //   }
-  // }, []);
+    if (ev.deltaY < 0) {
+      scrollRef.current.scrollLeft += 100;
+    } else if (ev.deltaY > 0) {
+      scrollRef.current.scrollLeft -= 100;
+    }
+  }, []);
 
   const handleDrag = useCallback(
     (ev: MouseEvent<HTMLDivElement>) => {
@@ -103,12 +107,14 @@ export const HorizontalNavigation = ({
           />
         )}
         <div
-          // onWheel={onWheel}
+          onWheel={onWheel}
           onMouseMove={handleDrag}
           onMouseDown={dragStart}
           onMouseUp={dragStop}
           onMouseLeave={dragStop}
           onScroll={checkScrollPosition}
+          onMouseOver={() => setShouldLockBodyScroll(true)}
+          onMouseOut={() => setShouldLockBodyScroll(false)}
           ref={scrollRef}
           className="relative flex flex-1 space-x-2 overflow-hidden py-2.5 px-1.5"
           {...props}

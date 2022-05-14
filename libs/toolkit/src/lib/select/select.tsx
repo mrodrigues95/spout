@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-constraint */
-import { ReactNode } from 'react';
+import { forwardRef, ReactElement, ReactNode, Ref } from 'react';
 import { Listbox } from '@headlessui/react';
 import { SelectButton } from './select-button';
 import { SelectOption } from './select-option';
@@ -15,34 +15,43 @@ export interface SelectProps<T extends unknown = string> {
   className?: string;
 }
 
-export const Select = <T extends unknown = string>({
-  label,
-  value,
-  onChange,
-  children,
-  multiple = false,
-  className,
-  ...props
-}: SelectProps<T>) => {
-  return (
-    <Listbox
-      as="div"
-      className={clsx('relative space-y-1', className)}
-      value={value}
-      onChange={onChange}
-      multiple={multiple}
-      {...props}
-    >
-      {label && (
-        <Listbox.Label className="text-sm font-semibold text-gray-500">
-          {label}
-        </Listbox.Label>
-      )}
-      {children}
-    </Listbox>
-  );
-};
+const BaseSelect = <T extends unknown = string>(
+  {
+    label,
+    value,
+    onChange,
+    children,
+    multiple = false,
+    className,
+    ...props
+  }: SelectProps<T>,
+  ref: Ref<HTMLDivElement>,
+) => (
+  <Listbox
+    as="div"
+    className={clsx('relative space-y-1.5', className)}
+    value={value}
+    onChange={onChange}
+    multiple={multiple}
+    ref={ref}
+    {...props}
+  >
+    {label && (
+      <Listbox.Label className="block text-sm font-medium text-gray-900">
+        {label}
+      </Listbox.Label>
+    )}
+    {children}
+  </Listbox>
+);
 
-Select.Button = SelectButton;
-Select.Options = SelectOptions;
-Select.Option = SelectOption;
+export const Select = Object.assign(
+  forwardRef(BaseSelect) as <T extends unknown = string>(
+    props: SelectProps<T> & { ref?: Ref<HTMLDivElement> },
+  ) => ReactElement,
+  {
+    Button: SelectButton,
+    Options: SelectOptions,
+    Option: SelectOption,
+  },
+);

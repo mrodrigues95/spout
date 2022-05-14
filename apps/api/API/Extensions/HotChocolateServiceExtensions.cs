@@ -14,6 +14,7 @@ using API.Schema.Mutations.Discussions;
 using API.Schema.Mutations.Files;
 using API.Schema.Mutations.Users;
 using API.Schema.Queries.ClassroomAnnouncements;
+using API.Schema.Queries.ClassroomInvites;
 using API.Schema.Queries.ClassroomReminders;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Discussions;
@@ -23,6 +24,7 @@ using API.Schema.Queries.Sessions;
 using API.Schema.Queries.Users;
 using API.Schema.Subscriptions.Discussions;
 using API.Schema.Types.ClassroomAnnouncements;
+using API.Schema.Types.ClassroomInvites;
 using API.Schema.Types.ClassroomReminders;
 using API.Schema.Types.Classrooms;
 using API.Schema.Types.ClassroomSyllabus;
@@ -100,6 +102,10 @@ namespace API.Extensions {
                 .AddTypeExtension<ClassroomMutations>()
                 .AddDataLoader<ClassroomByIdDataLoader>()
                 .AddType<ClassroomType>();
+
+            gql
+                .AddDataLoader<ClassroomInviteByIdDataLoader>()
+                .AddType<ClassroomInviteType>();
 
             gql
                 .AddTypeExtension<ClassroomAnnouncementMutations>()

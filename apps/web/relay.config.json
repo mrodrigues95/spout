@@ -5,6 +5,7 @@
   "language": "typescript",
   "customScalars": {
     "DateTime": "string",
-    "URL": "string"
+    "URL": "string",
+    "Short": "number"
   }
 }

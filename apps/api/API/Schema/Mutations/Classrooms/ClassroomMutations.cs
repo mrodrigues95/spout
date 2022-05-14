@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,7 +38,9 @@ namespace API.Schema.Mutations.Classrooms {
             classroom.Users.Add(new ClassroomUser {
                 Classroom = classroom,
                 UserId = userId,
-                IsCreator = true
+                IsCreator = true,
+                JoinedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             });
 
             ctx.Classrooms.Add(classroom);
@@ -49,49 +50,48 @@ namespace API.Schema.Mutations.Classrooms {
         }
 
         [Authorize]
+        [Error(typeof(ClassroomNotFoundException))]
         [Error(typeof(ClassroomInviteExpiredException))]
-        [Error(typeof(UserAlreadyInClassroomException))]
         public async Task<Classroom?> JoinClassroomAsync(
             [GlobalUserId] int userId,
             JoinClassroomInput input,
             ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
-            var classroomInvite = await ctx.ClassroomInvites
-                .Include(x => x.Invite)
-                .Include(x => x.Classroom)
-                    .ThenInclude(x => x!.Users)
-                .SingleOrDefaultAsync(x =>
-                    x.Invite!.Code == input.Code
-                    && x.IsInviter, cancellationToken);
+            var invite = await ctx.ClassroomInvites
+                .SingleOrDefaultAsync(ci => ci.Code == input.Code && (
+                        ci.MaxUses != null && ci.TotalUses < ci.MaxUses ||
+                        ci.ExpiresAt != null && DateTime.UtcNow < ci.ExpiresAt ||
+                        ci.MaxUses == null && ci.ExpiresAt == null),
+                        cancellationToken);
+            if (invite is null) throw new ClassroomInviteExpiredException();
 
-            if (!IsValid(classroomInvite?.Invite)) {
-                throw new ClassroomInviteExpiredException();
-            }
-
-            var invite = classroomInvite!.Invite!;
-            var classroom = classroomInvite!.Classroom!;
+            var classroom = await ctx.Classrooms
+                .Include(c => c.Users)
+                .SingleOrDefaultAsync(c => c.Id == invite.ClassroomId, cancellationToken);
+            if (classroom is null) throw new ClassroomNotFoundException();
 
             var isAlreadyInClassroom = classroom.Users.Any(x => x.UserId == userId);
             if (isAlreadyInClassroom) {
-                throw new UserAlreadyInClassroomException(classroom.Name!);
+                // Return the classroom instead of throwing an error so that the front-end
+                // can redirect to the classroom.
+                return classroom;
             }
 
-            invite.Uses++;
+            invite.TotalUses++;
             invite.UpdatedAt = DateTime.UtcNow;
-            invite.Logs.Add(new ClassroomInvite {
-                InviteId = invite.Id,
-                UserId = userId,
-                ClassroomId = classroomInvite.ClassroomId,
-                IsInviter = false,
-                IsInvitee = true,
+            invite.Logs.Add(new ClassroomInviteLog {
+                UsedById = userId,
                 UsedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
             });
 
             classroom.Users.Add(new ClassroomUser {
                 ClassroomId = classroom.Id,
                 UserId = userId,
-                IsCreator = false
+                IsCreator = false,
+                JoinedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             });
 
             await ctx.SaveChangesAsync(cancellationToken);
@@ -100,42 +100,22 @@ namespace API.Schema.Mutations.Classrooms {
         }
 
         [Authorize]
-        public async Task<Invite> CreateClassroomInviteAsync(
+        [Error(typeof(ClassroomNotFoundException))]
+        public async Task<ClassroomInvite> CreateClassroomInviteAsync(
             [GlobalUserId] int userId,
             CreateClassroomInviteInput input,
             ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
-            if (input.Code != null) {
-                var classroomInvite = await ctx.ClassroomInvites
-                    .Include(x => x.Invite)
-                    .SingleOrDefaultAsync(x =>
-                        x.Invite!.Code == input.Code
-                        && x.ClassroomId == input.ClassroomId
-                        && x.UserId == userId
-                        && x.IsInviter, cancellationToken);
+            var classroom = await ctx.Classrooms.FindAsync(
+                new object[] { input.ClassroomId },
+                cancellationToken);
+            if (classroom is null) throw new ClassroomNotFoundException();
 
-                if (IsValid(classroomInvite?.Invite))
-                    return classroomInvite!.Invite!;
-            } else if (input.MaxAge is null && input.MaxUses is null) {
-                // Check if the user already has an existing invite created before creating a new one.
-                var classroomInvites = await ctx.ClassroomInvites
-                    .Where(x =>
-                        x.ClassroomId == input.ClassroomId
-                        && x.UserId == userId
-                        && x.IsInviter)
-                    .Include(x => x.Invite)
-                    .ToListAsync(cancellationToken);
-
-                var classroomInvite = ValidateClassroomInvites(classroomInvites);
-                if (classroomInvite != null)
-                    return classroomInvite!.Invite!;
-            }
-
-            // Set defaults (7 days).
+            // If options are not specified, then by default expire after 7 days.
             int? maxAge = 604800;
             DateTime? expiresAt = DateTime.UtcNow.AddDays(7);
 
-            if (input.MaxAge != null && input.MaxAge > 0) {
+            if (input.MaxAge is not null && input.MaxAge > 0) {
                 maxAge = input.MaxAge;
                 expiresAt = DateTime.UtcNow.AddSeconds((double)input.MaxAge);
             } else if (input.MaxAge == 0) {
@@ -143,49 +123,20 @@ namespace API.Schema.Mutations.Classrooms {
                 expiresAt = null;
             }
 
-            var invite = new Invite {
+            var invite = new ClassroomInvite {
+                CreatedById = userId,
+                ClassroomId = classroom.Id,
                 Code = new ShortGuid(Guid.NewGuid()),
-                Uses = 0,
+                TotalUses = 0,
                 MaxUses = input.MaxUses,
                 MaxAge = maxAge,
                 ExpiresAt = expiresAt
             };
-            invite.Logs.Add(new ClassroomInvite {
-                InviteId = invite.Id,
-                UserId = userId,
-                ClassroomId = input.ClassroomId,
-                IsInviter = true,
-                IsInvitee = false
-            });
 
-            ctx.Invites.Add(invite);
+            ctx.ClassroomInvites.Add(invite);
             await ctx.SaveChangesAsync(cancellationToken);
 
             return invite;
-        }
-
-        /// <summary>
-        /// Validates a collection of classroom invites that belong to a specific user.
-        /// If a valid classroom invite is found, it will be returned.
-        /// </summary>
-        private ClassroomInvite? ValidateClassroomInvites(List<ClassroomInvite> classroomInvites) {
-            foreach (var classroomInvite in classroomInvites) {
-                if (IsValid(classroomInvite.Invite!))
-                    return classroomInvite;
-            }
-
-            return null;
-        }
-
-        private bool IsValid(Invite? invite) {
-            if (invite is null)
-                return false;
-            if (invite.MaxUses != null && invite.MaxUses <= invite.Uses)
-                return false;
-            if (invite.ExpiresAt != null && invite.ExpiresAt <= DateTime.UtcNow)
-                return false;
-
-            return true;
         }
     }
 }

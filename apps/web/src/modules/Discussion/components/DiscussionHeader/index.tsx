@@ -3,11 +3,7 @@ import { graphql, usePaginationFragment } from 'react-relay';
 import { Portal } from '@headlessui/react';
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCheck,
-  faInfoCircle,
-  faSort,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Title, Select, IconButton, Tooltip, usePopper } from '@spout/toolkit';
 import {
   MEDIA_QUERIES,
@@ -87,12 +83,7 @@ const DiscussionHeader = ({ ...props }: Props) => {
           value={selectedDiscussionId}
           onChange={setSelectedDiscussionId}
         >
-          <Select.Button
-            variant="secondary"
-            size="sm"
-            rightIcon={<FontAwesomeIcon icon={faSort} size="xs" />}
-            ref={trigger}
-          >
+          <Select.Button variant="secondary" size="sm" ref={trigger}>
             {discussion.name}
           </Select.Button>
           <Portal>

@@ -21,7 +21,7 @@ const BaseRadioGroup = <T extends unknown = unknown>(
 
 export const RadioGroup = Object.assign(
   forwardRef(BaseRadioGroup) as <T extends unknown = unknown>(
-    p: RadioGroupProps<T> & { ref?: Ref<HTMLDivElement> },
+    props: RadioGroupProps<T> & { ref?: Ref<HTMLDivElement> },
   ) => ReactElement,
   {
     Options: RadioGroupOptions,

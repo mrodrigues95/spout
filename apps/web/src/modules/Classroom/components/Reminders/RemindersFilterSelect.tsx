@@ -31,10 +31,10 @@ const RemindersFilterSelect = () => {
   return (
     <Select value={filters} onChange={setFilters} multiple>
       <Select.Button
-        rightIcon={<FontAwesomeIcon icon={faFilter} size="xs" />}
         ref={trigger}
         variant="tertiary"
         size="sm"
+        icon={<FontAwesomeIcon icon={faFilter} size="xs" />}
       >
         <span className="max-w-[10rem] truncate">
           {filters.length ? (

@@ -190,13 +190,13 @@ const ChooseTwoFactorProviderModal = ({
             // These first two errors should never happen unless there's a logical
             // error somewhere meaning a user is allowed to select a provider
             // that they are not verified for.
-            case 'UnverifiedUserException':
+            case 'UnverifiedUserError':
               console.error(
                 'Unsuccessfully enabled two-factor authn for an unverified user.',
               );
               handleError();
               return;
-            case 'InvalidProviderException':
+            case 'InvalidProviderError':
               console.error('Invalid provider selected for user.');
               handleError();
               return;

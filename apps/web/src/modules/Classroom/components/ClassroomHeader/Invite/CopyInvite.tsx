@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import { secondsToMinutes, secondsToHours } from 'date-fns';
 import clsx from 'clsx';
 import { Button } from '@spout/toolkit';
+import {
+  CopyInvite_classroom,
+  CopyInvite_classroom$key,
+} from './__generated__/CopyInvite_classroom.graphql';
 
-interface Props {
-  invite: any;
-}
-
-const getExpiresMessage = (invite: any) => {
-  if (!invite) return '';
-
+const getExpiresMessage = (invite: CopyInvite_classroom) => {
   const { maxAge, maxUses } = invite;
 
   const date = () => {
@@ -35,22 +34,34 @@ const getExpiresMessage = (invite: any) => {
   const uses = maxUses === 1 ? '1 use' : `${maxUses} uses`;
 
   if (!maxUses && !maxAge) {
-    return 'Your invite will never expire.';
+    return 'This invite will never expire.';
   } else if (maxUses && maxAge) {
-    return `Your invite will expire in ${date()}, or after ${uses}.`;
+    return `This invite will expire in ${date()}, or after ${uses}.`;
   } else if (maxUses && !maxAge) {
-    return `Your invite expires after ${uses}.`;
+    return `This invite expires after ${uses}.`;
   } else if (!maxUses && maxAge) {
-    return `Your invite will expire in ${date()}.`;
+    return `This invite will expire in ${date()}.`;
   } else {
     return '';
   }
 };
 
-const CopyInvite = ({ invite }: Props) => {
+const fragment = graphql`
+  fragment CopyInvite_classroom on ClassroomInvite {
+    code
+    maxUses
+    maxAge
+  }
+`;
+
+interface Props {
+  invite: CopyInvite_classroom$key;
+}
+
+const CopyInvite = ({ ...props }: Props) => {
+  const invite = useFragment(fragment, props.invite);
   const timeoutRef = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isFocused, setIsFocused] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => () => clearTimeout(timeoutRef.current), []);
@@ -68,60 +79,48 @@ const CopyInvite = ({ invite }: Props) => {
       }, 1000);
     };
 
-    // TODO: Remove this once dev env uses https.
-    // Clipboard is only available in a secure context (https).
     if (typeof clipboard !== 'undefined') {
-      navigator.clipboard.writeText(invite.code).then(triggerTimeout);
+      navigator.clipboard
+        .writeText(inputRef.current!.value)
+        .then(triggerTimeout);
     } else {
-      inputRef.current?.select();
-      const success = document.execCommand('copy');
-      if (success) triggerTimeout();
+      console.warn('Clipboard not supported.');
     }
   };
 
   return (
-    <>
+    <div className="space-y-1.5">
       <div
         className={clsx(
-          'flex items-center justify-center rounded-md py-1 pl-3 pr-1 ring-2 ring-black ring-opacity-5 transition duration-150 ease-in-out hover:ring-opacity-100',
-          isFocused
-            ? 'ring-violet-600 ring-opacity-100'
-            : 'ring-black ring-opacity-5',
+          'flex items-center justify-center rounded-md border-2 border-gray-200 py-1 pl-3 pr-1 transition duration-150 ease-in-out',
           isCopied
-            ? 'ring-emerald-600 ring-opacity-100'
-            : 'ring-black ring-opacity-5',
+            ? 'border-emerald-600 ring-4 ring-green-200'
+            : 'border-gray-200',
         )}
       >
         <div className="flex-1">
           <input
             ref={inputRef}
             type="text"
-            className="w-full truncate border-none py-0 pl-0 font-semibold text-black focus:outline-none focus:ring-0"
-            value={`${process.env.NEXT_PUBLIC_APP_URL}/${invite.code}`}
-            onFocus={(e) => {
-              e.target.select();
-              setIsFocused(true);
-            }}
-            onBlur={() => setIsFocused(false)}
+            className="w-full truncate border-none py-0 pl-0 font-medium text-black focus:outline-none focus:ring-0"
+            value={invite.code}
+            onFocus={(e) => e.target.select()}
             readOnly
           />
         </div>
         <Button
           size="sm"
           className={clsx(
-            'rounded-lg',
             isCopied &&
-              '!bg-emerald-600 !text-white !ring-transparent !transition-colors hover:!bg-emerald-700 active:!bg-emerald-800',
+              'bg-emerald-600 !text-white ring-transparent transition-colors hover:bg-emerald-700 active:bg-emerald-800',
           )}
           onClick={onCopy}
         >
           {isCopied ? 'Copied' : 'Copy'}
         </Button>
       </div>
-      <p className="mt-1 text-sm font-medium text-gray-500">
-        {getExpiresMessage(invite)}
-      </p>
-    </>
+      <p className="text-sm text-gray-500">{getExpiresMessage(invite)}</p>
+    </div>
   );
 };
 

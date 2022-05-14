@@ -166,6 +166,7 @@ type Classroom implements Node {
   updatedAt: DateTime!
   createdBy: User!
   syllabus: ClassroomSyllabus
+  invites: [ClassroomInvite!]!
   announcements(
     """Returns the first _n_ elements from the list."""
     first: Int
@@ -238,7 +239,6 @@ type Classroom implements Node {
   delLogId: Int
   delLog: DelLog
   deletedAt: DateTime
-  invites: [ClassroomInvite!]!
 }
 
 type ClassroomAnnouncement implements Node {
@@ -303,17 +303,18 @@ input ClassroomFilterInput {
   reminders: ListFilterInputTypeOfClassroomReminderFilterInput
 }
 
-type ClassroomInvite {
-  inviteId: Int!
-  invite: Invite
-  userId: Int!
-  user: User
-  classroomId: Int!
-  classroom: Classroom
-  isInviter: Boolean!
-  isInvitee: Boolean!
-  usedAt: DateTime
+type ClassroomInvite implements Node {
+  id: ID!
+  guid: UUID!
+  code: String!
+  totalUses: Short!
+  maxUses: Short
+  maxAge: Int
+  expiresAt: DateTime
+  createdAt: DateTime!
   updatedAt: DateTime!
+  createdBy: User!
+  classroom: Classroom!
 }
 
 type ClassroomInviteExpiredError implements Error {
@@ -323,15 +324,45 @@ type ClassroomInviteExpiredError implements Error {
 input ClassroomInviteFilterInput {
   and: [ClassroomInviteFilterInput!]
   or: [ClassroomInviteFilterInput!]
-  inviteId: ComparableInt32OperationFilterInput
-  invite: InviteFilterInput
-  userId: ComparableInt32OperationFilterInput
-  user: UserFilterInput
+  id: ComparableInt32OperationFilterInput
+  guid: ComparableGuidOperationFilterInput
+  createdById: ComparableInt32OperationFilterInput
+  createdBy: UserFilterInput
   classroomId: ComparableInt32OperationFilterInput
   classroom: ClassroomFilterInput
-  isInviter: BooleanOperationFilterInput
-  isInvitee: BooleanOperationFilterInput
-  usedAt: ComparableNullableOfDateTimeOperationFilterInput
+  totalUses: ComparableInt16OperationFilterInput
+  code: StringOperationFilterInput
+  maxUses: ComparableNullableOfInt16OperationFilterInput
+  maxAge: ComparableNullableOfInt32OperationFilterInput
+  expiresAt: ComparableNullableOfDateTimeOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+  logs: ListFilterInputTypeOfClassroomInviteLogFilterInput
+}
+
+type ClassroomInviteLog {
+  id: Int!
+  guid: UUID!
+  classroomInviteId: Int!
+  classroomInvite: ClassroomInvite
+  usedById: Int!
+  usedBy: User
+  usedAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input ClassroomInviteLogFilterInput {
+  and: [ClassroomInviteLogFilterInput!]
+  or: [ClassroomInviteLogFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  guid: ComparableGuidOperationFilterInput
+  classroomInviteId: ComparableInt32OperationFilterInput
+  classroomInvite: ClassroomInviteFilterInput
+  usedById: ComparableInt32OperationFilterInput
+  usedBy: UserFilterInput
+  usedAt: ComparableDateTimeOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
 }
 
@@ -619,15 +650,17 @@ input CreateClassroomInput {
   name: String!
 }
 
+union CreateClassroomInviteError = ClassroomNotFoundError
+
 input CreateClassroomInviteInput {
   classroomId: ID!
-  code: String
   maxAge: Int
   maxUses: Short
 }
 
 type CreateClassroomInvitePayload {
-  invite: Invite
+  classroomInvite: ClassroomInvite
+  errors: [CreateClassroomInviteError!]
   query: Query!
 }
 
@@ -1126,33 +1159,7 @@ type InvalidTokenError implements Error {
   message: String!
 }
 
-type Invite {
-  id: Int!
-  code: String!
-  uses: Short!
-  maxUses: Short
-  maxAge: Int
-  expiresAt: DateTime
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  logs: [ClassroomInvite!]!
-}
-
-input InviteFilterInput {
-  and: [InviteFilterInput!]
-  or: [InviteFilterInput!]
-  id: ComparableInt32OperationFilterInput
-  code: StringOperationFilterInput
-  uses: ComparableInt16OperationFilterInput
-  maxUses: ComparableNullableOfInt16OperationFilterInput
-  maxAge: ComparableNullableOfInt32OperationFilterInput
-  expiresAt: ComparableNullableOfDateTimeOperationFilterInput
-  createdAt: ComparableDateTimeOperationFilterInput
-  updatedAt: ComparableDateTimeOperationFilterInput
-  logs: ListFilterInputTypeOfClassroomInviteFilterInput
-}
-
-union JoinClassroomError = ClassroomInviteExpiredError | UserAlreadyInClassroomError
+union JoinClassroomError = ClassroomNotFoundError | ClassroomInviteExpiredError
 
 input JoinClassroomInput {
   code: String!
@@ -1182,6 +1189,13 @@ input ListFilterInputTypeOfClassroomInviteFilterInput {
   all: ClassroomInviteFilterInput
   none: ClassroomInviteFilterInput
   some: ClassroomInviteFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfClassroomInviteLogFilterInput {
+  all: ClassroomInviteLogFilterInput
+  none: ClassroomInviteLogFilterInput
+  some: ClassroomInviteLogFilterInput
   any: Boolean
 }
 
@@ -1938,7 +1952,8 @@ type User implements Node {
   pinnedMessages: [Message!]!
   classroomAnnouncements: [ClassroomAnnouncement!]!
   classroomReminders: [ClassroomReminder!]!
-  invites: [ClassroomInvite!]!
+  classroomInvites: [ClassroomInvite!]!
+  classroomInviteLogs: [ClassroomInviteLog!]!
   fileUploads: [File!]!
   userName: String
   normalizedUserName: String
@@ -1949,10 +1964,6 @@ type User implements Node {
   lockoutEnd: DateTime
   lockoutEnabled: Boolean!
   accessFailedCount: Int!
-}
-
-type UserAlreadyInClassroomError implements Error {
-  message: String!
 }
 
 type UserEmailChange {
@@ -2006,7 +2017,8 @@ input UserFilterInput {
   classrooms: ListFilterInputTypeOfClassroomUserFilterInput
   classroomAnnouncements: ListFilterInputTypeOfClassroomAnnouncementFilterInput
   classroomReminders: ListFilterInputTypeOfClassroomReminderFilterInput
-  invites: ListFilterInputTypeOfClassroomInviteFilterInput
+  classroomInvites: ListFilterInputTypeOfClassroomInviteFilterInput
+  classroomInviteLogs: ListFilterInputTypeOfClassroomInviteLogFilterInput
   fileUploads: ListFilterInputTypeOfFileFilterInput
   userName: StringOperationFilterInput
   normalizedUserName: StringOperationFilterInput

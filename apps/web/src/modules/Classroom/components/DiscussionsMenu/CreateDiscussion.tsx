@@ -92,12 +92,16 @@ const CreateDiscussion = ({ ...props }: Props) => {
 
           // Get the connection.
           const key = 'DiscussionsMenu_discussions';
-          const conn = ConnectionHandler.getConnection(classroomRecord, key);
+          const conn = ConnectionHandler.getConnection(classroomRecord, key, {
+            order: { name: 'ASC' },
+          });
           if (!conn) {
             throw new Error(`Unable to get connection by key: ${key}`);
           }
 
           // Insert a new edge.
+          // TODO: We sort alphabetically by discussion name but this just inserts
+          // a new edge at the end which is incorrect. Maybe refetch instead?
           const newEdge = ConnectionHandler.createEdge(
             store,
             conn,

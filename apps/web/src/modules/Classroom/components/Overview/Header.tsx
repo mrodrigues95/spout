@@ -62,7 +62,7 @@ const Header = ({ ...props }: Props) => {
           </>
         )}
       </div>
-      <div>
+      <div className="flex items-center">
         <Text as="span" className="mr-2">
           Instructed by
         </Text>

@@ -25,6 +25,7 @@ namespace API.Data {
         public DbSet<Classroom> Classrooms { get; set; } = default!;
         public DbSet<ClassroomUser> ClassroomUsers { get; set; } = default!;
         public DbSet<ClassroomInvite> ClassroomInvites { get; set; } = default!;
+        public DbSet<ClassroomInviteLog> ClassroomInviteLogs { get; set; } = default!;
         public DbSet<ClassroomAnnouncement> ClassroomAnnouncements { get; set; } = default!;
         public DbSet<ClassroomReminder> ClassroomReminders { get; set; } = default!;
         public DbSet<ClassroomSyllabus> ClassroomSyllabus { get; set; } = default!;
@@ -32,7 +33,6 @@ namespace API.Data {
         public DbSet<Message> Messages { get; set; } = default!;
         public DbSet<File> Files { get; set; } = default!;
         public DbSet<MessageFile> MessageFiles { get; set; } = default!;
-        public DbSet<Invite> Invites { get; set; } = default!;
         public DbSet<State> States { get; set; } = default!;
         public DbSet<DelLogType> DelLogTypes { get; set; } = default!;
         public DbSet<DelLog> DelLogs { get; set; } = default!;

@@ -1,17 +1,19 @@
 import { ComponentProps, ReactElement, ReactNode } from 'react';
 import { Listbox } from '@headlessui/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 
 interface SelectOptionProps extends Omit<ComponentProps<'li'>, 'value'> {
   value: unknown;
   label: ReactNode;
-  selectedIcon: ReactElement;
+  selectedIcon?: ReactElement;
 }
 
 export const SelectOption = ({
   value,
   label,
-  selectedIcon,
+  selectedIcon = <FontAwesomeIcon icon={faCheck} />,
   ...props
 }: SelectOptionProps) => {
   return (

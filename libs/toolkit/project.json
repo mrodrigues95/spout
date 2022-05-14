@@ -7,7 +7,9 @@
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "options": {
-        "lintFilePatterns": ["libs/toolkit/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["libs/toolkit/**/*.{ts,tsx,js,jsx}"],
+        "cache": true,
+        "fix": true
       },
       "outputs": ["{options.outputFile}"]
     },

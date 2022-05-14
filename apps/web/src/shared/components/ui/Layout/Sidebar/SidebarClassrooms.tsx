@@ -4,6 +4,7 @@ import { Skeleton } from '@spout/toolkit';
 import clsx from 'clsx';
 import VerticalNav from '../../VerticalNav';
 import { getRandomColor } from '../../../../../shared/utils';
+import { QueryOptions } from './Sidebar';
 import { SidebarClassroomsQuery } from './__generated__/SidebarClassroomsQuery.graphql';
 
 export const SidebarClassroomsSkeleton = () => {
@@ -25,16 +26,15 @@ export const SidebarClassroomsSkeleton = () => {
 };
 
 interface Props {
-  fetchKey: number;
+  queryOptions: QueryOptions;
 }
 
-const SidebarClassrooms = ({ fetchKey }: Props) => {
+const SidebarClassrooms = ({ queryOptions }: Props) => {
   const router = useRouter();
   const data = useLazyLoadQuery<SidebarClassroomsQuery>(
     graphql`
       query SidebarClassroomsQuery {
         me {
-          id
           classrooms {
             id
             name
@@ -43,7 +43,7 @@ const SidebarClassrooms = ({ fetchKey }: Props) => {
       }
     `,
     {},
-    { fetchKey },
+    queryOptions,
   );
 
   if (!data.me?.classrooms.length) return null;
@@ -69,9 +69,10 @@ const SidebarClassrooms = ({ fetchKey }: Props) => {
               />
             }
             routes={[
-              `/classrooms/${classroom.id}/overview`,
+              `/classrooms/${classroom.id}/activity`,
               `/classrooms/${classroom.id}/announcements`,
-              `/classrooms/${classroom.id}/important`,
+              `/classrooms/${classroom.id}/overview`,
+              `/classrooms/${classroom.id}/reminders`,
               `/classrooms/${classroom.id}/discussions/${router.query.discussionId}`,
             ]}
           />

@@ -74,9 +74,13 @@ namespace API.Data.Configurations {
                 .WithOne(m => m.PinnedBy!)
                 .HasForeignKey(m => m.PinnedById);
 
-            builder.HasMany(u => u.Invites)
-                .WithOne(ui => ui.User!)
-                .HasForeignKey(ui => ui.UserId);
+            builder.HasMany(u => u.ClassroomInvites)
+                .WithOne(ci => ci.CreatedBy!)
+                .HasForeignKey(ci => ci.CreatedById);
+
+            builder.HasMany(u => u.ClassroomInviteLogs)
+                .WithOne(cil => cil.UsedBy!)
+                .HasForeignKey(cil => cil.UsedById);
 
             builder.HasMany(u => u.FileUploads)
                 .WithOne(f => f.UploadedBy!)

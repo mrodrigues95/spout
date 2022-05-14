@@ -1,8 +1,9 @@
 import { Suspense, useMemo } from 'react';
+import { RelayEnvironmentProvider } from 'react-relay';
+import { SSRProvider } from '@react-aria/ssr';
 import { AppProps } from 'next/app';
 import { DefaultSeo } from 'next-seo';
 import { Toaster } from 'react-hot-toast';
-import { RelayEnvironmentProvider } from 'react-relay';
 import { NProgress, SessionProvider } from '../shared/components';
 import { useEnvironment } from '../shared/utils';
 
@@ -29,19 +30,23 @@ const MyApp = ({ Component, pageProps }: MyAppProps) => {
   const environment = useEnvironment(records, shouldResetEnv);
 
   return (
-    <Suspense fallback={null}>
+    <>
       <DefaultSeo defaultTitle="Spout" titleTemplate="%s | Spout" />
       <RelayEnvironmentProvider environment={environment}>
-        <SessionProvider sessionId={pageProps.sessionId}>
-          <Component {...pageProps} />
-        </SessionProvider>
+        <Suspense fallback={null}>
+          <SessionProvider sessionId={pageProps.sessionId}>
+            <SSRProvider>
+              <Component {...pageProps} />
+            </SSRProvider>
+          </SessionProvider>
+        </Suspense>
+        <Toaster
+          position="bottom-center"
+          toastOptions={{ duration: 4000, className: 'font-medium' }}
+        />
+        <NProgress />
       </RelayEnvironmentProvider>
-      <Toaster
-        position="bottom-center"
-        toastOptions={{ duration: 4000, className: 'font-medium' }}
-      />
-      <NProgress />
-    </Suspense>
+    </>
   );
 };
 

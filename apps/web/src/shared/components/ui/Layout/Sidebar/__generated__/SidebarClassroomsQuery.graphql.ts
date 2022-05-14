@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c23909262eeb322e342a22c2ad85f988>>
+ * @generated SignedSource<<a914473fa605945b3eb3c3099c2e36d9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,6 @@ export type SidebarClassroomsQuery$variables = {};
 export type SidebarClassroomsQueryVariables = SidebarClassroomsQuery$variables;
 export type SidebarClassroomsQuery$data = {
   readonly me: {
-    readonly id: string;
     readonly classrooms: ReadonlyArray<{
       readonly id: string;
       readonly name: string;
@@ -34,46 +33,45 @@ var v0 = {
   "name": "id",
   "storageKey": null
 },
-v1 = [
-  {
-    "alias": null,
-    "args": null,
-    "concreteType": "User",
-    "kind": "LinkedField",
-    "name": "me",
-    "plural": false,
-    "selections": [
-      (v0/*: any*/),
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": "Classroom",
-        "kind": "LinkedField",
-        "name": "classrooms",
-        "plural": true,
-        "selections": [
-          (v0/*: any*/),
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "name",
-            "storageKey": null
-          }
-        ],
-        "storageKey": null
-      }
-    ],
-    "storageKey": null
-  }
-];
+v1 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "Classroom",
+  "kind": "LinkedField",
+  "name": "classrooms",
+  "plural": true,
+  "selections": [
+    (v0/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "name",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
+};
 return {
   "fragment": {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
     "name": "SidebarClassroomsQuery",
-    "selections": (v1/*: any*/),
+    "selections": [
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "me",
+        "plural": false,
+        "selections": [
+          (v1/*: any*/)
+        ],
+        "storageKey": null
+      }
+    ],
     "type": "Query",
     "abstractKey": null
   },
@@ -82,19 +80,33 @@ return {
     "argumentDefinitions": [],
     "kind": "Operation",
     "name": "SidebarClassroomsQuery",
-    "selections": (v1/*: any*/)
+    "selections": [
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "me",
+        "plural": false,
+        "selections": [
+          (v1/*: any*/),
+          (v0/*: any*/)
+        ],
+        "storageKey": null
+      }
+    ]
   },
   "params": {
-    "cacheID": "0190993aa4556d33267b86d4765cbb39",
+    "cacheID": "4bf2058a0a8e979fa82e57f6f952fedd",
     "id": null,
     "metadata": {},
     "name": "SidebarClassroomsQuery",
     "operationKind": "query",
-    "text": "query SidebarClassroomsQuery {\n  me {\n    id\n    classrooms {\n      id\n      name\n    }\n  }\n}\n"
+    "text": "query SidebarClassroomsQuery {\n  me {\n    classrooms {\n      id\n      name\n    }\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "e7796060aa87098b88b20944b484b509";
+(node as any).hash = "8c03bb62c530a22c3cdeef87a57f2a3e";
 
 export default node;

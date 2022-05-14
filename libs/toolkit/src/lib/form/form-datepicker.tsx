@@ -1,5 +1,4 @@
 import {
-  FieldPath,
   FieldValues,
   useController,
   UseControllerProps,
@@ -10,20 +9,16 @@ import { FormInputProps } from './form-input';
 
 export interface FormDatePickerProps<
   TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > extends Omit<DatePickerProps, 'onChange' | 'selected' | 'onBlur'> {
   inputProps: FormInputProps;
-  controller: UseControllerProps<TFieldValues, TName>;
+  controller: UseControllerProps<TFieldValues>;
 }
 
-export const FormDatePicker = <
-  TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
->({
+export const FormDatePicker = <TFieldValues extends FieldValues = FieldValues>({
   controller,
   inputProps,
   ...props
-}: FormDatePickerProps<TFieldValues, TName>) => {
+}: FormDatePickerProps<TFieldValues>) => {
   const {
     field: { name, onChange, onBlur, value, ref },
   } = useController({ ...controller });

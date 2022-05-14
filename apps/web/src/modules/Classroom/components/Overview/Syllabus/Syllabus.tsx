@@ -116,6 +116,7 @@ const Syllabus = ({ ...props }: Props) => {
         />
       ) : (
         <EmptyFallback
+          className="mt-8"
           icon={
             <FontAwesomeIcon
               icon={faBookOpen}

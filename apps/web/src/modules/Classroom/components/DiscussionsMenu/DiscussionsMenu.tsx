@@ -1,6 +1,6 @@
 import { graphql, usePaginationFragment } from 'react-relay';
 import { useRouter } from 'next/router';
-import { HorizontalNavigation, Tooltip } from '@spout/toolkit';
+import { HorizontalNavigation, Tooltip, Keys } from '@spout/toolkit';
 import { useConnection } from '../../../../shared/hooks';
 import { DiscussionsMenu_discussions$key } from './__generated__/DiscussionsMenu_discussions.graphql';
 import CreateDiscussion from './CreateDiscussion';
@@ -36,31 +36,38 @@ const DiscussionsMenu = ({ ...props }: Props) => {
 
   const discussions = useConnection(classroom.discussions);
 
+  const navigateDiscussion = (discussionId: string) =>
+    router.push(`/classrooms/${classroom.id}/discussions/${discussionId}`);
+
   return (
-    <div className="flex items-center ">
+    <div className="flex items-center">
       <CreateDiscussion classroom={classroom} />
       <HorizontalNavigation
+        key={classroom.id}
         onChange={(idx) => {
-          // TODO: Find a workaround for selecting the first discussion
-          // via keyboard navigation.
-          // HeadlessUI doesn't call `onChange` when the currently
-          // selected `Tab` is selected again and they override most of the
-          // event handlers (onClick, etc.) so there is no way to listen to
-          // events. This means selecting the first discussion via keyboard
-          // will not do anything.
           const discussion = discussions[idx];
-          router.push(
-            `/classrooms/${classroom.id}/discussions/${discussion.id}`,
-          );
+          navigateDiscussion(discussion.id);
         }}
       >
         <HorizontalNavigation.Divider />
-        {discussions.map((discussion) => (
+        {discussions.map((discussion, idx) => (
           <Tooltip key={discussion.id} label={discussion.name}>
             <div>
               <HorizontalNavigation.Item
                 aria-label={`Go to ${discussion.name}`}
                 href={`/classrooms/${classroom.id}/discussions/${discussion.id}`}
+                onKeyDown={(e) => {
+                  const isFirstItem = idx === 0;
+                  // The first item is selected by default and HeadlessUI doesn't
+                  // call `onChange` again if the item is already selected so this
+                  // listens for specific keyboard events and responds accordingly.
+                  if (
+                    isFirstItem &&
+                    (e.key === Keys.Space || e.key === Keys.Enter)
+                  ) {
+                    navigateDiscussion(discussion.id);
+                  }
+                }}
               >
                 {discussion.name.slice(0, 1)}
               </HorizontalNavigation.Item>

@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using API.Data;
+using API.Schema.Queries.ClassroomInvites;
 using API.Schema.Queries.Classrooms;
 using API.Schema.Queries.Users;
 using API.Schema.Types.ClassroomAnnouncements;
+using API.Schema.Types.ClassroomInvites;
 using API.Schema.Types.ClassroomReminders;
 using API.Schema.Types.ClassroomSyllabus;
 using API.Schema.Types.Discussions;
@@ -62,27 +64,34 @@ namespace API.Schema.Types.Classrooms {
                 .UseDbContext<ApplicationDbContext>();
 
             descriptor
-                .Field("syllabus")
+                .Field(c => c.Syllabus)
                 .Type<ClassroomSyllabusType>()
                 .ResolveWith<ClassroomResolvers>(x =>
                     x.GetSyllabusAsync(default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>();
 
             descriptor
-                .Field("announcements")
+                .Field(c => c.Invites)
+                .Type<NonNullType<ListType<NonNullType<ClassroomInviteType>>>>()
+                .UseDbContext<ApplicationDbContext>()
+                .ResolveWith<ClassroomResolvers>(c =>
+                    c.GetClassroomInvitesAsync(default!, default!, default!, default!));
+
+            descriptor
+                .Field(c => c.Announcements)
                 .Type<NonNullType<ListType<NonNullType<ClassroomAnnouncementType>>>>()
-                .ResolveWith<ClassroomResolvers>(x =>
-                    x.GetAnnouncementsAsync(default!, default!, default!, default!))
+                .ResolveWith<ClassroomResolvers>(c =>
+                    c.GetAnnouncementsAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .UsePaging<NonNullType<ClassroomAnnouncementType>>()
                 .UseFiltering()
                 .UseSorting();
 
             descriptor
-                .Field("reminders")
+                .Field(c => c.Reminders)
                 .Type<NonNullType<ListType<NonNullType<ClassroomReminderType>>>>()
-                .ResolveWith<ClassroomResolvers>(x =>
-                    x.GetRemindersAsync(default!, default!, default!, default!))
+                .ResolveWith<ClassroomResolvers>(c =>
+                    c.GetRemindersAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .UsePaging<NonNullType<ClassroomReminderType>>()
                 .UseFiltering()
@@ -91,24 +100,22 @@ namespace API.Schema.Types.Classrooms {
             descriptor
                 .Field(c => c.Users)
                 .Type<NonNullType<ListType<NonNullType<UserType>>>>()
-                .ResolveWith<ClassroomResolvers>(x =>
-                    x.GetUsersAsync(default!, default!, default!, default!))
+                .ResolveWith<ClassroomResolvers>(c =>
+                    c.GetUsersAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .UsePaging<NonNullType<UserType>>()
                 .UseFiltering()
-                .UseSorting()
-                .Name("users");
+                .UseSorting();
 
             descriptor
                 .Field(c => c.Discussions)
                 .Type<NonNullType<ListType<NonNullType<DiscussionType>>>>()
-                .ResolveWith<ClassroomResolvers>(x =>
-                    x.GetDiscussionsAsync(default!, default!, default!, default!))
+                .ResolveWith<ClassroomResolvers>(c =>
+                    c.GetDiscussionsAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .UsePaging<NonNullType<DiscussionType>>()
                 .UseFiltering()
-                .UseSorting()
-                .Name("discussions");
+                .UseSorting();
         }
 
         private class ClassroomResolvers {
@@ -133,6 +140,27 @@ namespace API.Schema.Types.Classrooms {
                 => await ctx.ClassroomSyllabus
                     .Where(cs => cs.ClassroomId == classroom.Id)
                     .SingleOrDefaultAsync(cancellationToken);
+
+            public async Task<IEnumerable<Entities.ClassroomInvite>> GetClassroomInvitesAsync(
+                [Parent] Entities.Classroom classroom,
+                ApplicationDbContext ctx,
+                ClassroomInviteByIdDataLoader inviteById,
+                CancellationToken cancellationToken) {
+                // Get all valid invites where:
+                // 1. The total number of uses hasn't exceeded the maxium amount of uses
+                // 2. OR the invite is not expired
+                // 3. OR the invite is unlimited use (i.e. doesn't expire or run out of uses).
+                int[] inviteIds = await ctx.ClassroomInvites
+                    .Where(ci => ci.ClassroomId == classroom.Id && (
+                        ci.MaxUses != null && ci.TotalUses < ci.MaxUses ||
+                        ci.ExpiresAt != null && DateTime.UtcNow < ci.ExpiresAt ||
+                        ci.MaxUses == null && ci.ExpiresAt == null))
+                    .OrderByDescending(ci => ci.CreatedAt)
+                    .Select(ci => ci.Id)
+                    .ToArrayAsync();
+
+                return await inviteById.LoadAsync(inviteIds, cancellationToken);
+            }
 
             public async Task<Connection<Entities.User?>> GetUsersAsync(
                 [Parent] Entities.Classroom classroom,

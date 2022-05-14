@@ -27,7 +27,7 @@ export const ModalContent = ({
         as="section"
         className={twMerge(
           clsx(
-            'relative flex h-full max-w-2xl flex-col bg-white text-black shadow-xl sm:h-auto sm:rounded-md',
+            'relative flex h-full max-w-2xl flex-col bg-white text-black shadow-xl sm:h-auto sm:min-w-[28rem] sm:rounded-md',
             className,
           ),
         )}

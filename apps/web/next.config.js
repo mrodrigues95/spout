@@ -14,6 +14,7 @@ module.exports = {
       customScalars: {
         DateTime: 'string',
         URL: 'string',
+        Short: 'number',
       },
     },
   },
