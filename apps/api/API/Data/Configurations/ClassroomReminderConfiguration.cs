@@ -46,6 +46,10 @@ namespace API.Data.Configurations {
             builder.HasOne(cr => cr.Classroom)
                 .WithMany(c => c!.Reminders)
                 .HasForeignKey(cr => cr.ClassroomId);
+
+            builder.HasMany(cr => cr.ClassroomTimelineEvents)
+                .WithOne(x => x.ClassroomReminder!)
+                .HasForeignKey(x => x.ClassroomReminderId);
         }
     }
 }

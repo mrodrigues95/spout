@@ -24,6 +24,10 @@ namespace API.Data.Configurations {
             builder
                 .Property(cs => cs.CreatedAt)
                 .HasDefaultValueSql("now()");
+
+            builder.HasMany(d => d.ClassroomTimelineEvents)
+                .WithOne(x => x.ClassroomSyllabus!)
+                .HasForeignKey(x => x.DiscussionId);
         }
     }
 }

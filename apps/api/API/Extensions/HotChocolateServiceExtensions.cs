@@ -17,6 +17,8 @@ using API.Schema.Queries.ClassroomAnnouncements;
 using API.Schema.Queries.ClassroomInvites;
 using API.Schema.Queries.ClassroomReminders;
 using API.Schema.Queries.Classrooms;
+using API.Schema.Queries.ClassroomSyllabus;
+using API.Schema.Queries.ClassroomTimelineEvents;
 using API.Schema.Queries.Discussions;
 using API.Schema.Queries.Files;
 using API.Schema.Queries.Messages;
@@ -28,6 +30,7 @@ using API.Schema.Types.ClassroomInvites;
 using API.Schema.Types.ClassroomReminders;
 using API.Schema.Types.Classrooms;
 using API.Schema.Types.ClassroomSyllabus;
+using API.Schema.Types.ClassroomTimelineEvents;
 using API.Schema.Types.Discussions;
 using API.Schema.Types.Files;
 using API.Schema.Types.Messages;
@@ -119,8 +122,14 @@ namespace API.Extensions {
                 .AddType<ClassroomReminderType>();
 
             gql
+                .AddDataLoader<ClassroomSyllabusByIdDataLoader>()
                 .AddTypeExtension<ClassroomSyllabusMutations>()
                 .AddType<ClassroomSyllabusType>();
+
+            gql
+                .AddDataLoader<ClassroomTimelineEventByIdDataLoader>()
+                .AddType<ClassroomTimelineEventType>()
+                .AddType<ClassroomTimelineEventItemType>();
 
             gql
                 .AddTypeExtension<DiscussionQueries>()

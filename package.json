@@ -17,8 +17,10 @@
     "dev:down": "docker compose --file .dev/docker-compose.yml down",
     "dev:setup:localhost": "node .dev/scripts/elevate.js .dev/scripts/setupLocalhost.js",
     "dev:setup:https": "node .dev/scripts/setupHttps.js",
-    "check:lint": "nx run-many --target=lint --all",
-    "check:ts-check": "nx run-many --target=ts-check --all",
+    "affected:check:lint": "nx affected --target=lint --all",
+    "affected:check:ts-check": "nx affected --target=ts-check --all",
+    "all:check:lint": "nx run-many --target=lint --all",
+    "all:check:ts-check": "nx run-many --target=ts-check --all",
     "update": "nx migrate latest",
     "migrate": "nx migrate --run-migrations",
     "prepare": "husky install && nx g @nx-dotnet/core:restore"
@@ -142,9 +144,9 @@
   },
   "lint-staged": {
     "*": [
-      "nx format:write",
-      "yarn check:lint",
-      "yarn check:ts-check"
+      "nx format:write --uncommitted",
+      "yarn affected:check:lint",
+      "yarn affected:check:ts-check"
     ]
   },
   "engines": {

@@ -121,7 +121,7 @@ const JoinClassroom = ({ onClose }: JoinClassroomProps) => {
           )}
           <Form.Input
             label="Invite code"
-            placeholder="_0_tHOT1g0aVvv5P50irqw"
+            placeholder="inzpizH6VkuHNhSVVqvH3Q"
             {...form.register('code')}
           />
         </Modal.Body>

@@ -33,6 +33,10 @@ namespace API.Data.Configurations {
             builder.HasOne(ca => ca.Classroom)
                 .WithMany(c => c!.Announcements)
                 .HasForeignKey(ca => ca.ClassroomId);
+
+            builder.HasMany(ca => ca.ClassroomTimelineEvents)
+                .WithOne(x => x.ClassroomAnnouncement!)
+                .HasForeignKey(x => x.ClassroomAnnouncementId);
         }
     }
 }

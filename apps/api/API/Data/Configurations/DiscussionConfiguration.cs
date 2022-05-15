@@ -53,6 +53,10 @@ namespace API.Data.Configurations {
                 .WithOne(m => m.Discussion!)
                 .HasForeignKey(m => m.DiscussionId);
 
+            builder.HasMany(d => d.ClassroomTimelineEvents)
+                .WithOne(x => x.Discussion!)
+                .HasForeignKey(x => x.DiscussionId);
+
             builder.HasOne(d => d.DelLog)
                 .WithMany(dl => dl!.DeletedDiscussions)
                 .HasForeignKey(d => d.DelLogId);

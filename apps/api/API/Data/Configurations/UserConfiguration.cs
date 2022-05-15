@@ -62,6 +62,10 @@ namespace API.Data.Configurations {
                 .WithOne(cr => cr.CreatedBy!)
                 .HasForeignKey(cr => cr.CreatedById);
 
+            builder.HasMany(u => u.ClassroomTimelineEvents)
+                .WithOne(x => x.TriggeredBy!)
+                .HasForeignKey(x => x.TriggeredById);
+
             builder.HasMany(u => u.Sessions)
                 .WithOne(s => s.User!)
                 .HasForeignKey(s => s.UserId);

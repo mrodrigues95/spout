@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using API.Schema.Types.ClassroomReminders;
 
 namespace API.Data.Entities {
@@ -15,5 +16,7 @@ namespace API.Data.Entities {
         public DateTime DueAt { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+        public ICollection<ClassroomTimelineEvent> ClassroomTimelineEvents { get; set; } = new List<ClassroomTimelineEvent>();
     }
 }

@@ -149,7 +149,7 @@ namespace API.Schema.Types.Classrooms {
                 // Get all valid invites where:
                 // 1. The total number of uses hasn't exceeded the maxium amount of uses
                 // 2. OR the invite is not expired
-                // 3. OR the invite is unlimited use (i.e. doesn't expire or run out of uses).
+                // 3. OR the invite is unlimited use (i.e. doesn't expire or hasn't run out of uses).
                 int[] inviteIds = await ctx.ClassroomInvites
                     .Where(ci => ci.ClassroomId == classroom.Id && (
                         ci.MaxUses != null && ci.TotalUses < ci.MaxUses ||

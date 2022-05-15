@@ -21,5 +21,6 @@ namespace API.Data.Entities {
         public ICollection<ClassroomInvite> Invites { get; set; } = new List<ClassroomInvite>();
         public ICollection<ClassroomAnnouncement> Announcements { get; set; } = new List<ClassroomAnnouncement>();
         public ICollection<ClassroomReminder> Reminders { get; set; } = new List<ClassroomReminder>();
+        public ICollection<ClassroomTimelineEvent> Events { get; set; } = new List<ClassroomTimelineEvent>();
     }
 }

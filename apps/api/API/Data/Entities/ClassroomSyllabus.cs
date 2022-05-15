@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace API.Data.Entities {
     public class ClassroomSyllabus {
@@ -9,5 +10,7 @@ namespace API.Data.Entities {
         public string? Content { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+        public ICollection<ClassroomTimelineEvent> ClassroomTimelineEvents { get; set; } = new List<ClassroomTimelineEvent>();
     }
 }

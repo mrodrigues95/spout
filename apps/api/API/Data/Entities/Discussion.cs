@@ -21,5 +21,6 @@ namespace API.Data.Entities {
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<Message> Messages { get; set; } = new List<Message>();
+        public ICollection<ClassroomTimelineEvent> ClassroomTimelineEvents { get; set; } = new List<ClassroomTimelineEvent>();
     }
 }

@@ -102,7 +102,7 @@ const CopyInvite = ({ ...props }: Props) => {
           <input
             ref={inputRef}
             type="text"
-            className="w-full truncate border-none py-0 pl-0 font-medium text-black focus:outline-none focus:ring-0"
+            className="w-full truncate border-none bg-inherit py-0 pl-0 font-medium text-gray-900 focus:outline-none focus:ring-0"
             value={invite.code}
             onFocus={(e) => e.target.select()}
             readOnly
