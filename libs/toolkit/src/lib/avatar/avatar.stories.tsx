@@ -6,9 +6,7 @@ export default {
   title: 'Avatar',
 } as Meta;
 
-const Template: Story<AvatarProps> = (args) => (
-  <Avatar isNextJs={false} {...args} />
-);
+const Template: Story<AvatarProps> = (args) => <Avatar {...args} />;
 
 export const Primary = Template.bind({});
 Primary.args = {

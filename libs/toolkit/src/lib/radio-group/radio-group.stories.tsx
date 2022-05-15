@@ -26,9 +26,9 @@ const Template: Story<RadioGroupProps> = ({ disabled, name }) => {
               <RadioGroup.OptionLabel checked={checked}>
                 Startup
               </RadioGroup.OptionLabel>
-              <RadioGroup.Description checked={checked}>
+              <RadioGroup.OptionDescription checked={checked}>
                 12GB
-              </RadioGroup.Description>
+              </RadioGroup.OptionDescription>
             </>
           )}
         </RadioGroup.Option>
@@ -38,9 +38,9 @@ const Template: Story<RadioGroupProps> = ({ disabled, name }) => {
               <RadioGroup.OptionLabel checked={checked}>
                 Business
               </RadioGroup.OptionLabel>
-              <RadioGroup.Description checked={checked}>
+              <RadioGroup.OptionDescription checked={checked}>
                 16GB
-              </RadioGroup.Description>
+              </RadioGroup.OptionDescription>
             </>
           )}
         </RadioGroup.Option>
@@ -50,9 +50,9 @@ const Template: Story<RadioGroupProps> = ({ disabled, name }) => {
               <RadioGroup.OptionLabel checked={checked}>
                 Enterprise
               </RadioGroup.OptionLabel>
-              <RadioGroup.Description checked={checked}>
+              <RadioGroup.OptionDescription checked={checked}>
                 32GB
-              </RadioGroup.Description>
+              </RadioGroup.OptionDescription>
             </>
           )}
         </RadioGroup.Option>

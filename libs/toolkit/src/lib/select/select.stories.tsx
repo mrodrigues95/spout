@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Story, Meta } from '@storybook/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { Select, SelectProps } from './select';
 
 export default {
@@ -23,15 +23,7 @@ const Template: Story<SelectProps> = () => {
 
   return (
     <Select label="People" value={value} onChange={setValue}>
-      <Select.Button
-        variant="secondary"
-        rightIcon={
-          <FontAwesomeIcon
-            icon={faChevronRight}
-            className="h-5 w-5 -rotate-90 transform text-black"
-          />
-        }
-      >
+      <Select.Button variant="secondary">
         {value ? value.name : 'Select'}
       </Select.Button>
       <Select.Options>
