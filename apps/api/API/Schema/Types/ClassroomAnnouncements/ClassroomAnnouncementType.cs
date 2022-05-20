@@ -29,12 +29,20 @@ namespace API.Schema.Types.ClassroomAnnouncements {
                 .Type<NonNullType<StringType>>();
 
             descriptor
+                .Field(ca => ca.IsDeleted)
+                .Type<NonNullType<BooleanType>>();
+
+            descriptor
                  .Field(ca => ca.CreatedAt)
                  .Type<NonNullType<DateTimeType>>();
 
             descriptor
                 .Field(ca => ca.UpdatedAt)
                 .Type<NonNullType<DateTimeType>>();
+
+            descriptor
+                .Field(ca => ca.DeletedAt)
+                .Type<DateTimeType>();
 
             descriptor
                 .Field(ca => ca.CreatedBy)

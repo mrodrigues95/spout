@@ -21,7 +21,7 @@ import { CreateOrJoinClassroomJoinMutation } from './__generated__/CreateOrJoinC
 import { CreateOrJoinClassroomCreateMutation } from './__generated__/CreateOrJoinClassroomCreateMutation.graphql';
 
 const joinClassroomSchema = object({
-  code: string().length(22, '- Invalid code'),
+  code: string().length(22, '- Invalid code (must be 22 characters)'),
 });
 
 interface JoinClassroomProps {
@@ -123,6 +123,7 @@ const JoinClassroom = ({ onClose }: JoinClassroomProps) => {
             label="Invite code"
             placeholder="inzpizH6VkuHNhSVVqvH3Q"
             {...form.register('code')}
+            required
           />
         </Modal.Body>
         <Modal.Footer>

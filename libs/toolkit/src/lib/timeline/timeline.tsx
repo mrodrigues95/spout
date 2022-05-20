@@ -1,4 +1,4 @@
-import { ComponentProps } from 'react';
+import { ComponentProps, forwardRef } from 'react';
 import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
 import { TimelineSeparator } from './timeline-separator';
@@ -9,17 +9,22 @@ import { TimelineConnector } from './timeline-connector';
 
 export interface TimelineProps extends ComponentProps<'ul'> {}
 
-export const Timeline = ({ className, ...props }: TimelineProps) => {
-  return (
-    <ul
-      className={twMerge(clsx('flex flex-1 flex-col', className))}
-      {...props}
-    />
-  );
-};
+const TimelineRoot = forwardRef<HTMLUListElement, TimelineProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <ul
+        className={twMerge(clsx('flex flex-1 flex-col', className))}
+        ref={ref}
+        {...props}
+      />
+    );
+  },
+);
 
-Timeline.Separator = TimelineSeparator;
-Timeline.Dot = TimelineDot;
-Timeline.Connector = TimelineConnector;
-Timeline.Item = TimelineItem;
-Timeline.Content = TimelineContent;
+export const Timeline = Object.assign(TimelineRoot, {
+  Separator: TimelineSeparator,
+  Dot: TimelineDot,
+  Connector: TimelineConnector,
+  Item: TimelineItem,
+  Content: TimelineContent,
+});

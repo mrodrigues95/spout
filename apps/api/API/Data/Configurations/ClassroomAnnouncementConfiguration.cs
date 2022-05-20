@@ -18,6 +18,10 @@ namespace API.Data.Configurations {
                 .HasMaxLength(12000)
                 .IsRequired(true);
 
+            builder.Property(ca => ca.IsDeleted)
+                .HasDefaultValue(false)
+                .IsRequired();
+
             builder
                 .Property(ca => ca.UpdatedAt)
                 .HasDefaultValueSql("now()");
@@ -25,6 +29,9 @@ namespace API.Data.Configurations {
             builder
                 .Property(ca => ca.CreatedAt)
                 .HasDefaultValueSql("now()");
+
+            builder.Property(f => f.DeletedAt)
+                .IsRequired(false);
 
             builder.HasOne(ca => ca.CreatedBy)
                 .WithMany(u => u!.ClassroomAnnouncements)

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4e2bed2d091d2dc3b23ddbfce2373278>>
+ * @generated SignedSource<<da71401a2610332e9539385a10259bb2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,6 +11,7 @@
 import { ConcreteRequest, Query } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type ClassroomReminderImportance = "LOW" | "MEDIUM" | "HIGH" | "%future added value";
+export type ClassroomTimelineEventItem = "CLASSROOM_CREATED" | "DISCUSSION_CREATED" | "SYLLABUS_CREATED" | "SYLLABUS_UPDATED" | "ANNOUNCEMENT_CREATED" | "ANNOUNCEMENT_UPDATED" | "REMINDER_CREATED" | "USER_JOINED_CLASSROOM" | "%future added value";
 export type FileUploadStatus = "QUEUED" | "COMPLETED" | "ERROR" | "IGNORED" | "%future added value";
 export type MessageEvent = "CHANGE_TOPIC" | "CHANGE_DESCRIPTION" | "PINNED_MESSAGE" | "UNPINNED_MESSAGE" | "%future added value";
 export type SortEnumType = "ASC" | "DESC" | "%future added value";
@@ -28,9 +29,11 @@ export type ClassroomReminderSortInput = {
   title?: SortEnumType | null;
   description?: SortEnumType | null;
   importance?: SortEnumType | null;
+  isDeleted?: SortEnumType | null;
   dueAt?: SortEnumType | null;
   createdAt?: SortEnumType | null;
   updatedAt?: SortEnumType | null;
+  deletedAt?: SortEnumType | null;
 };
 export type UserSortInput = {
   guid?: SortEnumType | null;
@@ -112,9 +115,12 @@ export type ClassroomReminderFilterInput = {
   title?: StringOperationFilterInput | null;
   description?: StringOperationFilterInput | null;
   importance?: ClassroomReminderImportanceOperationFilterInput | null;
+  isDeleted?: BooleanOperationFilterInput | null;
   dueAt?: ComparableDateTimeOperationFilterInput | null;
   createdAt?: ComparableDateTimeOperationFilterInput | null;
   updatedAt?: ComparableDateTimeOperationFilterInput | null;
+  deletedAt?: ComparableNullableOfDateTimeOperationFilterInput | null;
+  classroomTimelineEvents?: ListFilterInputTypeOfClassroomTimelineEventFilterInput | null;
 };
 export type ComparableInt32OperationFilterInput = {
   eq?: number | null;
@@ -169,6 +175,7 @@ export type UserFilterInput = {
   classrooms?: ListFilterInputTypeOfClassroomUserFilterInput | null;
   classroomAnnouncements?: ListFilterInputTypeOfClassroomAnnouncementFilterInput | null;
   classroomReminders?: ListFilterInputTypeOfClassroomReminderFilterInput | null;
+  classroomTimelineEvents?: ListFilterInputTypeOfClassroomTimelineEventFilterInput | null;
   classroomInvites?: ListFilterInputTypeOfClassroomInviteFilterInput | null;
   classroomInviteLogs?: ListFilterInputTypeOfClassroomInviteLogFilterInput | null;
   fileUploads?: ListFilterInputTypeOfFileFilterInput | null;
@@ -275,6 +282,7 @@ export type ClassroomFilterInput = {
   invites?: ListFilterInputTypeOfClassroomInviteFilterInput | null;
   announcements?: ListFilterInputTypeOfClassroomAnnouncementFilterInput | null;
   reminders?: ListFilterInputTypeOfClassroomReminderFilterInput | null;
+  timeline?: ListFilterInputTypeOfClassroomTimelineEventFilterInput | null;
 };
 export type ComparableNullableOfInt32OperationFilterInput = {
   eq?: number | null;
@@ -300,6 +308,70 @@ export type ClassroomSyllabusFilterInput = {
   content?: StringOperationFilterInput | null;
   createdAt?: ComparableDateTimeOperationFilterInput | null;
   updatedAt?: ComparableDateTimeOperationFilterInput | null;
+  classroomTimelineEvents?: ListFilterInputTypeOfClassroomTimelineEventFilterInput | null;
+};
+export type ListFilterInputTypeOfClassroomTimelineEventFilterInput = {
+  all?: ClassroomTimelineEventFilterInput | null;
+  none?: ClassroomTimelineEventFilterInput | null;
+  some?: ClassroomTimelineEventFilterInput | null;
+  any?: boolean | null;
+};
+export type ClassroomTimelineEventFilterInput = {
+  and?: ReadonlyArray<ClassroomTimelineEventFilterInput> | null;
+  or?: ReadonlyArray<ClassroomTimelineEventFilterInput> | null;
+  id?: ComparableInt32OperationFilterInput | null;
+  guid?: ComparableGuidOperationFilterInput | null;
+  triggeredById?: ComparableInt32OperationFilterInput | null;
+  triggeredBy?: UserFilterInput | null;
+  classroomId?: ComparableInt32OperationFilterInput | null;
+  classroom?: ClassroomFilterInput | null;
+  discussionId?: ComparableNullableOfInt32OperationFilterInput | null;
+  discussion?: DiscussionFilterInput | null;
+  classroomSyllabusId?: ComparableNullableOfInt32OperationFilterInput | null;
+  classroomSyllabus?: ClassroomSyllabusFilterInput | null;
+  classroomAnnouncementId?: ComparableNullableOfInt32OperationFilterInput | null;
+  classroomAnnouncement?: ClassroomAnnouncementFilterInput | null;
+  classroomReminderId?: ComparableNullableOfInt32OperationFilterInput | null;
+  classroomReminder?: ClassroomReminderFilterInput | null;
+  event?: ClassroomTimelineEventItemOperationFilterInput | null;
+  createdAt?: ComparableDateTimeOperationFilterInput | null;
+  updatedAt?: ComparableDateTimeOperationFilterInput | null;
+};
+export type DiscussionFilterInput = {
+  and?: ReadonlyArray<DiscussionFilterInput> | null;
+  or?: ReadonlyArray<DiscussionFilterInput> | null;
+  id?: IdOperationFilterInput | null;
+  guid?: ComparableGuidOperationFilterInput | null;
+  name?: StringOperationFilterInput | null;
+  topic?: StringOperationFilterInput | null;
+  description?: StringOperationFilterInput | null;
+  classroomId?: ComparableInt32OperationFilterInput | null;
+  classroom?: ClassroomFilterInput | null;
+  createdById?: ComparableInt32OperationFilterInput | null;
+  createdBy?: UserFilterInput | null;
+  stateId?: ComparableInt32OperationFilterInput | null;
+  state?: StateFilterInput | null;
+  deletedAt?: ComparableNullableOfDateTimeOperationFilterInput | null;
+  delLogId?: ComparableNullableOfInt32OperationFilterInput | null;
+  delLog?: DelLogFilterInput | null;
+  createdAt?: ComparableDateTimeOperationFilterInput | null;
+  updatedAt?: ComparableDateTimeOperationFilterInput | null;
+  messages?: ListFilterInputTypeOfMessageFilterInput | null;
+  classroomTimelineEvents?: ListFilterInputTypeOfClassroomTimelineEventFilterInput | null;
+};
+export type ComparableNullableOfDateTimeOperationFilterInput = {
+  eq?: string | null;
+  neq?: string | null;
+  in?: ReadonlyArray<string | null> | null;
+  nin?: ReadonlyArray<string | null> | null;
+  gt?: string | null;
+  ngt?: string | null;
+  gte?: string | null;
+  ngte?: string | null;
+  lt?: string | null;
+  nlt?: string | null;
+  lte?: string | null;
+  nlte?: string | null;
 };
 export type DelLogFilterInput = {
   and?: ReadonlyArray<DelLogFilterInput> | null;
@@ -331,41 +403,6 @@ export type ListFilterInputTypeOfDiscussionFilterInput = {
   none?: DiscussionFilterInput | null;
   some?: DiscussionFilterInput | null;
   any?: boolean | null;
-};
-export type DiscussionFilterInput = {
-  and?: ReadonlyArray<DiscussionFilterInput> | null;
-  or?: ReadonlyArray<DiscussionFilterInput> | null;
-  id?: IdOperationFilterInput | null;
-  guid?: ComparableGuidOperationFilterInput | null;
-  name?: StringOperationFilterInput | null;
-  topic?: StringOperationFilterInput | null;
-  description?: StringOperationFilterInput | null;
-  classroomId?: ComparableInt32OperationFilterInput | null;
-  classroom?: ClassroomFilterInput | null;
-  createdById?: ComparableInt32OperationFilterInput | null;
-  createdBy?: UserFilterInput | null;
-  stateId?: ComparableInt32OperationFilterInput | null;
-  state?: StateFilterInput | null;
-  deletedAt?: ComparableNullableOfDateTimeOperationFilterInput | null;
-  delLogId?: ComparableNullableOfInt32OperationFilterInput | null;
-  delLog?: DelLogFilterInput | null;
-  createdAt?: ComparableDateTimeOperationFilterInput | null;
-  updatedAt?: ComparableDateTimeOperationFilterInput | null;
-  messages?: ListFilterInputTypeOfMessageFilterInput | null;
-};
-export type ComparableNullableOfDateTimeOperationFilterInput = {
-  eq?: string | null;
-  neq?: string | null;
-  in?: ReadonlyArray<string | null> | null;
-  nin?: ReadonlyArray<string | null> | null;
-  gt?: string | null;
-  ngt?: string | null;
-  gte?: string | null;
-  ngte?: string | null;
-  lt?: string | null;
-  nlt?: string | null;
-  lte?: string | null;
-  nlte?: string | null;
 };
 export type ListFilterInputTypeOfMessageFilterInput = {
   all?: MessageFilterInput | null;
@@ -512,6 +549,28 @@ export type ListStringOperationFilterInput = {
   some?: StringOperationFilterInput | null;
   any?: boolean | null;
 };
+export type ClassroomAnnouncementFilterInput = {
+  and?: ReadonlyArray<ClassroomAnnouncementFilterInput> | null;
+  or?: ReadonlyArray<ClassroomAnnouncementFilterInput> | null;
+  id?: ComparableInt32OperationFilterInput | null;
+  guid?: ComparableGuidOperationFilterInput | null;
+  createdById?: ComparableInt32OperationFilterInput | null;
+  createdBy?: UserFilterInput | null;
+  classroomId?: ComparableInt32OperationFilterInput | null;
+  classroom?: ClassroomFilterInput | null;
+  content?: StringOperationFilterInput | null;
+  isDeleted?: BooleanOperationFilterInput | null;
+  createdAt?: ComparableDateTimeOperationFilterInput | null;
+  updatedAt?: ComparableDateTimeOperationFilterInput | null;
+  deletedAt?: ComparableNullableOfDateTimeOperationFilterInput | null;
+  classroomTimelineEvents?: ListFilterInputTypeOfClassroomTimelineEventFilterInput | null;
+};
+export type ClassroomTimelineEventItemOperationFilterInput = {
+  eq?: ClassroomTimelineEventItem | null;
+  neq?: ClassroomTimelineEventItem | null;
+  in?: ReadonlyArray<ClassroomTimelineEventItem> | null;
+  nin?: ReadonlyArray<ClassroomTimelineEventItem> | null;
+};
 export type ListFilterInputTypeOfClassroomUserFilterInput = {
   all?: ClassroomUserFilterInput | null;
   none?: ClassroomUserFilterInput | null;
@@ -605,19 +664,6 @@ export type ListFilterInputTypeOfClassroomAnnouncementFilterInput = {
   none?: ClassroomAnnouncementFilterInput | null;
   some?: ClassroomAnnouncementFilterInput | null;
   any?: boolean | null;
-};
-export type ClassroomAnnouncementFilterInput = {
-  and?: ReadonlyArray<ClassroomAnnouncementFilterInput> | null;
-  or?: ReadonlyArray<ClassroomAnnouncementFilterInput> | null;
-  id?: ComparableInt32OperationFilterInput | null;
-  guid?: ComparableGuidOperationFilterInput | null;
-  createdById?: ComparableInt32OperationFilterInput | null;
-  createdBy?: UserFilterInput | null;
-  classroomId?: ComparableInt32OperationFilterInput | null;
-  classroom?: ClassroomFilterInput | null;
-  content?: StringOperationFilterInput | null;
-  createdAt?: ComparableDateTimeOperationFilterInput | null;
-  updatedAt?: ComparableDateTimeOperationFilterInput | null;
 };
 export type ListFilterInputTypeOfClassroomReminderFilterInput = {
   all?: ClassroomReminderFilterInput | null;

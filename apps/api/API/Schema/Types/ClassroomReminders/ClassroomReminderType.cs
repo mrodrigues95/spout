@@ -41,6 +41,10 @@ namespace API.Schema.Types.ClassroomReminders {
                 .Type<StringType>();
 
             descriptor
+                .Field(cr => cr.IsDeleted)
+                .Type<NonNullType<BooleanType>>();
+
+            descriptor
                  .Field(cr => cr.DueAt)
                  .Type<NonNullType<DateTimeType>>();
 
@@ -51,6 +55,10 @@ namespace API.Schema.Types.ClassroomReminders {
             descriptor
                 .Field(cr => cr.UpdatedAt)
                 .Type<NonNullType<DateTimeType>>();
+
+            descriptor
+                .Field(cr => cr.DeletedAt)
+                .Type<DateTimeType>();
 
             descriptor
                 .Field(cr => cr.CreatedBy)

@@ -81,6 +81,7 @@ namespace API.Extensions {
                 .RegisterService<IBlobService>()
                 .RegisterService<ISessionManager>()
                 .RegisterService<ISMSService>()
+                .RegisterService<IClassroomTimelineManager>()
                 .RegisterService<UserManager<User>>()
                 .RegisterService<SignInManager<User>>()
                 .RegisterDbContext<ApplicationDbContext>(DbContextKind.Pooled);

@@ -13,9 +13,11 @@ namespace API.Data.Entities {
         public string? Title { get; set; }
         public string? Description { get; set; }
         public ClassroomReminderImportance Importance { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTime DueAt { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? DeletedAt { get; set; }
 
         public ICollection<ClassroomTimelineEvent> ClassroomTimelineEvents { get; set; } = new List<ClassroomTimelineEvent>();
     }

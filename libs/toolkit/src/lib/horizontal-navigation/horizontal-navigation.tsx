@@ -113,7 +113,15 @@ export const HorizontalNavigation = ({
           onMouseUp={dragStop}
           onMouseLeave={dragStop}
           onScroll={checkScrollPosition}
-          onMouseOver={() => setShouldLockBodyScroll(true)}
+          onMouseOver={() => {
+            // Only lock when the content is overflowed.
+            if (
+              scrollRef.current &&
+              scrollRef.current.scrollWidth > scrollRef.current.clientWidth
+            ) {
+              setShouldLockBodyScroll(true);
+            }
+          }}
           onMouseOut={() => setShouldLockBodyScroll(false)}
           ref={scrollRef}
           className="relative flex flex-1 space-x-2 overflow-hidden py-2.5 px-1.5"

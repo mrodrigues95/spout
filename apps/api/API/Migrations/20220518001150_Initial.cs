@@ -1,5 +1,6 @@
 using System;
 using API.Schema.Types.ClassroomReminders;
+using API.Schema.Types.ClassroomTimelineEvents;
 using API.Schema.Types.Files;
 using API.Schema.Types.Messages;
 using API.Schema.Types.Users;
@@ -13,6 +14,7 @@ namespace API.Migrations {
         protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.AlterDatabase()
                 .Annotation("Npgsql:Enum:classroom_reminder_importance", "low,medium,high")
+                .Annotation("Npgsql:Enum:classroom_timeline_event_item", "classroom_created,discussion_created,syllabus_created,syllabus_updated,announcement_created,announcement_updated,reminder_created,user_joined_classroom")
                 .Annotation("Npgsql:Enum:file_upload_status", "queued,completed,error,ignored")
                 .Annotation("Npgsql:Enum:message_event", "change_topic,change_description,pinned_message,unpinned_message")
                 .Annotation("Npgsql:Enum:user_preferred_provider", "email,phone")
@@ -28,25 +30,6 @@ namespace API.Migrations {
                 },
                 constraints: table => {
                     table.PrimaryKey("pk_del_log_types", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "invites",
-                columns: table => new {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    code = table.Column<string>(type: "character varying(22)", maxLength: 22, nullable: false),
-                    uses = table.Column<short>(type: "smallint", nullable: false, defaultValue: (short)0),
-                    max_uses = table.Column<short>(type: "smallint", nullable: true),
-                    max_age = table.Column<int>(type: "integer", nullable: true),
-                    expires_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()")
-                },
-                constraints: table => {
-                    table.PrimaryKey("pk_invites", x => x.id);
-                    table.CheckConstraint("ck_max_uses", "max_uses >= 0 AND max_uses <= 100");
-                    table.CheckConstraint("ck_uses", "uses >= 0");
                 });
 
             migrationBuilder.CreateTable(
@@ -392,8 +375,10 @@ namespace API.Migrations {
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     classroom_id = table.Column<int>(type: "integer", nullable: false),
                     content = table.Column<string>(type: "character varying(12000)", maxLength: 12000, nullable: false),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()")
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table => {
                     table.PrimaryKey("pk_classroom_announcements", x => x.id);
@@ -414,16 +399,21 @@ namespace API.Migrations {
             migrationBuilder.CreateTable(
                 name: "classroom_invites",
                 columns: table => new {
-                    invite_id = table.Column<int>(type: "integer", nullable: false),
-                    user_id = table.Column<int>(type: "integer", nullable: false),
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    guid = table.Column<Guid>(type: "uuid", nullable: false),
+                    created_by_id = table.Column<int>(type: "integer", nullable: false),
                     classroom_id = table.Column<int>(type: "integer", nullable: false),
-                    is_inviter = table.Column<bool>(type: "boolean", nullable: false),
-                    is_invitee = table.Column<bool>(type: "boolean", nullable: false),
-                    used_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    total_uses = table.Column<short>(type: "smallint", nullable: false, defaultValue: (short)0),
+                    code = table.Column<string>(type: "character varying(22)", maxLength: 22, nullable: false),
+                    max_uses = table.Column<short>(type: "smallint", nullable: true),
+                    max_age = table.Column<int>(type: "integer", nullable: true),
+                    expires_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table => {
-                    table.PrimaryKey("pk_classroom_invites", x => new { x.invite_id, x.user_id, x.classroom_id });
+                    table.PrimaryKey("pk_classroom_invites", x => x.id);
                     table.ForeignKey(
                         name: "fk_classroom_invites_classrooms_classroom_id",
                         column: x => x.classroom_id,
@@ -431,14 +421,8 @@ namespace API.Migrations {
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_classroom_invites_invites_invite_id",
-                        column: x => x.invite_id,
-                        principalTable: "invites",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_classroom_invites_users_user_id",
-                        column: x => x.user_id,
+                        name: "fk_classroom_invites_users_created_by_id",
+                        column: x => x.created_by_id,
                         principalTable: "users",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -455,9 +439,11 @@ namespace API.Migrations {
                     title = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     description = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     importance = table.Column<ClassroomReminderImportance>(type: "classroom_reminder_importance", nullable: false),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     due_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()")
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table => {
                     table.PrimaryKey("pk_classroom_reminders", x => x.id);
@@ -566,6 +552,87 @@ namespace API.Migrations {
                 });
 
             migrationBuilder.CreateTable(
+                name: "classroom_invite_logs",
+                columns: table => new {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    guid = table.Column<Guid>(type: "uuid", nullable: false),
+                    classroom_invite_id = table.Column<int>(type: "integer", nullable: false),
+                    used_by_id = table.Column<int>(type: "integer", nullable: false),
+                    used_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table => {
+                    table.PrimaryKey("pk_classroom_invite_logs", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_classroom_invite_logs_classroom_invites_classroom_invite_id",
+                        column: x => x.classroom_invite_id,
+                        principalTable: "classroom_invites",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_classroom_invite_logs_users_used_by_id",
+                        column: x => x.used_by_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "classroom_timeline_events",
+                columns: table => new {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    guid = table.Column<Guid>(type: "uuid", nullable: false),
+                    triggered_by_id = table.Column<int>(type: "integer", nullable: false),
+                    classroom_id = table.Column<int>(type: "integer", nullable: false),
+                    discussion_id = table.Column<int>(type: "integer", nullable: true),
+                    classroom_syllabus_id = table.Column<int>(type: "integer", nullable: true),
+                    classroom_announcement_id = table.Column<int>(type: "integer", nullable: true),
+                    classroom_reminder_id = table.Column<int>(type: "integer", nullable: true),
+                    @event = table.Column<ClassroomTimelineEventItem>(name: "event", type: "classroom_timeline_event_item", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table => {
+                    table.PrimaryKey("pk_classroom_timeline_events", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_classroom_timeline_events_classroom_announcements_classroom",
+                        column: x => x.classroom_announcement_id,
+                        principalTable: "classroom_announcements",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "fk_classroom_timeline_events_classroom_reminders_classroom_rem",
+                        column: x => x.classroom_reminder_id,
+                        principalTable: "classroom_reminders",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "fk_classroom_timeline_events_classroom_syllabus_classroom_syll",
+                        column: x => x.classroom_syllabus_id,
+                        principalTable: "classroom_syllabus",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_classroom_timeline_events_classrooms_classroom_id",
+                        column: x => x.classroom_id,
+                        principalTable: "classrooms",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_classroom_timeline_events_discussions_discussion_id",
+                        column: x => x.discussion_id,
+                        principalTable: "discussions",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "fk_classroom_timeline_events_users_triggered_by_id",
+                        column: x => x.triggered_by_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "messages",
                 columns: table => new {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -650,14 +717,30 @@ namespace API.Migrations {
                 column: "created_by_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_classroom_invite_logs_classroom_invite_id",
+                table: "classroom_invite_logs",
+                column: "classroom_invite_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_classroom_invite_logs_used_by_id",
+                table: "classroom_invite_logs",
+                column: "used_by_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_classroom_invites_classroom_id",
                 table: "classroom_invites",
                 column: "classroom_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_classroom_invites_user_id",
+                name: "ix_classroom_invites_code",
                 table: "classroom_invites",
-                column: "user_id");
+                column: "code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_classroom_invites_created_by_id",
+                table: "classroom_invites",
+                column: "created_by_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_classroom_reminders_classroom_id",
@@ -674,6 +757,36 @@ namespace API.Migrations {
                 table: "classroom_syllabus",
                 column: "classroom_id",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_classroom_timeline_events_classroom_announcement_id",
+                table: "classroom_timeline_events",
+                column: "classroom_announcement_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_classroom_timeline_events_classroom_id",
+                table: "classroom_timeline_events",
+                column: "classroom_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_classroom_timeline_events_classroom_reminder_id",
+                table: "classroom_timeline_events",
+                column: "classroom_reminder_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_classroom_timeline_events_classroom_syllabus_id",
+                table: "classroom_timeline_events",
+                column: "classroom_syllabus_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_classroom_timeline_events_discussion_id",
+                table: "classroom_timeline_events",
+                column: "discussion_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_classroom_timeline_events_triggered_by_id",
+                table: "classroom_timeline_events",
+                column: "triggered_by_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_classroom_users_classroom_id",
@@ -730,12 +843,6 @@ namespace API.Migrations {
                 name: "ix_files_uploaded_by_id",
                 table: "files",
                 column: "uploaded_by_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_invites_code",
-                table: "invites",
-                column: "code",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_message_files_file_id",
@@ -854,16 +961,10 @@ namespace API.Migrations {
 
         protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropTable(
-                name: "classroom_announcements");
+                name: "classroom_invite_logs");
 
             migrationBuilder.DropTable(
-                name: "classroom_invites");
-
-            migrationBuilder.DropTable(
-                name: "classroom_reminders");
-
-            migrationBuilder.DropTable(
-                name: "classroom_syllabus");
+                name: "classroom_timeline_events");
 
             migrationBuilder.DropTable(
                 name: "classroom_users");
@@ -899,7 +1000,16 @@ namespace API.Migrations {
                 name: "users_tokens");
 
             migrationBuilder.DropTable(
-                name: "invites");
+                name: "classroom_invites");
+
+            migrationBuilder.DropTable(
+                name: "classroom_announcements");
+
+            migrationBuilder.DropTable(
+                name: "classroom_reminders");
+
+            migrationBuilder.DropTable(
+                name: "classroom_syllabus");
 
             migrationBuilder.DropTable(
                 name: "files");

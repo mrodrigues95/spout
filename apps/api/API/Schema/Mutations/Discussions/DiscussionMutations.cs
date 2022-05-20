@@ -4,9 +4,11 @@ using System.Threading.Tasks;
 using API.Attributes;
 using API.Data;
 using API.Data.Entities;
+using API.Infrastructure;
 using API.Schema.Mutations.Classrooms.Exceptions;
 using API.Schema.Mutations.Discussions.Exceptions;
 using API.Schema.Mutations.Discussions.Inputs;
+using API.Schema.Types.ClassroomTimelineEvents;
 using API.Schema.Types.Messages;
 using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
@@ -165,6 +167,7 @@ namespace API.Schema.Mutations.Discussions {
             [GlobalUserId] int userId,
             CreateDiscussionInput input,
             ApplicationDbContext ctx,
+            IClassroomTimelineManager timelineManager,
             CancellationToken cancellationToken) {
             var classroom = await ctx.Classrooms.FindAsync(
                 new object[] { input.ClassroomId },
@@ -183,6 +186,15 @@ namespace API.Schema.Mutations.Discussions {
 
             classroom.Discussions.Add(discussion);
             await ctx.SaveChangesAsync(cancellationToken);
+
+            await timelineManager.CreateTimelineEvent(
+                classroom,
+                new ClassroomTimelineEvent {
+                    TriggeredById = userId,
+                    ClassroomId = classroom.Id,
+                    Event = ClassroomTimelineEventItem.DISCUSSION_CREATED,
+                    DiscussionId = discussion.Id,
+                });
 
             return discussion;
         }

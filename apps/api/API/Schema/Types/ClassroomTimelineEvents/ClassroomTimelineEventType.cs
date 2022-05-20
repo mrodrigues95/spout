@@ -19,15 +19,14 @@ using HotChocolate.Types;
 using Entities = API.Data.Entities;
 
 namespace API.Schema.Types.ClassroomTimelineEvents {
+    // TODO: Should we track delete operations?
     public enum ClassroomTimelineEventItem {
         CLASSROOM_CREATED,
         DISCUSSION_CREATED,
         SYLLABUS_CREATED,
         SYLLABUS_UPDATED,
-        SYLLABUS_DELETED,
         ANNOUNCEMENT_CREATED,
         ANNOUNCEMENT_UPDATED,
-        ANNOUNCEMENT_DELETED,
         REMINDER_CREATED,
         USER_JOINED_CLASSROOM
     }
@@ -81,6 +80,7 @@ namespace API.Schema.Types.ClassroomTimelineEvents {
 
             descriptor
                 .Field(x => x.ClassroomSyllabus)
+                .Name("syllabus")
                 .Type<ClassroomSyllabusType>()
                 .ResolveWith<ClassroomTimelineEventResolvers>(x =>
                     x.GetClassroomSyllabusAsync(default!, default!, default!))
@@ -88,6 +88,7 @@ namespace API.Schema.Types.ClassroomTimelineEvents {
 
             descriptor
                 .Field(x => x.ClassroomAnnouncement)
+                .Name("announcement")
                 .Type<ClassroomAnnouncementType>()
                 .ResolveWith<ClassroomTimelineEventResolvers>(x =>
                     x.GetClassroomAnnouncementAsync(default!, default!, default!))
@@ -95,6 +96,7 @@ namespace API.Schema.Types.ClassroomTimelineEvents {
 
             descriptor
                 .Field(x => x.ClassroomReminder)
+                .Name("reminder")
                 .Type<ClassroomReminderType>()
                 .ResolveWith<ClassroomTimelineEventResolvers>(x =>
                     x.GetClassroomReminderAsync(default!, default!, default!))

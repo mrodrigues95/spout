@@ -2,6 +2,7 @@
 using System;
 using API.Data;
 using API.Schema.Types.ClassroomReminders;
+using API.Schema.Types.ClassroomTimelineEvents;
 using API.Schema.Types.Files;
 using API.Schema.Types.Messages;
 using API.Schema.Types.Users;
@@ -16,7 +17,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220424133624_Initial")]
+    [Migration("20220518001150_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,6 +28,7 @@ namespace API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "classroom_reminder_importance", new[] { "low", "medium", "high" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "classroom_timeline_event_item", new[] { "classroom_created", "discussion_created", "syllabus_created", "syllabus_updated", "announcement_created", "announcement_updated", "reminder_created", "user_joined_classroom" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "file_upload_status", new[] { "queued", "completed", "error", "ignored" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "message_event", new[] { "change_topic", "change_description", "pinned_message", "unpinned_message" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "user_preferred_provider", new[] { "email", "phone" });
@@ -122,9 +124,19 @@ namespace API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("created_by_id");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
                     b.Property<Guid>("Guid")
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
@@ -146,25 +158,54 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Data.Entities.ClassroomInvite", b =>
                 {
-                    b.Property<int>("InviteId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("invite_id");
+                        .HasColumnName("id");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("user_id");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ClassroomId")
                         .HasColumnType("integer")
                         .HasColumnName("classroom_id");
 
-                    b.Property<bool>("IsInvitee")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_invitee");
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(22)
+                        .HasColumnType("character varying(22)")
+                        .HasColumnName("code");
 
-                    b.Property<bool>("IsInviter")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_inviter");
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id");
+
+                    b.Property<DateTime?>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("guid");
+
+                    b.Property<int?>("MaxAge")
+                        .HasColumnType("integer")
+                        .HasColumnName("max_age");
+
+                    b.Property<short?>("MaxUses")
+                        .HasColumnType("smallint")
+                        .HasColumnName("max_uses");
+
+                    b.Property<short>("TotalUses")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasDefaultValue((short)0)
+                        .HasColumnName("total_uses");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
@@ -172,20 +213,71 @@ namespace API.Migrations
                         .HasColumnName("updated_at")
                         .HasDefaultValueSql("now()");
 
-                    b.Property<DateTime?>("UsedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("used_at");
-
-                    b.HasKey("InviteId", "UserId", "ClassroomId")
+                    b.HasKey("Id")
                         .HasName("pk_classroom_invites");
 
                     b.HasIndex("ClassroomId")
                         .HasDatabaseName("ix_classroom_invites_classroom_id");
 
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_classroom_invites_user_id");
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasDatabaseName("ix_classroom_invites_code");
+
+                    b.HasIndex("CreatedById")
+                        .HasDatabaseName("ix_classroom_invites_created_by_id");
 
                     b.ToTable("classroom_invites", (string)null);
+                });
+
+            modelBuilder.Entity("API.Data.Entities.ClassroomInviteLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClassroomInviteId")
+                        .HasColumnType("integer")
+                        .HasColumnName("classroom_invite_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("guid");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<DateTime>("UsedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("used_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("UsedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("used_by_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_classroom_invite_logs");
+
+                    b.HasIndex("ClassroomInviteId")
+                        .HasDatabaseName("ix_classroom_invite_logs_classroom_invite_id");
+
+                    b.HasIndex("UsedById")
+                        .HasDatabaseName("ix_classroom_invite_logs_used_by_id");
+
+                    b.ToTable("classroom_invite_logs", (string)null);
                 });
 
             modelBuilder.Entity("API.Data.Entities.ClassroomReminder", b =>
@@ -211,6 +303,10 @@ namespace API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("created_by_id");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
                     b.Property<string>("Description")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)")
@@ -227,6 +323,12 @@ namespace API.Migrations
                     b.Property<ClassroomReminderImportance>("Importance")
                         .HasColumnType("classroom_reminder_importance")
                         .HasColumnName("importance");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -295,6 +397,83 @@ namespace API.Migrations
                         .HasDatabaseName("ix_classroom_syllabus_classroom_id");
 
                     b.ToTable("classroom_syllabus", (string)null);
+                });
+
+            modelBuilder.Entity("API.Data.Entities.ClassroomTimelineEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ClassroomAnnouncementId")
+                        .HasColumnType("integer")
+                        .HasColumnName("classroom_announcement_id");
+
+                    b.Property<int>("ClassroomId")
+                        .HasColumnType("integer")
+                        .HasColumnName("classroom_id");
+
+                    b.Property<int?>("ClassroomReminderId")
+                        .HasColumnType("integer")
+                        .HasColumnName("classroom_reminder_id");
+
+                    b.Property<int?>("ClassroomSyllabusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("classroom_syllabus_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int?>("DiscussionId")
+                        .HasColumnType("integer")
+                        .HasColumnName("discussion_id");
+
+                    b.Property<ClassroomTimelineEventItem>("Event")
+                        .HasColumnType("classroom_timeline_event_item")
+                        .HasColumnName("event");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("guid");
+
+                    b.Property<int>("TriggeredById")
+                        .HasColumnType("integer")
+                        .HasColumnName("triggered_by_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.HasKey("Id")
+                        .HasName("pk_classroom_timeline_events");
+
+                    b.HasIndex("ClassroomAnnouncementId")
+                        .HasDatabaseName("ix_classroom_timeline_events_classroom_announcement_id");
+
+                    b.HasIndex("ClassroomId")
+                        .HasDatabaseName("ix_classroom_timeline_events_classroom_id");
+
+                    b.HasIndex("ClassroomReminderId")
+                        .HasDatabaseName("ix_classroom_timeline_events_classroom_reminder_id");
+
+                    b.HasIndex("ClassroomSyllabusId")
+                        .HasDatabaseName("ix_classroom_timeline_events_classroom_syllabus_id");
+
+                    b.HasIndex("DiscussionId")
+                        .HasDatabaseName("ix_classroom_timeline_events_discussion_id");
+
+                    b.HasIndex("TriggeredById")
+                        .HasDatabaseName("ix_classroom_timeline_events_triggered_by_id");
+
+                    b.ToTable("classroom_timeline_events", (string)null);
                 });
 
             modelBuilder.Entity("API.Data.Entities.ClassroomUser", b =>
@@ -582,65 +761,6 @@ namespace API.Migrations
                     b.HasCheckConstraint("ck_container_name", "length(container_name) >= 3 AND length(container_name) <= 63");
 
                     b.HasCheckConstraint("ck_content_length", "content_length > 0");
-                });
-
-            modelBuilder.Entity("API.Data.Entities.Invite", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(22)
-                        .HasColumnType("character varying(22)")
-                        .HasColumnName("code");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<DateTime?>("ExpiresAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("expires_at");
-
-                    b.Property<int?>("MaxAge")
-                        .HasColumnType("integer")
-                        .HasColumnName("max_age");
-
-                    b.Property<short?>("MaxUses")
-                        .HasColumnType("smallint")
-                        .HasColumnName("max_uses");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<short>("Uses")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint")
-                        .HasDefaultValue((short)0)
-                        .HasColumnName("uses");
-
-                    b.HasKey("Id")
-                        .HasName("pk_invites");
-
-                    b.HasIndex("Code")
-                        .IsUnique()
-                        .HasDatabaseName("ix_invites_code");
-
-                    b.ToTable("invites", (string)null);
-
-                    b.HasCheckConstraint("ck_max_uses", "max_uses >= 0 AND max_uses <= 100");
-
-                    b.HasCheckConstraint("ck_uses", "uses >= 0");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Message", b =>
@@ -1358,25 +1478,37 @@ namespace API.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_classroom_invites_classrooms_classroom_id");
 
-                    b.HasOne("API.Data.Entities.Invite", "Invite")
-                        .WithMany("Logs")
-                        .HasForeignKey("InviteId")
+                    b.HasOne("API.Data.Entities.User", "CreatedBy")
+                        .WithMany("ClassroomInvites")
+                        .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_classroom_invites_invites_invite_id");
-
-                    b.HasOne("API.Data.Entities.User", "User")
-                        .WithMany("Invites")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_classroom_invites_users_user_id");
+                        .HasConstraintName("fk_classroom_invites_users_created_by_id");
 
                     b.Navigation("Classroom");
 
-                    b.Navigation("Invite");
+                    b.Navigation("CreatedBy");
+                });
 
-                    b.Navigation("User");
+            modelBuilder.Entity("API.Data.Entities.ClassroomInviteLog", b =>
+                {
+                    b.HasOne("API.Data.Entities.ClassroomInvite", "ClassroomInvite")
+                        .WithMany("Logs")
+                        .HasForeignKey("ClassroomInviteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_classroom_invite_logs_classroom_invites_classroom_invite_id");
+
+                    b.HasOne("API.Data.Entities.User", "UsedBy")
+                        .WithMany("ClassroomInviteLogs")
+                        .HasForeignKey("UsedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_classroom_invite_logs_users_used_by_id");
+
+                    b.Navigation("ClassroomInvite");
+
+                    b.Navigation("UsedBy");
                 });
 
             modelBuilder.Entity("API.Data.Entities.ClassroomReminder", b =>
@@ -1410,6 +1542,56 @@ namespace API.Migrations
                         .HasConstraintName("fk_classroom_syllabus_classrooms_classroom_id");
 
                     b.Navigation("Classroom");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.ClassroomTimelineEvent", b =>
+                {
+                    b.HasOne("API.Data.Entities.ClassroomAnnouncement", "ClassroomAnnouncement")
+                        .WithMany("ClassroomTimelineEvents")
+                        .HasForeignKey("ClassroomAnnouncementId")
+                        .HasConstraintName("fk_classroom_timeline_events_classroom_announcements_classroom");
+
+                    b.HasOne("API.Data.Entities.Classroom", "Classroom")
+                        .WithMany("Timeline")
+                        .HasForeignKey("ClassroomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_classroom_timeline_events_classrooms_classroom_id");
+
+                    b.HasOne("API.Data.Entities.ClassroomReminder", "ClassroomReminder")
+                        .WithMany("ClassroomTimelineEvents")
+                        .HasForeignKey("ClassroomReminderId")
+                        .HasConstraintName("fk_classroom_timeline_events_classroom_reminders_classroom_rem");
+
+                    b.HasOne("API.Data.Entities.ClassroomSyllabus", "ClassroomSyllabus")
+                        .WithMany("ClassroomTimelineEvents")
+                        .HasForeignKey("ClassroomSyllabusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_classroom_timeline_events_classroom_syllabus_classroom_syll");
+
+                    b.HasOne("API.Data.Entities.Discussion", "Discussion")
+                        .WithMany("ClassroomTimelineEvents")
+                        .HasForeignKey("DiscussionId")
+                        .HasConstraintName("fk_classroom_timeline_events_discussions_discussion_id");
+
+                    b.HasOne("API.Data.Entities.User", "TriggeredBy")
+                        .WithMany("ClassroomTimelineEvents")
+                        .HasForeignKey("TriggeredById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_classroom_timeline_events_users_triggered_by_id");
+
+                    b.Navigation("Classroom");
+
+                    b.Navigation("ClassroomAnnouncement");
+
+                    b.Navigation("ClassroomReminder");
+
+                    b.Navigation("ClassroomSyllabus");
+
+                    b.Navigation("Discussion");
+
+                    b.Navigation("TriggeredBy");
                 });
 
             modelBuilder.Entity("API.Data.Entities.ClassroomUser", b =>
@@ -1687,7 +1869,29 @@ namespace API.Migrations
 
                     b.Navigation("Syllabus");
 
+                    b.Navigation("Timeline");
+
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.ClassroomAnnouncement", b =>
+                {
+                    b.Navigation("ClassroomTimelineEvents");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.ClassroomInvite", b =>
+                {
+                    b.Navigation("Logs");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.ClassroomReminder", b =>
+                {
+                    b.Navigation("ClassroomTimelineEvents");
+                });
+
+            modelBuilder.Entity("API.Data.Entities.ClassroomSyllabus", b =>
+                {
+                    b.Navigation("ClassroomTimelineEvents");
                 });
 
             modelBuilder.Entity("API.Data.Entities.DelLog", b =>
@@ -1706,17 +1910,14 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Data.Entities.Discussion", b =>
                 {
+                    b.Navigation("ClassroomTimelineEvents");
+
                     b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("API.Data.Entities.File", b =>
                 {
                     b.Navigation("MessageFiles");
-                });
-
-            modelBuilder.Entity("API.Data.Entities.Invite", b =>
-                {
-                    b.Navigation("Logs");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Message", b =>
@@ -1739,15 +1940,19 @@ namespace API.Migrations
                 {
                     b.Navigation("ClassroomAnnouncements");
 
+                    b.Navigation("ClassroomInviteLogs");
+
+                    b.Navigation("ClassroomInvites");
+
                     b.Navigation("ClassroomReminders");
+
+                    b.Navigation("ClassroomTimelineEvents");
 
                     b.Navigation("Classrooms");
 
                     b.Navigation("EmailChanges");
 
                     b.Navigation("FileUploads");
-
-                    b.Navigation("Invites");
 
                     b.Navigation("Messages");
 

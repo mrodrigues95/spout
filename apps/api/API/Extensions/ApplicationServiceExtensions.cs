@@ -46,6 +46,7 @@ namespace API.Extensions {
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<ISessionManager, SessionManager>();
             services.AddTransient<ISMSService, SMSService>();
+            services.AddTransient<IClassroomTimelineManager, ClassroomTimelineManager>();
 
             return services;
         }

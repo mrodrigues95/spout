@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using API.Attributes;
 using API.Data;
 using API.Data.Entities;
+using API.Infrastructure;
 using API.Schema.Mutations.Classrooms.Exceptions;
 using API.Schema.Mutations.Classrooms.Inputs;
+using API.Schema.Types.ClassroomTimelineEvents;
 using CSharpVitamins;
 using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
@@ -29,6 +31,7 @@ namespace API.Schema.Mutations.Classrooms {
             [GlobalUserId] int userId,
             CreateClassroomInput input,
             ApplicationDbContext ctx,
+            IClassroomTimelineManager timelineManager,
             CancellationToken cancellationToken) {
             var classroom = new Classroom {
                 Name = input.Name.Trim(),
@@ -45,6 +48,14 @@ namespace API.Schema.Mutations.Classrooms {
 
             ctx.Classrooms.Add(classroom);
             await ctx.SaveChangesAsync(cancellationToken);
+
+            await timelineManager.CreateTimelineEvent(
+                classroom,
+                new ClassroomTimelineEvent {
+                    TriggeredById = userId,
+                    ClassroomId = classroom.Id,
+                    Event = ClassroomTimelineEventItem.CLASSROOM_CREATED
+                });
 
             return classroom;
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Common.Utilities;
 using API.Data.Entities;
+using API.Schema.Types.ClassroomTimelineEvents;
 using API.Schema.Types.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +48,12 @@ namespace API.Data {
 
                 if (!await context.Messages.AnyAsync()) {
                     await context.Messages.AddRangeAsync(await GetPreconfiguredDiscussionMessages(context));
+                    await context.SaveChangesAsync();
+                }
+
+                if (!await context.ClassroomTimelineEvents.AnyAsync()) {
+                    await context.ClassroomTimelineEvents.AddRangeAsync(
+                        await GetPreconfiguredClassroomTimelineEvents(context));
                     await context.SaveChangesAsync();
                 }
             } catch (Exception ex) {
@@ -229,6 +236,31 @@ namespace API.Data {
             }
 
             return messages;
+        }
+
+        private static async Task<IEnumerable<ClassroomTimelineEvent>> GetPreconfiguredClassroomTimelineEvents(
+            ApplicationDbContext context) {
+            var classrooms = await context.Classrooms.ToListAsync();
+            var events = new List<ClassroomTimelineEvent>();
+
+            foreach (Classroom classroom in classrooms) {
+                events.Add(new ClassroomTimelineEvent {
+                    TriggeredBy = classroom.Users.FirstOrDefault(x => x.IsCreator == true)!.User,
+                    Classroom = classroom,
+                    Event = ClassroomTimelineEventItem.CLASSROOM_CREATED
+                });
+
+                foreach (Discussion discussion in classroom.Discussions) {
+                    events.Add(new ClassroomTimelineEvent {
+                        TriggeredBy = discussion.CreatedBy,
+                        Discussion = discussion,
+                        Classroom = discussion.Classroom,
+                        Event = ClassroomTimelineEventItem.DISCUSSION_CREATED
+                    });
+                }
+            }
+
+            return events;
         }
 
         private static State GetState(ApplicationDbContext context, int skip = 0) =>

@@ -4,12 +4,12 @@ import { useRouter } from 'next/router';
 import { Spinner } from '@spout/toolkit';
 import { ErrorBoundary, ErrorFallback } from '../../../../shared/components';
 import { ActivityQuery } from './__generated__/ActivityQuery.graphql';
+import ActivityList from './ActivityList';
 
 const query = graphql`
   query ActivityQuery($id: ID!) {
     classroomById(id: $id) {
-      name
-      createdAt
+      ...ActivityList_classroom
     }
   }
 `;
@@ -25,10 +25,10 @@ const Activity = ({ fetchKey }: Props) => {
     {
       id: router.query.classroomId as string,
     },
-    { fetchKey },
+    { fetchKey, fetchPolicy: 'store-and-network' },
   );
 
-  return <p>{data.classroomById.name}</p>;
+  return <ActivityList classroom={data.classroomById} />;
 };
 
 const ActivityWithSuspense = () => {

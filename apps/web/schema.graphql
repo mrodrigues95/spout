@@ -201,6 +201,23 @@ type Classroom implements Node {
     where: ClassroomReminderFilterInput
     order: [ClassroomReminderSortInput!]
   ): RemindersConnection
+  timeline(
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: ClassroomTimelineEventFilterInput
+    order: [ClassroomTimelineEventSortInput!]
+  ): TimelineConnection
   users(
     """Returns the first _n_ elements from the list."""
     first: Int
@@ -245,10 +262,13 @@ type ClassroomAnnouncement implements Node {
   id: ID!
   guid: UUID!
   content: String!
+  isDeleted: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
+  deletedAt: DateTime
   createdBy: User!
   classroom: Classroom!
+  classroomTimelineEvents: [ClassroomTimelineEvent!]!
 }
 
 input ClassroomAnnouncementFilterInput {
@@ -261,8 +281,11 @@ input ClassroomAnnouncementFilterInput {
   classroomId: ComparableInt32OperationFilterInput
   classroom: ClassroomFilterInput
   content: StringOperationFilterInput
+  isDeleted: BooleanOperationFilterInput
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
+  deletedAt: ComparableNullableOfDateTimeOperationFilterInput
+  classroomTimelineEvents: ListFilterInputTypeOfClassroomTimelineEventFilterInput
 }
 
 type ClassroomAnnouncementNotFoundError implements Error {
@@ -277,8 +300,10 @@ input ClassroomAnnouncementSortInput {
   classroomId: SortEnumType
   classroom: ClassroomSortInput
   content: SortEnumType
+  isDeleted: SortEnumType
   createdAt: SortEnumType
   updatedAt: SortEnumType
+  deletedAt: SortEnumType
 }
 
 input ClassroomFilterInput {
@@ -301,6 +326,7 @@ input ClassroomFilterInput {
   invites: ListFilterInputTypeOfClassroomInviteFilterInput
   announcements: ListFilterInputTypeOfClassroomAnnouncementFilterInput
   reminders: ListFilterInputTypeOfClassroomReminderFilterInput
+  timeline: ListFilterInputTypeOfClassroomTimelineEventFilterInput
 }
 
 type ClassroomInvite implements Node {
@@ -375,12 +401,15 @@ type ClassroomReminder implements Node {
   guid: UUID!
   title: String!
   description: String
+  isDeleted: Boolean!
   dueAt: DateTime!
   createdAt: DateTime!
   updatedAt: DateTime!
+  deletedAt: DateTime
   createdBy: User!
   classroom: Classroom!
   importance: ClassroomReminderImportance!
+  classroomTimelineEvents: [ClassroomTimelineEvent!]!
 }
 
 input ClassroomReminderFilterInput {
@@ -395,9 +424,12 @@ input ClassroomReminderFilterInput {
   title: StringOperationFilterInput
   description: StringOperationFilterInput
   importance: ClassroomReminderImportanceOperationFilterInput
+  isDeleted: BooleanOperationFilterInput
   dueAt: ComparableDateTimeOperationFilterInput
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
+  deletedAt: ComparableNullableOfDateTimeOperationFilterInput
+  classroomTimelineEvents: ListFilterInputTypeOfClassroomTimelineEventFilterInput
 }
 
 enum ClassroomReminderImportance {
@@ -423,9 +455,11 @@ input ClassroomReminderSortInput {
   title: SortEnumType
   description: SortEnumType
   importance: SortEnumType
+  isDeleted: SortEnumType
   dueAt: SortEnumType
   createdAt: SortEnumType
   updatedAt: SortEnumType
+  deletedAt: SortEnumType
 }
 
 input ClassroomSortInput {
@@ -450,6 +484,7 @@ type ClassroomSyllabus {
   createdAt: DateTime!
   updatedAt: DateTime!
   classroom: Classroom
+  classroomTimelineEvents: [ClassroomTimelineEvent!]!
 }
 
 input ClassroomSyllabusFilterInput {
@@ -462,6 +497,7 @@ input ClassroomSyllabusFilterInput {
   content: StringOperationFilterInput
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
+  classroomTimelineEvents: ListFilterInputTypeOfClassroomTimelineEventFilterInput
 }
 
 input ClassroomSyllabusSortInput {
@@ -470,6 +506,80 @@ input ClassroomSyllabusSortInput {
   classroomId: SortEnumType
   classroom: ClassroomSortInput
   content: SortEnumType
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
+}
+
+type ClassroomTimelineEvent implements Node {
+  id: ID!
+  guid: UUID!
+  event: ClassroomTimelineEventItem!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  triggeredBy: User!
+  classroom: Classroom!
+  discussion: Discussion
+  syllabus: ClassroomSyllabus
+  announcement: ClassroomAnnouncement
+  reminder: ClassroomReminder
+}
+
+input ClassroomTimelineEventFilterInput {
+  and: [ClassroomTimelineEventFilterInput!]
+  or: [ClassroomTimelineEventFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  guid: ComparableGuidOperationFilterInput
+  triggeredById: ComparableInt32OperationFilterInput
+  triggeredBy: UserFilterInput
+  classroomId: ComparableInt32OperationFilterInput
+  classroom: ClassroomFilterInput
+  discussionId: ComparableNullableOfInt32OperationFilterInput
+  discussion: DiscussionFilterInput
+  classroomSyllabusId: ComparableNullableOfInt32OperationFilterInput
+  classroomSyllabus: ClassroomSyllabusFilterInput
+  classroomAnnouncementId: ComparableNullableOfInt32OperationFilterInput
+  classroomAnnouncement: ClassroomAnnouncementFilterInput
+  classroomReminderId: ComparableNullableOfInt32OperationFilterInput
+  classroomReminder: ClassroomReminderFilterInput
+  event: ClassroomTimelineEventItemOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
+}
+
+enum ClassroomTimelineEventItem {
+  CLASSROOM_CREATED
+  DISCUSSION_CREATED
+  SYLLABUS_CREATED
+  SYLLABUS_UPDATED
+  ANNOUNCEMENT_CREATED
+  ANNOUNCEMENT_UPDATED
+  REMINDER_CREATED
+  USER_JOINED_CLASSROOM
+}
+
+input ClassroomTimelineEventItemOperationFilterInput {
+  eq: ClassroomTimelineEventItem
+  neq: ClassroomTimelineEventItem
+  in: [ClassroomTimelineEventItem!]
+  nin: [ClassroomTimelineEventItem!]
+}
+
+input ClassroomTimelineEventSortInput {
+  id: SortEnumType
+  guid: SortEnumType
+  triggeredById: SortEnumType
+  triggeredBy: UserSortInput
+  classroomId: SortEnumType
+  classroom: ClassroomSortInput
+  discussionId: SortEnumType
+  discussion: DiscussionSortInput
+  classroomSyllabusId: SortEnumType
+  classroomSyllabus: ClassroomSyllabusSortInput
+  classroomAnnouncementId: SortEnumType
+  classroomAnnouncement: ClassroomAnnouncementSortInput
+  classroomReminderId: SortEnumType
+  classroomReminder: ClassroomReminderSortInput
+  event: SortEnumType
   createdAt: SortEnumType
   updatedAt: SortEnumType
 }
@@ -820,6 +930,7 @@ type Discussion implements Node {
   deletedAt: DateTime
   delLogId: Int
   delLog: DelLog
+  classroomTimelineEvents: [ClassroomTimelineEvent!]!
 }
 
 input DiscussionFilterInput {
@@ -842,6 +953,7 @@ input DiscussionFilterInput {
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
   messages: ListFilterInputTypeOfMessageFilterInput
+  classroomTimelineEvents: ListFilterInputTypeOfClassroomTimelineEventFilterInput
 }
 
 type DiscussionMessageAlreadyNotPinnedError implements Error {
@@ -1203,6 +1315,13 @@ input ListFilterInputTypeOfClassroomReminderFilterInput {
   all: ClassroomReminderFilterInput
   none: ClassroomReminderFilterInput
   some: ClassroomReminderFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfClassroomTimelineEventFilterInput {
+  all: ClassroomTimelineEventFilterInput
+  none: ClassroomTimelineEventFilterInput
+  some: ClassroomTimelineEventFilterInput
   any: Boolean
 }
 
@@ -1761,6 +1880,28 @@ type Subscription {
   onDiscussionMessageReceived(discussionId: ID!): DiscussionMessageSubscriptionPayload!
 }
 
+"""A connection to a list of items."""
+type TimelineConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [TimelineEdge!]
+
+  """A flattened list of the nodes."""
+  nodes: [ClassroomTimelineEvent!]
+  totalCount: Int!
+}
+
+"""An edge in a connection."""
+type TimelineEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: ClassroomTimelineEvent!
+}
+
 union UnpinDiscussionMessageError = DiscussionMessageNotFoundError | DiscussionMessageAlreadyNotPinnedError
 
 input UnpinDiscussionMessageInput {
@@ -1952,6 +2093,7 @@ type User implements Node {
   pinnedMessages: [Message!]!
   classroomAnnouncements: [ClassroomAnnouncement!]!
   classroomReminders: [ClassroomReminder!]!
+  classroomTimelineEvents: [ClassroomTimelineEvent!]!
   classroomInvites: [ClassroomInvite!]!
   classroomInviteLogs: [ClassroomInviteLog!]!
   fileUploads: [File!]!
@@ -2017,6 +2159,7 @@ input UserFilterInput {
   classrooms: ListFilterInputTypeOfClassroomUserFilterInput
   classroomAnnouncements: ListFilterInputTypeOfClassroomAnnouncementFilterInput
   classroomReminders: ListFilterInputTypeOfClassroomReminderFilterInput
+  classroomTimelineEvents: ListFilterInputTypeOfClassroomTimelineEventFilterInput
   classroomInvites: ListFilterInputTypeOfClassroomInviteFilterInput
   classroomInviteLogs: ListFilterInputTypeOfClassroomInviteLogFilterInput
   fileUploads: ListFilterInputTypeOfFileFilterInput

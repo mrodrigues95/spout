@@ -4,11 +4,14 @@ using System.Threading.Tasks;
 using API.Attributes;
 using API.Data;
 using API.Data.Entities;
+using API.Infrastructure;
 using API.Schema.Mutations.ClassroomAnnouncements.Exceptions;
 using API.Schema.Mutations.ClassroomAnnouncements.Inputs;
 using API.Schema.Mutations.Classrooms.Exceptions;
+using API.Schema.Types.ClassroomTimelineEvents;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Schema.Mutations.ClassroomAnnouncements {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -17,6 +20,7 @@ namespace API.Schema.Mutations.ClassroomAnnouncements {
         [Error(typeof(ClassroomNotFoundException))]
         public async Task<ClassroomAnnouncement> CreateClassroomAnnouncementAsync(
             [GlobalUserId] int userId,
+            IClassroomTimelineManager timelineManager,
             CreateClassroomAnnouncementInput input,
             ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
@@ -32,23 +36,44 @@ namespace API.Schema.Mutations.ClassroomAnnouncements {
             classroom.Announcements.Add(announcement);
             await ctx.SaveChangesAsync(cancellationToken);
 
+            await timelineManager.CreateTimelineEvent(
+                classroom,
+                new ClassroomTimelineEvent {
+                    TriggeredById = userId,
+                    ClassroomId = classroom.Id,
+                    Event = ClassroomTimelineEventItem.ANNOUNCEMENT_CREATED,
+                    ClassroomAnnouncementId = announcement.Id,
+                });
+
             return announcement;
         }
 
         [Authorize]
         [Error(typeof(ClassroomAnnouncementNotFoundException))]
         public async Task<ClassroomAnnouncement> UpdateClassroomAnnouncementAsync(
+            [GlobalUserId] int userId,
+            IClassroomTimelineManager timelineManager,
             UpdateClassroomAnnouncementInput input,
             ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
-            var announcement = await ctx.ClassroomAnnouncements.FindAsync(
-                new object[] { input.ClassroomAnnouncementId },
-                cancellationToken);
+            var announcement = await ctx.ClassroomAnnouncements
+                .Include(ca => ca.Classroom)
+                .SingleOrDefaultAsync(ca => ca.Id == input.ClassroomAnnouncementId,
+                    cancellationToken);
             if (announcement is null) throw new ClassroomAnnouncementNotFoundException();
 
             announcement.Content = input.Content;
             announcement.UpdatedAt = DateTime.UtcNow;
             await ctx.SaveChangesAsync(cancellationToken);
+
+            await timelineManager.CreateTimelineEvent(
+                announcement.Classroom!,
+                new ClassroomTimelineEvent {
+                    TriggeredById = userId,
+                    ClassroomId = announcement.Classroom!.Id,
+                    Event = ClassroomTimelineEventItem.ANNOUNCEMENT_UPDATED,
+                    ClassroomAnnouncementId = announcement.Id,
+                });
 
             return announcement;
         }
@@ -59,12 +84,15 @@ namespace API.Schema.Mutations.ClassroomAnnouncements {
             DeleteClassroomAnnouncementInput input,
             ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
-            var announcement = await ctx.ClassroomAnnouncements.FindAsync(
-                new object[] { input.ClassroomAnnouncementId },
-                cancellationToken);
+            var announcement = await ctx.ClassroomAnnouncements
+                .Include(ca => ca.Classroom)
+                .SingleOrDefaultAsync(ca => ca.Id == input.ClassroomAnnouncementId,
+                    cancellationToken);
             if (announcement is null) throw new ClassroomAnnouncementNotFoundException();
 
-            ctx.ClassroomAnnouncements.Remove(announcement);
+            announcement.IsDeleted = true;
+            announcement.UpdatedAt = DateTime.UtcNow;
+            announcement.DeletedAt = DateTime.UtcNow;
             await ctx.SaveChangesAsync(cancellationToken);
 
             return announcement;

@@ -11,6 +11,7 @@ using API.Schema.Types.ClassroomAnnouncements;
 using API.Schema.Types.ClassroomInvites;
 using API.Schema.Types.ClassroomReminders;
 using API.Schema.Types.ClassroomSyllabus;
+using API.Schema.Types.ClassroomTimelineEvents;
 using API.Schema.Types.Discussions;
 using API.Schema.Types.Users;
 using HotChocolate;
@@ -94,6 +95,16 @@ namespace API.Schema.Types.Classrooms {
                     c.GetRemindersAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .UsePaging<NonNullType<ClassroomReminderType>>()
+                .UseFiltering()
+                .UseSorting();
+
+            descriptor
+                .Field(c => c.Timeline)
+                .Type<NonNullType<ListType<NonNullType<ClassroomTimelineEventType>>>>()
+                .ResolveWith<ClassroomResolvers>(c =>
+                    c.GetTimelineAsync(default!, default!, default!, default!))
+                .UseDbContext<ApplicationDbContext>()
+                .UsePaging<NonNullType<ClassroomTimelineEventType>>()
                 .UseFiltering()
                 .UseSorting();
 
@@ -190,6 +201,7 @@ namespace API.Schema.Types.Classrooms {
                     .Where(c => c.Id == classroom.Id)
                     .Include(c => c.Announcements)
                     .SelectMany(c => c.Announcements)
+                        .Where(ca => !ca.IsDeleted)
                     .AsQueryable();
 
                 var connection = await query
@@ -212,6 +224,26 @@ namespace API.Schema.Types.Classrooms {
                     .Where(c => c.Id == classroom.Id)
                     .Include(c => c.Reminders)
                     .SelectMany(c => c.Reminders)
+                        .Where(cr => !cr.IsDeleted)
+                    .AsQueryable();
+
+                var connection = await query
+                    .Filter(resolverCtx)
+                    .Sort(resolverCtx)
+                    .ApplyCursorPaginationAsync(resolverCtx, cancellationToken: cancellationToken);
+
+                return connection;
+            }
+
+            public async Task<Connection<Entities.ClassroomTimelineEvent>> GetTimelineAsync(
+                [Parent] Entities.Classroom classroom,
+                ApplicationDbContext dbCtx,
+                IResolverContext resolverCtx,
+                CancellationToken cancellationToken) {
+                var query = dbCtx.Classrooms
+                    .Where(c => c.Id == classroom.Id)
+                    .Include(c => c.Timeline)
+                    .SelectMany(c => c.Timeline)
                     .AsQueryable();
 
                 var connection = await query

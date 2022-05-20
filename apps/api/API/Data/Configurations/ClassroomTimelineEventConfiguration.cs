@@ -30,7 +30,7 @@ namespace API.Data.Configurations {
                 .IsRequired(true);
 
             builder.HasOne(x => x.Classroom)
-                .WithMany(c => c!.Events)
+                .WithMany(c => c!.Timeline)
                 .HasForeignKey(x => x.ClassroomId)
                 .IsRequired(true);
 
@@ -42,6 +42,7 @@ namespace API.Data.Configurations {
             builder.HasOne(x => x.ClassroomSyllabus)
                 .WithMany(cs => cs!.ClassroomTimelineEvents)
                 .HasForeignKey(x => x.ClassroomSyllabusId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired(false);
 
             builder.HasOne(x => x.ClassroomAnnouncement)

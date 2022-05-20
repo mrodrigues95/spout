@@ -1,9 +1,13 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using API.Attributes;
 using API.Data;
+using API.Data.Entities;
+using API.Infrastructure;
 using API.Schema.Mutations.Classrooms.Exceptions;
 using API.Schema.Mutations.ClassroomSyllabus.Inputs;
+using API.Schema.Types.ClassroomTimelineEvents;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +25,9 @@ namespace API.Schema.Mutations.ClassroomSyllabus {
 
         [Authorize]
         [Error(typeof(ClassroomNotFoundException))]
-        public async Task<Entities.Classroom> UpsertClassroomSyllabusAsync(
+        public async Task<Classroom> UpsertClassroomSyllabusAsync(
+            [GlobalUserId] int userId,
+            IClassroomTimelineManager timelineManager,
             UpsertClassroomSyllabusInput input,
             ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
@@ -38,10 +44,26 @@ namespace API.Schema.Mutations.ClassroomSyllabus {
                         Content = input.Content
                     };
                     await ctx.SaveChangesAsync(cancellationToken);
+                    await timelineManager.CreateTimelineEvent(
+                        classroom,
+                        new ClassroomTimelineEvent {
+                            TriggeredById = userId,
+                            ClassroomId = classroom.Id,
+                            Event = ClassroomTimelineEventItem.SYLLABUS_CREATED,
+                            ClassroomSyllabusId = classroom.Syllabus.Id,
+                        });
                 } else {
                     classroom.Syllabus!.Content = input.Content;
                     classroom.Syllabus!.UpdatedAt = DateTime.UtcNow;
                     await ctx.SaveChangesAsync(cancellationToken);
+                    await timelineManager.CreateTimelineEvent(
+                        classroom,
+                        new ClassroomTimelineEvent {
+                            TriggeredById = userId,
+                            ClassroomId = classroom.Id,
+                            Event = ClassroomTimelineEventItem.SYLLABUS_UPDATED,
+                            ClassroomSyllabusId = classroom.Syllabus.Id,
+                        });
                 }
             } else {
                 if (classroom.Syllabus is not null) {

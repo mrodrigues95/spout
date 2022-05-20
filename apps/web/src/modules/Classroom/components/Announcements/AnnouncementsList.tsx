@@ -1,13 +1,13 @@
 import { forwardRef } from 'react';
+import { Components, Virtuoso } from 'react-virtuoso';
 import { graphql, usePaginationFragment } from 'react-relay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHandSparkles } from '@fortawesome/free-solid-svg-icons';
+import { Spinner } from '@spout/toolkit';
 import { useConnection } from '../.././../../shared/hooks';
 import { EmptyFallback } from '../../../../shared/components';
 import Announcement from './Announcement';
 import { AnnouncementsList_classroom$key } from './__generated__/AnnouncementsList_classroom.graphql';
-import { Components, Virtuoso } from 'react-virtuoso';
-import { Spinner } from '@spout/toolkit';
 
 const fragment = graphql`
   fragment AnnouncementsList_classroom on Classroom
@@ -28,15 +28,12 @@ const fragment = graphql`
   }
 `;
 
-interface AnnouncementsListProps {
+interface Props {
   classroom: AnnouncementsList_classroom$key;
   isComposingAnnouncement: boolean;
 }
 
-const AnnouncementsList = ({
-  isComposingAnnouncement,
-  ...props
-}: AnnouncementsListProps) => {
+const AnnouncementsList = ({ isComposingAnnouncement, ...props }: Props) => {
   const { data, loadNext, hasNext, isLoadingNext } = usePaginationFragment(
     fragment,
     props.classroom,

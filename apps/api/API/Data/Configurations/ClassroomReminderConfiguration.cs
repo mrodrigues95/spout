@@ -31,6 +31,10 @@ namespace API.Data.Configurations {
                 .Property(cr => cr.DueAt)
                 .IsRequired(true);
 
+            builder.Property(ca => ca.IsDeleted)
+                .HasDefaultValue(false)
+                .IsRequired();
+
             builder
                 .Property(cr => cr.UpdatedAt)
                 .HasDefaultValueSql("now()");
@@ -38,6 +42,9 @@ namespace API.Data.Configurations {
             builder
                 .Property(cr => cr.CreatedAt)
                 .HasDefaultValueSql("now()");
+
+            builder.Property(f => f.DeletedAt)
+                .IsRequired(false);
 
             builder.HasOne(cr => cr.CreatedBy)
                 .WithMany(u => u!.ClassroomReminders)

@@ -26,7 +26,7 @@ namespace API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "classroom_reminder_importance", new[] { "low", "medium", "high" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "classroom_timeline_event_item", new[] { "classroom_created", "discussion_created", "syllabus_created", "syllabus_updated", "syllabus_deleted", "announcement_created", "announcement_updated", "announcement_deleted", "reminder_created", "user_joined_classroom" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "classroom_timeline_event_item", new[] { "classroom_created", "discussion_created", "syllabus_created", "syllabus_updated", "announcement_created", "announcement_updated", "reminder_created", "user_joined_classroom" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "file_upload_status", new[] { "queued", "completed", "error", "ignored" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "message_event", new[] { "change_topic", "change_description", "pinned_message", "unpinned_message" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "user_preferred_provider", new[] { "email", "phone" });
@@ -122,9 +122,19 @@ namespace API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("created_by_id");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
                     b.Property<Guid>("Guid")
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
@@ -291,6 +301,10 @@ namespace API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("created_by_id");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
                     b.Property<string>("Description")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)")
@@ -307,6 +321,12 @@ namespace API.Migrations
                     b.Property<ClassroomReminderImportance>("Importance")
                         .HasColumnType("classroom_reminder_importance")
                         .HasColumnName("importance");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -1530,7 +1550,7 @@ namespace API.Migrations
                         .HasConstraintName("fk_classroom_timeline_events_classroom_announcements_classroom");
 
                     b.HasOne("API.Data.Entities.Classroom", "Classroom")
-                        .WithMany("Events")
+                        .WithMany("Timeline")
                         .HasForeignKey("ClassroomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -1544,6 +1564,7 @@ namespace API.Migrations
                     b.HasOne("API.Data.Entities.ClassroomSyllabus", "ClassroomSyllabus")
                         .WithMany("ClassroomTimelineEvents")
                         .HasForeignKey("ClassroomSyllabusId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_classroom_timeline_events_classroom_syllabus_classroom_syll");
 
                     b.HasOne("API.Data.Entities.Discussion", "Discussion")
@@ -1840,13 +1861,13 @@ namespace API.Migrations
 
                     b.Navigation("Discussions");
 
-                    b.Navigation("Events");
-
                     b.Navigation("Invites");
 
                     b.Navigation("Reminders");
 
                     b.Navigation("Syllabus");
+
+                    b.Navigation("Timeline");
 
                     b.Navigation("Users");
                 });

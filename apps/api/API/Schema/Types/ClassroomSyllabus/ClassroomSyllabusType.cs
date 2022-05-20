@@ -17,11 +17,11 @@ namespace API.Schema.Types.ClassroomSyllabus {
                 .Type<NonNullType<StringType>>();
 
             descriptor
-                 .Field(c => c.CreatedAt)
+                 .Field(cs => cs.CreatedAt)
                  .Type<NonNullType<DateTimeType>>();
 
             descriptor
-                .Field(c => c.UpdatedAt)
+                .Field(cs => cs.UpdatedAt)
                 .Type<NonNullType<DateTimeType>>();
 
             descriptor
