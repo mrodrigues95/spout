@@ -1,13 +1,14 @@
 import { useCallback, useState } from 'react';
 import { graphql, useFragment, useMutation } from 'react-relay';
+import { set } from 'date-fns';
+import { useController } from 'react-hook-form';
 import {
-  endOfDay,
-  isFuture,
-  isToday,
-  roundToNearestMinutes,
-  set,
-} from 'date-fns';
-import { useController, useWatch } from 'react-hook-form';
+  CalendarDate,
+  getLocalTimeZone,
+  parseAbsoluteToLocal,
+  Time,
+  today,
+} from '@internationalized/date';
 import z from 'zod';
 import clsx from 'clsx';
 import { faCheckCircle, faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -28,45 +29,33 @@ import {
   ClassroomReminderImportance,
 } from './__generated__/CreateReminderMutation.graphql';
 
-const mergeDateTime = (date: Date, time: Date) =>
-  set(date, {
-    hours: time.getHours(),
-    minutes: time.getMinutes(),
-  });
+const dateMinValue = today(getLocalTimeZone());
+const timeMinValue = parseAbsoluteToLocal(new Date().toISOString());
 
-const schema = z
-  .object({
-    title: z
+const schema = z.object({
+  title: z
+    .string()
+    .min(1, '- Invalid title')
+    .max(128, ' - Maxiumum 128 characters'),
+  description: z.union([
+    z
       .string()
-      .min(1, '- Invalid title')
-      .max(128, ' - Maxiumum 128 characters'),
-    description: z.union([
-      z
-        .string()
-        .min(1, '- Invalid description')
-        .max(256, '- Maxium 256 characters'),
-      z.string().optional(),
-    ]),
-    date: z.date({
-      required_error: '- Invalid date',
-      invalid_type_error: '- Invalid date',
+      .min(1, '- Invalid description')
+      .max(256, '- Maxium 256 characters'),
+    z.string().optional(),
+  ]),
+  date: z
+    .any()
+    .refine((date) => (date as CalendarDate).compare(dateMinValue) >= 0, {
+      message: ' - Invalid date',
+      path: ['dob'],
     }),
-    time: z.date({
-      required_error: '- Invalid time',
-      invalid_type_error: '- Invalid time',
-    }),
-    importance: z.string(),
-  })
-  .refine(
-    (data) => {
-      const dueAt = mergeDateTime(data.date, data.time);
-      return isFuture(dueAt);
-    },
-    {
-      message: '- Must be in the future',
-      path: ['time'],
-    },
-  );
+  time: z.any().refine((time) => (time as Time).compare(timeMinValue) >= 0, {
+    message: ' - Invalid time (must be in the future)',
+    path: ['meetingTime'],
+  }),
+  importance: z.string(),
+});
 
 const importanceOptions = [
   {
@@ -117,8 +106,6 @@ const CreateReminder = ({ ...props }: Props) => {
   const form = useZodForm({
     schema: schema,
     defaultValues: {
-      date: new Date(),
-      time: new Date(),
       importance: importanceOptions[0].value,
     },
   });
@@ -132,11 +119,15 @@ const CreateReminder = ({ ...props }: Props) => {
     ({
       title,
       description,
-      date,
+      date: calendarDate,
       time,
       importance,
     }: z.infer<typeof schema>) => {
-      const dueAt = mergeDateTime(date, time);
+      const date = (calendarDate as CalendarDate).toDate(getLocalTimeZone());
+      const dueAt = set(date, {
+        hours: (time as Time).hour,
+        minutes: (time as Time).minute,
+      });
 
       createReminder({
         variables: {
@@ -171,8 +162,6 @@ const CreateReminder = ({ ...props }: Props) => {
     control: form.control,
   });
 
-  const date = useWatch({ name: 'date', control: form.control });
-
   return (
     <>
       <Button
@@ -205,35 +194,24 @@ const CreateReminder = ({ ...props }: Props) => {
               />
               <Divider className="!mt-6 w-2/3" />
               <Form.DatePicker
+                label="Date"
+                errorMessage=" - Invalid date"
+                minValue={dateMinValue}
                 controller={{
                   name: 'date',
                   control: form.control,
+                  defaultValue: dateMinValue,
                 }}
-                inputProps={{
-                  label: 'Date',
-                  placeholder: 'Date',
-                }}
-                minDate={new Date()}
               />
-              <Form.DatePicker
+              <Form.TimeField
+                label="Meeting Time"
+                errorMessage=" - Invalid time (must be in the future)"
+                minValue={timeMinValue}
                 controller={{
                   name: 'time',
                   control: form.control,
+                  defaultValue: timeMinValue,
                 }}
-                inputProps={{
-                  label: 'Time',
-                  placeholder: 'Time',
-                }}
-                showTimeSelect
-                showTimeSelectOnly
-                timeIntervals={15}
-                minTime={
-                  isToday(date)
-                    ? roundToNearestMinutes(new Date(), { nearestTo: 15 })
-                    : undefined
-                }
-                maxTime={isToday(date) ? endOfDay(new Date()) : undefined}
-                dateFormat="h:mm aa"
               />
               <RadioGroup {...field}>
                 <RadioGroup.Label>Importance</RadioGroup.Label>

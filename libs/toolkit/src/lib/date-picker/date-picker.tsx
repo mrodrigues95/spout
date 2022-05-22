@@ -1,74 +1,89 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useEffect, useRef } from 'react';
+import { Popover, Portal, Transition } from '@headlessui/react';
 import {
-  faChevronLeft,
-  faChevronRight,
-} from '@fortawesome/free-solid-svg-icons';
-import ReactDatePicker, { ReactDatePickerProps } from 'react-datepicker';
-import { Input } from '../input';
+  DatePickerState,
+  DatePickerStateOptions,
+  useDatePickerState,
+} from '@react-stately/datepicker';
+import { useDatePicker } from '@react-aria/datepicker';
+import clsx from 'clsx';
+import { FieldButton } from './field-button';
+import { DateField } from './date-field';
+import { Calendar } from './calendar';
+import { usePopper } from '../../hooks';
+import { DatePickerLabel } from './date-picker-label';
 
-export interface DatePickerProps extends ReactDatePickerProps {}
+export interface DatePickerProps
+  extends Omit<DatePickerStateOptions, 'errorMessage'> {
+  errorMessage?: string;
+  handleState?: (state: DatePickerState) => void;
+}
 
-// TODO: Use this instead: https://react-spectrum.adobe.com/react-aria/useDatePicker.html
-export const DatePicker = ({ ...props }: DatePickerProps) => {
+export const DatePicker = ({
+  handleState,
+  errorMessage,
+  ...props
+}: DatePickerProps) => {
+  const state = useDatePickerState({
+    ...props,
+    shouldCloseOnSelect: props.shouldCloseOnSelect || false,
+  });
+
+  const ref = useRef<HTMLDivElement>(null);
+  const { groupProps, labelProps, fieldProps, buttonProps, calendarProps } =
+    useDatePicker(props, state, ref);
+
+  const [trigger, container] = usePopper({
+    placement: 'bottom-end',
+    strategy: 'fixed',
+    modifiers: [{ name: 'offset', options: { offset: [0, 15] } }],
+  });
+
+  useEffect(() => {
+    handleState?.(state);
+  }, [state, handleState]);
+
+  const isInvalid = state.validationState === 'invalid';
+
   return (
-    <ReactDatePicker
-      portalId="date-picker-portal"
-      customInput={<Input />}
-      popperPlacement="bottom-start"
-      popperClassName="z-50"
-      popperModifiers={[
-        {
-          name: 'offset',
-          options: {
-            offset: [0, 5],
-          },
-        },
-        {
-          name: 'preventOverflow',
-          options: {
-            rootBoundary: 'viewport',
-            tether: false,
-            altAxis: true,
-          },
-        },
-      ]}
-      calendarClassName="!rounded-lg !border-0 !ring-1 !ring-gray-900/5 !shadow-md"
-      renderCustomHeader={({
-        monthDate,
-        prevMonthButtonDisabled,
-        nextMonthButtonDisabled,
-        decreaseMonth,
-        increaseMonth,
-      }) => (
-        <div className="inline-flex w-full items-center justify-between px-3 py-2">
-          <button
-            type="button"
-            aria-label="Previous Month"
-            className="h-5 w-5 text-gray-500 hover:text-gray-900 disabled:pointer-events-none disabled:opacity-60"
-            disabled={prevMonthButtonDisabled}
-            onClick={decreaseMonth}
-          >
-            <FontAwesomeIcon icon={faChevronLeft} />
-          </button>
-          <span className="flex-1 font-semibold">
-            {monthDate.toLocaleString('en-US', {
-              month: 'long',
-              year: 'numeric',
-            })}
-          </span>
-          <button
-            type="button"
-            aria-label="Next Month"
-            className="h-5 w-5 text-gray-500 hover:text-gray-900 disabled:pointer-events-none disabled:opacity-60"
-            disabled={nextMonthButtonDisabled}
-            onClick={increaseMonth}
-          >
-            <FontAwesomeIcon icon={faChevronRight} />
-          </button>
+    <div className="relative inline-flex flex-col space-y-1.5 text-left">
+      <DatePickerLabel
+        isInvalid={isInvalid}
+        errorMessage={errorMessage}
+        label={props.label}
+        {...labelProps}
+      />
+      <div {...groupProps} ref={ref} className="group">
+        <div
+          className={clsx(
+            'relative flex w-full items-center space-x-4 rounded-lg border-2 border-transparent bg-gray-100 px-3 py-2 font-medium outline-none',
+            'transition duration-150 ease-in-out',
+            isInvalid
+              ? 'group-focus-within:border-red-700 group-focus-within:ring-4 group-focus-within:ring-red-200'
+              : 'group-focus-within:border-blue-700 group-focus-within:ring-4 group-focus-within:ring-blue-200',
+          )}
+        >
+          <DateField {...fieldProps} />
+          <Popover>
+            <Popover.Button
+              as={FieldButton}
+              isPressed={state.isOpen}
+              ref={trigger}
+              {...buttonProps}
+            />
+            <Portal>
+              <Transition afterLeave={() => state.setOpen(false)}>
+                <Popover.Panel
+                  className="relative space-y-2 rounded-lg bg-white p-3 shadow-lg ring-1 ring-gray-900 ring-opacity-5"
+                  ref={container}
+                >
+                  <Calendar {...calendarProps} />
+                </Popover.Panel>
+              </Transition>
+            </Portal>
+          </Popover>
         </div>
-      )}
-      showPopperArrow={false}
-      {...props}
-    />
+      </div>
+    </div>
   );
 };

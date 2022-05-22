@@ -5,41 +5,38 @@ import {
   UseControllerProps,
   useFormContext,
 } from 'react-hook-form';
-import { DatePickerState } from '@react-stately/datepicker';
-import { CalendarDate, DateValue } from '@internationalized/date';
-import { DatePicker, DatePickerProps } from '../date-picker';
+import { DateFieldState } from '@react-stately/datepicker';
+import { TimeValue } from '@react-types/datepicker';
+import { Time } from '@internationalized/date';
+import { TimeField, TimeFieldProps } from '../time-field';
 
 // Since `onChange` using the spread operator, this causes the `value`
 // to lose its inheritance so we need to construct a new instance.
-const constructCalendarInstance = (
-  value: DateValue,
-  defaultValue: CalendarDate,
-) => {
+const constructTimeInstance = (value: TimeValue, defaultValue: Time) => {
   const tempValue = value ? value : defaultValue;
 
-  return tempValue instanceof CalendarDate
+  return tempValue instanceof Time
     ? tempValue
-    : new CalendarDate(
-        tempValue.calendar,
-        tempValue.era,
-        tempValue.year,
-        tempValue.month,
-        tempValue.day,
+    : new Time(
+        tempValue.hour,
+        tempValue.minute,
+        tempValue.second,
+        tempValue.millisecond,
       );
 };
 
-export interface FormDatePickerProps<
+export interface FormTimeFieldProps<
   TFieldValues extends FieldValues = FieldValues,
-> extends DatePickerProps {
+> extends TimeFieldProps {
   controller: UseControllerProps<TFieldValues>;
 }
 
-export const FormDatePicker = <TFieldValues extends FieldValues = FieldValues>({
+export const FormTimeField = <TFieldValues extends FieldValues = FieldValues>({
   controller,
   errorMessage,
   ...props
-}: FormDatePickerProps<TFieldValues>) => {
-  const { setError } = useFormContext();
+}: FormTimeFieldProps<TFieldValues>) => {
+  const { setError, clearErrors } = useFormContext();
   const {
     field: { onChange, onBlur, value },
     formState: { errors },
@@ -50,20 +47,22 @@ export const FormDatePicker = <TFieldValues extends FieldValues = FieldValues>({
   }
 
   const handleState = useCallback(
-    (state: DatePickerState) => {
+    (state: DateFieldState) => {
       if (state.validationState === 'invalid' && !errors[controller.name]) {
         setError(controller.name, { type: 'custom', message: errorMessage });
+      } else {
+        clearErrors(controller.name);
       }
     },
-    [errors, controller.name, setError, errorMessage],
+    [errors, controller.name, setError, clearErrors, errorMessage],
   );
 
   return (
-    <DatePicker
+    <TimeField
       {...props}
       handleState={handleState}
       errorMessage={errorMessage}
-      value={constructCalendarInstance(value, controller.defaultValue)}
+      value={constructTimeInstance(value, controller.defaultValue)}
       onChange={onChange}
       onBlur={onBlur}
     />

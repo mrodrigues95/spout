@@ -15,6 +15,7 @@ import { FormSubmitButton } from './form-submit-button';
 import { FormInput } from './form-input';
 import { FormTextArea } from './form-textarea';
 import { FormDatePicker } from './form-datepicker';
+import { FormTimeField } from './form-timefield';
 
 interface UseZodFormProps<T extends ZodSchema<any>>
   extends UseFormProps<TypeOf<T>> {
@@ -39,7 +40,7 @@ export function FieldError({ error }: FieldErrorProps) {
   if (!error) return null;
 
   return (
-    <span className="text-xs font-medium italic text-red-600">
+    <span className="whitespace-pre text-xs font-medium italic text-red-600">
       {error.message}
     </span>
   );
@@ -75,3 +76,4 @@ Form.SubmitButton = FormSubmitButton;
 Form.Input = FormInput;
 Form.TextArea = FormTextArea;
 Form.DatePicker = FormDatePicker;
+Form.TimeField = FormTimeField;

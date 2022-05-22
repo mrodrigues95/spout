@@ -1,5 +1,12 @@
 import { Story, Meta } from '@storybook/react';
-import { date, object, string } from 'zod';
+import {
+  getLocalTimeZone,
+  today,
+  CalendarDate,
+  parseAbsoluteToLocal,
+  Time,
+} from '@internationalized/date';
+import { any, object, string } from 'zod';
 import { Form, FormProps, useZodForm } from './form';
 
 export default {
@@ -7,20 +14,29 @@ export default {
   title: 'Form',
 } as Meta;
 
+const dobMinValue = today(getLocalTimeZone());
+const meetingTimeMinValue = parseAbsoluteToLocal(new Date().toISOString());
+
 const loginSchema = object({
   email: string().email({ message: '- Invalid email' }),
   password: string().min(6, { message: '- Invalid password' }),
   comment: string().min(1, { message: '- Invalid comment' }),
-  dob: date({
-    required_error: '- Invalid date',
-    invalid_type_error: '- Invalid date',
+  dob: any().refine((dob) => (dob as CalendarDate).compare(dobMinValue) >= 0, {
+    message: ' - Invalid date',
+    path: ['dob'],
   }),
+  meetingTime: any().refine(
+    (time) => (time as Time).compare(meetingTimeMinValue) >= 0,
+    {
+      message: ' - Invalid time (must be in the future)',
+      path: ['meetingTime'],
+    },
+  ),
 });
 
 export const Primary: Story<FormProps> = () => {
   const form = useZodForm({
     schema: loginSchema,
-    defaultValues: { dob: new Date() },
   });
 
   return (
@@ -47,11 +63,24 @@ export const Primary: Story<FormProps> = () => {
         {...form.register('comment')}
       />
       <Form.DatePicker
+        label="Date of Birth"
+        errorMessage=" - Invalid date"
+        minValue={dobMinValue}
         controller={{
           name: 'dob',
           control: form.control,
+          defaultValue: dobMinValue,
         }}
-        inputProps={{ label: 'Date of birth', placeholder: 'Date of Birth' }}
+      />
+      <Form.TimeField
+        label="Meeting Time"
+        errorMessage=" - Invalid time (must be in the future)"
+        minValue={meetingTimeMinValue}
+        controller={{
+          name: 'meetingTime',
+          control: form.control,
+          defaultValue: meetingTimeMinValue,
+        }}
       />
       <Form.SubmitButton>Submit</Form.SubmitButton>
     </Form>

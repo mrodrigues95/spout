@@ -7,7 +7,6 @@ import { Toaster } from 'react-hot-toast';
 import { NProgress, SessionProvider } from '../shared/components';
 import { useEnvironment } from '../shared/utils';
 
-import 'react-datepicker/dist/react-datepicker.css';
 import '../styles.css';
 
 export interface MyPageProps {

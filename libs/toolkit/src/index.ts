@@ -1,3 +1,4 @@
+export * from './lib/time-field';
 export * from './lib/timeline';
 export * from './lib/radio-group';
 export * from './lib/date-picker';
