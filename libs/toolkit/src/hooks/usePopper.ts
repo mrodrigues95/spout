@@ -39,11 +39,10 @@ export const usePopper = (
 
     if (cleanupCallback.current) cleanupCallback.current();
 
-    cleanupCallback.current = createPopper(
-      reference.current,
-      popper.current,
-      options,
-    ).destroy;
+    cleanupCallback.current = createPopper(reference.current, popper.current, {
+      ...defaultPopperOptions,
+      ...options,
+    }).destroy;
   }, [reference, popper, cleanupCallback, options]);
 
   return useMemo(

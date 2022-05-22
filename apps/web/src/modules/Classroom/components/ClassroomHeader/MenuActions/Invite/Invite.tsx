@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect, useState } from 'react';
+import { Dispatch, Suspense, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { graphql, useLazyLoadQuery, useMutation } from 'react-relay';
 import z from 'zod';
@@ -7,11 +7,12 @@ import {
   ErrorBoundary,
   ErrorFallback,
   useToast,
-} from '../../../../../shared/components';
+} from '../../../../../../shared/components';
 import InviteSettings, { MAX_AGE, MAX_USES } from './InviteSettings';
 import CopyInvite from './CopyInvite';
 import { InviteMutation } from './__generated__/InviteMutation.graphql';
 import { InviteQuery } from './__generated__/InviteQuery.graphql';
+import { Action, ActionType } from '../MenuActions';
 
 export const inviteSchema = z.object({
   maxAge: z.number(),
@@ -42,10 +43,10 @@ const query = graphql`
 
 interface InviteModalProps {
   fetchKey: number;
-  setIsOpen(value: boolean): void;
+  close(): void;
 }
 
-const InviteModal = ({ fetchKey, setIsOpen }: InviteModalProps) => {
+const InviteModal = ({ fetchKey, close }: InviteModalProps) => {
   const router = useRouter();
   const { classroomById } = useLazyLoadQuery<InviteQuery>(
     query,
@@ -123,7 +124,7 @@ const InviteModal = ({ fetchKey, setIsOpen }: InviteModalProps) => {
           <Button
             size="sm"
             variant="tertiary"
-            onClick={() => setIsOpen(false)}
+            onClick={close}
             disabled={isInFlight}
           >
             Cancel
@@ -142,39 +143,38 @@ const InviteModal = ({ fetchKey, setIsOpen }: InviteModalProps) => {
   );
 };
 
-const Invite = () => {
-  const [isOpen, setIsOpen] = useState(false);
+interface Props {
+  dispatch: Dispatch<Action>;
+}
+
+const Invite = ({ dispatch }: Props) => {
+  const close = () => dispatch({ type: ActionType.Invite, isOpen: false });
 
   return (
-    <>
-      <Button variant="primary" size="sm" onClick={() => setIsOpen(true)}>
-        Invite
-      </Button>
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <Modal.Overlay />
-        <Modal.Content>
-          <ErrorBoundary
-            FallbackComponent={({ resetErrorBoundary }) => (
-              <Modal.Body className="py-6">
-                <ErrorFallback action={resetErrorBoundary} />
-              </Modal.Body>
-            )}
-          >
-            {({ fetchKey }) => (
-              <Suspense
-                fallback={
-                  <Modal.Body className="py-6">
-                    <Spinner center size="lg" className="flex-1" />
-                  </Modal.Body>
-                }
-              >
-                <InviteModal setIsOpen={setIsOpen} fetchKey={fetchKey} />
-              </Suspense>
-            )}
-          </ErrorBoundary>
-        </Modal.Content>
-      </Modal>
-    </>
+    <Modal isOpen onClose={close}>
+      <Modal.Overlay />
+      <Modal.Content>
+        <ErrorBoundary
+          FallbackComponent={({ resetErrorBoundary }) => (
+            <Modal.Body className="py-6">
+              <ErrorFallback action={resetErrorBoundary} />
+            </Modal.Body>
+          )}
+        >
+          {({ fetchKey }) => (
+            <Suspense
+              fallback={
+                <Modal.Body className="py-6">
+                  <Spinner center size="lg" className="flex-1" />
+                </Modal.Body>
+              }
+            >
+              <InviteModal close={close} fetchKey={fetchKey} />
+            </Suspense>
+          )}
+        </ErrorBoundary>
+      </Modal.Content>
+    </Modal>
   );
 };
 

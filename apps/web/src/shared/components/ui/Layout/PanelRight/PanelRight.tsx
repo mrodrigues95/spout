@@ -6,7 +6,7 @@ interface Props extends ComponentProps<'section'> {}
 
 const PanelRight = ({ className, children, ...props }: Props) => {
   return (
-    <div className="relative h-full lg:ml-1.5 lg:w-64">
+    <div className="relative h-full lg:ml-5 lg:w-64">
       <section
         className={twMerge(
           clsx(
@@ -16,7 +16,7 @@ const PanelRight = ({ className, children, ...props }: Props) => {
             className,
           ),
         )}
-        style={{ right: 'max(0px,calc(50% - 45rem))' }}
+        // style={{ right: 'max(0px,calc(50% - 45rem))' }}
         {...props}
       >
         {children}
