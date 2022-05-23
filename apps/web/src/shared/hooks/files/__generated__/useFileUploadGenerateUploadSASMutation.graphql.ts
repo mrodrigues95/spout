@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bd6b38c39dd970c2f8d2ecea343cc951>>
+ * @generated SignedSource<<9eef2833c6bc78216613e5ae054e7d5b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,12 +9,10 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type WhitelistedFileExtension = "AAC" | "CSV" | "PDF" | "XLS" | "XLSX" | "PPT" | "PPTX" | "BMP" | "GIF" | "JPEG" | "JPG" | "JPE" | "PNG" | "TIFF" | "TIF" | "TXT" | "TEXT" | "RTF" | "DOC" | "DOCX" | "DOT" | "DOTX" | "DWG" | "DWF" | "DXF" | "MP3" | "MP4" | "WAV" | "AVI" | "MOV" | "MPEG" | "WMV" | "ZIP" | "%future added value";
 export type GenerateUploadSASInput = {
   fileName: string;
   size: any;
   mimeType?: string | null;
-  fileExtension: WhitelistedFileExtension;
 };
 export type useFileUploadGenerateUploadSASMutation$variables = {
   input: GenerateUploadSASInput;
@@ -29,11 +27,21 @@ export type useFileUploadGenerateUploadSASMutation$data = {
         readonly location: string | null;
         readonly name: string;
         readonly contentLength: any;
-        readonly extension: WhitelistedFileExtension;
       };
     } | null;
     readonly errors: ReadonlyArray<{
-      readonly message?: string;
+      readonly __typename: "FileTypeNotAllowedError";
+      readonly message: string;
+    } | {
+      readonly __typename: "ParseSignatureError";
+      readonly message: string;
+    } | {
+      readonly __typename: "GenerateSignatureError";
+      readonly message: string;
+    } | {
+      // This will never be '%other', but we need some
+      // value in case none of the concrete values match.
+      readonly __typename: "%other";
     }> | null;
   };
 };
@@ -108,13 +116,6 @@ v2 = {
           "kind": "ScalarField",
           "name": "contentLength",
           "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "extension",
-          "storageKey": null
         }
       ],
       "storageKey": null
@@ -122,27 +123,27 @@ v2 = {
   ],
   "storageKey": null
 },
-v3 = [
-  {
-    "alias": null,
-    "args": null,
-    "kind": "ScalarField",
-    "name": "message",
-    "storageKey": null
-  }
-],
-v4 = {
-  "kind": "InlineFragment",
-  "selections": (v3/*: any*/),
-  "type": "GenerateSignatureError",
-  "abstractKey": null
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
 },
-v5 = {
-  "kind": "InlineFragment",
-  "selections": (v3/*: any*/),
-  "type": "ParseSignatureError",
-  "abstractKey": null
-};
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "message",
+  "storageKey": null
+},
+v5 = [
+  (v3/*: any*/),
+  (v4/*: any*/)
+],
+v6 = [
+  (v4/*: any*/)
+];
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
@@ -167,8 +168,24 @@ return {
             "name": "errors",
             "plural": true,
             "selections": [
-              (v4/*: any*/),
-              (v5/*: any*/)
+              {
+                "kind": "InlineFragment",
+                "selections": (v5/*: any*/),
+                "type": "FileTypeNotAllowedError",
+                "abstractKey": null
+              },
+              {
+                "kind": "InlineFragment",
+                "selections": (v5/*: any*/),
+                "type": "ParseSignatureError",
+                "abstractKey": null
+              },
+              {
+                "kind": "InlineFragment",
+                "selections": (v5/*: any*/),
+                "type": "GenerateSignatureError",
+                "abstractKey": null
+              }
             ],
             "storageKey": null
           }
@@ -202,15 +219,25 @@ return {
             "name": "errors",
             "plural": true,
             "selections": [
+              (v3/*: any*/),
               {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "__typename",
-                "storageKey": null
+                "kind": "InlineFragment",
+                "selections": (v6/*: any*/),
+                "type": "FileTypeNotAllowedError",
+                "abstractKey": null
               },
-              (v4/*: any*/),
-              (v5/*: any*/)
+              {
+                "kind": "InlineFragment",
+                "selections": (v6/*: any*/),
+                "type": "ParseSignatureError",
+                "abstractKey": null
+              },
+              {
+                "kind": "InlineFragment",
+                "selections": (v6/*: any*/),
+                "type": "GenerateSignatureError",
+                "abstractKey": null
+              }
             ],
             "storageKey": null
           }
@@ -220,16 +247,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c2a66386a8213b20d1eb135d00637b87",
+    "cacheID": "c120cbb4b49723c83f334ffe51340632",
     "id": null,
     "metadata": {},
     "name": "useFileUploadGenerateUploadSASMutation",
     "operationKind": "mutation",
-    "text": "mutation useFileUploadGenerateUploadSASMutation(\n  $input: GenerateUploadSASInput!\n) {\n  generateUploadSAS(input: $input) {\n    generateSASPayload {\n      sas\n      file {\n        id\n        location\n        name\n        contentLength\n        extension\n      }\n    }\n    errors {\n      __typename\n      ... on GenerateSignatureError {\n        message\n      }\n      ... on ParseSignatureError {\n        message\n      }\n    }\n  }\n}\n"
+    "text": "mutation useFileUploadGenerateUploadSASMutation(\n  $input: GenerateUploadSASInput!\n) {\n  generateUploadSAS(input: $input) {\n    generateSASPayload {\n      sas\n      file {\n        id\n        location\n        name\n        contentLength\n      }\n    }\n    errors {\n      __typename\n      ... on FileTypeNotAllowedError {\n        __typename\n        message\n      }\n      ... on ParseSignatureError {\n        __typename\n        message\n      }\n      ... on GenerateSignatureError {\n        __typename\n        message\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "aa2b804f1c4cf58b8ea85295debc1627";
+(node as any).hash = "fc088dc661140d1fac1c04341642e1ce";
 
 export default node;

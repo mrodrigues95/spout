@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9c9e3cc868c05af3e3e88a8fcc3d921c>>
+ * @generated SignedSource<<fda66c2d7220bf2fdd2991b40d69eabb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,6 @@
 import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type MessageEvent = "CHANGE_TOPIC" | "CHANGE_DESCRIPTION" | "PINNED_MESSAGE" | "UNPINNED_MESSAGE" | "%future added value";
 export type UserProfileColor = "SKY" | "PINK" | "GREEN" | "PURPLE" | "ROSE" | "GRAY" | "ORANGE" | "%future added value";
-export type WhitelistedFileExtension = "AAC" | "CSV" | "PDF" | "XLS" | "XLSX" | "PPT" | "PPTX" | "BMP" | "GIF" | "JPEG" | "JPG" | "JPE" | "PNG" | "TIFF" | "TIF" | "TXT" | "TEXT" | "RTF" | "DOC" | "DOCX" | "DOT" | "DOTX" | "DWG" | "DWF" | "DXF" | "MP3" | "MP4" | "WAV" | "AVI" | "MOV" | "MPEG" | "WMV" | "ZIP" | "%future added value";
 export type SendDiscussionMessageInput = {
   discussionId: string;
   fileIds: ReadonlyArray<string>;
@@ -34,7 +33,6 @@ export type DiscussionOptimisticMessageMutation$data = {
         readonly location: string | null;
         readonly name: string;
         readonly contentLength: any;
-        readonly extension: WhitelistedFileExtension;
       }>;
       readonly createdBy: {
         readonly id: string;
@@ -190,13 +188,6 @@ v5 = [
                 "kind": "ScalarField",
                 "name": "contentLength",
                 "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "extension",
-                "storageKey": null
               }
             ],
             "storageKey": null
@@ -254,16 +245,16 @@ return {
     "selections": (v5/*: any*/)
   },
   "params": {
-    "cacheID": "f86d3cf3a1216612a1ba0f44e12ad98b",
+    "cacheID": "cfbcc830b091350e1e1a15d677723f04",
     "id": null,
     "metadata": {},
     "name": "DiscussionOptimisticMessageMutation",
     "operationKind": "mutation",
-    "text": "mutation DiscussionOptimisticMessageMutation(\n  $input: SendDiscussionMessageInput!\n) {\n  sendDiscussionMessage(input: $input) {\n    message {\n      id\n      content\n      createdAt\n      isEvent\n      messageEvent\n      attachments {\n        id\n        location\n        name\n        contentLength\n        extension\n      }\n      createdBy {\n        id\n        name\n        avatarUrl\n        profileColor\n      }\n      pinnedBy {\n        id\n        name\n      }\n      parentMessage {\n        id\n        content\n        createdBy {\n          id\n          name\n          avatarUrl\n          profileColor\n        }\n      }\n    }\n  }\n}\n"
+    "text": "mutation DiscussionOptimisticMessageMutation(\n  $input: SendDiscussionMessageInput!\n) {\n  sendDiscussionMessage(input: $input) {\n    message {\n      id\n      content\n      createdAt\n      isEvent\n      messageEvent\n      attachments {\n        id\n        location\n        name\n        contentLength\n      }\n      createdBy {\n        id\n        name\n        avatarUrl\n        profileColor\n      }\n      pinnedBy {\n        id\n        name\n      }\n      parentMessage {\n        id\n        content\n        createdBy {\n          id\n          name\n          avatarUrl\n          profileColor\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "eb65f96496c52daff0f08b404333e3f0";
+(node as any).hash = "9ba938acf41c7d720a2f89025eeb5052";
 
 export default node;

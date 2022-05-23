@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<da71401a2610332e9539385a10259bb2>>
+ * @generated SignedSource<<4cf160010e31cd1d731adf7092751626>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,7 +18,6 @@ export type SortEnumType = "ASC" | "DESC" | "%future added value";
 export type UriHostNameType = "UNKNOWN" | "BASIC" | "DNS" | "I_PV4" | "I_PV6" | "%future added value";
 export type UserPreferredProvider = "EMAIL" | "PHONE" | "%future added value";
 export type UserProfileColor = "SKY" | "PINK" | "GREEN" | "PURPLE" | "ROSE" | "GRAY" | "ORANGE" | "%future added value";
-export type WhitelistedFileExtension = "AAC" | "CSV" | "PDF" | "XLS" | "XLSX" | "PPT" | "PPTX" | "BMP" | "GIF" | "JPEG" | "JPG" | "JPE" | "PNG" | "TIFF" | "TIF" | "TXT" | "TEXT" | "RTF" | "DOC" | "DOCX" | "DOT" | "DOTX" | "DWG" | "DWF" | "DXF" | "MP3" | "MP4" | "WAV" | "AVI" | "MOV" | "MPEG" | "WMV" | "ZIP" | "%future added value";
 export type ClassroomReminderSortInput = {
   id?: SortEnumType | null;
   guid?: SortEnumType | null;
@@ -468,7 +467,6 @@ export type FileFilterInput = {
   uploadedBy?: UserFilterInput | null;
   contentLength?: ComparableInt64OperationFilterInput | null;
   mimeType?: StringOperationFilterInput | null;
-  fileExtension?: WhitelistedFileExtensionOperationFilterInput | null;
   uploadStatus?: FileUploadStatusOperationFilterInput | null;
   sas?: UriFilterInput | null;
   signatureEncoded?: StringOperationFilterInput | null;
@@ -498,12 +496,6 @@ export type ComparableInt64OperationFilterInput = {
   nlt?: any | null;
   lte?: any | null;
   nlte?: any | null;
-};
-export type WhitelistedFileExtensionOperationFilterInput = {
-  eq?: WhitelistedFileExtension | null;
-  neq?: WhitelistedFileExtension | null;
-  in?: ReadonlyArray<WhitelistedFileExtension> | null;
-  nin?: ReadonlyArray<WhitelistedFileExtension> | null;
 };
 export type FileUploadStatusOperationFilterInput = {
   eq?: FileUploadStatus | null;

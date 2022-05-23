@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f2e6c816a3ec38a260007b3f92da17fc>>
+ * @generated SignedSource<<5ce40194de2b4b85af446070ec5be949>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -203,13 +203,6 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "extension",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
                     "name": "location",
                     "storageKey": null
                   },
@@ -311,12 +304,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3073965a3e1717dc56e92b6e8aa6f852",
+    "cacheID": "7c2301720b691944d6ab89378dfc65b7",
     "id": null,
     "metadata": {},
     "name": "AttachmentsPaginationQuery",
     "operationKind": "query",
-    "text": "query AttachmentsPaginationQuery(\n  $count: Int!\n  $cursor: String\n  $id: ID!\n) {\n  ...Attachments_files_3T5kGn\n}\n\nfragment Attachments_attachment on File {\n  name\n  contentLength\n  extension\n  location\n  createdAt\n  uploadedBy {\n    name\n    avatarUrl\n    profileColor\n    id\n  }\n}\n\nfragment Attachments_files_3T5kGn on Query {\n  files(last: $count, before: $cursor, where: {messageFiles: {some: {message: {discussion: {id: {eq: $id}}}}}, and: {isDeleted: {eq: false}, uploadStatus: {eq: COMPLETED}}}, order: {createdAt: DESC}) {\n    edges {\n      node {\n        ...Attachments_attachment\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      startCursor\n      hasPreviousPage\n    }\n  }\n}\n"
+    "text": "query AttachmentsPaginationQuery(\n  $count: Int!\n  $cursor: String\n  $id: ID!\n) {\n  ...Attachments_files_3T5kGn\n}\n\nfragment Attachments_attachment on File {\n  name\n  contentLength\n  location\n  createdAt\n  uploadedBy {\n    name\n    avatarUrl\n    profileColor\n    id\n  }\n}\n\nfragment Attachments_files_3T5kGn on Query {\n  files(last: $count, before: $cursor, where: {messageFiles: {some: {message: {discussion: {id: {eq: $id}}}}}, and: {isDeleted: {eq: false}, uploadStatus: {eq: COMPLETED}}}, order: {createdAt: DESC}) {\n    edges {\n      node {\n        ...Attachments_attachment\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      startCursor\n      hasPreviousPage\n    }\n  }\n}\n"
   }
 };
 })();

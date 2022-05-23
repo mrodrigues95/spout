@@ -37,7 +37,6 @@ const Attachment = ({ index, file }: AttachmentProps) => {
       fragment Attachments_attachment on File {
         name
         contentLength
-        extension
         location
         createdAt
         uploadedBy {
@@ -67,8 +66,7 @@ const Attachment = ({ index, file }: AttachmentProps) => {
               {data.name}
             </Text>
             <Text size="xs" color="muted" truncate as="span">
-              {formatBytesToHumanReadable(data.contentLength)} -{' '}
-              {data.extension}
+              {formatBytesToHumanReadable(data.contentLength)}
             </Text>
           </div>
         </div>

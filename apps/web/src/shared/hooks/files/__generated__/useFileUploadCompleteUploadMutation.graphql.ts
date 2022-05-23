@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bc040f732bd65ae7943b1b9901ce0928>>
+ * @generated SignedSource<<a39a23f3e1248425ff2ef40c374e58a9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,6 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type WhitelistedFileExtension = "AAC" | "CSV" | "PDF" | "XLS" | "XLSX" | "PPT" | "PPTX" | "BMP" | "GIF" | "JPEG" | "JPG" | "JPE" | "PNG" | "TIFF" | "TIF" | "TXT" | "TEXT" | "RTF" | "DOC" | "DOCX" | "DOT" | "DOTX" | "DWG" | "DWF" | "DXF" | "MP3" | "MP4" | "WAV" | "AVI" | "MOV" | "MPEG" | "WMV" | "ZIP" | "%future added value";
 export type CompleteUploadInput = {
   fileId: string;
 };
@@ -24,7 +23,6 @@ export type useFileUploadCompleteUploadMutation$data = {
       readonly location: string | null;
       readonly name: string;
       readonly contentLength: any;
-      readonly extension: WhitelistedFileExtension;
     } | null;
     readonly errors: ReadonlyArray<{
       readonly message?: string;
@@ -86,13 +84,6 @@ v2 = {
       "args": null,
       "kind": "ScalarField",
       "name": "contentLength",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "extension",
       "storageKey": null
     }
   ],
@@ -187,16 +178,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "690d10cb853c2441ee996a8f98e48322",
+    "cacheID": "8026360d40cf768cfc3de4fe277a332a",
     "id": null,
     "metadata": {},
     "name": "useFileUploadCompleteUploadMutation",
     "operationKind": "mutation",
-    "text": "mutation useFileUploadCompleteUploadMutation(\n  $input: CompleteUploadInput!\n) {\n  completeUpload(input: $input) {\n    file {\n      id\n      location\n      name\n      contentLength\n      extension\n    }\n    errors {\n      __typename\n      ... on Error {\n        __isError: __typename\n        message\n      }\n    }\n  }\n}\n"
+    "text": "mutation useFileUploadCompleteUploadMutation(\n  $input: CompleteUploadInput!\n) {\n  completeUpload(input: $input) {\n    file {\n      id\n      location\n      name\n      contentLength\n    }\n    errors {\n      __typename\n      ... on Error {\n        __isError: __typename\n        message\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "5443155f00cae405ebaa66bc5c229d53";
+(node as any).hash = "bb762793e27c91ceaed08fcab8b31464";
 
 export default node;

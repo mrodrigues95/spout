@@ -121,7 +121,7 @@ const ProfilePhoto = ({ ...props }: Props) => {
                 onClick={() => {
                   editorRef.current?.getImage().toBlob(async (blob) => {
                     if (blob) {
-                      const file = await upload(
+                      const { file } = await upload(
                         new File([blob], photo!.name, { type: photo!.type }),
                       );
 

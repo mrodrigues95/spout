@@ -19,7 +19,8 @@ import {
 } from '@spout/toolkit';
 import clsx from 'clsx';
 import {
-  FileUploadQueue,
+  ActionType,
+  FileUploadQueueElement,
   FileWithId,
   useFileUploadQueue,
 } from '../../../hooks';
@@ -28,8 +29,8 @@ import {
   MAX_FILES_PER_UPLOAD,
   MAX_FILE_SIZE,
   MIN_FILE_SIZE,
-  WHITELISTED_EXTENSIONS,
 } from '../../../../../shared/utils';
+import { FileUploadErrorCode } from '../../../../../shared/hooks';
 import { useComposerToolbar } from './ComposerToolbarProvider';
 
 export const UploadAttachments = () => {
@@ -39,7 +40,6 @@ export const UploadAttachments = () => {
 
   return (
     <FilePicker
-      accept={[...WHITELISTED_EXTENSIONS].map((ext) => `.${ext.toLowerCase()}`)}
       onDropAccepted={onFilesAccepted}
       onDropRejected={onFilesRejected}
       minSize={MIN_FILE_SIZE}
@@ -65,27 +65,25 @@ export const UploadAttachments = () => {
 };
 
 const getIcon = ({
-  isQueued,
   isError,
   isUploading,
   isUploaded,
   isFocused,
-}: Omit<FileUploadQueue, 'file' | 'id'> & { isFocused: boolean }) => {
-  if (isUploading || isQueued) return <Spinner variant="circle" size="sm" />;
+}: Omit<FileUploadQueueElement, 'file' | 'id'> & { isFocused: boolean }) => {
+  if (isUploading) return <Spinner variant="circle" size="sm" />;
   if (isFocused) return <FontAwesomeIcon icon={faTrashAlt} />;
   if (isError) return <FontAwesomeIcon icon={faTimesCircle} />;
   if (isUploaded) return <FontAwesomeIcon icon={faCheckCircle} />;
   return null;
 };
 
-interface ComposerAttachmentProps extends FileUploadQueue {
+interface ComposerAttachmentProps extends FileUploadQueueElement {
   removeFromQueue: ReturnType<typeof useFileUploadQueue>['removeFromQueue'];
 }
 
 const ComposerAttachment = ({
   id,
   file,
-  isQueued,
   isError,
   isUploaded,
   isUploading,
@@ -94,7 +92,6 @@ const ComposerAttachment = ({
   const [isFocused, setIsFocused] = useState(false);
 
   const icon = getIcon({
-    isQueued,
     isError,
     isUploaded,
     isUploading,
@@ -114,7 +111,7 @@ const ComposerAttachment = ({
           <button
             type="button"
             aria-label="Remove File"
-            disabled={isQueued || isUploading}
+            disabled={isUploading}
             onClick={() => removeFromQueue(id, file.id)}
             className={clsx(
               'z-10 inline-flex items-center justify-center rounded-sm shadow-lg',
@@ -136,59 +133,54 @@ const ComposerAttachment = ({
       <div className="min-w-0 flex-1">
         <p className="truncate font-medium">{file.name}</p>
         <p className="truncate text-sm text-gray-500">
-          {formatBytesToHumanReadable(file.size)} -{' '}
-          {fileExtension.toUpperCase()}
+          {formatBytesToHumanReadable(file.size)}
         </p>
       </div>
     </li>
   );
 };
 
-enum ServerErrorCode {
-  ServerError = 'error-uploading-file-to-api',
-}
+const getErrorMessageFromErrorCode = (
+  errorCode?: DropzoneErrorCode | FileUploadErrorCode | string,
+) => {
+  if (!errorCode) return null;
 
-type FileUploadErrorCode = DropzoneErrorCode | ServerErrorCode | string;
-
-const getErrorMessageFromErrorCode = (code?: FileUploadErrorCode) => {
-  if (!code) return null;
-
-  switch (code) {
-    case DropzoneErrorCode.FileInvalidType:
-      return 'Unsupported file type';
+  switch (errorCode) {
     case DropzoneErrorCode.FileTooSmall:
       return 'Attachment is too small - must be greater than 0 bytes';
     case DropzoneErrorCode.FileTooLarge:
       return 'Attachment is too large - must be less than 8MB';
     case DropzoneErrorCode.TooManyFiles:
       return 'Too many attachments - a maximum of 10 attachments can only be uploaded at once';
-    case ServerErrorCode.ServerError:
+    case FileUploadErrorCode.FileInvalidType:
+      return 'Unsupported file type';
+    case FileUploadErrorCode.ServerError:
       return 'Server error - please try again';
     default:
       throw new Error('Unhandled error code');
   }
 };
 
-interface RejectedOrErrorAttachmentProps extends Omit<FileRejection, 'errors'> {
-  errors: { message: string; code: FileUploadErrorCode }[];
+interface RejectedOrErrorAttachmentProps {
+  attachment: File;
+  errorCode: DropzoneErrorCode | FileUploadErrorCode | string;
 }
 
 const RejectedOrErrorAttachment = ({
-  file,
-  errors,
+  attachment,
+  errorCode,
 }: RejectedOrErrorAttachmentProps) => {
   // A file can have more than one error but we only display the first one.
-  const errorMessage = getErrorMessageFromErrorCode(errors[0]?.code);
-  const fileExtension = getFileExtensionFromFileName(file.name).toKey();
+  const errorMessage = getErrorMessageFromErrorCode(errorCode);
+  const fileExtension = getFileExtensionFromFileName(attachment.name).toKey();
 
   return (
     <li className="relative flex rounded-md p-3 shadow-sm ring-1 ring-gray-900/10">
       <FileIcon ext={fileExtension} className="mt-1.5 mr-2 text-3xl" />
       <div className="min-w-0 flex-1">
-        <p className="truncate font-medium">{file.name}</p>
+        <p className="truncate font-medium">{attachment.name}</p>
         <p className="truncate text-sm text-gray-500">
-          {formatBytesToHumanReadable(file.size)} -{' '}
-          {fileExtension.toUpperCase()}
+          {formatBytesToHumanReadable(attachment.size)}
         </p>
         {errorMessage && (
           <p className="text-sm font-medium text-red-600">{errorMessage}</p>
@@ -215,25 +207,15 @@ export const ComposerAttachments = ({
   setShouldClearFiles,
   shouldClearFiles = false,
 }: AttachmentsProps) => {
-  const { upload, queue, removeFromQueue, resetQueue } = useFileUploadQueue();
+  const { queue, dispatch, upload, removeFromQueue } = useFileUploadQueue();
   const [isOpen, setIsOpen] = useState(false);
   const [rejectedFiles, setRejectedFiles] = useState(_rejectedFiles);
-  const [errorFiles, setErrorFiles] = useState<FileRejection[]>([]);
 
   useEffect(() => setRejectedFiles(_rejectedFiles), [_rejectedFiles]);
 
-  useEffect(() => {
-    const errors = queue.errorFiles.map((errorFile) => ({
-      file: errorFile,
-      errors: [{ message: 'Server error', code: ServerErrorCode.ServerError }],
-    }));
-
-    setErrorFiles(errors);
-  }, [queue.errorFiles]);
-
   const rejectedOrErrorAttachments = useMemo(
-    () => [...rejectedFiles, ...errorFiles],
-    [rejectedFiles, errorFiles],
+    () => [...rejectedFiles, ...queue.errorFiles],
+    [rejectedFiles, queue.errorFiles],
   );
 
   useEffect(() => {
@@ -242,20 +224,23 @@ export const ComposerAttachments = ({
 
   useEffect(() => {
     // Show the modal when the user selects invalid files and/or
-    // one of there uploads fails.
-    if (rejectedFiles.length || (!queue.isInFlight && errorFiles.length)) {
+    // one of their uploads fails.
+    if (
+      rejectedFiles.length ||
+      (!queue.isInFlight && queue.errorFiles.length)
+    ) {
       setIsOpen(true);
     } else {
       setIsOpen(false);
     }
-  }, [queue.isInFlight, errorFiles, rejectedFiles]);
+  }, [queue.isInFlight, queue.errorFiles, rejectedFiles]);
 
   useEffect(() => {
     if (queue.isInFlight) {
       setIsUploadingFiles(true);
     } else {
       setIsUploadingFiles(false);
-      setUploadedFiles(queue.uploadedFiles);
+      setUploadedFiles(queue.uploadedFiles.map((element) => element.file));
     }
   }, [
     queue.isInFlight,
@@ -266,18 +251,18 @@ export const ComposerAttachments = ({
 
   useEffect(() => {
     if (shouldClearFiles) {
-      resetQueue();
+      dispatch({ type: ActionType.ResetQueue });
       setShouldClearFiles(false);
     }
-  }, [shouldClearFiles, resetQueue, setShouldClearFiles]);
+  }, [shouldClearFiles, setShouldClearFiles, dispatch]);
 
   const onClose = useCallback(() => {
     setIsOpen(false);
 
     // Reset error state so that the modal is only shown once per transaction.
-    setErrorFiles([]);
+    dispatch({ type: ActionType.ResetErrorFiles });
     setRejectedFiles([]);
-  }, []);
+  }, [dispatch]);
 
   const files = useMemo(
     () => [...queue.files.sort((a, b) => (a.id > b.id ? 1 : -1))],
@@ -292,17 +277,18 @@ export const ComposerAttachments = ({
         <Modal.Content>
           <Modal.Header
             title="Upload failed"
-            description="Sorry, there was a problem while uploading some of your attachment(s)"
+            description="Sorry, there was a problem while uploading some of your attachment(s)."
             dismiss
           />
           <Modal.Body className="max-h-80">
             <ul className="h-full space-y-3 overflow-y-auto overflow-x-hidden p-2">
-              {rejectedOrErrorAttachments.map((rejectedAttachment) => (
+              {rejectedOrErrorAttachments.map(({ file, ...rest }) => (
                 <RejectedOrErrorAttachment
-                  key={`${
-                    rejectedAttachment.file.name
-                  }-${rejectedAttachment.file.size.toString()}`}
-                  {...rejectedAttachment}
+                  key={`${file.name}-${file.size.toString()}`}
+                  attachment={file}
+                  errorCode={
+                    'errors' in rest ? rest.errors[0].code : rest.errorCode!
+                  }
                 />
               ))}
             </ul>

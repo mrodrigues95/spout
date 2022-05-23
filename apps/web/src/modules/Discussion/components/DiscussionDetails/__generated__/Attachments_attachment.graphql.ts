@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ced55b573afbe9c41a3ef04f715c8266>>
+ * @generated SignedSource<<0713a4e9b036a5a0fe07c8a9b8eefae6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,12 +10,10 @@
 
 import { Fragment, ReaderFragment } from 'relay-runtime';
 export type UserProfileColor = "SKY" | "PINK" | "GREEN" | "PURPLE" | "ROSE" | "GRAY" | "ORANGE" | "%future added value";
-export type WhitelistedFileExtension = "AAC" | "CSV" | "PDF" | "XLS" | "XLSX" | "PPT" | "PPTX" | "BMP" | "GIF" | "JPEG" | "JPG" | "JPE" | "PNG" | "TIFF" | "TIF" | "TXT" | "TEXT" | "RTF" | "DOC" | "DOCX" | "DOT" | "DOTX" | "DWG" | "DWF" | "DXF" | "MP3" | "MP4" | "WAV" | "AVI" | "MOV" | "MPEG" | "WMV" | "ZIP" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type Attachments_attachment$data = {
   readonly name: string;
   readonly contentLength: any;
-  readonly extension: WhitelistedFileExtension;
   readonly location: string | null;
   readonly createdAt: string;
   readonly uploadedBy: {
@@ -51,13 +49,6 @@ return {
       "args": null,
       "kind": "ScalarField",
       "name": "contentLength",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "extension",
       "storageKey": null
     },
     {
@@ -106,6 +97,6 @@ return {
 };
 })();
 
-(node as any).hash = "c9bc15800541c9940f9f40ba121f55a3";
+(node as any).hash = "4f64148aa2ed6840e9646876b49fdd7c";
 
 export default node;

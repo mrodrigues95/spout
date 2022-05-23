@@ -16,45 +16,6 @@ namespace API.Schema.Types.Files {
     }
 
     /// <summary>
-    /// Whitelisted file extensions.
-    /// </summary>
-    public enum WhitelistedFileExtension {
-        AAC,
-        CSV,
-        PDF,
-        XLS,
-        XLSX,
-        PPT,
-        PPTX,
-        BMP,
-        GIF,
-        JPEG,
-        JPG,
-        JPE,
-        PNG,
-        TIFF,
-        TIF,
-        TXT,
-        TEXT,
-        RTF,
-        DOC,
-        DOCX,
-        DOT,
-        DOTX,
-        DWG,
-        DWF,
-        DXF,
-        MP3,
-        MP4,
-        WAV,
-        AVI,
-        MOV,
-        MPEG,
-        WMV,
-        ZIP
-    }
-
-    /// <summary>
     /// The current status of the file upload.
     /// </summary>
     public enum FileUploadStatus {
@@ -63,8 +24,6 @@ namespace API.Schema.Types.Files {
         ERROR,
         IGNORED
     }
-
-    public class WhitelistedFileExtensionType : EnumType<WhitelistedFileExtension> { }
 
     public class FileUploadStatusType : EnumType<FileUploadStatus> { }
 
@@ -94,11 +53,6 @@ namespace API.Schema.Types.Files {
             descriptor
                 .Field(f => f.ContentLength)
                 .Type<NonNullType<LongType>>();
-
-            descriptor
-                .Field(f => f.FileExtension)
-                .Name("extension")
-                .Type<NonNullType<WhitelistedFileExtensionType>>();
 
             descriptor
                 .Field(f => f.UploadStatus)

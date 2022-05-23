@@ -17,7 +17,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220518001150_Initial")]
+    [Migration("20220522204255_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,7 +33,6 @@ namespace API.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "message_event", new[] { "change_topic", "change_description", "pinned_message", "unpinned_message" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "user_preferred_provider", new[] { "email", "phone" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "user_profile_color", new[] { "sky", "pink", "green", "purple", "rose", "gray", "orange" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "whitelisted_file_extension", new[] { "aac", "csv", "pdf", "xls", "xlsx", "ppt", "pptx", "bmp", "gif", "jpeg", "jpg", "jpe", "png", "tiff", "tif", "txt", "text", "rtf", "doc", "docx", "dot", "dotx", "dwg", "dwf", "dxf", "mp3", "mp4", "wav", "avi", "mov", "mpeg", "wmv", "zip" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("API.Data.Entities.Classroom", b =>
@@ -688,10 +687,6 @@ namespace API.Migrations
                     b.Property<string>("ETag")
                         .HasColumnType("text")
                         .HasColumnName("e_tag");
-
-                    b.Property<WhitelistedFileExtension>("FileExtension")
-                        .HasColumnType("whitelisted_file_extension")
-                        .HasColumnName("file_extension");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()

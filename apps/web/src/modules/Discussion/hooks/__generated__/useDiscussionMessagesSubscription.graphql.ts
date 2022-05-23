@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<79d57fe479553ee6d71997af97474d43>>
+ * @generated SignedSource<<d367688152185b75a2eede9be78b311d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,6 @@
 import { ConcreteRequest, GraphQLSubscription } from 'relay-runtime';
 export type MessageEvent = "CHANGE_TOPIC" | "CHANGE_DESCRIPTION" | "PINNED_MESSAGE" | "UNPINNED_MESSAGE" | "%future added value";
 export type UserProfileColor = "SKY" | "PINK" | "GREEN" | "PURPLE" | "ROSE" | "GRAY" | "ORANGE" | "%future added value";
-export type WhitelistedFileExtension = "AAC" | "CSV" | "PDF" | "XLS" | "XLSX" | "PPT" | "PPTX" | "BMP" | "GIF" | "JPEG" | "JPG" | "JPE" | "PNG" | "TIFF" | "TIF" | "TXT" | "TEXT" | "RTF" | "DOC" | "DOCX" | "DOT" | "DOTX" | "DWG" | "DWF" | "DXF" | "MP3" | "MP4" | "WAV" | "AVI" | "MOV" | "MPEG" | "WMV" | "ZIP" | "%future added value";
 export type useDiscussionMessagesSubscription$variables = {
   discussionId: string;
 };
@@ -29,7 +28,6 @@ export type useDiscussionMessagesSubscription$data = {
         readonly location: string | null;
         readonly name: string;
         readonly contentLength: any;
-        readonly extension: WhitelistedFileExtension;
       }>;
       readonly createdBy: {
         readonly id: string;
@@ -185,13 +183,6 @@ v5 = [
                 "kind": "ScalarField",
                 "name": "contentLength",
                 "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "extension",
-                "storageKey": null
               }
             ],
             "storageKey": null
@@ -249,18 +240,18 @@ return {
     "selections": (v5/*: any*/)
   },
   "params": {
-    "cacheID": "0ba16b10e1e0f431e3b571f6cecba7fe",
+    "cacheID": "d6e00ee01f70e51a4db43600064d11ec",
     "id": null,
     "metadata": {
       "subscriptionName": "onDiscussionMessageReceived"
     },
     "name": "useDiscussionMessagesSubscription",
     "operationKind": "subscription",
-    "text": "subscription useDiscussionMessagesSubscription(\n  $discussionId: ID!\n) {\n  onDiscussionMessageReceived(discussionId: $discussionId) {\n    message {\n      id\n      content\n      createdAt\n      isEvent\n      messageEvent\n      attachments {\n        id\n        location\n        name\n        contentLength\n        extension\n      }\n      createdBy {\n        id\n        name\n        avatarUrl\n        profileColor\n      }\n      pinnedBy {\n        id\n        name\n      }\n      parentMessage {\n        id\n        content\n        createdBy {\n          id\n          name\n          avatarUrl\n          profileColor\n        }\n      }\n    }\n  }\n}\n"
+    "text": "subscription useDiscussionMessagesSubscription(\n  $discussionId: ID!\n) {\n  onDiscussionMessageReceived(discussionId: $discussionId) {\n    message {\n      id\n      content\n      createdAt\n      isEvent\n      messageEvent\n      attachments {\n        id\n        location\n        name\n        contentLength\n      }\n      createdBy {\n        id\n        name\n        avatarUrl\n        profileColor\n      }\n      pinnedBy {\n        id\n        name\n      }\n      parentMessage {\n        id\n        content\n        createdBy {\n          id\n          name\n          avatarUrl\n          profileColor\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "600bc6bb7690b5a16c6e0241955916a6";
+(node as any).hash = "40b03ca9d632c3961568f36d325276d8";
 
 export default node;

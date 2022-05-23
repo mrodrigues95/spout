@@ -9,7 +9,6 @@ namespace API.Data.Entities {
         public User? UploadedBy { get; set; }
         public long ContentLength { get; set; }
         public string? MimeType { get; set; }
-        public WhitelistedFileExtension FileExtension { get; set; }
         public FileUploadStatus UploadStatus { get; set; }
         public Uri? Sas { get; set; }
         public string? SignatureEncoded { get; set; }

@@ -24,6 +24,41 @@ namespace API.Schema.Mutations.Files {
     public class FileMutations {
         private readonly string _containerName;
         private readonly ILogger<FileMutations> _logger;
+        private readonly string[] whitelistedFileExtensions = {
+            ".aac",
+            ".csv",
+            ".pdf",
+            ".xls",
+            ".xlsx",
+            ".ppt",
+            ".pptx",
+            ".bmp",
+            ".gif",
+            ".jpeg",
+            ".jpg",
+            ".jpe",
+            ".png",
+            ".tiff",
+            ".tif",
+            ".txt",
+            ".text",
+            ".rtf",
+            ".doc",
+            ".docx",
+            ".dot",
+            ".dotx",
+            ".dwg",
+            ".dwf",
+            ".dxf",
+            ".mp3",
+            ".mp4",
+            ".wav",
+            ".avi",
+            ".mov",
+            ".mpeg",
+            ".wmv",
+            ".zip"
+        };
 
         public FileMutations(IOptions<AzureStorageConfig> config, ILogger<FileMutations> logger) {
             _logger = logger;
@@ -60,12 +95,19 @@ namespace API.Schema.Mutations.Files {
         [Authorize]
         [Error(typeof(GenerateSignatureException))]
         [Error(typeof(ParseSignatureException))]
+        [Error(typeof(FileTypeNotAllowedException))]
         public async Task<GenerateSASPayload> GenerateUploadSASAsync(
             [GlobalUserId] int userId,
             GenerateUploadSASInput input,
             IBlobService blob,
             ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
+            var ext = System.IO.Path.GetExtension(input.FileName);
+            if (string.IsNullOrEmpty(ext) ||
+                !whitelistedFileExtensions.Contains(ext)) {
+                throw new FileTypeNotAllowedException(ext);
+            }
+
             var blobName = Guid.NewGuid().ToString();
             var sas = await blob.GetBlobSasUri(blobName,
                 BlobSasPermissions.Write | BlobSasPermissions.Create);
@@ -87,7 +129,6 @@ namespace API.Schema.Mutations.Files {
                 UploadedById = userId,
                 ContentLength = input.Size,
                 MimeType = mimeType,
-                FileExtension = input.FileExtension,
                 Name = input.FileName,
                 UploadStatus = FileUploadStatus.QUEUED,
                 Sas = sas,
@@ -148,7 +189,7 @@ namespace API.Schema.Mutations.Files {
                 throw new FileNotFoundException();
             }
 
-            var blobClient = await blob.GetBlobClient(file.BlobName!);
+            var blobClient = blob.GetBlobClient(file.BlobName!);
             if (blobClient is null) {
                 file.UploadStatus = FileUploadStatus.ERROR;
                 file.UpdatedAt = DateTime.UtcNow;
@@ -193,7 +234,7 @@ namespace API.Schema.Mutations.Files {
                 throw new FileNotFoundException();
             }
 
-            var blobClient = await blob.GetBlobClient(file.BlobName!);
+            var blobClient = blob.GetBlobClient(file.BlobName!);
             if (blobClient is null) {
                 file.UploadStatus = FileUploadStatus.IGNORED;
                 file.UpdatedAt = DateTime.UtcNow;

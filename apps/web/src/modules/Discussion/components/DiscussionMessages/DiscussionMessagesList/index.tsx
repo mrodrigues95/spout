@@ -48,7 +48,6 @@ const discussionFragment = graphql`
             location
             name
             contentLength
-            extension
           }
           createdBy {
             id

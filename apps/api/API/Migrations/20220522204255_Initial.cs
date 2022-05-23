@@ -18,8 +18,7 @@ namespace API.Migrations {
                 .Annotation("Npgsql:Enum:file_upload_status", "queued,completed,error,ignored")
                 .Annotation("Npgsql:Enum:message_event", "change_topic,change_description,pinned_message,unpinned_message")
                 .Annotation("Npgsql:Enum:user_preferred_provider", "email,phone")
-                .Annotation("Npgsql:Enum:user_profile_color", "sky,pink,green,purple,rose,gray,orange")
-                .Annotation("Npgsql:Enum:whitelisted_file_extension", "aac,csv,pdf,xls,xlsx,ppt,pptx,bmp,gif,jpeg,jpg,jpe,png,tiff,tif,txt,text,rtf,doc,docx,dot,dotx,dwg,dwf,dxf,mp3,mp4,wav,avi,mov,mpeg,wmv,zip");
+                .Annotation("Npgsql:Enum:user_profile_color", "sky,pink,green,purple,rose,gray,orange");
 
             migrationBuilder.CreateTable(
                 name: "del_log_types",
@@ -173,7 +172,6 @@ namespace API.Migrations {
                     uploaded_by_id = table.Column<int>(type: "integer", nullable: false),
                     content_length = table.Column<long>(type: "bigint", maxLength: 8388608, nullable: false),
                     mime_type = table.Column<string>(type: "text", nullable: true),
-                    file_extension = table.Column<WhitelistedFileExtension>(type: "whitelisted_file_extension", nullable: false),
                     upload_status = table.Column<FileUploadStatus>(type: "file_upload_status", maxLength: 255, nullable: false),
                     sas = table.Column<string>(type: "text", nullable: false),
                     signature_encoded = table.Column<string>(type: "text", nullable: false),

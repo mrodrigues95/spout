@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c5a7bd62c8097354e0fe22890812e500>>
+ * @generated SignedSource<<eac308564e489442c11973e213aa360b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -268,13 +268,6 @@ return {
                                 "kind": "ScalarField",
                                 "name": "contentLength",
                                 "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "extension",
-                                "storageKey": null
                               }
                             ],
                             "storageKey": null
@@ -370,16 +363,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "834836b952809444a57a287d9eac8d66",
+    "cacheID": "085fbe1415968a4ba49e6651a88e77e0",
     "id": null,
     "metadata": {},
     "name": "DiscussionMessagesListPaginationQuery",
     "operationKind": "query",
-    "text": "query DiscussionMessagesListPaginationQuery(\n  $count: Int!\n  $cursor: String\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...DiscussionMessagesList_discussion_1G22uz\n    id\n  }\n}\n\nfragment DiscussionMessagesListHeader_discussion on Discussion {\n  name\n  topic\n  description\n}\n\nfragment DiscussionMessagesList_discussion_1G22uz on Discussion {\n  id\n  ...DiscussionMessagesListHeader_discussion\n  messages(last: $count, before: $cursor, order: {createdAt: ASC}) {\n    edges {\n      node {\n        id\n        content\n        createdAt\n        isEvent\n        messageEvent\n        attachments {\n          id\n          location\n          name\n          contentLength\n          extension\n        }\n        createdBy {\n          id\n          name\n          avatarUrl\n          profileColor\n        }\n        pinnedBy {\n          id\n          name\n        }\n        parentMessage {\n          id\n          content\n          createdBy {\n            id\n            name\n            avatarUrl\n            profileColor\n          }\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n"
+    "text": "query DiscussionMessagesListPaginationQuery(\n  $count: Int!\n  $cursor: String\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...DiscussionMessagesList_discussion_1G22uz\n    id\n  }\n}\n\nfragment DiscussionMessagesListHeader_discussion on Discussion {\n  name\n  topic\n  description\n}\n\nfragment DiscussionMessagesList_discussion_1G22uz on Discussion {\n  id\n  ...DiscussionMessagesListHeader_discussion\n  messages(last: $count, before: $cursor, order: {createdAt: ASC}) {\n    edges {\n      node {\n        id\n        content\n        createdAt\n        isEvent\n        messageEvent\n        attachments {\n          id\n          location\n          name\n          contentLength\n        }\n        createdBy {\n          id\n          name\n          avatarUrl\n          profileColor\n        }\n        pinnedBy {\n          id\n          name\n        }\n        parentMessage {\n          id\n          content\n          createdBy {\n            id\n            name\n            avatarUrl\n            profileColor\n          }\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "4185b1902d60995a95d6db86bb46c0e8";
+(node as any).hash = "1cc46323cf2f1632831bea4189050e86";
 
 export default node;

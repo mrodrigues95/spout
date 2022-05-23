@@ -15,7 +15,7 @@ export const useBlob = () => {
       const options = { blobHTTPHeaders: { blobContentType: file.type } };
       return await client.uploadData(file, options);
     } catch (e) {
-      console.error(`[Error uploading file]: ${e}`);
+      console.error(`[Error uploading file to container]: ${e}`);
       throw e;
     }
   }, []);

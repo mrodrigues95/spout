@@ -1053,7 +1053,6 @@ type File implements Node {
   id: ID!
   uploadedBy: User!
   contentLength: Long!
-  extension: WhitelistedFileExtension!
   uploadStatus: FileUploadStatus!
   sas: URL!
   signatureEncoded: String!
@@ -1080,7 +1079,6 @@ input FileFilterInput {
   uploadedBy: UserFilterInput
   contentLength: ComparableInt64OperationFilterInput
   mimeType: StringOperationFilterInput
-  fileExtension: WhitelistedFileExtensionOperationFilterInput
   uploadStatus: FileUploadStatusOperationFilterInput
   sas: UriFilterInput
   signatureEncoded: StringOperationFilterInput
@@ -1130,7 +1128,6 @@ input FileSortInput {
   uploadedBy: UserSortInput
   contentLength: SortEnumType
   mimeType: SortEnumType
-  fileExtension: SortEnumType
   uploadStatus: SortEnumType
   sas: UriSortInput
   signatureEncoded: SortEnumType
@@ -1145,6 +1142,10 @@ input FileSortInput {
   createdAt: SortEnumType
   updatedAt: SortEnumType
   deletedAt: SortEnumType
+}
+
+type FileTypeNotAllowedError implements Error {
+  message: String!
 }
 
 enum FileUploadStatus {
@@ -1233,13 +1234,12 @@ type GenerateTwoFactorTokenPayload {
   query: Query!
 }
 
-union GenerateUploadSASError = GenerateSignatureError | ParseSignatureError
+union GenerateUploadSASError = GenerateSignatureError | ParseSignatureError | FileTypeNotAllowedError
 
 input GenerateUploadSASInput {
   fileName: String!
   size: Long!
   mimeType: String
-  fileExtension: WhitelistedFileExtension!
 }
 
 type GenerateUploadSASPayload {
@@ -2339,48 +2339,5 @@ type VerifyTwoFactorTokenPayload {
   authPayload: AuthPayload
   errors: [VerifyTwoFactorTokenError!]
   query: Query!
-}
-
-enum WhitelistedFileExtension {
-  AAC
-  CSV
-  PDF
-  XLS
-  XLSX
-  PPT
-  PPTX
-  BMP
-  GIF
-  JPEG
-  JPG
-  JPE
-  PNG
-  TIFF
-  TIF
-  TXT
-  TEXT
-  RTF
-  DOC
-  DOCX
-  DOT
-  DOTX
-  DWG
-  DWF
-  DXF
-  MP3
-  MP4
-  WAV
-  AVI
-  MOV
-  MPEG
-  WMV
-  ZIP
-}
-
-input WhitelistedFileExtensionOperationFilterInput {
-  eq: WhitelistedFileExtension
-  neq: WhitelistedFileExtension
-  in: [WhitelistedFileExtension!]
-  nin: [WhitelistedFileExtension!]
 }
 

@@ -6,6 +6,6 @@ using Azure.Storage.Sas;
 namespace API.Infrastructure {
     public interface IBlobService {
         Task<Uri?> GetBlobSasUri(string blobName, BlobSasPermissions permissions);
-        Task<BlobClient?> GetBlobClient(string blobName);
+        BlobClient? GetBlobClient(string blobName);
     }
 }

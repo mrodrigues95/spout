@@ -1,8 +1,10 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useReducer } from 'react';
 import { graphql, useMutation } from 'react-relay';
 import { generateId } from '@spout/toolkit';
-import { useFileUpload } from '../../../shared/hooks/files';
-import { useToast } from '../../../shared/components';
+import {
+  FileUploadErrorCode,
+  useFileUpload,
+} from '../../../shared/hooks/files';
 import { useFileUploadQueueMutation } from './__generated__/useFileUploadQueueMutation.graphql';
 
 const mutation = graphql`
@@ -24,137 +26,202 @@ export interface FileWithId extends File {
   id?: string | null;
 }
 
-export interface FileUploadQueue {
-  id: number;
+export interface FileUploadQueueElement {
+  id: number | string;
   file: FileWithId;
   isUploading: boolean;
   isUploaded: boolean;
   isError: boolean;
-  isQueued: boolean;
+  errorCode?: FileUploadErrorCode;
 }
+
+export enum ActionType {
+  InitializeQueue,
+  BeginUpload,
+  CompleteUpload,
+  ResetQueue,
+  ResetErrorFiles,
+  RemoveFile,
+  MarkFileUploadError,
+  MarkFileUploadSuccess,
+}
+
+type Action =
+  | {
+      type: ActionType.InitializeQueue;
+      files: FileUploadQueueElement[];
+    }
+  | { type: ActionType.BeginUpload }
+  | { type: ActionType.CompleteUpload }
+  | { type: ActionType.ResetQueue }
+  | { type: ActionType.ResetErrorFiles }
+  | {
+      type: ActionType.RemoveFile;
+      elementId: FileUploadQueueElement['id'];
+    }
+  | {
+      type: ActionType.MarkFileUploadError;
+      elementId: FileUploadQueueElement['id'];
+      errorCode: FileUploadErrorCode;
+    }
+  | {
+      type: ActionType.MarkFileUploadSuccess;
+      elementId: FileUploadQueueElement['id'];
+      fileId: FileWithId['id'];
+    };
+
+interface State {
+  files: FileUploadQueueElement[];
+  errorFiles: FileUploadQueueElement[];
+  uploadedFiles: FileUploadQueueElement[];
+  isInFlight: boolean;
+}
+
+const initialState: State = {
+  files: [],
+  errorFiles: [],
+  uploadedFiles: [],
+  isInFlight: false,
+};
+
+const reducer = (state: State, action: Action): State => {
+  const { type } = action;
+
+  switch (type) {
+    case ActionType.InitializeQueue:
+      return {
+        ...state,
+        files: [...state.files, ...action.files],
+      };
+    case ActionType.BeginUpload:
+      return {
+        ...state,
+        isInFlight: true,
+      };
+    case ActionType.CompleteUpload:
+      return {
+        ...state,
+        isInFlight: false,
+      };
+    case ActionType.ResetQueue:
+      return {
+        ...initialState,
+      };
+    case ActionType.ResetErrorFiles:
+      return {
+        ...state,
+        errorFiles: [...state.errorFiles.filter((element) => !element.isError)],
+      };
+    case ActionType.RemoveFile:
+      return {
+        ...state,
+        files: [
+          ...state.files.filter((element) => element.id !== action.elementId),
+        ],
+      };
+    case ActionType.MarkFileUploadError: {
+      const element = {
+        ...state.files.find((element) => element.id === action.elementId)!,
+      };
+      element.isUploading = false;
+      element.isUploaded = false;
+      element.isError = true;
+      element.errorCode = action.errorCode;
+
+      return {
+        ...state,
+        files: [
+          ...state.files.filter((element) => element.id !== action.elementId),
+          element,
+        ],
+        errorFiles: [...state.errorFiles, element],
+      };
+    }
+    case ActionType.MarkFileUploadSuccess: {
+      const element = {
+        ...state.files.find((element) => element.id === action.elementId)!,
+      };
+      element.file.id = action.fileId;
+      element.isUploading = false;
+      element.isUploaded = true;
+      element.isError = false;
+
+      return {
+        ...state,
+        files: [
+          ...state.files.filter((element) => element.id !== action.elementId),
+          element,
+        ],
+        uploadedFiles: [...state.uploadedFiles, element],
+      };
+    }
+    default:
+      return state;
+  }
+};
 
 export const useFileUploadQueue = () => {
   const { upload: uploadFile } = useFileUpload();
-  const [isInFlight, setIsInFlight] = useState(false);
-  const [fileUploadQueue, setFileUploadQueue] = useState<FileUploadQueue[]>([]);
-  const { handleError } = useToast();
-
+  const [state, dispatch] = useReducer(reducer, initialState);
   const [deleteFile] = useMutation<useFileUploadQueueMutation>(mutation);
 
   const removeFromQueue = useCallback(
-    (queueId: number, fileId?: FileWithId['id']) => {
-      setFileUploadQueue((prev) => [
-        ...prev.filter((item) => item.id !== queueId),
-      ]);
+    (elementId: FileUploadQueueElement['id'], fileId?: FileWithId['id']) => {
+      dispatch({ type: ActionType.RemoveFile, elementId });
 
       if (fileId) {
         deleteFile({
           variables: { input: { fileId } },
           onError: () => {
-            handleError();
             console.error('Error deleting file for id: ', fileId);
           },
         });
       }
     },
-    [deleteFile, handleError],
+    [deleteFile],
   );
-
-  const resetQueue = useCallback(() => {
-    setFileUploadQueue([]);
-    setIsInFlight(false);
-  }, []);
 
   const upload = useCallback(
     async (files: FileWithId[]) => {
-      const queue: FileUploadQueue[] = [];
+      const queue: FileUploadQueueElement[] = [];
       for (const file of files) {
         queue.push({
           id: generateId(),
           file,
-          isUploading: false,
-          isUploaded: false,
-          isError: false,
-          isQueued: true,
-        });
-      }
-
-      setIsInFlight(true);
-      setFileUploadQueue((prev) => [...prev, ...queue]);
-
-      // TODO: Figure out slow query times while generating SAS's or look into
-      // executing all of these uploads with `Promise.allSettled()`.
-      for (const entry of queue) {
-        // This file has already been handled in a previous transaction, ignore it.
-        if (entry.isUploaded || entry.isError || !entry.isQueued) continue;
-
-        const status: FileUploadQueue = {
-          id: entry.id,
-          file: entry.file,
           isUploading: true,
           isUploaded: false,
           isError: false,
-          isQueued: false,
-        };
-
-        setFileUploadQueue((prev) => [
-          ...prev.filter((item) => item.id !== entry.id),
-          status,
-        ]);
-
-        const { id: fileId } = (await uploadFile(entry.file)) || {};
-
-        // Upload failed.
-        if (!fileId) {
-          setFileUploadQueue((prev) => [
-            ...prev.filter((item) => item.id !== entry.id),
-            {
-              ...status,
-              isUploading: false,
-              isUploaded: false,
-              isError: true,
-            },
-          ]);
-          continue;
-        }
-
-        status.file.id = fileId;
-        setFileUploadQueue((prev) => [
-          ...prev.filter((item) => item.id !== entry.id),
-          {
-            ...status,
-            isUploading: false,
-            isUploaded: true,
-            isError: false,
-          },
-        ]);
+        });
       }
 
-      setIsInFlight(false);
+      dispatch({ type: ActionType.InitializeQueue, files: queue });
+      dispatch({ type: ActionType.BeginUpload });
+
+      Promise.allSettled(
+        queue.map((element) =>
+          uploadFile(element.file).then((uploadResult) => {
+            if (uploadResult.isError) {
+              dispatch({
+                type: ActionType.MarkFileUploadError,
+                elementId: element.id,
+                errorCode: uploadResult.errorCode!,
+              });
+            } else {
+              dispatch({
+                type: ActionType.MarkFileUploadSuccess,
+                elementId: element.id,
+                fileId: uploadResult.file?.id,
+              });
+            }
+          }),
+        ),
+      ).then(() => dispatch({ type: ActionType.CompleteUpload }));
     },
     [uploadFile],
   );
 
-  const uploadedFiles = useMemo(
-    () =>
-      [...fileUploadQueue.filter((queue) => queue.isUploaded)].map(
-        (queue) => queue.file,
-      ),
-    [fileUploadQueue],
+  return useMemo(
+    () => ({ queue: state, dispatch, upload, removeFromQueue }),
+    [removeFromQueue, state, upload],
   );
-
-  const errorFiles = useMemo(
-    () =>
-      [...fileUploadQueue.filter((queue) => queue.isError)].map(
-        (queue) => queue.file,
-      ),
-    [fileUploadQueue],
-  );
-
-  return {
-    upload,
-    resetQueue,
-    removeFromQueue,
-    queue: { isInFlight, files: fileUploadQueue, uploadedFiles, errorFiles },
-  };
 };

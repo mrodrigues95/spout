@@ -5,8 +5,7 @@ namespace API.Schema.Mutations.Files.Inputs {
     public record GenerateUploadSASInput(
         string FileName,
         long Size,
-        string? MimeType,
-        WhitelistedFileExtension FileExtension);
+        string? MimeType);
 
     public class GenerateUploadSASInputValidator : AbstractValidator<GenerateUploadSASInput> {
         public GenerateUploadSASInputValidator() {

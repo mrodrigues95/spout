@@ -153,8 +153,7 @@ namespace API.Extensions {
                 .AddTypeExtension<FileMutations>()
                 .AddDataLoader<FileByIdDataLoader>()
                 .AddType<FileType>()
-                .AddType<FileUploadStatusType>()
-                .AddType<WhitelistedFileExtensionType>();
+                .AddType<FileUploadStatusType>();
 
             return services;
         }

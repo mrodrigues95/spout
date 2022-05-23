@@ -19,9 +19,6 @@ namespace API.Data.Configurations {
                 .HasMaxLength(255)
                 .IsRequired();
 
-            builder.Property(f => f.FileExtension)
-                .IsRequired();
-
             builder.Property(f => f.Sas)
                 .HasColumnType("text")
                 .IsRequired();

@@ -31,22 +31,10 @@ namespace API.Infrastructure {
             return new BlobServiceClient(new Uri(_storageAccountUriString!), credential);
         }
 
-        private async Task<BlobContainerClient> CreateBlobContainerClient(
-            BlobServiceClient serviceClient) {
-            var containerClient = serviceClient.GetBlobContainerClient(_containerName);
-
-            try {
-                await containerClient.CreateIfNotExistsAsync();
-                return containerClient;
-            } catch (Exception) {
-                throw;
-            }
-        }
-
         public async Task<Uri?> GetBlobSasUri(string blobName, BlobSasPermissions permissions) {
             try {
                 var blobServiceClient = CreateBlobServiceClient();
-                var blobContainerClient = await CreateBlobContainerClient(blobServiceClient);
+                var blobContainerClient = blobServiceClient.GetBlobContainerClient(_containerName);
                 var blobClient = blobContainerClient.GetBlobClient(blobName);
                 var userDelegationKey = await blobServiceClient.GetUserDelegationKeyAsync(
                     DateTime.UtcNow.AddMinutes(-15), DateTime.UtcNow.AddMinutes(15));
@@ -73,10 +61,10 @@ namespace API.Infrastructure {
             }
         }
 
-        public async Task<BlobClient?> GetBlobClient(string blobName) {
+        public BlobClient? GetBlobClient(string blobName) {
             try {
                 var blobServiceClient = CreateBlobServiceClient();
-                var blobContainerClient = await CreateBlobContainerClient(blobServiceClient);
+                var blobContainerClient = blobServiceClient.GetBlobContainerClient(_containerName);
                 var blobClient = blobContainerClient.GetBlobClient(blobName);
                 return blobClient;
             } catch (Exception ex) {

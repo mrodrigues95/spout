@@ -55,7 +55,6 @@ namespace API.Data {
             builder.HasPostgresEnum<MessageEvent>();
             builder.HasPostgresEnum<UserProfileColor>();
             builder.HasPostgresEnum<UserPreferredProvider>();
-            builder.HasPostgresEnum<WhitelistedFileExtension>();
             builder.HasPostgresEnum<FileUploadStatus>();
             builder.HasPostgresEnum<ClassroomReminderImportance>();
             builder.HasPostgresEnum<ClassroomTimelineEventItem>();
@@ -67,7 +66,6 @@ namespace API.Data {
             NpgsqlConnection.GlobalTypeMapper.MapEnum<MessageEvent>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<UserProfileColor>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<UserPreferredProvider>();
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<WhitelistedFileExtension>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<FileUploadStatus>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<ClassroomReminderImportance>();
             NpgsqlConnection.GlobalTypeMapper.MapEnum<ClassroomTimelineEventItem>();

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a71898de4267bbb886ab3287f44eaad9>>
+ * @generated SignedSource<<f3a54e2723c14bad2957ec0414b63899>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,6 @@
 import { ReaderFragment, RefetchableFragment } from 'relay-runtime';
 export type MessageEvent = "CHANGE_TOPIC" | "CHANGE_DESCRIPTION" | "PINNED_MESSAGE" | "UNPINNED_MESSAGE" | "%future added value";
 export type UserProfileColor = "SKY" | "PINK" | "GREEN" | "PURPLE" | "ROSE" | "GRAY" | "ORANGE" | "%future added value";
-export type WhitelistedFileExtension = "AAC" | "CSV" | "PDF" | "XLS" | "XLSX" | "PPT" | "PPTX" | "BMP" | "GIF" | "JPEG" | "JPG" | "JPE" | "PNG" | "TIFF" | "TIF" | "TXT" | "TEXT" | "RTF" | "DOC" | "DOCX" | "DOT" | "DOTX" | "DWG" | "DWF" | "DXF" | "MP3" | "MP4" | "WAV" | "AVI" | "MOV" | "MPEG" | "WMV" | "ZIP" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type DiscussionMessagesList_discussion$data = {
   readonly id: string;
@@ -28,7 +27,6 @@ export type DiscussionMessagesList_discussion$data = {
           readonly location: string | null;
           readonly name: string;
           readonly contentLength: any;
-          readonly extension: WhitelistedFileExtension;
         }>;
         readonly createdBy: {
           readonly id: string;
@@ -239,13 +237,6 @@ return {
                       "kind": "ScalarField",
                       "name": "contentLength",
                       "storageKey": null
-                    },
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "extension",
-                      "storageKey": null
                     }
                   ],
                   "storageKey": null
@@ -332,6 +323,6 @@ return {
 };
 })();
 
-(node as any).hash = "4185b1902d60995a95d6db86bb46c0e8";
+(node as any).hash = "1cc46323cf2f1632831bea4189050e86";
 
 export default node;

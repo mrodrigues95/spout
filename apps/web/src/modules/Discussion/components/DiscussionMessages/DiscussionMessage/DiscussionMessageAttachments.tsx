@@ -61,8 +61,7 @@ const DiscussionMessageAttachment = ({
       <div className="min-w-0 flex-1">
         <p className="truncate font-medium">{attachment.name}</p>
         <p className="truncate text-sm text-gray-500">
-          {formatBytesToHumanReadable(attachment.contentLength)} -{' '}
-          {attachment.extension}
+          {formatBytesToHumanReadable(attachment.contentLength)}
         </p>
       </div>
     </li>

@@ -1,8 +1,6 @@
 import { useCallback, useState } from 'react';
 import { graphql, useMutation } from 'react-relay';
-import { getFileExtensionFromFileName } from '@spout/toolkit';
 import { useBlob } from './useBlob';
-import { validateWhitelistedExtension } from '../../utils';
 import {
   useFileUploadGenerateUploadSASMutation,
   useFileUploadGenerateUploadSASMutation$data,
@@ -24,14 +22,19 @@ const GenerateUploadSASMutation = graphql`
           location
           name
           contentLength
-          extension
         }
       }
       errors {
-        ... on GenerateSignatureError {
+        ... on FileTypeNotAllowedError {
+          __typename
           message
         }
         ... on ParseSignatureError {
+          __typename
+          message
+        }
+        ... on GenerateSignatureError {
+          __typename
           message
         }
       }
@@ -47,7 +50,6 @@ const CompleteUploadMutation = graphql`
         location
         name
         contentLength
-        extension
       }
       errors {
         ... on Error {
@@ -57,6 +59,19 @@ const CompleteUploadMutation = graphql`
     }
   }
 `;
+
+export enum FileUploadErrorCode {
+  FileInvalidType = 'file-invalid-type',
+  FileTooSmall = 'file-too-small',
+  FileTooLarge = 'file-too-large',
+  ServerError = 'server-error',
+}
+
+interface FileProcessingResult<T> {
+  data?: T;
+  errorCode?: FileUploadErrorCode;
+  isError: boolean;
+}
 
 export const useFileUpload = () => {
   const [generate] = useMutation<useFileUploadGenerateUploadSASMutation>(
@@ -71,13 +86,10 @@ export const useFileUpload = () => {
 
   const generateUploadSAS = useCallback(
     (file: File) => {
-      const { ext } = getFileExtensionFromFileName(file.name);
-      const whitelistedExt = validateWhitelistedExtension(ext);
-      if (!whitelistedExt) return null;
-
       return new Promise<
-        | useFileUploadGenerateUploadSASMutation$data['generateUploadSAS']['generateSASPayload']
-        | null
+        FileProcessingResult<
+          useFileUploadGenerateUploadSASMutation$data['generateUploadSAS']['generateSASPayload']
+        >
       >((resolve) => {
         generate({
           variables: {
@@ -85,19 +97,36 @@ export const useFileUpload = () => {
               fileName: file.name,
               size: file.size,
               mimeType: file.type,
-              fileExtension: whitelistedExt,
             },
           },
-          onCompleted: (data) => {
-            if (data.generateUploadSAS.errors) resolve(null);
+          onCompleted: ({
+            generateUploadSAS: { generateSASPayload, errors },
+          }) => {
+            if (!errors) {
+              const { sas, file: _file } = generateSASPayload!;
+              return resolve({ data: { sas, file: _file }, isError: false });
+            }
 
-            const { sas, file: _file } =
-              data.generateUploadSAS.generateSASPayload!;
-            resolve({ sas, file: _file });
+            const error = errors[0];
+            switch (error.__typename) {
+              case 'FileTypeNotAllowedError':
+                return resolve({
+                  isError: true,
+                  errorCode: FileUploadErrorCode.FileInvalidType,
+                });
+              default:
+                return resolve({
+                  isError: true,
+                  errorCode: FileUploadErrorCode.ServerError,
+                });
+            }
           },
           onError: (e) => {
             console.error('[Error generating SAS]: ', e);
-            resolve(null);
+            return resolve({
+              isError: true,
+              errorCode: FileUploadErrorCode.ServerError,
+            });
           },
         });
       });
@@ -116,21 +145,34 @@ export const useFileUpload = () => {
     [blob],
   );
 
-  const updateFile = useCallback(
+  const completeFileUpload = useCallback(
     (fileId: string) => {
       return new Promise<
-        | useFileUploadCompleteUploadMutation$data['completeUpload']['file']
-        | null
+        FileProcessingResult<
+          useFileUploadCompleteUploadMutation$data['completeUpload']['file']
+        >
       >((resolve) => {
         completeUpload({
           variables: { input: { fileId } },
           onCompleted: (data) => {
-            if (data.completeUpload.errors) resolve(null);
-            resolve(data.completeUpload.file!);
+            if (data.completeUpload.errors) {
+              return resolve({
+                isError: true,
+                errorCode: FileUploadErrorCode.ServerError,
+              });
+            }
+
+            return resolve({
+              data: { ...data.completeUpload.file! },
+              isError: false,
+            });
           },
           onError: (e) => {
             console.error('[Error updating file]: ', e);
-            resolve(null);
+            return resolve({
+              isError: true,
+              errorCode: FileUploadErrorCode.ServerError,
+            });
           },
         });
       });
@@ -143,30 +185,30 @@ export const useFileUpload = () => {
   // 2. The SAS then needs to be consumed.
   // 3. A third and final request is made to the api in order to
   //    update the file record in the database and mark the upload as complete.
-  // TODO: Can probably improve this drastically with Azure Functions.
   const upload = useCallback(
     async (file: File) => {
       setIsUploading(true);
 
-      const { sas, file: _file } = (await generateUploadSAS(file)) || {};
-      if (!sas || !_file) {
+      const generateSASResult = await generateUploadSAS(file);
+      if (generateSASResult.isError) {
         setIsUploading(false);
-        return null;
+        return {
+          file: null,
+          isError: true,
+          errorCode: generateSASResult.errorCode,
+        };
       }
 
-      await uploadBlob(sas, file);
+      await uploadBlob(generateSASResult.data!.sas, file);
 
-      const updateFileResult = await updateFile(_file.id);
-      if (!updateFileResult) {
-        setIsUploading(false);
-        return null;
-      }
-
+      const { data, isError, errorCode } = await completeFileUpload(
+        generateSASResult.data!.file.id,
+      );
       setIsUploading(false);
-      return updateFileResult;
+      return { file: data, isError, errorCode };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [generateUploadSAS, updateFile],
+    [generateUploadSAS, completeFileUpload],
   );
 
   return { upload, isUploading };

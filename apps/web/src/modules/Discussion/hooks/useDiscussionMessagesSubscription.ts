@@ -21,7 +21,6 @@ const subscription = graphql`
           location
           name
           contentLength
-          extension
         }
         createdBy {
           id
