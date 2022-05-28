@@ -2,7 +2,7 @@ import { graphql, useFragment } from 'react-relay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faUser } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
-import { Text, Title } from '@spout/toolkit';
+import { Text } from '@spout/toolkit';
 import { Avatar } from '../../../../shared/components';
 import { getRandomColor } from '../../../../shared/utils';
 import { Header_classroom$key } from './__generated__/Header_classroom.graphql';
@@ -43,9 +43,9 @@ const Header = ({ ...props }: Props) => {
           )}
           aria-hidden="true"
         />
-        <Title as="h2" variant="h4">
+        <Text weight="semibold" size="lg">
           {classroom.name}
-        </Title>
+        </Text>
       </div>
       <div className="space-x-3">
         <Text as="span">

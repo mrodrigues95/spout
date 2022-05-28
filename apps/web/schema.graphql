@@ -483,8 +483,29 @@ type ClassroomSyllabus {
   content: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  attachments: [File!]!
   classroom: Classroom
   classroomTimelineEvents: [ClassroomTimelineEvent!]!
+}
+
+type ClassroomSyllabusFile {
+  classroomSyllabusId: Int!
+  classroomSyllabus: ClassroomSyllabus
+  fileId: Int!
+  file: File
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input ClassroomSyllabusFileFilterInput {
+  and: [ClassroomSyllabusFileFilterInput!]
+  or: [ClassroomSyllabusFileFilterInput!]
+  classroomSyllabusId: ComparableInt32OperationFilterInput
+  classroomSyllabus: ClassroomSyllabusFilterInput
+  fileId: ComparableInt32OperationFilterInput
+  file: FileFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  updatedAt: ComparableDateTimeOperationFilterInput
 }
 
 input ClassroomSyllabusFilterInput {
@@ -498,6 +519,7 @@ input ClassroomSyllabusFilterInput {
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
   classroomTimelineEvents: ListFilterInputTypeOfClassroomTimelineEventFilterInput
+  files: ListFilterInputTypeOfClassroomSyllabusFileFilterInput
 }
 
 input ClassroomSyllabusSortInput {
@@ -1069,6 +1091,7 @@ type File implements Node {
   mD5: String
   deletedAt: DateTime
   messageFiles: [MessageFile!]!
+  classroomSyllabusFiles: [ClassroomSyllabusFile!]!
 }
 
 input FileFilterInput {
@@ -1094,6 +1117,7 @@ input FileFilterInput {
   updatedAt: ComparableDateTimeOperationFilterInput
   deletedAt: ComparableNullableOfDateTimeOperationFilterInput
   messageFiles: ListFilterInputTypeOfMessageFileFilterInput
+  classroomSyllabusFiles: ListFilterInputTypeOfClassroomSyllabusFileFilterInput
 }
 
 type FileNotFoundError implements Error {
@@ -1315,6 +1339,13 @@ input ListFilterInputTypeOfClassroomReminderFilterInput {
   all: ClassroomReminderFilterInput
   none: ClassroomReminderFilterInput
   some: ClassroomReminderFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfClassroomSyllabusFileFilterInput {
+  all: ClassroomSyllabusFileFilterInput
+  none: ClassroomSyllabusFileFilterInput
+  some: ClassroomSyllabusFileFilterInput
   any: Boolean
 }
 
@@ -1993,6 +2024,7 @@ union UpsertClassroomSyllabusError = ClassroomNotFoundError
 
 input UpsertClassroomSyllabusInput {
   classroomId: ID!
+  fileIds: [ID!]!
   content: String
 }
 

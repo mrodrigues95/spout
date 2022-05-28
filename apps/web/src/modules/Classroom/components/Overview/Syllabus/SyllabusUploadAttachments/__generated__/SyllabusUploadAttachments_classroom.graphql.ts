@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d8c74928d6859ef8322a1edce4bc42b5>>
+ * @generated SignedSource<<93f7b6eaccc2e7cbf330e1ca43c8d3d0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,24 +10,32 @@
 
 import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type SyllabusAttachments_classroom$data = {
+export type SyllabusUploadAttachments_classroom$data = {
+  readonly id: string;
   readonly syllabus: {
     readonly content: string;
   } | null;
-  readonly " $fragmentType": "SyllabusAttachments_classroom";
+  readonly " $fragmentType": "SyllabusUploadAttachments_classroom";
 };
-export type SyllabusAttachments_classroom = SyllabusAttachments_classroom$data;
-export type SyllabusAttachments_classroom$key = {
-  readonly " $data"?: SyllabusAttachments_classroom$data;
-  readonly " $fragmentSpreads": FragmentRefs<"SyllabusAttachments_classroom">;
+export type SyllabusUploadAttachments_classroom = SyllabusUploadAttachments_classroom$data;
+export type SyllabusUploadAttachments_classroom$key = {
+  readonly " $data"?: SyllabusUploadAttachments_classroom$data;
+  readonly " $fragmentSpreads": FragmentRefs<"SyllabusUploadAttachments_classroom">;
 };
 
 const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "SyllabusAttachments_classroom",
+  "name": "SyllabusUploadAttachments_classroom",
   "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "id",
+      "storageKey": null
+    },
     {
       "alias": null,
       "args": null,
@@ -51,6 +59,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "6392ea632a3e05e6ce24846b98fc321f";
+(node as any).hash = "1976fe2115b87067ad816ae08e23e1f9";
 
 export default node;

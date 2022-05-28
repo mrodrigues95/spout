@@ -10,9 +10,8 @@ const Template: Story<FileIconProps> = (args) => <FileIcon {...args} />;
 
 export const Primary = Template.bind({});
 Primary.args = {
-  size: '3x',
   ext: 'other',
 };
 Primary.parameters = {
-  controls: { include: ['ext'] },
+  controls: { include: ['ext', 'size'] },
 };

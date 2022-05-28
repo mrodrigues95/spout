@@ -23,6 +23,7 @@ namespace API.Schema.Mutations.ClassroomSyllabus {
             _logger = logger;
         }
 
+        // TODO: Move this to separate mutations to simplify it (i.e. insert/update/delete mutations).
         [Authorize]
         [Error(typeof(ClassroomNotFoundException))]
         public async Task<Classroom> UpsertClassroomSyllabusAsync(
@@ -31,9 +32,21 @@ namespace API.Schema.Mutations.ClassroomSyllabus {
             UpsertClassroomSyllabusInput input,
             ApplicationDbContext ctx,
             CancellationToken cancellationToken) {
+            // TODO: Figure out how to handle max file limits.
+            // We can validate the limits here but we should also block the user on the front-end
+            // before even getting to this point. Maybe it would be good to add a field on the type
+            // called `isFileLimitExceeded` or something of that nature.
+
+            //if (input.FileIds.Length > 10) {
+            //    throw new FileLimitExceededException(
+            //        "File limit exceeded - cannot upload more than 10 files per classroom syllabus.");
+            //}
+
             var classroom = await ctx.Classrooms
                 .Include(c => c.Syllabus)
-                .SingleOrDefaultAsync(c => c.Id == input.ClassroomId);
+                    .ThenInclude(cs => cs == null ? default! : cs.Files)
+                        .ThenInclude(csf => csf.File)
+                .SingleOrDefaultAsync(c => c.Id == input.ClassroomId, cancellationToken);
             if (classroom is null) throw new ClassroomNotFoundException();
 
             var shouldUpsert = input.Content is not null;
@@ -41,8 +54,16 @@ namespace API.Schema.Mutations.ClassroomSyllabus {
                 if (classroom.Syllabus is null) {
                     classroom.Syllabus = new Entities.ClassroomSyllabus {
                         ClassroomId = classroom.Id,
-                        Content = input.Content
+                        Content = input.Content,
                     };
+
+                    foreach (var fileId in input.FileIds) {
+                        classroom.Syllabus.Files.Add(new ClassroomSyllabusFile {
+                            ClassroomSyllabusId = classroom.Syllabus.Id,
+                            FileId = fileId
+                        });
+                    }
+
                     await ctx.SaveChangesAsync(cancellationToken);
                     await timelineManager.CreateTimelineEvent(
                         classroom,
@@ -53,8 +74,14 @@ namespace API.Schema.Mutations.ClassroomSyllabus {
                             ClassroomSyllabusId = classroom.Syllabus.Id,
                         });
                 } else {
-                    classroom.Syllabus!.Content = input.Content;
-                    classroom.Syllabus!.UpdatedAt = DateTime.UtcNow;
+                    foreach (var fileId in input.FileIds) {
+                        classroom.Syllabus.Files.Add(new ClassroomSyllabusFile {
+                            ClassroomSyllabusId = classroom.Syllabus.Id,
+                            FileId = fileId
+                        });
+                    }
+                    classroom.Syllabus.Content = input.Content;
+                    classroom.Syllabus.UpdatedAt = DateTime.UtcNow;
                     await ctx.SaveChangesAsync(cancellationToken);
                     await timelineManager.CreateTimelineEvent(
                         classroom,
@@ -67,7 +94,14 @@ namespace API.Schema.Mutations.ClassroomSyllabus {
                 }
             } else {
                 if (classroom.Syllabus is not null) {
-                    ctx.ClassroomSyllabus.Remove(classroom.Syllabus!);
+                    foreach (var syllabusFile in classroom.Syllabus.Files) {
+                        syllabusFile.File!.IsDeleted = true;
+                        syllabusFile.File!.Location = null;
+                        syllabusFile.File!.UpdatedAt = DateTime.UtcNow;
+                        syllabusFile.File!.DeletedAt = DateTime.UtcNow;
+                    }
+
+                    ctx.ClassroomSyllabus.Remove(classroom.Syllabus);
                     await ctx.SaveChangesAsync(cancellationToken);
                 } else {
                     _logger.LogError(

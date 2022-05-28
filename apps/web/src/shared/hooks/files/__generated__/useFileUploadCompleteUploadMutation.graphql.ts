@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a39a23f3e1248425ff2ef40c374e58a9>>
+ * @generated SignedSource<<8ed651eb2fc67226054e778b99bd62ca>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,7 +22,7 @@ export type useFileUploadCompleteUploadMutation$data = {
       readonly id: string;
       readonly location: string | null;
       readonly name: string;
-      readonly contentLength: any;
+      readonly contentLength: number;
     } | null;
     readonly errors: ReadonlyArray<{
       readonly message?: string;

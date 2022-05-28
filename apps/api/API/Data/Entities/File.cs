@@ -25,5 +25,6 @@ namespace API.Data.Entities {
         public DateTime? DeletedAt { get; set; }
 
         public ICollection<MessageFile> MessageFiles { get; set; } = new List<MessageFile>();
+        public ICollection<ClassroomSyllabusFile> ClassroomSyllabusFiles { get; set; } = new List<ClassroomSyllabusFile>();
     }
 }

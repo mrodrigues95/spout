@@ -5,7 +5,7 @@ import { useEditor, EditorContent, Extension } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import clsx from 'clsx';
 import { formatNewMessage } from '../../../utils/format';
-import { FileWithId } from '../../../hooks';
+import { FileWithId } from '../../../../../shared/hooks';
 import {
   OptimisticMessagesStore,
   useStore,

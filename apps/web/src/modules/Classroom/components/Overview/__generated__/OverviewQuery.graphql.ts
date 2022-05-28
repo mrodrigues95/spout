@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<982e69324bbab15e02a94b8c5cd1cea6>>
+ * @generated SignedSource<<2f96c1907f5418b944044e6d60a61356>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -54,14 +54,14 @@ v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "name",
+  "name": "id",
   "storageKey": null
 },
 v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "id",
+  "name": "name",
   "storageKey": null
 },
 v5 = [
@@ -146,11 +146,38 @@ return {
                 "kind": "ScalarField",
                 "name": "updatedAt",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "File",
+                "kind": "LinkedField",
+                "name": "attachments",
+                "plural": true,
+                "selections": [
+                  (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "location",
+                    "storageKey": null
+                  },
+                  (v4/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "contentLength",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
               }
             ],
             "storageKey": null
           },
-          (v3/*: any*/),
+          (v4/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -159,7 +186,7 @@ return {
             "name": "createdBy",
             "plural": false,
             "selections": [
-              (v3/*: any*/),
+              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -174,7 +201,7 @@ return {
                 "name": "profileColor",
                 "storageKey": null
               },
-              (v4/*: any*/)
+              (v3/*: any*/)
             ],
             "storageKey": null
           },
@@ -198,19 +225,19 @@ return {
             "selections": (v5/*: any*/),
             "storageKey": null
           },
-          (v4/*: any*/)
+          (v3/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "026b3f3e63b3bab03e8733efac7719fc",
+    "cacheID": "31834e79bf24e5c952010d304fd8f882",
     "id": null,
     "metadata": {},
     "name": "OverviewQuery",
     "operationKind": "query",
-    "text": "query OverviewQuery(\n  $id: ID!\n) {\n  classroomById(id: $id) {\n    syllabus {\n      content\n    }\n    ...Header_classroom\n    ...Syllabus_classroom\n    id\n  }\n}\n\nfragment Header_classroom on Classroom {\n  name\n  createdBy {\n    name\n    avatarUrl\n    profileColor\n    id\n  }\n  discussions {\n    totalCount\n  }\n  users {\n    totalCount\n  }\n}\n\nfragment Syllabus_classroom on Classroom {\n  id\n  name\n  syllabus {\n    content\n    updatedAt\n  }\n  createdBy {\n    name\n    avatarUrl\n    profileColor\n    id\n  }\n}\n"
+    "text": "query OverviewQuery(\n  $id: ID!\n) {\n  classroomById(id: $id) {\n    syllabus {\n      content\n    }\n    ...Header_classroom\n    ...Syllabus_classroom\n    id\n  }\n}\n\nfragment Header_classroom on Classroom {\n  name\n  createdBy {\n    name\n    avatarUrl\n    profileColor\n    id\n  }\n  discussions {\n    totalCount\n  }\n  users {\n    totalCount\n  }\n}\n\nfragment SyllabusAttachment_file on File {\n  id\n  location\n  name\n  contentLength\n}\n\nfragment SyllabusAttachments_classroomSyllabus on ClassroomSyllabus {\n  attachments {\n    id\n    ...SyllabusAttachment_file\n  }\n}\n\nfragment SyllabusUploadAttachments_classroom on Classroom {\n  id\n  syllabus {\n    content\n  }\n}\n\nfragment Syllabus_classroom on Classroom {\n  id\n  name\n  syllabus {\n    content\n    updatedAt\n    ...SyllabusAttachments_classroomSyllabus\n  }\n  createdBy {\n    name\n    avatarUrl\n    profileColor\n    id\n  }\n  ...SyllabusUploadAttachments_classroom\n}\n"
   }
 };
 })();

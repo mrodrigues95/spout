@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4cf160010e31cd1d731adf7092751626>>
+ * @generated SignedSource<<e3a5570519ab6655544f97d116f78a9b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -308,6 +308,7 @@ export type ClassroomSyllabusFilterInput = {
   createdAt?: ComparableDateTimeOperationFilterInput | null;
   updatedAt?: ComparableDateTimeOperationFilterInput | null;
   classroomTimelineEvents?: ListFilterInputTypeOfClassroomTimelineEventFilterInput | null;
+  files?: ListFilterInputTypeOfClassroomSyllabusFileFilterInput | null;
 };
 export type ListFilterInputTypeOfClassroomTimelineEventFilterInput = {
   all?: ClassroomTimelineEventFilterInput | null;
@@ -482,20 +483,21 @@ export type FileFilterInput = {
   updatedAt?: ComparableDateTimeOperationFilterInput | null;
   deletedAt?: ComparableNullableOfDateTimeOperationFilterInput | null;
   messageFiles?: ListFilterInputTypeOfMessageFileFilterInput | null;
+  classroomSyllabusFiles?: ListFilterInputTypeOfClassroomSyllabusFileFilterInput | null;
 };
 export type ComparableInt64OperationFilterInput = {
-  eq?: any | null;
-  neq?: any | null;
-  in?: ReadonlyArray<any> | null;
-  nin?: ReadonlyArray<any> | null;
-  gt?: any | null;
-  ngt?: any | null;
-  gte?: any | null;
-  ngte?: any | null;
-  lt?: any | null;
-  nlt?: any | null;
-  lte?: any | null;
-  nlte?: any | null;
+  eq?: number | null;
+  neq?: number | null;
+  in?: ReadonlyArray<number> | null;
+  nin?: ReadonlyArray<number> | null;
+  gt?: number | null;
+  ngt?: number | null;
+  gte?: number | null;
+  ngte?: number | null;
+  lt?: number | null;
+  nlt?: number | null;
+  lte?: number | null;
+  nlte?: number | null;
 };
 export type FileUploadStatusOperationFilterInput = {
   eq?: FileUploadStatus | null;
@@ -540,6 +542,22 @@ export type ListStringOperationFilterInput = {
   none?: StringOperationFilterInput | null;
   some?: StringOperationFilterInput | null;
   any?: boolean | null;
+};
+export type ListFilterInputTypeOfClassroomSyllabusFileFilterInput = {
+  all?: ClassroomSyllabusFileFilterInput | null;
+  none?: ClassroomSyllabusFileFilterInput | null;
+  some?: ClassroomSyllabusFileFilterInput | null;
+  any?: boolean | null;
+};
+export type ClassroomSyllabusFileFilterInput = {
+  and?: ReadonlyArray<ClassroomSyllabusFileFilterInput> | null;
+  or?: ReadonlyArray<ClassroomSyllabusFileFilterInput> | null;
+  classroomSyllabusId?: ComparableInt32OperationFilterInput | null;
+  classroomSyllabus?: ClassroomSyllabusFilterInput | null;
+  fileId?: ComparableInt32OperationFilterInput | null;
+  file?: FileFilterInput | null;
+  createdAt?: ComparableDateTimeOperationFilterInput | null;
+  updatedAt?: ComparableDateTimeOperationFilterInput | null;
 };
 export type ClassroomAnnouncementFilterInput = {
   and?: ReadonlyArray<ClassroomAnnouncementFilterInput> | null;

@@ -1,4 +1,4 @@
-import { ComponentProps, ReactElement, useRef } from 'react';
+import { ReactElement, useRef } from 'react';
 import { EditorThemeClasses, LexicalEditor } from 'lexical';
 import LexicalComposer from '@lexical/react/LexicalComposer';
 import { HistoryPlugin as LexicalHistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
@@ -19,6 +19,7 @@ import {
   ActionsPluginProps,
   AutoFocusPlugin,
 } from './plugins';
+import { Card, CardProps } from '@spout/toolkit';
 
 const EditorPlaceholder = () => (
   <div className="pointer-events-none absolute top-[3.875rem] left-0 inline-block select-none overflow-hidden whitespace-pre-wrap px-3 font-light text-gray-400 outline-none">
@@ -83,7 +84,7 @@ const theme: EditorThemeClasses = {
 interface Props extends ActionsPluginProps {
   readOnly?: boolean;
   contentEditable?: ReactElement;
-  containerProps?: ComponentProps<'div'>;
+  containerProps?: CardProps<'div'>;
 }
 
 const Editor = ({
@@ -109,14 +110,10 @@ const Editor = ({
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div
+      <Card
         ref={scrollRef}
         className={twMerge(
-          clsx(
-            'relative rounded-lg text-left ring-2 ring-gray-900/5',
-            readOnly ? 'shadow-sm' : 'shadow-md',
-            className,
-          ),
+          clsx('p-0', readOnly ? 'shadow-sm' : 'shadow-md', className),
         )}
         {...containerProps}
       >
@@ -147,7 +144,7 @@ const Editor = ({
             initialStringifiedEditorState={initialStringifiedEditorState}
           />
         )}
-      </div>
+      </Card>
     </LexicalComposer>
   );
 };

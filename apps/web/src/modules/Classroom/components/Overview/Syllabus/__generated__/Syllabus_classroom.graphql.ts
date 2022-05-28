@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b6750f2ccef05597846d5204d0d11319>>
+ * @generated SignedSource<<7b367eec3634a562d66e92ac8abe0883>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,12 +17,14 @@ export type Syllabus_classroom$data = {
   readonly syllabus: {
     readonly content: string;
     readonly updatedAt: string;
+    readonly " $fragmentSpreads": FragmentRefs<"SyllabusAttachments_classroomSyllabus">;
   } | null;
   readonly createdBy: {
     readonly name: string;
     readonly avatarUrl: string | null;
     readonly profileColor: UserProfileColor;
   };
+  readonly " $fragmentSpreads": FragmentRefs<"SyllabusUploadAttachments_classroom">;
   readonly " $fragmentType": "Syllabus_classroom";
 };
 export type Syllabus_classroom = Syllabus_classroom$data;
@@ -74,6 +76,11 @@ return {
           "kind": "ScalarField",
           "name": "updatedAt",
           "storageKey": null
+        },
+        {
+          "args": null,
+          "kind": "FragmentSpread",
+          "name": "SyllabusAttachments_classroomSyllabus"
         }
       ],
       "storageKey": null
@@ -103,6 +110,11 @@ return {
         }
       ],
       "storageKey": null
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "SyllabusUploadAttachments_classroom"
     }
   ],
   "type": "Classroom",
@@ -110,6 +122,6 @@ return {
 };
 })();
 
-(node as any).hash = "f924b8b71da01de99837a937ed1b5a2c";
+(node as any).hash = "66c1181195f86864a354426b248f7e32";
 
 export default node;

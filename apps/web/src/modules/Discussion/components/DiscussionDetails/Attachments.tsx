@@ -55,7 +55,7 @@ const Attachment = ({ index, file }: AttachmentProps) => {
     <div className={clsx('space-y-3 p-2', isOdd ? 'bg-gray-100' : 'bg-white')}>
       <div className="flex grow-0 justify-between space-x-2">
         <div className="inline-flex min-w-0 items-center space-x-2">
-          <FileIcon fileName={data.name} size="2x" />
+          <FileIcon fileName={data.name} />
           <div className="min-w-0">
             <Text
               weight="semibold"

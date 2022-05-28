@@ -30,11 +30,12 @@ namespace API.Data {
         public DbSet<ClassroomAnnouncement> ClassroomAnnouncements { get; set; } = default!;
         public DbSet<ClassroomReminder> ClassroomReminders { get; set; } = default!;
         public DbSet<ClassroomSyllabus> ClassroomSyllabus { get; set; } = default!;
+        public DbSet<ClassroomSyllabusFile> ClassroomSyllabusFiles { get; set; } = default!;
         public DbSet<ClassroomTimelineEvent> ClassroomTimelineEvents { get; set; } = default!;
         public DbSet<Discussion> Discussions { get; set; } = default!;
         public DbSet<Message> Messages { get; set; } = default!;
-        public DbSet<File> Files { get; set; } = default!;
         public DbSet<MessageFile> MessageFiles { get; set; } = default!;
+        public DbSet<File> Files { get; set; } = default!;
         public DbSet<State> States { get; set; } = default!;
         public DbSet<DelLogType> DelLogTypes { get; set; } = default!;
         public DbSet<DelLog> DelLogs { get; set; } = default!;

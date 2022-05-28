@@ -16,6 +16,7 @@ import {
 } from '@spout/toolkit';
 import { useFileUpload } from '../../../../shared/hooks';
 import { Avatar, useToast } from '../../../../shared/components';
+import { MIN_FILE_SIZE, MAX_FILE_SIZE } from '../../../../shared/utils';
 import { ProfilePhoto_user$key } from './__generated__/ProfilePhoto_user.graphql';
 import { ProfilePhotoMutation } from './__generated__/ProfilePhotoMutation.graphql';
 
@@ -80,6 +81,8 @@ const ProfilePhoto = ({ ...props }: Props) => {
         />
         <Dropzone
           accept={['.png', '.jpg', '.jpeg']}
+          minSize={MIN_FILE_SIZE}
+          maxSize={MAX_FILE_SIZE}
           onDropAccepted={onDropAccepted}
           onDropRejected={() => handleError('Invalid file type.')}
           primaryMessage="Select a photo to upload"

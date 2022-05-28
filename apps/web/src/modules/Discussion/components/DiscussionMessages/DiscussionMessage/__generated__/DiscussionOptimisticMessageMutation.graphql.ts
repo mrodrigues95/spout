@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fda66c2d7220bf2fdd2991b40d69eabb>>
+ * @generated SignedSource<<fbce5f6fe1acaf15f5cf8fe78c66258f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -32,7 +32,7 @@ export type DiscussionOptimisticMessageMutation$data = {
         readonly id: string;
         readonly location: string | null;
         readonly name: string;
-        readonly contentLength: any;
+        readonly contentLength: number;
       }>;
       readonly createdBy: {
         readonly id: string;

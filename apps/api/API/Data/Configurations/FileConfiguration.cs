@@ -67,6 +67,10 @@ namespace API.Data.Configurations {
                 .WithOne(mf => mf.File!)
                 .HasForeignKey(mf => mf.FileId);
 
+            builder.HasMany(f => f.ClassroomSyllabusFiles)
+                .WithOne(csf => csf.File!)
+                .HasForeignKey(csf => csf.FileId);
+
             builder.HasOne(f => f.UploadedBy)
                 .WithMany(u => u!.FileUploads)
                 .HasForeignKey(f => f.UploadedById);

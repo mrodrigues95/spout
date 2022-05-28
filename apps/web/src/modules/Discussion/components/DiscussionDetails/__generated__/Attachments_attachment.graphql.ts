@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0713a4e9b036a5a0fe07c8a9b8eefae6>>
+ * @generated SignedSource<<61038210612db4369cabeb9393d80bb8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,7 @@ export type UserProfileColor = "SKY" | "PINK" | "GREEN" | "PURPLE" | "ROSE" | "G
 import { FragmentRefs } from "relay-runtime";
 export type Attachments_attachment$data = {
   readonly name: string;
-  readonly contentLength: any;
+  readonly contentLength: number;
   readonly location: string | null;
   readonly createdAt: string;
   readonly uploadedBy: {

@@ -27,7 +27,7 @@ const DiscussionMessageAttachment = ({
   return (
     <li
       className={clsx(
-        'relative flex max-w-[12rem] select-none rounded-md bg-white p-3',
+        'relative flex max-w-[12rem] select-none items-center rounded-md bg-white p-3',
         isMyMessage ? 'shadow-lg' : 'shadow-sm ring-1 ring-gray-900/10',
       )}
       onMouseEnter={() => setIsActive(true)}
@@ -57,7 +57,10 @@ const DiscussionMessageAttachment = ({
           </Tooltip>
         </div>
       )}
-      <FileIcon fileName={attachment.name} className="mr-2 pt-1.5 text-3xl" />
+      <FileIcon
+        fileName={attachment.name}
+        containerProps={{ className: 'mr-2 pt-1.5' }}
+      />
       <div className="min-w-0 flex-1">
         <p className="truncate font-medium">{attachment.name}</p>
         <p className="truncate text-sm text-gray-500">

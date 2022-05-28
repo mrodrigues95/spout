@@ -6,6 +6,7 @@
   "customScalars": {
     "DateTime": "string",
     "URL": "string",
-    "Short": "number"
+    "Short": "number",
+    "Long": "number"
   }
 }

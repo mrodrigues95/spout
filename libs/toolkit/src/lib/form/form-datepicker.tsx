@@ -39,11 +39,13 @@ export const FormDatePicker = <TFieldValues extends FieldValues = FieldValues>({
   errorMessage,
   ...props
 }: FormDatePickerProps<TFieldValues>) => {
-  const { setError } = useFormContext();
+  const { setError, clearErrors } = useFormContext();
   const {
-    field: { onChange, onBlur, value },
-    formState: { errors },
+    field: { onChange, onBlur, value, ref },
+    formState: { errors, isSubmitted },
   } = useController({ ...controller });
+
+  console.log(isSubmitted);
 
   if (!controller.defaultValue) {
     throw new Error('defaultValue is required!');
@@ -51,17 +53,29 @@ export const FormDatePicker = <TFieldValues extends FieldValues = FieldValues>({
 
   const handleState = useCallback(
     (state: DatePickerState) => {
-      if (state.validationState === 'invalid' && !errors[controller.name]) {
-        setError(controller.name, { type: 'custom', message: errorMessage });
+      if (
+        state.validationState === 'invalid' &&
+        isSubmitted &&
+        !errors[controller.name]
+      ) {
+        setError(
+          controller.name,
+          { type: 'custom', message: errorMessage },
+          { shouldFocus: true },
+        );
+      } else if (state.validationState === 'valid' && errors[controller.name]) {
+        clearErrors(controller.name);
       }
     },
-    [errors, controller.name, setError, errorMessage],
+    [errors, controller.name, setError, isSubmitted, errorMessage, clearErrors],
   );
 
   return (
     <DatePicker
       {...props}
+      ref={ref}
       handleState={handleState}
+      isFormError={!!errors[controller.name]}
       errorMessage={errorMessage}
       value={constructCalendarInstance(value, controller.defaultValue)}
       onChange={onChange}

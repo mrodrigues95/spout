@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4b066196d812d0c8df4027e6434a9c1e>>
+ * @generated SignedSource<<98dcb57e2f6c03674c9d61e80421ad31>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,8 +9,10 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
+import { FragmentRefs } from "relay-runtime";
 export type UpsertClassroomSyllabusInput = {
   classroomId: string;
+  fileIds: ReadonlyArray<string>;
   content?: string | null;
 };
 export type SyllabusMutation$variables = {
@@ -20,11 +22,7 @@ export type SyllabusMutationVariables = SyllabusMutation$variables;
 export type SyllabusMutation$data = {
   readonly upsertClassroomSyllabus: {
     readonly classroom: {
-      readonly id: string;
-      readonly syllabus: {
-        readonly content: string;
-        readonly updatedAt: string;
-      } | null;
+      readonly " $fragmentSpreads": FragmentRefs<"Syllabus_classroom">;
     } | null;
   };
 };
@@ -44,55 +42,52 @@ var v0 = [
 ],
 v1 = [
   {
-    "alias": null,
-    "args": [
-      {
-        "kind": "Variable",
-        "name": "input",
-        "variableName": "input"
-      }
-    ],
-    "concreteType": "UpsertClassroomSyllabusPayload",
-    "kind": "LinkedField",
-    "name": "upsertClassroomSyllabus",
-    "plural": false,
+    "kind": "Variable",
+    "name": "input",
+    "variableName": "input"
+  }
+],
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "name",
+  "storageKey": null
+};
+return {
+  "fragment": {
+    "argumentDefinitions": (v0/*: any*/),
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "SyllabusMutation",
     "selections": [
       {
         "alias": null,
-        "args": null,
-        "concreteType": "Classroom",
+        "args": (v1/*: any*/),
+        "concreteType": "UpsertClassroomSyllabusPayload",
         "kind": "LinkedField",
-        "name": "classroom",
+        "name": "upsertClassroomSyllabus",
         "plural": false,
         "selections": [
           {
             "alias": null,
             "args": null,
-            "kind": "ScalarField",
-            "name": "id",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "ClassroomSyllabus",
+            "concreteType": "Classroom",
             "kind": "LinkedField",
-            "name": "syllabus",
+            "name": "classroom",
             "plural": false,
             "selections": [
               {
-                "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "content",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "updatedAt",
-                "storageKey": null
+                "kind": "FragmentSpread",
+                "name": "Syllabus_classroom"
               }
             ],
             "storageKey": null
@@ -101,16 +96,6 @@ v1 = [
         "storageKey": null
       }
     ],
-    "storageKey": null
-  }
-];
-return {
-  "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
-    "kind": "Fragment",
-    "metadata": null,
-    "name": "SyllabusMutation",
-    "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
   },
@@ -119,19 +104,123 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "SyllabusMutation",
-    "selections": (v1/*: any*/)
+    "selections": [
+      {
+        "alias": null,
+        "args": (v1/*: any*/),
+        "concreteType": "UpsertClassroomSyllabusPayload",
+        "kind": "LinkedField",
+        "name": "upsertClassroomSyllabus",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "Classroom",
+            "kind": "LinkedField",
+            "name": "classroom",
+            "plural": false,
+            "selections": [
+              (v2/*: any*/),
+              (v3/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "ClassroomSyllabus",
+                "kind": "LinkedField",
+                "name": "syllabus",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "content",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "updatedAt",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "File",
+                    "kind": "LinkedField",
+                    "name": "attachments",
+                    "plural": true,
+                    "selections": [
+                      (v2/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "location",
+                        "storageKey": null
+                      },
+                      (v3/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "contentLength",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "User",
+                "kind": "LinkedField",
+                "name": "createdBy",
+                "plural": false,
+                "selections": [
+                  (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "avatarUrl",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "profileColor",
+                    "storageKey": null
+                  },
+                  (v2/*: any*/)
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          }
+        ],
+        "storageKey": null
+      }
+    ]
   },
   "params": {
-    "cacheID": "3ace6ee0458bd2198a0f00be1bb4b0cd",
+    "cacheID": "6eea4485875a48405c5d15a344a49c9f",
     "id": null,
     "metadata": {},
     "name": "SyllabusMutation",
     "operationKind": "mutation",
-    "text": "mutation SyllabusMutation(\n  $input: UpsertClassroomSyllabusInput!\n) {\n  upsertClassroomSyllabus(input: $input) {\n    classroom {\n      id\n      syllabus {\n        content\n        updatedAt\n      }\n    }\n  }\n}\n"
+    "text": "mutation SyllabusMutation(\n  $input: UpsertClassroomSyllabusInput!\n) {\n  upsertClassroomSyllabus(input: $input) {\n    classroom {\n      ...Syllabus_classroom\n      id\n    }\n  }\n}\n\nfragment SyllabusAttachment_file on File {\n  id\n  location\n  name\n  contentLength\n}\n\nfragment SyllabusAttachments_classroomSyllabus on ClassroomSyllabus {\n  attachments {\n    id\n    ...SyllabusAttachment_file\n  }\n}\n\nfragment SyllabusUploadAttachments_classroom on Classroom {\n  id\n  syllabus {\n    content\n  }\n}\n\nfragment Syllabus_classroom on Classroom {\n  id\n  name\n  syllabus {\n    content\n    updatedAt\n    ...SyllabusAttachments_classroomSyllabus\n  }\n  createdBy {\n    name\n    avatarUrl\n    profileColor\n    id\n  }\n  ...SyllabusUploadAttachments_classroom\n}\n"
   }
 };
 })();
 
-(node as any).hash = "65143154d645a352fa359b93add809f4";
+(node as any).hash = "9d75b24510bbd275a0accac246758f41";
 
 export default node;

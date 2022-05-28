@@ -15,6 +15,7 @@ module.exports = {
         DateTime: 'string',
         URL: 'string',
         Short: 'number',
+        Long: 'number',
       },
     },
   },

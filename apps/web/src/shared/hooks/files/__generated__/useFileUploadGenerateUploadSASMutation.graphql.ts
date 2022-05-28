@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9eef2833c6bc78216613e5ae054e7d5b>>
+ * @generated SignedSource<<40f5039d5bc6633c67d5b486a5837e0c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type GenerateUploadSASInput = {
   fileName: string;
-  size: any;
+  size: number;
   mimeType?: string | null;
 };
 export type useFileUploadGenerateUploadSASMutation$variables = {
@@ -26,7 +26,7 @@ export type useFileUploadGenerateUploadSASMutation$data = {
         readonly id: string;
         readonly location: string | null;
         readonly name: string;
-        readonly contentLength: any;
+        readonly contentLength: number;
       };
     } | null;
     readonly errors: ReadonlyArray<{

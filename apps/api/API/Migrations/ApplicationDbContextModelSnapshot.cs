@@ -396,6 +396,37 @@ namespace API.Migrations
                     b.ToTable("classroom_syllabus", (string)null);
                 });
 
+            modelBuilder.Entity("API.Data.Entities.ClassroomSyllabusFile", b =>
+                {
+                    b.Property<int>("ClassroomSyllabusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("classroom_syllabus_id");
+
+                    b.Property<int>("FileId")
+                        .HasColumnType("integer")
+                        .HasColumnName("file_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.HasKey("ClassroomSyllabusId", "FileId")
+                        .HasName("pk_classroom_syllabus_files");
+
+                    b.HasIndex("FileId")
+                        .HasDatabaseName("ix_classroom_syllabus_files_file_id");
+
+                    b.ToTable("classroom_syllabus_files", (string)null);
+                });
+
             modelBuilder.Entity("API.Data.Entities.ClassroomTimelineEvent", b =>
                 {
                     b.Property<int>("Id")
@@ -1537,6 +1568,27 @@ namespace API.Migrations
                     b.Navigation("Classroom");
                 });
 
+            modelBuilder.Entity("API.Data.Entities.ClassroomSyllabusFile", b =>
+                {
+                    b.HasOne("API.Data.Entities.ClassroomSyllabus", "ClassroomSyllabus")
+                        .WithMany("ClassroomSyllabusFiles")
+                        .HasForeignKey("ClassroomSyllabusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_classroom_syllabus_files_classroom_syllabus_classroom_sylla");
+
+                    b.HasOne("API.Data.Entities.File", "File")
+                        .WithMany("ClassroomSyllabusFiles")
+                        .HasForeignKey("FileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_classroom_syllabus_files_files_file_id");
+
+                    b.Navigation("ClassroomSyllabus");
+
+                    b.Navigation("File");
+                });
+
             modelBuilder.Entity("API.Data.Entities.ClassroomTimelineEvent", b =>
                 {
                     b.HasOne("API.Data.Entities.ClassroomAnnouncement", "ClassroomAnnouncement")
@@ -1884,6 +1936,8 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Data.Entities.ClassroomSyllabus", b =>
                 {
+                    b.Navigation("ClassroomSyllabusFiles");
+
                     b.Navigation("ClassroomTimelineEvents");
                 });
 
@@ -1910,6 +1964,8 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Data.Entities.File", b =>
                 {
+                    b.Navigation("ClassroomSyllabusFiles");
+
                     b.Navigation("MessageFiles");
                 });
 

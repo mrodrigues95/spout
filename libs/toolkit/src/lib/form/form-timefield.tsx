@@ -38,8 +38,8 @@ export const FormTimeField = <TFieldValues extends FieldValues = FieldValues>({
 }: FormTimeFieldProps<TFieldValues>) => {
   const { setError, clearErrors } = useFormContext();
   const {
-    field: { onChange, onBlur, value },
-    formState: { errors },
+    field: { onChange, onBlur, value, ref },
+    formState: { errors, isSubmitted },
   } = useController({ ...controller });
 
   if (!controller.defaultValue) {
@@ -48,19 +48,29 @@ export const FormTimeField = <TFieldValues extends FieldValues = FieldValues>({
 
   const handleState = useCallback(
     (state: DateFieldState) => {
-      if (state.validationState === 'invalid' && !errors[controller.name]) {
-        setError(controller.name, { type: 'custom', message: errorMessage });
-      } else {
+      if (
+        state.validationState === 'invalid' &&
+        isSubmitted &&
+        !errors[controller.name]
+      ) {
+        setError(
+          controller.name,
+          { type: 'custom', message: errorMessage },
+          { shouldFocus: true },
+        );
+      } else if (state.validationState === 'valid' && errors[controller.name]) {
         clearErrors(controller.name);
       }
     },
-    [errors, controller.name, setError, clearErrors, errorMessage],
+    [isSubmitted, errors, controller.name, setError, errorMessage, clearErrors],
   );
 
   return (
     <TimeField
       {...props}
+      ref={ref}
       handleState={handleState}
+      isFormError={!!errors[controller.name]}
       errorMessage={errorMessage}
       value={constructTimeInstance(value, controller.defaultValue)}
       onChange={onChange}

@@ -3,15 +3,17 @@ import { graphql, useFragment, useMutation } from 'react-relay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookOpen } from '@fortawesome/free-solid-svg-icons';
 import { Button, Modal, Title, Text } from '@spout/toolkit';
-import { Editor } from '../../Editor';
 import {
   Avatar,
   EmptyFallback,
   useToast,
 } from '../../../../../shared/components';
 import { formatMessageDate } from '../../../../../shared/utils';
+import { Editor } from '../../Editor';
+import SyllabusUploadAttachments from './SyllabusUploadAttachments/SyllabusUploadAttachments';
 import { Syllabus_classroom$key } from './__generated__/Syllabus_classroom.graphql';
 import { SyllabusMutation } from './__generated__/SyllabusMutation.graphql';
+import SyllabusAttachments from './SyllabusAttachments';
 
 const fragment = graphql`
   fragment Syllabus_classroom on Classroom {
@@ -20,12 +22,14 @@ const fragment = graphql`
     syllabus {
       content
       updatedAt
+      ...SyllabusAttachments_classroomSyllabus
     }
     createdBy {
       name
       avatarUrl
       profileColor
     }
+    ...SyllabusUploadAttachments_classroom
   }
 `;
 
@@ -33,11 +37,7 @@ const mutation = graphql`
   mutation SyllabusMutation($input: UpsertClassroomSyllabusInput!) {
     upsertClassroomSyllabus(input: $input) {
       classroom {
-        id
-        syllabus {
-          content
-          updatedAt
-        }
+        ...Syllabus_classroom
       }
     }
   }
@@ -61,6 +61,7 @@ const Syllabus = ({ ...props }: Props) => {
           input: {
             classroomId: classroom.id,
             content,
+            fileIds: [],
           },
         },
         onError: () => {
@@ -77,11 +78,11 @@ const Syllabus = ({ ...props }: Props) => {
   );
 
   return (
-    <article className="flex flex-col space-y-2.5">
+    <article className="flex flex-col space-y-4">
       {!isEditing && classroom.syllabus && (
         <div className="!-mt-1.5 flex items-center justify-between">
           <div>
-            <Title as="h3" variant="h4">
+            <Title as="h2" variant="h4">
               Syllabus
             </Title>
             <Avatar
@@ -105,15 +106,23 @@ const Syllabus = ({ ...props }: Props) => {
         </div>
       )}
       {classroom.syllabus || isEditing ? (
-        <Editor
-          onSave={(state) => upsertSyllabus(state)}
-          onDelete={() => setIsOpen(true)}
-          onCancel={() => setIsEditing(false)}
-          isSaving={isInFlight}
-          readOnly={!isEditing}
-          initialStringifiedEditorState={classroom.syllabus?.content}
-          showDelete={!!classroom.syllabus}
-        />
+        <>
+          <Editor
+            onSave={(state) => upsertSyllabus(state)}
+            onDelete={() => setIsOpen(true)}
+            onCancel={() => setIsEditing(false)}
+            isSaving={isInFlight}
+            readOnly={!isEditing}
+            initialStringifiedEditorState={classroom.syllabus?.content}
+            showDelete={!!classroom.syllabus}
+          />
+          {classroom.syllabus && (
+            <>
+              <SyllabusUploadAttachments classroom={classroom} />
+              <SyllabusAttachments syllabus={classroom.syllabus} />
+            </>
+          )}
+        </>
       ) : (
         <EmptyFallback
           className="mt-8"

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f3a54e2723c14bad2957ec0414b63899>>
+ * @generated SignedSource<<333f9f24d606a8366b70062cda235339>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -26,7 +26,7 @@ export type DiscussionMessagesList_discussion$data = {
           readonly id: string;
           readonly location: string | null;
           readonly name: string;
-          readonly contentLength: any;
+          readonly contentLength: number;
         }>;
         readonly createdBy: {
           readonly id: string;

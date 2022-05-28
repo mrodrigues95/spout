@@ -7,6 +7,7 @@ const STYLES = {
     dark: 'text-gray-900',
     body: 'text-gray-700',
     muted: 'text-gray-500',
+    error: 'text-red-600',
   },
   size: {
     xs: 'text-xs',

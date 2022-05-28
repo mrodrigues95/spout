@@ -1,4 +1,4 @@
-import { ContentEditable, Editor } from '../../Editor';
+import { Editor } from '../../Editor';
 import { useActivityListItem } from '../ActivityListItemProvider';
 import {
   TimelineHeader,
@@ -36,7 +36,6 @@ const TimelineSyllabusUpsertContent = () => {
       <div className="pb-4">
         <Editor
           initialStringifiedEditorState={item.syllabus.content}
-          contentEditable={<ContentEditable className="px-2 py-1" />}
           readOnly
         />
       </div>
