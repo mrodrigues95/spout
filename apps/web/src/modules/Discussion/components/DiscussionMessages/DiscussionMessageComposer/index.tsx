@@ -36,12 +36,12 @@ const selector = (state: OptimisticMessagesStore) => state.add;
 
 interface Props {
   discussion: DiscussionMessageComposer_discussion$key;
-  user: DiscussionMessageComposer_user$key;
+  me: DiscussionMessageComposer_user$key;
 }
 
 const DiscussionMessageComposer = ({ ...props }: Props) => {
   const discussion = useFragment(discussionFragment, props.discussion);
-  const me = useFragment(meFragment, props.user);
+  const me = useFragment(meFragment, props.me);
 
   const add = useStore(selector);
   const [acceptedFiles, setAcceptedFiles] = useState<File[]>([]);

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<150fe1b4b1827441457fa28bef9fc772>>
+ * @generated SignedSource<<45f5864a1ba3e044f69fb3d2cf1c5086>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,6 +16,7 @@ export type DiscussionMessagesList_user$data = {
   readonly name: string;
   readonly avatarUrl: string | null;
   readonly profileColor: UserProfileColor;
+  readonly isClassroomTeacher: boolean;
   readonly " $fragmentType": "DiscussionMessagesList_user";
 };
 export type DiscussionMessagesList_user = DiscussionMessagesList_user$data;
@@ -25,7 +26,13 @@ export type DiscussionMessagesList_user$key = {
 };
 
 const node: ReaderFragment = {
-  "argumentDefinitions": [],
+  "argumentDefinitions": [
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "classroomId"
+    }
+  ],
   "kind": "Fragment",
   "metadata": null,
   "name": "DiscussionMessagesList_user",
@@ -57,12 +64,25 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "profileColor",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "classroomId",
+          "variableName": "classroomId"
+        }
+      ],
+      "kind": "ScalarField",
+      "name": "isClassroomTeacher",
+      "storageKey": null
     }
   ],
   "type": "User",
   "abstractKey": null
 };
 
-(node as any).hash = "dc73b9a130037fd889f7f73a40b55f5b";
+(node as any).hash = "63ccd41245a6e1d45b6b8366ede96e35";
 
 export default node;

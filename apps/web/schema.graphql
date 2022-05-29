@@ -164,7 +164,7 @@ type Classroom implements Node {
   name: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  createdBy: User!
+  teacher: User!
   syllabus: ClassroomSyllabus
   invites: [ClassroomInvite!]!
   announcements(
@@ -252,9 +252,6 @@ type Classroom implements Node {
     where: DiscussionFilterInput
     order: [DiscussionSortInput!]
   ): DiscussionsConnection
-  state: State
-  delLogId: Int
-  delLog: DelLog
   deletedAt: DateTime
 }
 
@@ -314,10 +311,6 @@ input ClassroomFilterInput {
   name: StringOperationFilterInput
   syllabusId: ComparableNullableOfInt32OperationFilterInput
   syllabus: ClassroomSyllabusFilterInput
-  stateId: ComparableInt32OperationFilterInput
-  state: StateFilterInput
-  delLogId: ComparableNullableOfInt32OperationFilterInput
-  delLog: DelLogFilterInput
   deletedAt: ComparableNullableOfDateTimeOperationFilterInput
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
@@ -468,10 +461,6 @@ input ClassroomSortInput {
   name: SortEnumType
   syllabusId: SortEnumType
   syllabus: ClassroomSyllabusSortInput
-  stateId: SortEnumType
-  state: StateSortInput
-  delLogId: SortEnumType
-  delLog: DelLogSortInput
   deletedAt: SortEnumType
   createdAt: SortEnumType
   updatedAt: SortEnumType
@@ -857,57 +846,6 @@ type DeleteFilePayload {
   query: Query!
 }
 
-type DelLog {
-  id: Int!
-  deletedForId: Int!
-  deletedFor: DelLogType
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  deletedClassrooms: [Classroom!]!
-  deletedDiscussions: [Discussion!]!
-  deletedMessages: [Message!]!
-}
-
-input DelLogFilterInput {
-  and: [DelLogFilterInput!]
-  or: [DelLogFilterInput!]
-  id: ComparableInt32OperationFilterInput
-  deletedForId: ComparableInt32OperationFilterInput
-  deletedFor: DelLogTypeFilterInput
-  createdAt: ComparableDateTimeOperationFilterInput
-  updatedAt: ComparableDateTimeOperationFilterInput
-  deletedClassrooms: ListFilterInputTypeOfClassroomFilterInput
-  deletedDiscussions: ListFilterInputTypeOfDiscussionFilterInput
-  deletedMessages: ListFilterInputTypeOfMessageFilterInput
-}
-
-input DelLogSortInput {
-  id: SortEnumType
-  deletedForId: SortEnumType
-  deletedFor: DelLogTypeSortInput
-  createdAt: SortEnumType
-  updatedAt: SortEnumType
-}
-
-type DelLogType {
-  id: Int!
-  type: String!
-  delLogs: [DelLog!]!
-}
-
-input DelLogTypeFilterInput {
-  and: [DelLogTypeFilterInput!]
-  or: [DelLogTypeFilterInput!]
-  id: ComparableInt32OperationFilterInput
-  type: StringOperationFilterInput
-  delLogs: ListFilterInputTypeOfDelLogFilterInput
-}
-
-input DelLogTypeSortInput {
-  id: SortEnumType
-  type: SortEnumType
-}
-
 union DisableTwoFactorError = UserNotFoundError | SessionExpiredError | IncorrectCurrentPasswordError
 
 input DisableTwoFactorInput {
@@ -948,10 +886,7 @@ type Discussion implements Node {
   ): MessagesConnection
   topic: String
   description: String
-  state: State
   deletedAt: DateTime
-  delLogId: Int
-  delLog: DelLog
   classroomTimelineEvents: [ClassroomTimelineEvent!]!
 }
 
@@ -967,11 +902,7 @@ input DiscussionFilterInput {
   classroom: ClassroomFilterInput
   createdById: ComparableInt32OperationFilterInput
   createdBy: UserFilterInput
-  stateId: ComparableInt32OperationFilterInput
-  state: StateFilterInput
   deletedAt: ComparableNullableOfDateTimeOperationFilterInput
-  delLogId: ComparableNullableOfInt32OperationFilterInput
-  delLog: DelLogFilterInput
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
   messages: ListFilterInputTypeOfMessageFilterInput
@@ -1033,11 +964,7 @@ input DiscussionSortInput {
   classroom: ClassroomSortInput
   createdById: SortEnumType
   createdBy: UserSortInput
-  stateId: SortEnumType
-  state: StateSortInput
   deletedAt: SortEnumType
-  delLogId: SortEnumType
-  delLog: DelLogSortInput
   createdAt: SortEnumType
   updatedAt: SortEnumType
 }
@@ -1314,13 +1241,6 @@ input ListFilterInputTypeOfClassroomAnnouncementFilterInput {
   any: Boolean
 }
 
-input ListFilterInputTypeOfClassroomFilterInput {
-  all: ClassroomFilterInput
-  none: ClassroomFilterInput
-  some: ClassroomFilterInput
-  any: Boolean
-}
-
 input ListFilterInputTypeOfClassroomInviteFilterInput {
   all: ClassroomInviteFilterInput
   none: ClassroomInviteFilterInput
@@ -1363,13 +1283,6 @@ input ListFilterInputTypeOfClassroomUserFilterInput {
   any: Boolean
 }
 
-input ListFilterInputTypeOfDelLogFilterInput {
-  all: DelLogFilterInput
-  none: DelLogFilterInput
-  some: DelLogFilterInput
-  any: Boolean
-}
-
 input ListFilterInputTypeOfDiscussionFilterInput {
   all: DiscussionFilterInput
   none: DiscussionFilterInput
@@ -1409,13 +1322,6 @@ input ListFilterInputTypeOfUserEmailChangeFilterInput {
   all: UserEmailChangeFilterInput
   none: UserEmailChangeFilterInput
   some: UserEmailChangeFilterInput
-  any: Boolean
-}
-
-input ListFilterInputTypeOfUserFilterInput {
-  all: UserFilterInput
-  none: UserFilterInput
-  some: UserFilterInput
   any: Boolean
 }
 
@@ -1485,8 +1391,6 @@ type Message implements Node {
   attachments: [File!]!
   triggeredEvents: [Message!]!
   messageEvent: MessageEvent
-  delLogId: Int
-  delLog: DelLog
   pinnedAt: DateTime
   deletedAt: DateTime
 }
@@ -1533,8 +1437,6 @@ input MessageFilterInput {
   parentMessage: MessageFilterInput
   isEvent: BooleanOperationFilterInput
   messageEvent: NullableOfMessageEventOperationFilterInput
-  delLogId: ComparableNullableOfInt32OperationFilterInput
-  delLog: DelLogFilterInput
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
   pinnedAt: ComparableNullableOfDateTimeOperationFilterInput
@@ -1578,8 +1480,6 @@ input MessageSortInput {
   parentMessage: MessageSortInput
   isEvent: SortEnumType
   messageEvent: SortEnumType
-  delLogId: SortEnumType
-  delLog: DelLogSortInput
   createdAt: SortEnumType
   updatedAt: SortEnumType
   pinnedAt: SortEnumType
@@ -1702,12 +1602,10 @@ type Query {
   userById(id: ID!): User!
   sessions(where: SessionFilterInput): [Session!]!
   sessionById(id: ID!): Session!
-  classrooms: [Classroom!]!
-  classroomById(id: ID!): Classroom!
-  classroomsById(ids: [ID!]!): [Classroom!]!
+  classroomsAsync: [Classroom!]!
+  classroomById(id: ID!): Classroom
   discussions: [Discussion!]!
-  discussionById(id: ID!): Discussion!
-  discussionsById(ids: [ID!]!): [Discussion!]!
+  discussionById(id: ID!): Discussion
   files(
     """Returns the first _n_ elements from the list."""
     first: Int
@@ -1861,35 +1759,6 @@ type SMSNotSentError implements Error {
 enum SortEnumType {
   ASC
   DESC
-}
-
-type State {
-  id: Int!
-  status: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  users: [User!]!
-  classrooms: [Classroom!]!
-  discussions: [Discussion!]!
-}
-
-input StateFilterInput {
-  and: [StateFilterInput!]
-  or: [StateFilterInput!]
-  id: ComparableInt32OperationFilterInput
-  status: StringOperationFilterInput
-  createdAt: ComparableDateTimeOperationFilterInput
-  updatedAt: ComparableDateTimeOperationFilterInput
-  users: ListFilterInputTypeOfUserFilterInput
-  classrooms: ListFilterInputTypeOfClassroomFilterInput
-  discussions: ListFilterInputTypeOfDiscussionFilterInput
-}
-
-input StateSortInput {
-  id: SortEnumType
-  status: SortEnumType
-  createdAt: SortEnumType
-  updatedAt: SortEnumType
 }
 
 input StringOperationFilterInput {
@@ -2112,11 +1981,11 @@ type User implements Node {
   emailConfirmed: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
+  isClassroomTeacher(classroomId: ID!): Boolean!
   classrooms: [Classroom!]!
   sessions: [Session!]!
   bio: String
   avatarUrl: String
-  state: State
   twoFactorEnabledAt: DateTime
   emailChanges: [UserEmailChange!]!
   passwordResets: [UserPasswordReset!]!
@@ -2177,8 +2046,6 @@ input UserFilterInput {
   profileColor: UserProfileColorOperationFilterInput
   preferredProvider: NullableOfUserPreferredProviderOperationFilterInput
   avatarUrl: StringOperationFilterInput
-  stateId: ComparableInt32OperationFilterInput
-  state: StateFilterInput
   twoFactorEnabledAt: ComparableNullableOfDateTimeOperationFilterInput
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
@@ -2314,8 +2181,6 @@ input UserSortInput {
   profileColor: SortEnumType
   preferredProvider: SortEnumType
   avatarUrl: SortEnumType
-  stateId: SortEnumType
-  state: StateSortInput
   twoFactorEnabledAt: SortEnumType
   createdAt: SortEnumType
   updatedAt: SortEnumType

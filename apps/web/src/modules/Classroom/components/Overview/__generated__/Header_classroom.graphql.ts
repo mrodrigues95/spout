@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a489b2b24283ebc16a671ac61f9c93c5>>
+ * @generated SignedSource<<7be6f3e7a18935886857c9a827bd36ac>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,7 @@ export type UserProfileColor = "SKY" | "PINK" | "GREEN" | "PURPLE" | "ROSE" | "G
 import { FragmentRefs } from "relay-runtime";
 export type Header_classroom$data = {
   readonly name: string;
-  readonly createdBy: {
+  readonly teacher: {
     readonly name: string;
     readonly avatarUrl: string | null;
     readonly profileColor: UserProfileColor;
@@ -61,7 +61,7 @@ return {
       "args": null,
       "concreteType": "User",
       "kind": "LinkedField",
-      "name": "createdBy",
+      "name": "teacher",
       "plural": false,
       "selections": [
         (v0/*: any*/),
@@ -108,6 +108,6 @@ return {
 };
 })();
 
-(node as any).hash = "33efa2ceadb06dcea4ddef2d3402ace8";
+(node as any).hash = "5e304bb209ca72eef45609fff0ff646f";
 
 export default node;

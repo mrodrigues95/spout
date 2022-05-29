@@ -10,12 +10,13 @@ import {
 } from '../../../../../shared/components';
 import { formatMessageDate } from '../../../../../shared/utils';
 import { Editor } from '../../Editor';
-import SyllabusUploadAttachments from './SyllabusUploadAttachments/SyllabusUploadAttachments';
+import { SyllabusUploadAttachments } from './SyllabusUploadAttachments';
+import { SyllabusAttachments } from './SyllabusAttachments';
 import { Syllabus_classroom$key } from './__generated__/Syllabus_classroom.graphql';
 import { SyllabusMutation } from './__generated__/SyllabusMutation.graphql';
-import SyllabusAttachments from './SyllabusAttachments';
+import { Syllabus_user$key } from './__generated__/Syllabus_user.graphql';
 
-const fragment = graphql`
+const syllabusFragment = graphql`
   fragment Syllabus_classroom on Classroom {
     id
     name
@@ -24,12 +25,19 @@ const fragment = graphql`
       updatedAt
       ...SyllabusAttachments_classroomSyllabus
     }
-    createdBy {
+    teacher {
       name
       avatarUrl
       profileColor
     }
     ...SyllabusUploadAttachments_classroom
+  }
+`;
+
+const meFragment = graphql`
+  fragment Syllabus_user on User
+  @argumentDefinitions(classroomId: { type: "ID!" }) {
+    isClassroomTeacher(classroomId: $classroomId)
   }
 `;
 
@@ -45,10 +53,12 @@ const mutation = graphql`
 
 interface Props {
   classroom: Syllabus_classroom$key;
+  me: Syllabus_user$key;
 }
 
 const Syllabus = ({ ...props }: Props) => {
-  const classroom = useFragment(fragment, props.classroom);
+  const classroom = useFragment(syllabusFragment, props.classroom);
+  const me = useFragment(meFragment, props.me);
   const [isEditing, setIsEditing] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [commit, isInFlight] = useMutation<SyllabusMutation>(mutation);
@@ -86,9 +96,9 @@ const Syllabus = ({ ...props }: Props) => {
               Syllabus
             </Title>
             <Avatar
-              src={classroom.createdBy.avatarUrl}
-              name={classroom.createdBy.name}
-              profileColor={classroom.createdBy.profileColor}
+              src={classroom.teacher.avatarUrl}
+              name={classroom.teacher.name}
+              profileColor={classroom.teacher.profileColor}
               containerProps={{ className: 'shadow-sm mr-1.5' }}
               size="sm"
             />
@@ -96,13 +106,15 @@ const Syllabus = ({ ...props }: Props) => {
               {formatMessageDate(classroom.syllabus.updatedAt!)}
             </Text>
           </div>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => setIsEditing(true)}
-          >
-            Edit
-          </Button>
+          {me.isClassroomTeacher && (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setIsEditing(true)}
+            >
+              Edit
+            </Button>
+          )}
         </div>
       )}
       {classroom.syllabus || isEditing ? (
@@ -118,7 +130,9 @@ const Syllabus = ({ ...props }: Props) => {
           />
           {classroom.syllabus && (
             <>
-              <SyllabusUploadAttachments classroom={classroom} />
+              {me.isClassroomTeacher && (
+                <SyllabusUploadAttachments classroom={classroom} />
+              )}
               <SyllabusAttachments syllabus={classroom.syllabus} />
             </>
           )}
@@ -134,9 +148,15 @@ const Syllabus = ({ ...props }: Props) => {
             />
           }
           heading="No syllabus, yet"
-          body="Adding a syllabus helps inform students on course expectations."
+          body={
+            me.isClassroomTeacher
+              ? 'Adding a syllabus helps inform students on course expectations.'
+              : 'Check back again later'
+          }
         >
-          <Button onClick={() => setIsEditing(true)}>Add a syllabus</Button>
+          {me.isClassroomTeacher && (
+            <Button onClick={() => setIsEditing(true)}>Add a syllabus</Button>
+          )}
         </EmptyFallback>
       )}
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>

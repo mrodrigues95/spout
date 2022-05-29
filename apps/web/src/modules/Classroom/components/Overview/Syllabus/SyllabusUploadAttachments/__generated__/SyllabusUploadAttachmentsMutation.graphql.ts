@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7b019b391bbf7e9559a0ef7e64d9d64c>>
+ * @generated SignedSource<<ccb79c0dfc311daccfb5be80408a8e8d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -180,7 +180,7 @@ return {
                 "args": null,
                 "concreteType": "User",
                 "kind": "LinkedField",
-                "name": "createdBy",
+                "name": "teacher",
                 "plural": false,
                 "selections": [
                   (v3/*: any*/),
@@ -211,12 +211,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "ac81725df0678927c0bf747cb1a0862b",
+    "cacheID": "c1cbcd3daf5d34a8987fa05a9215e7f6",
     "id": null,
     "metadata": {},
     "name": "SyllabusUploadAttachmentsMutation",
     "operationKind": "mutation",
-    "text": "mutation SyllabusUploadAttachmentsMutation(\n  $input: UpsertClassroomSyllabusInput!\n) {\n  upsertClassroomSyllabus(input: $input) {\n    classroom {\n      ...Syllabus_classroom\n      id\n    }\n  }\n}\n\nfragment SyllabusAttachment_file on File {\n  id\n  location\n  name\n  contentLength\n}\n\nfragment SyllabusAttachments_classroomSyllabus on ClassroomSyllabus {\n  attachments {\n    id\n    ...SyllabusAttachment_file\n  }\n}\n\nfragment SyllabusUploadAttachments_classroom on Classroom {\n  id\n  syllabus {\n    content\n  }\n}\n\nfragment Syllabus_classroom on Classroom {\n  id\n  name\n  syllabus {\n    content\n    updatedAt\n    ...SyllabusAttachments_classroomSyllabus\n  }\n  createdBy {\n    name\n    avatarUrl\n    profileColor\n    id\n  }\n  ...SyllabusUploadAttachments_classroom\n}\n"
+    "text": "mutation SyllabusUploadAttachmentsMutation(\n  $input: UpsertClassroomSyllabusInput!\n) {\n  upsertClassroomSyllabus(input: $input) {\n    classroom {\n      ...Syllabus_classroom\n      id\n    }\n  }\n}\n\nfragment SyllabusAttachment_file on File {\n  id\n  location\n  name\n  contentLength\n}\n\nfragment SyllabusAttachments_classroomSyllabus on ClassroomSyllabus {\n  attachments {\n    id\n    ...SyllabusAttachment_file\n  }\n}\n\nfragment SyllabusUploadAttachments_classroom on Classroom {\n  id\n  syllabus {\n    content\n  }\n}\n\nfragment Syllabus_classroom on Classroom {\n  id\n  name\n  syllabus {\n    content\n    updatedAt\n    ...SyllabusAttachments_classroomSyllabus\n  }\n  teacher {\n    name\n    avatarUrl\n    profileColor\n    id\n  }\n  ...SyllabusUploadAttachments_classroom\n}\n"
   }
 };
 })();

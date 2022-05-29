@@ -75,6 +75,8 @@ const MenuActions = () => {
               >
                 Invite
               </Menu.Item>
+            </Menu.Group>
+            <Menu.Group>
               <Menu.Item
                 onClick={() =>
                   dispatch({ type: ActionType.DeleteClassroom, isOpen: true })

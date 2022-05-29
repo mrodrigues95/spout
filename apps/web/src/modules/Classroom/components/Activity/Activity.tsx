@@ -3,8 +3,9 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useRouter } from 'next/router';
 import { Spinner } from '@spout/toolkit';
 import { ErrorBoundary, ErrorFallback } from '../../../../shared/components';
-import { ActivityQuery } from './__generated__/ActivityQuery.graphql';
 import ActivityList from './ActivityList';
+import ForbiddenOrNotFoundClassroom from '../ForbiddenOrNotFoundClassroom';
+import { ActivityQuery } from './__generated__/ActivityQuery.graphql';
 
 const query = graphql`
   query ActivityQuery($id: ID!) {
@@ -27,6 +28,10 @@ const Activity = ({ fetchKey }: Props) => {
     },
     { fetchKey, fetchPolicy: 'store-and-network' },
   );
+
+  if (!data.classroomById) {
+    return <ForbiddenOrNotFoundClassroom />;
+  }
 
   return <ActivityList classroom={data.classroomById} />;
 };

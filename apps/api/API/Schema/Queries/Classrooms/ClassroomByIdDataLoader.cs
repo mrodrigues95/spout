@@ -28,8 +28,8 @@ namespace API.Schema.Queries.Classrooms {
                 _dbContextFactory.CreateDbContext();
 
             return await dbContext.Classrooms
-                .Where(s => keys.Contains(s.Id))
-                .ToDictionaryAsync(t => t.Id, cancellationToken);
+                .Where(x => keys.Contains(x.Id))
+                .ToDictionaryAsync(x => x.Id, cancellationToken);
         }
     }
 }

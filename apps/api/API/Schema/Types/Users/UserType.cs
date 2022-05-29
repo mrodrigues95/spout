@@ -12,6 +12,7 @@ using API.Schema.Types.Sessions;
 using HotChocolate;
 using HotChocolate.Data.Filters;
 using HotChocolate.Types;
+using HotChocolate.Types.Relay;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Schema.Types.Users {
@@ -52,11 +53,6 @@ namespace API.Schema.Types.Users {
             descriptor
                 .Field(u => u.Guid)
                 .Type<NonNullType<UuidType>>();
-
-            descriptor
-                .Field(u => u.StateId)
-                .Type<NonNullType<IntType>>()
-                .Ignore();
 
             descriptor
                 .Field(u => u.Name)
@@ -102,6 +98,14 @@ namespace API.Schema.Types.Users {
                 .Ignore();
 
             descriptor
+                .Field("isClassroomTeacher")
+                .Type<NonNullType<BooleanType>>()
+                .Argument("classroomId", a => a.ID().Type<NonNullType<BooleanType>>())
+                .ResolveWith<UserResolvers>(x =>
+                    x.GetIsClassroomTeacherByIdAsync(default!, default!, default!, default!))
+                .UseDbContext<ApplicationDbContext>();
+
+            descriptor
                 .Field(x => x.Classrooms)
                 .Type<NonNullType<ListType<NonNullType<ClassroomType>>>>()
                 .ResolveWith<UserResolvers>(x =>
@@ -145,6 +149,20 @@ namespace API.Schema.Types.Users {
                     .ToArrayAsync();
 
                 return await sessionById.LoadAsync(sessionIds, cancellationToken);
+            }
+
+            public async Task<bool> GetIsClassroomTeacherByIdAsync(
+                [Parent] User user,
+                [ID(nameof(Classroom))] int classroomId,
+                ApplicationDbContext dbContext,
+                CancellationToken cancellationToken) {
+                var teacher = await dbContext.ClassroomUsers
+                    .Where(x =>
+                        x.ClassroomId == classroomId &&
+                        x.UserId == user.Id &&
+                        x.IsCreator)
+                    .SingleOrDefaultAsync(cancellationToken);
+                return teacher is not null;
             }
         }
     }

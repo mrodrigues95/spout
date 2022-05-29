@@ -10,9 +10,6 @@ namespace API.Data.Configurations {
             builder.Property(u => u.Guid)
                 .IsRequired();
 
-            builder.Property(u => u.StateId)
-                .IsRequired();
-
             builder.Property(u => u.Name)
                 .HasMaxLength(70)
                 .IsRequired();
@@ -89,10 +86,6 @@ namespace API.Data.Configurations {
             builder.HasMany(u => u.FileUploads)
                 .WithOne(f => f.UploadedBy!)
                 .HasForeignKey(f => f.UploadedById);
-
-            builder.HasOne(u => u.State)
-                .WithMany(s => s!.Users)
-                .HasForeignKey(u => u.StateId);
         }
     }
 }

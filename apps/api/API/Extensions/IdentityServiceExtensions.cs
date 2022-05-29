@@ -29,6 +29,7 @@ namespace API.Extensions {
                 opts.Tokens.EmailConfirmationTokenProvider = "CustomEmailConfirmationTokenProvider";
                 opts.Tokens.PasswordResetTokenProvider = "CustomPasswordResetTokenProvider";
             })
+            .AddRoles<IdentityRole<int>>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders()
             .AddTokenProvider<CustomChangeEmailTokenProvider<User>>("CustomChangeEmailTokenProvider")

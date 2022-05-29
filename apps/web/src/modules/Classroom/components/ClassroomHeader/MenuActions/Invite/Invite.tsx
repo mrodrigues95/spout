@@ -71,7 +71,7 @@ const InviteModal = ({ fetchKey, close }: InviteModalProps) => {
       commit({
         variables: {
           input: {
-            classroomId: classroomById.id,
+            classroomId: classroomById!.id,
             maxAge,
             maxUses,
           },
@@ -83,10 +83,12 @@ const InviteModal = ({ fetchKey, close }: InviteModalProps) => {
             .getRootField('createClassroomInvite')
             .getLinkedRecord('classroomInvite');
 
-          const classroomRecord = store.get(classroomById.id);
+          const classroomRecord = store.get(classroomById!.id);
           if (!classroomRecord) {
             throw new Error(
-              `Unable to get classroom record for classroomId: ${classroomById.id}`,
+              `Unable to get classroom record for classroomId: ${
+                classroomById!.id
+              }`,
             );
           }
 
@@ -95,13 +97,13 @@ const InviteModal = ({ fetchKey, close }: InviteModalProps) => {
         },
       });
     },
-    [classroomById.id, commit, form, handleError],
+    [classroomById, commit, form, handleError],
   );
 
   useEffect(() => {
     // Create invite right away if none exist.
-    if (!classroomById.invites.length) createInvite();
-  }, [classroomById.invites.length, createInvite]);
+    if (!classroomById!.invites.length) createInvite();
+  }, [classroomById, createInvite]);
 
   const onSubmit = useCallback(
     ({ maxAge, maxUses }: z.infer<typeof inviteSchema>) =>
@@ -112,12 +114,12 @@ const InviteModal = ({ fetchKey, close }: InviteModalProps) => {
   return (
     <>
       <Modal.Header
-        title={`Invite students to ${classroomById.name}`}
+        title={`Invite students to ${classroomById!.name}`}
         description="Add students to your classroom by sharing the invite code below."
       />
       <Form form={form} onSubmit={onSubmit}>
         <Modal.Body>
-          <CopyInvite invite={classroomById.invites[0]} />
+          <CopyInvite invite={classroomById!.invites[0]} />
           <InviteSettings control={form.control} />
         </Modal.Body>
         <Modal.Footer>

@@ -17,7 +17,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220522204255_Initial")]
+    [Migration("20220529174904_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,10 +50,6 @@ namespace API.Migrations
                         .HasColumnName("created_at")
                         .HasDefaultValueSql("now()");
 
-                    b.Property<int?>("DelLogId")
-                        .HasColumnType("integer")
-                        .HasColumnName("del_log_id");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
@@ -68,10 +64,6 @@ namespace API.Migrations
                         .HasColumnType("character varying(64)")
                         .HasColumnName("name");
 
-                    b.Property<int>("StateId")
-                        .HasColumnType("integer")
-                        .HasColumnName("state_id");
-
                     b.Property<int?>("SyllabusId")
                         .HasColumnType("integer")
                         .HasColumnName("syllabus_id");
@@ -84,12 +76,6 @@ namespace API.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_classrooms");
-
-                    b.HasIndex("DelLogId")
-                        .HasDatabaseName("ix_classrooms_del_log_id");
-
-                    b.HasIndex("StateId")
-                        .HasDatabaseName("ix_classrooms_state_id");
 
                     b.ToTable("classrooms", (string)null);
                 });
@@ -398,6 +384,37 @@ namespace API.Migrations
                     b.ToTable("classroom_syllabus", (string)null);
                 });
 
+            modelBuilder.Entity("API.Data.Entities.ClassroomSyllabusFile", b =>
+                {
+                    b.Property<int>("ClassroomSyllabusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("classroom_syllabus_id");
+
+                    b.Property<int>("FileId")
+                        .HasColumnType("integer")
+                        .HasColumnName("file_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.HasKey("ClassroomSyllabusId", "FileId")
+                        .HasName("pk_classroom_syllabus_files");
+
+                    b.HasIndex("FileId")
+                        .HasDatabaseName("ix_classroom_syllabus_files_file_id");
+
+                    b.ToTable("classroom_syllabus_files", (string)null);
+                });
+
             modelBuilder.Entity("API.Data.Entities.ClassroomTimelineEvent", b =>
                 {
                     b.Property<int>("Id")
@@ -485,7 +502,7 @@ namespace API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("classroom_id");
 
-                    b.Property<bool?>("IsCreator")
+                    b.Property<bool>("IsCreator")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(false)
@@ -515,61 +532,6 @@ namespace API.Migrations
                     b.ToTable("classroom_users", (string)null);
                 });
 
-            modelBuilder.Entity("API.Data.Entities.DelLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<int>("DeletedForId")
-                        .HasColumnType("integer")
-                        .HasColumnName("deleted_for_id");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("now()");
-
-                    b.HasKey("Id")
-                        .HasName("pk_del_logs");
-
-                    b.HasIndex("DeletedForId")
-                        .HasDatabaseName("ix_del_logs_deleted_for_id");
-
-                    b.ToTable("del_logs", (string)null);
-                });
-
-            modelBuilder.Entity("API.Data.Entities.DelLogType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(35)
-                        .HasColumnType("character varying(35)")
-                        .HasColumnName("type");
-
-                    b.HasKey("Id")
-                        .HasName("pk_del_log_types");
-
-                    b.ToTable("del_log_types", (string)null);
-                });
-
             modelBuilder.Entity("API.Data.Entities.Discussion", b =>
                 {
                     b.Property<int>("Id")
@@ -593,10 +555,6 @@ namespace API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("created_by_id");
 
-                    b.Property<int?>("DelLogId")
-                        .HasColumnType("integer")
-                        .HasColumnName("del_log_id");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
@@ -616,10 +574,6 @@ namespace API.Migrations
                         .HasColumnType("character varying(64)")
                         .HasColumnName("name");
 
-                    b.Property<int>("StateId")
-                        .HasColumnType("integer")
-                        .HasColumnName("state_id");
-
                     b.Property<string>("Topic")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)")
@@ -636,12 +590,6 @@ namespace API.Migrations
 
                     b.HasIndex("ClassroomId")
                         .HasDatabaseName("ix_discussions_classroom_id");
-
-                    b.HasIndex("DelLogId")
-                        .HasDatabaseName("ix_discussions_del_log_id");
-
-                    b.HasIndex("StateId")
-                        .HasDatabaseName("ix_discussions_state_id");
 
                     b.HasIndex("CreatedById", "ClassroomId")
                         .HasDatabaseName("ix_discussions_created_by_id_classroom_id");
@@ -785,10 +733,6 @@ namespace API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("created_by_id");
 
-                    b.Property<int?>("DelLogId")
-                        .HasColumnType("integer")
-                        .HasColumnName("del_log_id");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
@@ -827,9 +771,6 @@ namespace API.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_messages");
-
-                    b.HasIndex("DelLogId")
-                        .HasDatabaseName("ix_messages_del_log_id");
 
                     b.HasIndex("DiscussionId")
                         .HasDatabaseName("ix_messages_discussion_id");
@@ -919,39 +860,6 @@ namespace API.Migrations
                         .HasDatabaseName("ix_sessions_user_id");
 
                     b.ToTable("sessions", (string)null);
-                });
-
-            modelBuilder.Entity("API.Data.Entities.State", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(35)
-                        .HasColumnType("character varying(35)")
-                        .HasColumnName("status");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("now()");
-
-                    b.HasKey("Id")
-                        .HasName("pk_states");
-
-                    b.ToTable("states", (string)null);
                 });
 
             modelBuilder.Entity("API.Data.Entities.User", b =>
@@ -1050,10 +958,6 @@ namespace API.Migrations
                         .HasColumnType("text")
                         .HasColumnName("security_stamp");
 
-                    b.Property<int>("StateId")
-                        .HasColumnType("integer")
-                        .HasColumnName("state_id");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean")
                         .HasColumnName("two_factor_enabled");
@@ -1082,9 +986,6 @@ namespace API.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
-
-                    b.HasIndex("StateId")
-                        .HasDatabaseName("ix_users_state_id");
 
                     b.ToTable("users", (string)null);
                 });
@@ -1424,25 +1325,6 @@ namespace API.Migrations
                     b.ToTable("users_tokens", (string)null);
                 });
 
-            modelBuilder.Entity("API.Data.Entities.Classroom", b =>
-                {
-                    b.HasOne("API.Data.Entities.DelLog", "DelLog")
-                        .WithMany("DeletedClassrooms")
-                        .HasForeignKey("DelLogId")
-                        .HasConstraintName("fk_classrooms_del_logs_del_log_id");
-
-                    b.HasOne("API.Data.Entities.State", "State")
-                        .WithMany("Classrooms")
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_classrooms_states_state_id");
-
-                    b.Navigation("DelLog");
-
-                    b.Navigation("State");
-                });
-
             modelBuilder.Entity("API.Data.Entities.ClassroomAnnouncement", b =>
                 {
                     b.HasOne("API.Data.Entities.Classroom", "Classroom")
@@ -1539,6 +1421,27 @@ namespace API.Migrations
                     b.Navigation("Classroom");
                 });
 
+            modelBuilder.Entity("API.Data.Entities.ClassroomSyllabusFile", b =>
+                {
+                    b.HasOne("API.Data.Entities.ClassroomSyllabus", "ClassroomSyllabus")
+                        .WithMany("Files")
+                        .HasForeignKey("ClassroomSyllabusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_classroom_syllabus_files_classroom_syllabus_classroom_sylla");
+
+                    b.HasOne("API.Data.Entities.File", "File")
+                        .WithMany("ClassroomSyllabusFiles")
+                        .HasForeignKey("FileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_classroom_syllabus_files_files_file_id");
+
+                    b.Navigation("ClassroomSyllabus");
+
+                    b.Navigation("File");
+                });
+
             modelBuilder.Entity("API.Data.Entities.ClassroomTimelineEvent", b =>
                 {
                     b.HasOne("API.Data.Entities.ClassroomAnnouncement", "ClassroomAnnouncement")
@@ -1610,18 +1513,6 @@ namespace API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("API.Data.Entities.DelLog", b =>
-                {
-                    b.HasOne("API.Data.Entities.DelLogType", "DeletedFor")
-                        .WithMany("DelLogs")
-                        .HasForeignKey("DeletedForId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_del_logs_del_log_types_deleted_for_id");
-
-                    b.Navigation("DeletedFor");
-                });
-
             modelBuilder.Entity("API.Data.Entities.Discussion", b =>
                 {
                     b.HasOne("API.Data.Entities.Classroom", "Classroom")
@@ -1638,25 +1529,9 @@ namespace API.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_discussions_users_created_by_id");
 
-                    b.HasOne("API.Data.Entities.DelLog", "DelLog")
-                        .WithMany("DeletedDiscussions")
-                        .HasForeignKey("DelLogId")
-                        .HasConstraintName("fk_discussions_del_logs_del_log_id");
-
-                    b.HasOne("API.Data.Entities.State", "State")
-                        .WithMany("Discussions")
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_discussions_states_state_id");
-
                     b.Navigation("Classroom");
 
                     b.Navigation("CreatedBy");
-
-                    b.Navigation("DelLog");
-
-                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("API.Data.Entities.File", b =>
@@ -1680,11 +1555,6 @@ namespace API.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_messages_users_created_by_id");
 
-                    b.HasOne("API.Data.Entities.DelLog", "DelLog")
-                        .WithMany("DeletedMessages")
-                        .HasForeignKey("DelLogId")
-                        .HasConstraintName("fk_messages_del_logs_del_log_id");
-
                     b.HasOne("API.Data.Entities.Discussion", "Discussion")
                         .WithMany("Messages")
                         .HasForeignKey("DiscussionId")
@@ -1704,8 +1574,6 @@ namespace API.Migrations
                         .HasConstraintName("fk_messages_users_pinned_by_id");
 
                     b.Navigation("CreatedBy");
-
-                    b.Navigation("DelLog");
 
                     b.Navigation("Discussion");
 
@@ -1745,18 +1613,6 @@ namespace API.Migrations
                         .HasConstraintName("fk_sessions_users_user_id");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("API.Data.Entities.User", b =>
-                {
-                    b.HasOne("API.Data.Entities.State", "State")
-                        .WithMany("Users")
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_users_states_state_id");
-
-                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("API.Data.Entities.UserEmailChange", b =>
@@ -1887,20 +1743,8 @@ namespace API.Migrations
             modelBuilder.Entity("API.Data.Entities.ClassroomSyllabus", b =>
                 {
                     b.Navigation("ClassroomTimelineEvents");
-                });
 
-            modelBuilder.Entity("API.Data.Entities.DelLog", b =>
-                {
-                    b.Navigation("DeletedClassrooms");
-
-                    b.Navigation("DeletedDiscussions");
-
-                    b.Navigation("DeletedMessages");
-                });
-
-            modelBuilder.Entity("API.Data.Entities.DelLogType", b =>
-                {
-                    b.Navigation("DelLogs");
+                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("API.Data.Entities.Discussion", b =>
@@ -1912,6 +1756,8 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Data.Entities.File", b =>
                 {
+                    b.Navigation("ClassroomSyllabusFiles");
+
                     b.Navigation("MessageFiles");
                 });
 
@@ -1920,15 +1766,6 @@ namespace API.Migrations
                     b.Navigation("MessageFiles");
 
                     b.Navigation("MessageLinks");
-                });
-
-            modelBuilder.Entity("API.Data.Entities.State", b =>
-                {
-                    b.Navigation("Classrooms");
-
-                    b.Navigation("Discussions");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("API.Data.Entities.User", b =>

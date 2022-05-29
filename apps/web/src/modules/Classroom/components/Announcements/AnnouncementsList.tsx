@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import { Components, Virtuoso } from 'react-virtuoso';
-import { graphql, usePaginationFragment } from 'react-relay';
+import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHandSparkles } from '@fortawesome/free-solid-svg-icons';
 import { Spinner } from '@spout/toolkit';
@@ -8,8 +8,9 @@ import { useConnection } from '../.././../../shared/hooks';
 import { EmptyFallback } from '../../../../shared/components';
 import Announcement from './Announcement';
 import { AnnouncementsList_classroom$key } from './__generated__/AnnouncementsList_classroom.graphql';
+import { AnnouncementsList_user$key } from './__generated__/AnnouncementsList_user.graphql';
 
-const fragment = graphql`
+const announcementsListFragment = graphql`
   fragment AnnouncementsList_classroom on Classroom
   @argumentDefinitions(count: { type: "Int!" }, cursor: { type: "String" })
   @refetchable(queryName: "AnnouncementsListPaginationQuery") {
@@ -28,14 +29,23 @@ const fragment = graphql`
   }
 `;
 
+const meFragment = graphql`
+  fragment AnnouncementsList_user on User
+  @argumentDefinitions(classroomId: { type: "ID!" }) {
+    ...Announcement_user @arguments(classroomId: $classroomId)
+  }
+`;
+
 interface Props {
+  me: AnnouncementsList_user$key;
   classroom: AnnouncementsList_classroom$key;
   isComposingAnnouncement: boolean;
 }
 
 const AnnouncementsList = ({ isComposingAnnouncement, ...props }: Props) => {
+  const me = useFragment(meFragment, props.me);
   const { data, loadNext, hasNext, isLoadingNext } = usePaginationFragment(
-    fragment,
+    announcementsListFragment,
     props.classroom,
   );
 
@@ -47,7 +57,7 @@ const AnnouncementsList = ({ isComposingAnnouncement, ...props }: Props) => {
       data={announcements}
       endReached={hasNext ? () => loadNext(50) : undefined}
       itemContent={(_, announcement) => (
-        <Announcement classroomAnnouncement={announcement} />
+        <Announcement me={me} classroomAnnouncement={announcement} />
       )}
       components={{
         Footer: () =>

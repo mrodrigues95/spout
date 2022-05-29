@@ -213,7 +213,7 @@ const DiscussionHeaderPinnedMessages = ({
   );
 
   return (
-    <DiscussionHeaderPinnedMessagesList discussion={data.discussionById} />
+    <DiscussionHeaderPinnedMessagesList discussion={data.discussionById!} />
   );
 };
 

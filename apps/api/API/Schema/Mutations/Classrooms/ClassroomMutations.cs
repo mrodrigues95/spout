@@ -15,7 +15,6 @@ using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Enums = API.Common.Enums;
 
 namespace API.Schema.Mutations.Classrooms {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -34,8 +33,7 @@ namespace API.Schema.Mutations.Classrooms {
             IClassroomTimelineManager timelineManager,
             CancellationToken cancellationToken) {
             var classroom = new Classroom {
-                Name = input.Name.Trim(),
-                StateId = (int)Enums.State.Active
+                Name = input.Name.Trim()
             };
 
             classroom.Users.Add(new ClassroomUser {

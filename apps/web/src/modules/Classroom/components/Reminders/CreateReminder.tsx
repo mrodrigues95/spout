@@ -29,8 +29,8 @@ import {
   ClassroomReminderImportance,
 } from './__generated__/CreateReminderMutation.graphql';
 
-const dateMinValue = today(getLocalTimeZone());
-const timeMinValue = parseAbsoluteToLocal(new Date().toISOString());
+const getDateMinValue = () => today(getLocalTimeZone());
+const getTimeMinValue = () => parseAbsoluteToLocal(new Date().toISOString());
 
 const schema = z.object({
   title: z
@@ -46,14 +46,16 @@ const schema = z.object({
   ]),
   date: z
     .any()
-    .refine((date) => (date as CalendarDate).compare(dateMinValue) >= 0, {
+    .refine((date) => (date as CalendarDate).compare(getDateMinValue()) >= 0, {
       message: ' - Invalid date',
       path: ['dob'],
     }),
-  time: z.any().refine((time) => (time as Time).compare(timeMinValue) >= 0, {
-    message: ' - Invalid time (must be in the future)',
-    path: ['meetingTime'],
-  }),
+  time: z
+    .any()
+    .refine((time) => (time as Time).compare(getTimeMinValue()) >= 0, {
+      message: ' - Invalid time (must be in the future)',
+      path: ['meetingTime'],
+    }),
   importance: z.string(),
 });
 
@@ -161,6 +163,9 @@ const CreateReminder = ({ ...props }: Props) => {
     name: 'importance',
     control: form.control,
   });
+
+  const dateMinValue = getDateMinValue();
+  const timeMinValue = getTimeMinValue();
 
   return (
     <>

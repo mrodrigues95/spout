@@ -10,7 +10,7 @@ import { Header_classroom$key } from './__generated__/Header_classroom.graphql';
 const fragment = graphql`
   fragment Header_classroom on Classroom {
     name
-    createdBy {
+    teacher {
       name
       avatarUrl
       profileColor
@@ -67,14 +67,14 @@ const Header = ({ ...props }: Props) => {
           Instructed by
         </Text>
         <Avatar
-          src={classroom.createdBy.avatarUrl}
-          name={classroom.createdBy.name}
-          profileColor={classroom.createdBy.profileColor}
+          src={classroom.teacher.avatarUrl}
+          name={classroom.teacher.name}
+          profileColor={classroom.teacher.profileColor}
           containerProps={{ className: 'shadow-sm mr-1.5' }}
           size="sm"
         />
         <Text as="span" weight="medium">
-          {classroom.createdBy.name}
+          {classroom.teacher.name}
         </Text>
       </div>
     </article>

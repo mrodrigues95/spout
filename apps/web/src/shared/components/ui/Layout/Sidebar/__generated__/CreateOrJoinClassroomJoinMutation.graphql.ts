@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<829b2aead7e5b53470b86920dc0ee0af>>
+ * @generated SignedSource<<8347b5f92de68b07b24d1d11513089d7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,7 +21,7 @@ export type CreateOrJoinClassroomJoinMutation$data = {
     readonly classroom: {
       readonly id: string;
       readonly name: string;
-      readonly createdBy: {
+      readonly teacher: {
         readonly id: string;
       };
     } | null;
@@ -80,7 +80,7 @@ v3 = {
       "args": null,
       "concreteType": "User",
       "kind": "LinkedField",
-      "name": "createdBy",
+      "name": "teacher",
       "plural": false,
       "selections": [
         (v2/*: any*/)
@@ -188,16 +188,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "6598b890697b1fa6432766f3462303d6",
+    "cacheID": "0c27147475b3d39c131f40e11c6ca4da",
     "id": null,
     "metadata": {},
     "name": "CreateOrJoinClassroomJoinMutation",
     "operationKind": "mutation",
-    "text": "mutation CreateOrJoinClassroomJoinMutation(\n  $input: JoinClassroomInput!\n) {\n  joinClassroom(input: $input) {\n    classroom {\n      id\n      name\n      createdBy {\n        id\n      }\n    }\n    errors {\n      __typename\n      ... on Error {\n        __isError: __typename\n        __typename\n        message\n      }\n    }\n  }\n}\n"
+    "text": "mutation CreateOrJoinClassroomJoinMutation(\n  $input: JoinClassroomInput!\n) {\n  joinClassroom(input: $input) {\n    classroom {\n      id\n      name\n      teacher {\n        id\n      }\n    }\n    errors {\n      __typename\n      ... on Error {\n        __isError: __typename\n        __typename\n        message\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "f42d71573559e18892d0f3160328d330";
+(node as any).hash = "7a365922616a90a6b91a778ab5887ef0";
 
 export default node;

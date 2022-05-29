@@ -8,7 +8,7 @@ namespace API.Data.Entities {
         public int UserId { get; set; }
         public User? User { get; set; }
 
-        public bool? IsCreator { get; set; } = false;
+        public bool IsCreator { get; set; } = false;
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }

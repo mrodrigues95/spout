@@ -1,6 +1,8 @@
 using API.Data;
 using API.Infrastructure;
+using API.Security.Policy;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,9 +12,9 @@ namespace API.Extensions {
         public static IServiceCollection AddApplicationServices(
             this IServiceCollection services,
             IConfiguration config) {
-            services.AddPooledDbContextFactory<ApplicationDbContext>(opt => {
-                opt.UseNpgsql(config.GetConnectionString("DefaultConnection"));
-                opt.UseSnakeCaseNamingConvention();
+            services.AddPooledDbContextFactory<ApplicationDbContext>(opts => {
+                opts.UseNpgsql(config.GetConnectionString("DefaultConnection"));
+                opts.UseSnakeCaseNamingConvention();
                 //opt.LogTo(Console.WriteLine);
             });
 
@@ -21,8 +23,8 @@ namespace API.Extensions {
                     cfg.RegisterValidatorsFromAssemblyContaining<Startup>();
                 });
 
-            services.AddCors(opt => {
-                opt.AddPolicy("CorsPolicy", policy => {
+            services.AddCors(opts => {
+                opts.AddPolicy("CorsPolicy", policy => {
                     policy
                         .AllowAnyHeader()
                         .AllowAnyMethod()
@@ -47,6 +49,7 @@ namespace API.Extensions {
             services.AddTransient<ISessionManager, SessionManager>();
             services.AddTransient<ISMSService, SMSService>();
             services.AddTransient<IClassroomTimelineManager, ClassroomTimelineManager>();
+            services.AddSingleton<IAuthorizationHandler, ClassroomAuthorizationHandler>();
 
             return services;
         }

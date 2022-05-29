@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6e264f54d0bbcd1b82624bd76859ab18>>
+ * @generated SignedSource<<b43bde097bf43d273da5fa5a62f2da9e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,7 +17,7 @@ export type ActivityQueryVariables = ActivityQuery$variables;
 export type ActivityQuery$data = {
   readonly classroomById: {
     readonly " $fragmentSpreads": FragmentRefs<"ActivityList_classroom">;
-  };
+  } | null;
 };
 export type ActivityQueryResponse = ActivityQuery$data;
 export type ActivityQuery = {

@@ -55,11 +55,6 @@ namespace API.Schema.Types.Discussions {
                 .Ignore();
 
             descriptor
-                .Field(d => d.StateId)
-                .Type<NonNullType<IntType>>()
-                .Ignore();
-
-            descriptor
                 .Field(d => d.CreatedAt)
                 .Type<NonNullType<DateTimeType>>();
 

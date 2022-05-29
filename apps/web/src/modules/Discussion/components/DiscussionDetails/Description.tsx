@@ -6,11 +6,19 @@ import { useToast } from '../../../../shared/components';
 import { Item } from './Topic';
 import { DescriptionMutation } from './__generated__/DescriptionMutation.graphql';
 import { Description_discussion$key } from './__generated__/Description_discussion.graphql';
+import { Description_user$key } from './__generated__/Description_user.graphql';
 
-const fragment = graphql`
+const descriptionFragment = graphql`
   fragment Description_discussion on Discussion {
     id
     description
+  }
+`;
+
+const meFragment = graphql`
+  fragment Description_user on User
+  @argumentDefinitions(classroomId: { type: "ID!" }) {
+    isClassroomTeacher(classroomId: $classroomId)
   }
 `;
 
@@ -32,11 +40,13 @@ const descriptionSchema = object({
 });
 
 interface Props {
+  me: Description_user$key;
   discussion: Description_discussion$key;
 }
 
-const Description = ({ discussion }: Props) => {
-  const data = useFragment(fragment, discussion);
+const Description = ({ ...props }: Props) => {
+  const discussion = useFragment(descriptionFragment, props.discussion);
+  const me = useFragment(meFragment, props.me);
   const [updateDescription, isInFlight] =
     useMutation<DescriptionMutation>(mutation);
 
@@ -45,7 +55,7 @@ const Description = ({ discussion }: Props) => {
 
   const form = useZodForm({
     schema: descriptionSchema,
-    defaultValues: { description: data.description },
+    defaultValues: { description: discussion.description },
   });
 
   const onSubmit = useCallback(
@@ -53,7 +63,7 @@ const Description = ({ discussion }: Props) => {
       updateDescription({
         variables: {
           input: {
-            discussionId: data.id,
+            discussionId: discussion.id,
             description,
           },
         },
@@ -62,7 +72,7 @@ const Description = ({ discussion }: Props) => {
           setIsOpen(false);
         },
       }),
-    [updateDescription, data.id, handleError],
+    [updateDescription, discussion.id, handleError],
   );
 
   return (
@@ -100,8 +110,9 @@ const Description = ({ discussion }: Props) => {
       </Modal>
       <Item
         label="Description"
-        content={data.description}
+        content={discussion.description}
         onClick={() => setIsOpen(true)}
+        isClassroomTeacher={me.isClassroomTeacher}
       />
     </>
   );

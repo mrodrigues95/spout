@@ -23,6 +23,7 @@ namespace API {
 
                 try {
                     var userManager = services.GetRequiredService<UserManager<User>>();
+                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole<int>>>();
                     await ctx.Database.MigrateAsync();
 
                     // Npgsql needs to reload the types for enums to work properly during seeding.
@@ -30,7 +31,11 @@ namespace API {
                     await conn.OpenAsync();
                     conn.ReloadTypes();
 
-                    await ApplicationDbContextSeed.SeedDataAsync(ctx, userManager, loggerFactory);
+                    await ApplicationDbContextSeed.SeedDataAsync(
+                        ctx,
+                        userManager,
+                        roleManager,
+                        loggerFactory);
                 } catch (Exception ex) {
                     var logger = loggerFactory.CreateLogger<Program>();
                     logger.LogError(ex, "An error occured while seeding the database.");

@@ -14,9 +14,6 @@ namespace API.Data.Configurations {
                 .HasMaxLength(64)
                 .IsRequired();
 
-            builder.Property(c => c.StateId)
-                .IsRequired();
-
             builder.Property(c => c.CreatedAt)
                 .HasDefaultValueSql("now()")
                 .IsRequired();
@@ -49,14 +46,6 @@ namespace API.Data.Configurations {
             builder.HasMany(c => c.Timeline)
                 .WithOne(x => x.Classroom!)
                 .HasForeignKey(x => x.ClassroomId);
-
-            builder.HasOne(c => c.DelLog)
-                .WithMany(d => d!.DeletedClassrooms)
-                .HasForeignKey(c => c.DelLogId);
-
-            builder.HasOne(c => c.State)
-                .WithMany(s => s!.Classrooms)
-                .HasForeignKey(c => c.StateId);
 
             builder.HasOne(c => c.Syllabus)
                 .WithOne(cs => cs.Classroom)

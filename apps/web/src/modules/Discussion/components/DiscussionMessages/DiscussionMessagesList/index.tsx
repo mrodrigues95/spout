@@ -76,21 +76,23 @@ const discussionFragment = graphql`
 `;
 
 const meFragment = graphql`
-  fragment DiscussionMessagesList_user on User {
+  fragment DiscussionMessagesList_user on User
+  @argumentDefinitions(classroomId: { type: "ID!" }) {
     id
     name
     avatarUrl
     profileColor
+    isClassroomTeacher(classroomId: $classroomId)
   }
 `;
 
 interface Props {
-  user: DiscussionMessagesList_user$key;
+  me: DiscussionMessagesList_user$key;
   discussion: DiscussionMessagesList_discussion$key;
 }
 
 const DiscussionMessagesList = ({ ...props }: Props) => {
-  const me = useFragment(meFragment, props.user);
+  const me = useFragment(meFragment, props.me);
   const {
     data: discussion,
     loadPrevious,

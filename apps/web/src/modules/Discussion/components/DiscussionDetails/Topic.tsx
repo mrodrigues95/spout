@@ -5,7 +5,7 @@ import { faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import Zod, { object, string } from 'zod';
 import {
-  Button as SButton,
+  Button,
   Form,
   Modal,
   useZodForm,
@@ -17,16 +17,24 @@ import { ConditionalWrapper, useToast } from '../../../../shared/components';
 import { MEDIA_QUERIES, useMediaQuery } from '../../../../shared/hooks';
 import { TopicMutation } from './__generated__/TopicMutation.graphql';
 import { Topic_discussion$key } from './__generated__/Topic_discussion.graphql';
+import { Topic_user$key } from './__generated__/Topic_user.graphql';
 
 interface ItemProps {
   label: 'Topic' | 'Description';
+  isClassroomTeacher: boolean;
   content?: string | null;
   onClick: () => void;
 }
 
-export const Item = ({ label, content, onClick }: ItemProps) => {
+export const Item = ({
+  label,
+  content,
+  onClick,
+  isClassroomTeacher,
+}: ItemProps) => {
   const isLaptop = useMediaQuery(MEDIA_QUERIES.LARGE);
-  const Component = content ? SButton : 'div';
+  const isButtonWrapper = !!content && isClassroomTeacher;
+  const Component = isButtonWrapper ? Button : 'div';
 
   const item = (
     <Component
@@ -35,7 +43,7 @@ export const Item = ({ label, content, onClick }: ItemProps) => {
         variant: 'unstyled',
         'aria-labelledby': `spout-details-label-${generateId()}`,
         'aria-describedby': `spout-details-desc-${generateId()}`,
-        onClick,
+        onClick: () => (isClassroomTeacher ? onClick() : null),
       })}
     >
       <div className="inline-flex items-center space-x-2">
@@ -47,14 +55,22 @@ export const Item = ({ label, content, onClick }: ItemProps) => {
           {label}
         </Text>
       </div>
-      {content ? (
-        <Text className="text-gray-900" weight="medium" truncate>
-          {content}
-        </Text>
+      {isClassroomTeacher ? (
+        <>
+          {content ? (
+            <Text className="text-gray-900" weight="medium" truncate>
+              {content}
+            </Text>
+          ) : (
+            <Button size="xs" className="rounded uppercase" onClick={onClick}>
+              Edit
+            </Button>
+          )}
+        </>
       ) : (
-        <SButton size="xs" className="rounded uppercase" onClick={onClick}>
-          Edit
-        </SButton>
+        <Text className="text-gray-900" weight="medium" truncate>
+          {content || <i>None...</i>}
+        </Text>
       )}
     </Component>
   );
@@ -78,10 +94,17 @@ export const Item = ({ label, content, onClick }: ItemProps) => {
   );
 };
 
-const fragment = graphql`
+const topicFragment = graphql`
   fragment Topic_discussion on Discussion {
     id
     topic
+  }
+`;
+
+const meFragment = graphql`
+  fragment Topic_user on User
+  @argumentDefinitions(classroomId: { type: "ID!" }) {
+    isClassroomTeacher(classroomId: $classroomId)
   }
 `;
 
@@ -101,11 +124,13 @@ const topicSchema = object({
 });
 
 interface Props {
+  me: Topic_user$key;
   discussion: Topic_discussion$key;
 }
 
-const Topic = ({ discussion }: Props) => {
-  const data = useFragment(fragment, discussion);
+const Topic = ({ ...props }: Props) => {
+  const discussion = useFragment(topicFragment, props.discussion);
+  const me = useFragment(meFragment, props.me);
   const [updateTopic, isInFlight] = useMutation<TopicMutation>(mutation);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -113,7 +138,7 @@ const Topic = ({ discussion }: Props) => {
 
   const form = useZodForm({
     schema: topicSchema,
-    defaultValues: { topic: data.topic },
+    defaultValues: { topic: discussion.topic },
   });
 
   const onSubmit = useCallback(
@@ -121,7 +146,7 @@ const Topic = ({ discussion }: Props) => {
       updateTopic({
         variables: {
           input: {
-            discussionId: data.id,
+            discussionId: discussion.id,
             topic,
           },
         },
@@ -130,7 +155,7 @@ const Topic = ({ discussion }: Props) => {
           setIsOpen(false);
         },
       }),
-    [updateTopic, data.id, handleError],
+    [updateTopic, discussion.id, handleError],
   );
 
   return (
@@ -152,9 +177,9 @@ const Topic = ({ discussion }: Props) => {
               />
             </Modal.Body>
             <Modal.Footer>
-              <SButton size="sm" onClick={() => setIsOpen(false)}>
+              <Button size="sm" onClick={() => setIsOpen(false)}>
                 Cancel
-              </SButton>
+              </Button>
               <Form.SubmitButton size="sm" loading={isInFlight}>
                 Save
               </Form.SubmitButton>
@@ -164,8 +189,9 @@ const Topic = ({ discussion }: Props) => {
       </Modal>
       <Item
         label="Topic"
-        content={data.topic}
+        content={discussion.topic}
         onClick={() => setIsOpen(true)}
+        isClassroomTeacher={me.isClassroomTeacher}
       />
     </>
   );

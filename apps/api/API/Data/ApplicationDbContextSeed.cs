@@ -6,33 +6,32 @@ using API.Common.Utilities;
 using API.Data.Entities;
 using API.Schema.Types.ClassroomTimelineEvents;
 using API.Schema.Types.Users;
+using API.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Enums = API.Common.Enums;
 
 namespace API.Data {
     public class ApplicationDbContextSeed {
         public static async Task SeedDataAsync(
             ApplicationDbContext context,
             UserManager<User> userManager,
+            RoleManager<IdentityRole<int>> roleManager,
             ILoggerFactory loggerFactory,
             int retry = 0) {
             try {
-                if (!await context.States.AnyAsync()) {
-                    await context.States.AddRangeAsync(GetPreconfiguredStates());
-                    await context.SaveChangesAsync();
-                }
-
-                if (!await context.DelLogTypes.AnyAsync()) {
-                    await context.DelLogTypes.AddRangeAsync(GetPreconfiguredDelLogTypes());
+                if (!await roleManager.Roles.AnyAsync()) {
+                    await GetPreconfiguredUserRolesAsync(roleManager);
                     await context.SaveChangesAsync();
                 }
 
                 if (!await userManager.Users.AnyAsync()) {
-                    foreach (User user in GetPreconfiguredUsers(context)) {
-                        await userManager.CreateAsync(user, "rootdev");
+                    foreach (var user in GetPreconfiguredUsers(context)) {
+                        var pwd = "rootdev";
+                        await userManager.CreateAsync(user, pwd);
                     }
+                    await context.SaveChangesAsync();
+                    await GetPreconfiguredAdminUsers(userManager);
                     await context.SaveChangesAsync();
                 }
 
@@ -61,41 +60,17 @@ namespace API.Data {
                     retry++;
                     var log = loggerFactory.CreateLogger<ApplicationDbContextSeed>();
                     log.LogError(ex.Message);
-                    await SeedDataAsync(context, userManager, loggerFactory, retry);
+                    await SeedDataAsync(context, userManager, roleManager, loggerFactory, retry);
                 }
                 throw;
             }
         }
 
-        private static IEnumerable<State> GetPreconfiguredStates() {
-            return new List<State>() {
-                new State {
-                    Status = Enums.From.State(Enums.State.Active),
-                },
-                new State {
-                    Status = Enums.From.State(Enums.State.Deleted),
-                },
-                new State {
-                    Status = Enums.From.State(Enums.State.Inactive),
-                },
-                new State {
-                    Status = Enums.From.State(Enums.State.Suspended)
-                },
-            };
-        }
-
-        private static IEnumerable<DelLogType> GetPreconfiguredDelLogTypes() {
-            return new List<DelLogType>() {
-                new DelLogType {
-                    Type = Enums.DelLogType.Classrooms
-                },
-                new DelLogType {
-                    Type = Enums.DelLogType.Discussions
-                },
-                new DelLogType {
-                    Type = Enums.DelLogType.Messages
-                },
-            };
+        private static async Task GetPreconfiguredUserRolesAsync(RoleManager<IdentityRole<int>> roleManager) {
+            var roles = new[] { UserRoles.Admin };
+            foreach (var role in roles) {
+                await roleManager.CreateAsync(new IdentityRole<int> { Name = role });
+            }
         }
 
         private static IEnumerable<User> GetPreconfiguredUsers(ApplicationDbContext context) {
@@ -105,37 +80,40 @@ namespace API.Data {
                     UserName = "root@test.com",
                     Email = "root@test.com",
                     ProfileColor = UserProfileColor.SKY,
-                    State = GetState(context)
                 },
                 new User {
                     Name = "Marcus Rodrigues",
                     UserName = "marcus.rodrigues95@gmail.com",
                     Email = "marcus.rodrigues95@gmail.com",
                     ProfileColor = UserProfileColor.GREEN,
-                    State = GetState(context)
                 },
                 new User {
                     Name = "John Doe",
                     UserName = "jdoe@test.com",
                     Email = "jdoe@test.com",
                     ProfileColor = UserProfileColor.ORANGE,
-                    State = GetState(context)
                 },
                 new User {
                     Name = "Debbie Ray",
                     UserName = "dray@test.com",
                     Email = "dray@test.com",
                     ProfileColor = UserProfileColor.ROSE,
-                    State = GetState(context)
                 },
                 new User {
                     UserName = "hdook@test.com",
                     Name = "Heather Dook",
                     Email = "hdook@test.com",
                     ProfileColor = UserProfileColor.PURPLE,
-                    State = GetState(context)
                 },
             };
+        }
+
+        private static async Task GetPreconfiguredAdminUsers(UserManager<User> userManager) {
+            // Only the root user can be an admin at this time.
+            var expectedAdmin = await userManager.FindByEmailAsync("root@test.com");
+            if (expectedAdmin is not null) {
+                await userManager.AddToRoleAsync(expectedAdmin, UserRoles.Admin);
+            }
         }
 
         private static async Task<IEnumerable<Classroom>> GetPreconfiguredClassrooms(ApplicationDbContext context) {
@@ -144,19 +122,15 @@ namespace API.Data {
             var classrooms = new List<Classroom>() {
                 new Classroom {
                     Name = "Introduction to C# - SE42",
-                    State = GetState(context),
                 },
                 new Classroom {
                     Name = "Computer Programming - CP425",
-                    State = GetState(context)
                 },
                 new Classroom {
                     Name = "Group Dynamics - GD108",
-                    State = GetState(context)
                 },
                 new Classroom {
                     Name = "Networking Infrastructure - NI21",
-                    State = GetState(context)
                 },
             };
 
@@ -198,7 +172,6 @@ namespace API.Data {
                         Name = $"{classroom.Name!.Split("-")[1]} - Discussion {i}".Trim(),
                         CreatedBy = randomUser,
                         Classroom = classroom,
-                        State = GetState(context)
                     });
                 }
             }
@@ -262,8 +235,5 @@ namespace API.Data {
 
             return events;
         }
-
-        private static State GetState(ApplicationDbContext context, int skip = 0) =>
-            context.States.OrderBy(x => x.Id).Skip(skip).First();
     }
 }

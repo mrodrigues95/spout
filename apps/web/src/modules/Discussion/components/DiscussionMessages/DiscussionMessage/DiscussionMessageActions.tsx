@@ -6,7 +6,7 @@ import { useDiscussionMessage } from './DiscussionMessageProvider';
 
 const DiscussionMessageActions = () => {
   const {
-    data: { isMyMessage, isPinned, isOptimistic },
+    data: { me, isMyMessage, isPinned, isOptimistic },
     state: { isEditing, setIsEditing },
     actions: { pin, unpin },
   } = useDiscussionMessage()!;
@@ -46,22 +46,24 @@ const DiscussionMessageActions = () => {
             </Tooltip>
           </li>
         )}
-        <li>
-          <Tooltip label={isPinned ? 'Unpin' : 'Pin'}>
-            <IconButton
-              aria-label="Pin Message"
-              variant={isPinned ? 'default' : 'tertiary'}
-              size="sm"
-              icon={
-                <FontAwesomeIcon
-                  icon={faThumbtack}
-                  className={clsx(isPinned ? 'rotate-45' : 'rotate-0')}
-                />
-              }
-              onClick={() => (isPinned ? unpin() : pin())}
-            />
-          </Tooltip>
-        </li>
+        {me.isClassroomTeacher && (
+          <li>
+            <Tooltip label={isPinned ? 'Unpin' : 'Pin'}>
+              <IconButton
+                aria-label="Pin Message"
+                variant={isPinned ? 'default' : 'tertiary'}
+                size="sm"
+                icon={
+                  <FontAwesomeIcon
+                    icon={faThumbtack}
+                    className={clsx(isPinned ? 'rotate-45' : 'rotate-0')}
+                  />
+                }
+                onClick={() => (isPinned ? unpin() : pin())}
+              />
+            </Tooltip>
+          </li>
+        )}
       </ul>
     </div>
   );

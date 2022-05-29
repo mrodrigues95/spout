@@ -1,9 +1,10 @@
-import { graphql, usePaginationFragment } from 'react-relay';
+import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import { useRouter } from 'next/router';
 import { HorizontalNavigation, Tooltip, Keys } from '@spout/toolkit';
 import { useConnection } from '../../../../shared/hooks';
-import { DiscussionsMenu_discussions$key } from './__generated__/DiscussionsMenu_discussions.graphql';
 import CreateDiscussion from './CreateDiscussion';
+import { DiscussionsMenu_discussions$key } from './__generated__/DiscussionsMenu_discussions.graphql';
+import { DiscussionsMenu_user$key } from './__generated__/DiscussionsMenu_user.graphql';
 
 const fragment = graphql`
   fragment DiscussionsMenu_discussions on Classroom
@@ -26,12 +27,21 @@ const fragment = graphql`
   }
 `;
 
+const meFragment = graphql`
+  fragment DiscussionsMenu_user on User
+  @argumentDefinitions(classroomId: { type: "ID!" }) {
+    isClassroomTeacher(classroomId: $classroomId)
+  }
+`;
+
 interface Props {
   classroom: DiscussionsMenu_discussions$key;
+  me: DiscussionsMenu_user$key;
 }
 
 const DiscussionsMenu = ({ ...props }: Props) => {
   const router = useRouter();
+  const me = useFragment(meFragment, props.me);
   const { data: classroom } = usePaginationFragment(fragment, props.classroom);
 
   const discussions = useConnection(classroom.discussions);
@@ -41,7 +51,7 @@ const DiscussionsMenu = ({ ...props }: Props) => {
 
   return (
     <div className="flex items-center">
-      <CreateDiscussion classroom={classroom} />
+      {me.isClassroomTeacher && <CreateDiscussion classroom={classroom} />}
       <HorizontalNavigation
         key={classroom.id}
         onChange={(idx) => {
@@ -49,7 +59,7 @@ const DiscussionsMenu = ({ ...props }: Props) => {
           navigateDiscussion(discussion.id);
         }}
       >
-        <HorizontalNavigation.Divider />
+        {me.isClassroomTeacher && <HorizontalNavigation.Divider />}
         {discussions.map((discussion, idx) => (
           <Tooltip key={discussion.id} label={discussion.name}>
             <div>

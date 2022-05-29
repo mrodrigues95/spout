@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { graphql, useFragment, useMutation } from 'react-relay';
 import {
   Button,
@@ -7,11 +8,10 @@ import {
   Link,
   Text,
 } from '@spout/toolkit';
-import { formatBytesToHumanReadable } from '../../../../../shared/utils';
-import { useToast } from '../../../../../shared/components';
+import { formatBytesToHumanReadable } from '../../../../../../shared/utils';
+import { useToast } from '../../../../../../shared/components';
 import { SyllabusAttachment_file$key } from './__generated__/SyllabusAttachment_file.graphql';
 import { SyllabusAttachmentMutation } from './__generated__/SyllabusAttachmentMutation.graphql';
-import { useRouter } from 'next/router';
 
 const fragment = graphql`
   fragment SyllabusAttachment_file on File {

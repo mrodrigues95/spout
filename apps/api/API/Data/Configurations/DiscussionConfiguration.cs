@@ -16,9 +16,6 @@ namespace API.Data.Configurations {
             builder.Property(d => d.CreatedById)
                 .IsRequired();
 
-            builder.Property(d => d.StateId)
-                .IsRequired();
-
             builder.Property(d => d.Name)
                 .HasMaxLength(64)
                 .IsRequired();
@@ -56,14 +53,6 @@ namespace API.Data.Configurations {
             builder.HasMany(d => d.ClassroomTimelineEvents)
                 .WithOne(x => x.Discussion!)
                 .HasForeignKey(x => x.DiscussionId);
-
-            builder.HasOne(d => d.DelLog)
-                .WithMany(dl => dl!.DeletedDiscussions)
-                .HasForeignKey(d => d.DelLogId);
-
-            builder.HasOne(d => d.State)
-                .WithMany(s => s!.Discussions)
-                .HasForeignKey(d => d.StateId);
         }
     }
 }

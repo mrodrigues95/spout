@@ -17,6 +17,7 @@ import Attachments from './Attachments';
 import Topic from './Topic';
 import Description from './Description';
 import { DiscussionDetails_discussion$key } from './__generated__/DiscussionDetails_discussion.graphql';
+import { DiscussionDetails_user$key } from './__generated__/DiscussionDetails_user.graphql';
 
 interface MobileWrapperProps {
   children: ReactNode;
@@ -61,7 +62,7 @@ const MobileWrapper = ({ children }: MobileWrapperProps) => {
   );
 };
 
-const fragment = graphql`
+const discussionDetailsFragment = graphql`
   fragment DiscussionDetails_discussion on Discussion {
     name
     ...Topic_discussion
@@ -72,12 +73,22 @@ const fragment = graphql`
   }
 `;
 
+const meFragment = graphql`
+  fragment DiscussionDetails_user on User
+  @argumentDefinitions(classroomId: { type: "ID!" }) {
+    ...Description_user @arguments(classroomId: $classroomId)
+    ...Topic_user @arguments(classroomId: $classroomId)
+  }
+`;
+
 interface Props {
+  me: DiscussionDetails_user$key;
   discussion: DiscussionDetails_discussion$key;
 }
 
-const DiscussionDetails = ({ discussion }: Props) => {
-  const data = useFragment(fragment, discussion);
+const DiscussionDetails = ({ ...props }: Props) => {
+  const discussion = useFragment(discussionDetailsFragment, props.discussion);
+  const me = useFragment(meFragment, props.me);
   const isLaptop = useMediaQuery(MEDIA_QUERIES.LARGE);
   const { showDetails, setShowDetails } = useDiscussion()!;
 
@@ -114,15 +125,15 @@ const DiscussionDetails = ({ discussion }: Props) => {
         <div className="flex flex-col items-center">
           <Image src={getRandomAvatar()} alt="" size="xl" rounded />
           <Title className="mt-2" as="h2" variant="h4">
-            {data.name}
+            {discussion.name}
           </Title>
           <Title as="h3" variant="h6" className="font-medium text-gray-500">
-            {data.classroom.name}
+            {discussion.classroom.name}
           </Title>
         </div>
         <div className="space-y-2">
-          <Topic discussion={data} />
-          <Description discussion={data} />
+          <Topic discussion={discussion} me={me} />
+          <Description discussion={discussion} me={me} />
         </div>
         <div className="flex-1">
           <Tabs className="h-full" variant="primary">

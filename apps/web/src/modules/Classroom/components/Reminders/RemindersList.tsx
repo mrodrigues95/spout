@@ -9,12 +9,12 @@ import { useConnection } from '../.././../../shared/hooks';
 import { EmptyFallback } from '../../../../shared/components';
 import Reminder from './Reminder';
 import { RemindersSortOption } from './RemindersSortSelect';
+import { useReminders } from './RemindersProvider';
+import { formatFilterInput, formatOrderInput } from './Reminders';
 import {
   RemindersList_classroom$data,
   RemindersList_classroom$key,
 } from './__generated__/RemindersList_classroom.graphql';
-import { useReminders } from './RemindersProvider';
-import { formatFilterInput, formatOrderInput } from './Reminders';
 
 type ClassroomReminder = NonNullable<
   NonNullable<RemindersList_classroom$data['reminders']>['edges']

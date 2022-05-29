@@ -17,8 +17,9 @@ import { formatMessageDate } from '../../../../shared/utils';
 import { Announcement_classroomAnnouncement$key } from './__generated__/Announcement_classroomAnnouncement.graphql';
 import { AnnouncementDeleteMutation } from './__generated__/AnnouncementDeleteMutation.graphql';
 import { AnnouncementEditMutation } from './__generated__/AnnouncementEditMutation.graphql';
+import { Announcement_user$key } from './__generated__/Announcement_user.graphql';
 
-const fragment = graphql`
+const announcementFragment = graphql`
   fragment Announcement_classroomAnnouncement on ClassroomAnnouncement {
     id
     content
@@ -29,6 +30,13 @@ const fragment = graphql`
       avatarUrl
       profileColor
     }
+  }
+`;
+
+const meFragment = graphql`
+  fragment Announcement_user on User
+  @argumentDefinitions(classroomId: { type: "ID!" }) {
+    isClassroomTeacher(classroomId: $classroomId)
   }
 `;
 
@@ -59,12 +67,17 @@ const deleteMutation = graphql`
 `;
 
 interface AnnouncementProps {
+  me: Announcement_user$key;
   classroomAnnouncement: Announcement_classroomAnnouncement$key;
 }
 
 // TODO: Implement likes and comments maybe?
 const Announcement = ({ ...props }: AnnouncementProps) => {
-  const announcement = useFragment(fragment, props.classroomAnnouncement);
+  const announcement = useFragment(
+    announcementFragment,
+    props.classroomAnnouncement,
+  );
+  const me = useFragment(meFragment, props.me);
   const [editAnnouncement, isEditingInFlight] =
     useMutation<AnnouncementEditMutation>(editMutation);
   const [deleteAnnouncement, isDeleteInFlight] =
@@ -107,7 +120,7 @@ const Announcement = ({ ...props }: AnnouncementProps) => {
             </Text>
           )}
         </div>
-        {!isEditing && (
+        {!isEditing && me.isClassroomTeacher && (
           <Menu className="w-auto">
             <Menu.Button
               ref={trigger}

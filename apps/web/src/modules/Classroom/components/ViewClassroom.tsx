@@ -22,6 +22,7 @@ import { Overview } from './Overview';
 import { Announcements } from './Announcements';
 import { Reminders } from './Reminders';
 import { ViewClassroomQuery } from './__generated__/ViewClassroomQuery.graphql';
+import ForbiddenOrNotFoundClassroom from './ForbiddenOrNotFoundClassroom';
 
 const tabs = [
   {
@@ -60,6 +61,10 @@ const query = graphql`
       ...ClassroomHeader_classroom
       ...DiscussionsMenu_discussions
     }
+    me {
+      ...ClassroomHeader_user @arguments(classroomId: $id)
+      ...DiscussionsMenu_user @arguments(classroomId: $id)
+    }
   }
 `;
 
@@ -96,14 +101,18 @@ const ViewClassroom = ({ fetchKey }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTab]);
 
+  if (!data.classroomById) {
+    return <ForbiddenOrNotFoundClassroom />;
+  }
+
   return (
     <>
       <NextSeo title={data.classroomById.name} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <ClassroomHeader classroom={data.classroomById} />
+        <ClassroomHeader classroom={data.classroomById} me={data.me!} />
         <Main className="flex-col space-y-4">
           <div>
-            <DiscussionsMenu classroom={data.classroomById} />
+            <DiscussionsMenu classroom={data.classroomById} me={data.me!} />
           </div>
           <Tabs selectedIndex={selectedTab} onChange={setSelectedTab} manual>
             <Tabs.List>

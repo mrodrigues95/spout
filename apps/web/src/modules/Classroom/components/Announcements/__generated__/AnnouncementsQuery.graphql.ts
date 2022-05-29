@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<090cffbba4c35799a408097cf1afae25>>
+ * @generated SignedSource<<44fda44f599dd48252199349767480f6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,7 +19,11 @@ export type AnnouncementsQueryVariables = AnnouncementsQuery$variables;
 export type AnnouncementsQuery$data = {
   readonly classroomById: {
     readonly " $fragmentSpreads": FragmentRefs<"CreateAnnouncement_classroom" | "AnnouncementsList_classroom">;
-  };
+  } | null;
+  readonly me: {
+    readonly isClassroomTeacher: boolean;
+    readonly " $fragmentSpreads": FragmentRefs<"AnnouncementsList_user">;
+  } | null;
 };
 export type AnnouncementsQueryResponse = AnnouncementsQuery$data;
 export type AnnouncementsQuery = {
@@ -50,14 +54,28 @@ v3 = [
     "variableName": "id"
   }
 ],
-v4 = {
+v4 = [
+  {
+    "kind": "Variable",
+    "name": "classroomId",
+    "variableName": "id"
+  }
+],
+v5 = {
+  "alias": null,
+  "args": (v4/*: any*/),
+  "kind": "ScalarField",
+  "name": "isClassroomTeacher",
+  "storageKey": null
+},
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v5 = [
+v7 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -118,6 +136,23 @@ return {
           }
         ],
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "me",
+        "plural": false,
+        "selections": [
+          (v5/*: any*/),
+          {
+            "args": (v4/*: any*/),
+            "kind": "FragmentSpread",
+            "name": "AnnouncementsList_user"
+          }
+        ],
+        "storageKey": null
       }
     ],
     "type": "Query",
@@ -141,10 +176,10 @@ return {
         "name": "classroomById",
         "plural": false,
         "selections": [
-          (v4/*: any*/),
+          (v6/*: any*/),
           {
             "alias": null,
-            "args": (v5/*: any*/),
+            "args": (v7/*: any*/),
             "concreteType": "AnnouncementsConnection",
             "kind": "LinkedField",
             "name": "announcements",
@@ -166,7 +201,7 @@ return {
                     "name": "node",
                     "plural": false,
                     "selections": [
-                      (v4/*: any*/),
+                      (v6/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -217,7 +252,7 @@ return {
                             "name": "profileColor",
                             "storageKey": null
                           },
-                          (v4/*: any*/)
+                          (v6/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -271,7 +306,7 @@ return {
           },
           {
             "alias": null,
-            "args": (v5/*: any*/),
+            "args": (v7/*: any*/),
             "filters": [
               "order"
             ],
@@ -282,20 +317,33 @@ return {
           }
         ],
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "me",
+        "plural": false,
+        "selections": [
+          (v5/*: any*/),
+          (v6/*: any*/)
+        ],
+        "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "454eaa3a3b3600e6bcf70b0992017aa2",
+    "cacheID": "ef1e3825b7d530b1206eaf206a170dcb",
     "id": null,
     "metadata": {},
     "name": "AnnouncementsQuery",
     "operationKind": "query",
-    "text": "query AnnouncementsQuery(\n  $id: ID!\n  $count: Int!\n  $cursor: String\n) {\n  classroomById(id: $id) {\n    ...CreateAnnouncement_classroom\n    ...AnnouncementsList_classroom_1G22uz\n    id\n  }\n}\n\nfragment Announcement_classroomAnnouncement on ClassroomAnnouncement {\n  id\n  content\n  createdAt\n  updatedAt\n  createdBy {\n    name\n    avatarUrl\n    profileColor\n    id\n  }\n}\n\nfragment AnnouncementsList_classroom_1G22uz on Classroom {\n  announcements(first: $count, after: $cursor, order: {createdAt: DESC}) {\n    edges {\n      node {\n        ...Announcement_classroomAnnouncement\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment CreateAnnouncement_classroom on Classroom {\n  id\n}\n"
+    "text": "query AnnouncementsQuery(\n  $id: ID!\n  $count: Int!\n  $cursor: String\n) {\n  classroomById(id: $id) {\n    ...CreateAnnouncement_classroom\n    ...AnnouncementsList_classroom_1G22uz\n    id\n  }\n  me {\n    isClassroomTeacher(classroomId: $id)\n    ...AnnouncementsList_user_v62IT\n    id\n  }\n}\n\nfragment Announcement_classroomAnnouncement on ClassroomAnnouncement {\n  id\n  content\n  createdAt\n  updatedAt\n  createdBy {\n    name\n    avatarUrl\n    profileColor\n    id\n  }\n}\n\nfragment Announcement_user_v62IT on User {\n  isClassroomTeacher(classroomId: $id)\n}\n\nfragment AnnouncementsList_classroom_1G22uz on Classroom {\n  announcements(first: $count, after: $cursor, order: {createdAt: DESC}) {\n    edges {\n      node {\n        ...Announcement_classroomAnnouncement\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment AnnouncementsList_user_v62IT on User {\n  ...Announcement_user_v62IT\n}\n\nfragment CreateAnnouncement_classroom on Classroom {\n  id\n}\n"
   }
 };
 })();
 
-(node as any).hash = "06189e55414e37c64ab4debfd090ce6b";
+(node as any).hash = "1c281bf40b51cb832a6e89b221b0e2a9";
 
 export default node;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<afab09638a92c11266fe2446c1839806>>
+ * @generated SignedSource<<f41a92231f537c8b479c17fa5d94d5ab>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,7 +19,7 @@ export type DiscussionHeaderPinnedMessagesQueryVariables = DiscussionHeaderPinne
 export type DiscussionHeaderPinnedMessagesQuery$data = {
   readonly discussionById: {
     readonly " $fragmentSpreads": FragmentRefs<"DiscussionHeaderPinnedMessages_list">;
-  };
+  } | null;
 };
 export type DiscussionHeaderPinnedMessagesQueryResponse = DiscussionHeaderPinnedMessagesQuery$data;
 export type DiscussionHeaderPinnedMessagesQuery = {

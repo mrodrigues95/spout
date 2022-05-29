@@ -15,7 +15,6 @@ using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Subscriptions;
 using HotChocolate.Types;
 using Microsoft.EntityFrameworkCore;
-using Enums = API.Common.Enums;
 
 namespace API.Schema.Mutations.Discussions {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -179,7 +178,6 @@ namespace API.Schema.Mutations.Discussions {
 
             var discussion = new Discussion {
                 Name = input.Name.Trim(),
-                StateId = (int)Enums.State.Active,
                 CreatedById = userId,
                 ClassroomId = classroom.Id
             };

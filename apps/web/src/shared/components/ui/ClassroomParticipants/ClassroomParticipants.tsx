@@ -90,7 +90,7 @@ const ClassroomParticipants = ({ fetchKey }: Props) => {
 
   return (
     <div className="relative h-full">
-      <ClassroomParticipantsList classroom={data.classroomById} />
+      <ClassroomParticipantsList classroom={data.classroomById!} />
     </div>
   );
 };

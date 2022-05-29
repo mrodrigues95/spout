@@ -20,8 +20,6 @@ namespace API.Data.Entities {
         public Message? ParentMessage { get; set; }
         public bool IsEvent { get; set; }
         public MessageEvent? MessageEvent { get; set; }
-        public int? DelLogId { get; set; }
-        public DelLog? DelLog { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? PinnedAt { get; set; }

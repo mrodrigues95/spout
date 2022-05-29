@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7b367eec3634a562d66e92ac8abe0883>>
+ * @generated SignedSource<<cce7c69d6938cbb88df6e92f75f80bf0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,7 +19,7 @@ export type Syllabus_classroom$data = {
     readonly updatedAt: string;
     readonly " $fragmentSpreads": FragmentRefs<"SyllabusAttachments_classroomSyllabus">;
   } | null;
-  readonly createdBy: {
+  readonly teacher: {
     readonly name: string;
     readonly avatarUrl: string | null;
     readonly profileColor: UserProfileColor;
@@ -90,7 +90,7 @@ return {
       "args": null,
       "concreteType": "User",
       "kind": "LinkedField",
-      "name": "createdBy",
+      "name": "teacher",
       "plural": false,
       "selections": [
         (v0/*: any*/),
@@ -122,6 +122,6 @@ return {
 };
 })();
 
-(node as any).hash = "66c1181195f86864a354426b248f7e32";
+(node as any).hash = "cc951c100020ff53f0c4f3d5e7acff98";
 
 export default node;

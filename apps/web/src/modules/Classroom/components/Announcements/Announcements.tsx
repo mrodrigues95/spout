@@ -7,6 +7,7 @@ import { Button, Spinner, Title, Text } from '@spout/toolkit';
 import { ErrorBoundary, ErrorFallback } from '../../../../shared/components';
 import AnnouncementsList from './AnnouncementsList';
 import CreateAnnouncement from './CreateAnnouncement';
+import ForbiddenOrNotFoundClassroom from '../ForbiddenOrNotFoundClassroom';
 import { AnnouncementsQuery } from './__generated__/AnnouncementsQuery.graphql';
 
 const query = graphql`
@@ -14,6 +15,10 @@ const query = graphql`
     classroomById(id: $id) {
       ...CreateAnnouncement_classroom
       ...AnnouncementsList_classroom @arguments(count: $count, cursor: $cursor)
+    }
+    me {
+      isClassroomTeacher(classroomId: $id)
+      ...AnnouncementsList_user @arguments(classroomId: $id)
     }
   }
 `;
@@ -36,6 +41,10 @@ const Announcements = ({ fetchKey }: Props) => {
     { fetchKey },
   );
 
+  if (!data.classroomById) {
+    return <ForbiddenOrNotFoundClassroom />;
+  }
+
   return (
     <article className="flex h-full flex-col space-y-6">
       <div className="!-mt-1.5 flex items-center justify-between">
@@ -43,16 +52,22 @@ const Announcements = ({ fetchKey }: Props) => {
           <Title as="h2" variant="h4">
             Announcements
           </Title>
-          <Text size="sm">Manage your announcements</Text>
+          <Text size="sm">
+            {data.me?.isClassroomTeacher
+              ? 'Manage your announcement'
+              : 'View the latest announcements posted by your instructor'}
+          </Text>
         </div>
-        <Button
-          variant="secondary"
-          size="sm"
-          leftIcon={<FontAwesomeIcon icon={faPlus} />}
-          onClick={() => setIsComposingAnnouncement(true)}
-        >
-          New
-        </Button>
+        {data.me?.isClassroomTeacher && (
+          <Button
+            variant="secondary"
+            size="sm"
+            leftIcon={<FontAwesomeIcon icon={faPlus} />}
+            onClick={() => setIsComposingAnnouncement(true)}
+          >
+            New
+          </Button>
+        )}
       </div>
       {isComposingAnnouncement && (
         <CreateAnnouncement
@@ -63,6 +78,7 @@ const Announcements = ({ fetchKey }: Props) => {
       <AnnouncementsList
         isComposingAnnouncement={isComposingAnnouncement}
         classroom={data.classroomById}
+        me={data.me!}
       />
     </article>
   );

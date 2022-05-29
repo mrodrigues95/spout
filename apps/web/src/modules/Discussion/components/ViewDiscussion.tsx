@@ -3,16 +3,22 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useRouter } from 'next/router';
 import { NextSeo } from 'next-seo';
 import { Card, Header, Main } from '../../../shared/components';
+import { ForbiddenOrNotFoundClassroom } from '../../Classroom';
 import DiscussionHeader from './DiscussionHeader';
 import DiscussionDetails from './DiscussionDetails';
 import DiscussionMessagesList from './DiscussionMessages/DiscussionMessagesList';
 import DiscussionMessageComposer from './DiscussionMessages/DiscussionMessageComposer';
-import { ViewDiscussionQuery } from './__generated__/ViewDiscussionQuery.graphql';
 import { DiscussionProvider } from './DiscussionProvider';
+import { ViewDiscussionQuery } from './__generated__/ViewDiscussionQuery.graphql';
 
 const query = graphql`
-  query ViewDiscussionQuery($id: ID!, $count: Int!, $cursor: String) {
-    discussionById(id: $id) {
+  query ViewDiscussionQuery(
+    $discussionId: ID!
+    $classroomId: ID!
+    $count: Int!
+    $cursor: String
+  ) {
+    discussionById(id: $discussionId) {
       id
       name
       ...DiscussionHeader_discussion
@@ -22,8 +28,9 @@ const query = graphql`
       ...DiscussionMessageComposer_discussion
     }
     me {
-      ...DiscussionMessagesList_user
+      ...DiscussionMessagesList_user @arguments(classroomId: $classroomId)
       ...DiscussionMessageComposer_user
+      ...DiscussionDetails_user @arguments(classroomId: $classroomId)
     }
   }
 `;
@@ -37,13 +44,18 @@ const ViewDiscussion = ({ fetchKey }: Props) => {
   const data = useLazyLoadQuery<ViewDiscussionQuery>(
     query,
     {
-      id: router.query.discussionId as string,
+      discussionId: router.query.discussionId as string,
+      classroomId: router.query.classroomId as string,
       count: 50,
     },
     { fetchPolicy: 'store-and-network', fetchKey },
   );
 
   const [showDetails, setShowDetails] = useState(false);
+
+  if (!data.discussionById) {
+    return <ForbiddenOrNotFoundClassroom />;
+  }
 
   return (
     <DiscussionProvider
@@ -62,19 +74,19 @@ const ViewDiscussion = ({ fetchKey }: Props) => {
               <DiscussionMessagesList
                 key={data.discussionById.id}
                 discussion={data.discussionById}
-                user={data.me!}
+                me={data.me!}
               />
             </Card>
             <Card className="p-0">
               <DiscussionMessageComposer
                 discussion={data.discussionById}
-                user={data.me!}
+                me={data.me!}
               />
             </Card>
           </article>
         </Main>
       </div>
-      <DiscussionDetails discussion={data.discussionById} />
+      <DiscussionDetails discussion={data.discussionById} me={data.me!} />
     </DiscussionProvider>
   );
 };

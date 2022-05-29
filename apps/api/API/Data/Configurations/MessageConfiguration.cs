@@ -63,10 +63,6 @@ namespace API.Data.Configurations {
             builder.HasMany(m => m.MessageFiles)
                 .WithOne(mf => mf.Message!)
                 .HasForeignKey(mf => mf.MessageId);
-
-            builder.HasOne(m => m.DelLog)
-                .WithMany(d => d!.DeletedMessages)
-                .HasForeignKey(m => m.DelLogId);
         }
     }
 }

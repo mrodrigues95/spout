@@ -8,6 +8,7 @@ import RemindersList from './RemindersList';
 import RemindersSortSelect, { SORT_OPTIONS } from './RemindersSortSelect';
 import RemindersFilterSelect, { FILTER_OPTIONS } from './RemindersFilterSelect';
 import CreateReminder from './CreateReminder';
+import ForbiddenOrNotFoundClassroom from '../ForbiddenOrNotFoundClassroom';
 import { RemindersQuery } from './__generated__/RemindersQuery.graphql';
 
 const defaultFilters = { dueAt: { gte: new Date().toISOString() } };
@@ -34,6 +35,9 @@ const query = graphql`
       ...CreateReminder_classroom
       ...RemindersList_classroom @arguments(where: $where, order: $order)
     }
+    me {
+      isClassroomTeacher(classroomId: $id)
+    }
   }
 `;
 
@@ -56,6 +60,10 @@ const Reminders = ({ fetchKey }: Props) => {
     { fetchKey },
   );
 
+  if (!data.classroomById) {
+    return <ForbiddenOrNotFoundClassroom />;
+  }
+
   return (
     <RemindersProvider
       sortBy={sortBy}
@@ -71,9 +79,15 @@ const Reminders = ({ fetchKey }: Props) => {
             <Title as="h2" variant="h4">
               Reminders
             </Title>
-            <Text size="sm">Manage your reminders</Text>
+            <Text size="sm">
+              {data.me?.isClassroomTeacher
+                ? 'Manage your reminders'
+                : 'View the latest reminders posted by your instructor'}
+            </Text>
           </div>
-          <CreateReminder classroom={data.classroomById} />
+          {data.me?.isClassroomTeacher && (
+            <CreateReminder classroom={data.classroomById} />
+          )}
         </div>
         <div className="inline-flex items-center justify-end space-x-1.5">
           <RemindersFilterSelect />

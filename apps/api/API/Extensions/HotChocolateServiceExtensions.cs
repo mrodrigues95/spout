@@ -41,6 +41,7 @@ using HotChocolate.AspNetCore;
 using HotChocolate.Data;
 using HotChocolate.Execution;
 using HotChocolate.Types.Pagination;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -77,6 +78,7 @@ namespace API.Extensions {
                 });
 
             gql
+                .RegisterService<IAuthorizationService>()
                 .RegisterService<IEmailSender>()
                 .RegisterService<IBlobService>()
                 .RegisterService<ISessionManager>()
@@ -172,8 +174,8 @@ namespace API.Extensions {
                 // This can also be done by injecting `ClaimsPrincipal` now.
                 // See: https://github.com/ChilliCream/hotchocolate/issues/3824
                 if (context.User.Identity?.IsAuthenticated ?? false) {
-                    userId = int.Parse(context.User.FindFirstValue(ClaimTypes.NameIdentifier));
-                    userEmail = context.User.FindFirstValue(ClaimTypes.Email);
+                    userId = context.User.GetUserIdValue();
+                    userEmail = context.User.GetUserEmailValue();
                 }
 
                 requestBuilder.TryAddProperty("userId", userId);

@@ -42,10 +42,6 @@ namespace API.Schema.Types.Classrooms {
                 .Type<NonNullType<StringType>>();
 
             descriptor
-                .Field(c => c.StateId)
-                .Ignore();
-
-            descriptor
                 .Field(c => c.SyllabusId)
                 .Ignore();
 
@@ -58,10 +54,10 @@ namespace API.Schema.Types.Classrooms {
                 .Type<NonNullType<DateTimeType>>();
 
             descriptor
-                .Field("createdBy")
+                .Field("teacher")
                 .Type<NonNullType<UserType>>()
                 .ResolveWith<ClassroomResolvers>(x =>
-                    x.GetCreatedByAsync(default!, default!, default!, default!))
+                    x.GetTeacherAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>();
 
             descriptor
@@ -130,7 +126,7 @@ namespace API.Schema.Types.Classrooms {
         }
 
         private class ClassroomResolvers {
-            public async Task<Entities.User> GetCreatedByAsync(
+            public async Task<Entities.User> GetTeacherAsync(
                 [Parent] Entities.Classroom classroom,
                 ApplicationDbContext ctx,
                 UserByIdDataLoader userById,
@@ -139,7 +135,7 @@ namespace API.Schema.Types.Classrooms {
                     .Where(cu => cu.ClassroomId == classroom.Id &&
                         cu.IsCreator == true)
                     .Select(cu => cu.UserId)
-                    .SingleOrDefaultAsync();
+                    .SingleOrDefaultAsync(cancellationToken);
 
                 return await userById.LoadAsync(id, cancellationToken);
             }

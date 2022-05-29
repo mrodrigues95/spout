@@ -53,7 +53,6 @@ namespace API.Schema.Mutations.Auth {
                 Name = input.Name,
                 Email = input.Email,
                 ProfileColor = RandomEnum.Of<UserProfileColor>(),
-                StateId = (int)Enums.State.Active
             };
 
             var createUser = await userManager.CreateAsync(user, input.Password);

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<85136dee5aa97ebbb7d72f8a7b8d3759>>
+ * @generated SignedSource<<27934c36e1022295cbe354050123da92>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,7 +17,7 @@ export type ClassroomParticipantsQueryVariables = ClassroomParticipantsQuery$var
 export type ClassroomParticipantsQuery$data = {
   readonly classroomById: {
     readonly " $fragmentSpreads": FragmentRefs<"ClassroomParticipants_classroom">;
-  };
+  } | null;
 };
 export type ClassroomParticipantsQueryResponse = ClassroomParticipantsQuery$data;
 export type ClassroomParticipantsQuery = {

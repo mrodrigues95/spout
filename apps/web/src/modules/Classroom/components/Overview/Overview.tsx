@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { Spinner } from '@spout/toolkit';
 import { ErrorBoundary, ErrorFallback } from '../../../../shared/components';
 import Header from './Header';
+import ForbiddenOrNotFoundClassroom from '../ForbiddenOrNotFoundClassroom';
 import { Syllabus } from './Syllabus';
 import { OverviewQuery } from './__generated__/OverviewQuery.graphql';
 
@@ -15,6 +16,9 @@ const query = graphql`
       }
       ...Header_classroom
       ...Syllabus_classroom
+    }
+    me {
+      ...Syllabus_user @arguments(classroomId: $id)
     }
   }
 `;
@@ -33,10 +37,14 @@ const Overview = ({ fetchKey }: Props) => {
     { fetchKey },
   );
 
+  if (!data.classroomById) {
+    return <ForbiddenOrNotFoundClassroom />;
+  }
+
   return (
     <div className="flex flex-col space-y-4">
       <Header classroom={data.classroomById} />
-      <Syllabus classroom={data.classroomById} />
+      <Syllabus classroom={data.classroomById} me={data.me!} />
     </div>
   );
 };

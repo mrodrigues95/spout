@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5299a026a47bc1552ea541d07961445d>>
+ * @generated SignedSource<<91b17f85b38462a3a5e9ddaf343cd2dc>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,7 +21,7 @@ export type InviteQuery$data = {
     readonly invites: ReadonlyArray<{
       readonly " $fragmentSpreads": FragmentRefs<"CopyInvite_classroom">;
     }>;
-  };
+  } | null;
 };
 export type InviteQueryResponse = InviteQuery$data;
 export type InviteQuery = {

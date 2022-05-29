@@ -40,7 +40,7 @@ const JoinClassroom = ({ onClose }: JoinClassroomProps) => {
             classroom {
               id
               name
-              createdBy {
+              teacher {
                 id
               }
             }
@@ -171,7 +171,7 @@ const CreateClassroom = ({
             classroom {
               id
               name
-              createdBy {
+              teacher {
                 id
               }
             }

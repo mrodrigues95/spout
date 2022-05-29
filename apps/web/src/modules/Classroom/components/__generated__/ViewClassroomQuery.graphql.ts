@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<65cb9b4a6d15af98bdafd00107276f82>>
+ * @generated SignedSource<<bba91834c1405854c4b047dd49bcc6d3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,7 +18,10 @@ export type ViewClassroomQuery$data = {
   readonly classroomById: {
     readonly name: string;
     readonly " $fragmentSpreads": FragmentRefs<"ClassroomHeader_classroom" | "DiscussionsMenu_discussions">;
-  };
+  } | null;
+  readonly me: {
+    readonly " $fragmentSpreads": FragmentRefs<"ClassroomHeader_user" | "DiscussionsMenu_user">;
+  } | null;
 };
 export type ViewClassroomQueryResponse = ViewClassroomQuery$data;
 export type ViewClassroomQuery = {
@@ -48,14 +51,21 @@ v2 = {
   "name": "name",
   "storageKey": null
 },
-v3 = {
+v3 = [
+  {
+    "kind": "Variable",
+    "name": "classroomId",
+    "variableName": "id"
+  }
+],
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v4 = [
+v5 = [
   {
     "kind": "Literal",
     "name": "first",
@@ -97,6 +107,27 @@ return {
           }
         ],
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "me",
+        "plural": false,
+        "selections": [
+          {
+            "args": (v3/*: any*/),
+            "kind": "FragmentSpread",
+            "name": "ClassroomHeader_user"
+          },
+          {
+            "args": (v3/*: any*/),
+            "kind": "FragmentSpread",
+            "name": "DiscussionsMenu_user"
+          }
+        ],
+        "storageKey": null
       }
     ],
     "type": "Query",
@@ -117,10 +148,10 @@ return {
         "plural": false,
         "selections": [
           (v2/*: any*/),
-          (v3/*: any*/),
+          (v4/*: any*/),
           {
             "alias": null,
-            "args": (v4/*: any*/),
+            "args": (v5/*: any*/),
             "concreteType": "DiscussionsConnection",
             "kind": "LinkedField",
             "name": "discussions",
@@ -142,7 +173,7 @@ return {
                     "name": "node",
                     "plural": false,
                     "selections": [
-                      (v3/*: any*/),
+                      (v4/*: any*/),
                       (v2/*: any*/),
                       {
                         "alias": null,
@@ -194,7 +225,7 @@ return {
           },
           {
             "alias": null,
-            "args": (v4/*: any*/),
+            "args": (v5/*: any*/),
             "filters": [
               "order"
             ],
@@ -205,20 +236,39 @@ return {
           }
         ],
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "me",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": (v3/*: any*/),
+            "kind": "ScalarField",
+            "name": "isClassroomTeacher",
+            "storageKey": null
+          },
+          (v4/*: any*/)
+        ],
+        "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "e17946f2794d175efa4aa16e80d0d42a",
+    "cacheID": "4ffacfad5950b00a6dbdc3cd521212c2",
     "id": null,
     "metadata": {},
     "name": "ViewClassroomQuery",
     "operationKind": "query",
-    "text": "query ViewClassroomQuery(\n  $id: ID!\n) {\n  classroomById(id: $id) {\n    name\n    ...ClassroomHeader_classroom\n    ...DiscussionsMenu_discussions\n    id\n  }\n}\n\nfragment ClassroomHeader_classroom on Classroom {\n  name\n}\n\nfragment CreateDiscussion_classroom on Classroom {\n  id\n}\n\nfragment DiscussionsMenu_discussions on Classroom {\n  id\n  ...CreateDiscussion_classroom\n  discussions(first: 50, order: {name: ASC}) {\n    edges {\n      node {\n        id\n        name\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query ViewClassroomQuery(\n  $id: ID!\n) {\n  classroomById(id: $id) {\n    name\n    ...ClassroomHeader_classroom\n    ...DiscussionsMenu_discussions\n    id\n  }\n  me {\n    ...ClassroomHeader_user_v62IT\n    ...DiscussionsMenu_user_v62IT\n    id\n  }\n}\n\nfragment ClassroomHeader_classroom on Classroom {\n  name\n}\n\nfragment ClassroomHeader_user_v62IT on User {\n  isClassroomTeacher(classroomId: $id)\n}\n\nfragment CreateDiscussion_classroom on Classroom {\n  id\n}\n\nfragment DiscussionsMenu_discussions on Classroom {\n  id\n  ...CreateDiscussion_classroom\n  discussions(first: 50, order: {name: ASC}) {\n    edges {\n      node {\n        id\n        name\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment DiscussionsMenu_user_v62IT on User {\n  isClassroomTeacher(classroomId: $id)\n}\n"
   }
 };
 })();
 
-(node as any).hash = "d24701926eb9a69e863214cb4904d764";
+(node as any).hash = "c8dde514098aef615bd621adc83e12b7";
 
 export default node;
