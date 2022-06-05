@@ -8,6 +8,7 @@ import {
   faBook,
   faBullhorn,
   faTimeline,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { Tabs } from '@spout/toolkit';
 import { Main } from '../../../shared/components';
@@ -17,8 +18,9 @@ import { Activity } from './Activity';
 import { Overview } from './Overview';
 import { Announcements } from './Announcements';
 import { Reminders } from './Reminders';
-import { ViewClassroomQuery } from './__generated__/ViewClassroomQuery.graphql';
+import { Participants } from './Participants';
 import ForbiddenOrNotFoundClassroom from './ForbiddenOrNotFoundClassroom';
+import { ViewClassroomQuery } from './__generated__/ViewClassroomQuery.graphql';
 
 const tabs = [
   {
@@ -44,6 +46,12 @@ const tabs = [
     slug: 'reminders',
     icon: <FontAwesomeIcon icon={faBell} className="mr-2" />,
     component: <Reminders />,
+  },
+  {
+    label: 'Participants',
+    slug: 'participants',
+    icon: <FontAwesomeIcon icon={faUsers} className="mr-2" />,
+    component: <Participants />,
   },
 ];
 

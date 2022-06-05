@@ -20,7 +20,7 @@ export const Layout = ({
     <>
       <NextSeo title={title} />
       <div className="flex max-h-screen min-h-screen bg-white">
-        <div className="mx-auto flex min-w-0 max-w-[90rem] flex-1 p-2 lg:p-4">
+        <div className="mx-auto flex min-w-0 max-w-[90rem] flex-1 p-4">
           {authenticated && <Sidebar />}
           <div
             className={clsx(

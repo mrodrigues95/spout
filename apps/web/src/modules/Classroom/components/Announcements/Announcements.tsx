@@ -54,7 +54,7 @@ const Announcements = ({ fetchKey }: Props) => {
           </Title>
           <Text size="sm">
             {data.me?.isClassroomTeacher
-              ? 'Manage your announcement'
+              ? 'Manage your announcements'
               : 'View the latest announcements posted by your instructor'}
           </Text>
         </div>

@@ -16,7 +16,7 @@ export const VARIANTS = {
       inactive:
         'text-gray-900 border-transparent focus-visible:bg-gray-100 hover:bg-gray-100',
     },
-    tabList: 'flex space-x-10 border-b border-gray-200',
+    tabList: 'flex space-x-10 border-b border-gray-200 overflow-auto',
   },
   primary: {
     tab: {
@@ -24,7 +24,7 @@ export const VARIANTS = {
       active: 'bg-white rounded-lg shadow-md text-gray-900 font-semibold',
       inactive: 'bg-transparent text-gray-400',
     },
-    tabList: 'flex p-1 space-x-6 bg-gray-100 rounded-lg',
+    tabList: 'flex p-1 space-x-6 bg-gray-100 rounded-lg overflow-auto',
   },
 };
 

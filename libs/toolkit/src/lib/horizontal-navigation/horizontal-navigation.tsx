@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { Tab } from '@headlessui/react';
 import { usePreventScroll } from '@react-aria/overlays';
+import { useResizeObserver } from '@react-aria/utils';
 import {
   HorizontalNavigationItem,
   getHorizontalNavigationItemStyles,
@@ -91,6 +92,8 @@ export const HorizontalNavigation = ({
   useEffect(() => {
     checkScrollPosition();
   }, [checkScrollPosition]);
+
+  useResizeObserver({ ref: scrollRef, onResize: checkScrollPosition });
 
   return (
     <Tab.Group
