@@ -16,21 +16,19 @@ namespace API.Schema.Queries.Discussions {
     [ExtendObjectType(OperationTypeNames.Query)]
     public class DiscussionQueries {
         [Authorize]
-        public IQueryable<Discussion> GetDiscussions(
-            ApplicationDbContext context)
-            => context.Discussions.OrderBy(d => d.Id);
+        public IQueryable<Discussion> GetDiscussions(ApplicationDbContext ctx)
+            => ctx.Discussions.OrderBy(d => d.Id);
 
         [Authorize]
         public async Task<Discussion?> GetDiscussionByIdAsync(
             [ID(nameof(Discussion))] int id,
-            ApplicationDbContext ctx,
             ClaimsPrincipal userClaim,
+            ApplicationDbContext ctx,
             AspNetCoreAuth.IAuthorizationService authorizationService,
             CancellationToken cancellationToken) {
             var discussion = await ctx.Discussions
                 .Where(x => x.Id == id)
-                    .Include(x => x.Classroom)
-                        .ThenInclude(x => x!.Users)
+                .Include(x => x.Classroom)
                 .SingleOrDefaultAsync(cancellationToken);
             if (discussion is null) return null;
 

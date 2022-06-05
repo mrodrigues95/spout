@@ -76,37 +76,34 @@ namespace API.Schema.Types.Messages {
                 .Field(m => m.CreatedBy)
                 .Type<NonNullType<UserType>>()
                 .ResolveWith<MessageResolvers>(x =>
-                    x.GetCreatedByAsync(default!, default!, default!))
-                .Name("createdBy");
+                    x.GetCreatedByAsync(default!, default!, default!));
 
             descriptor
                 .Field(m => m.PinnedBy)
                 .Type<UserType>()
                 .ResolveWith<MessageResolvers>(x =>
-                    x.GetPinnedByAsync(default!, default!, default!))
-                .Name("pinnedBy");
+                    x.GetPinnedByAsync(default!, default!, default!));
 
             descriptor
                 .Field(m => m.ParentMessage)
                 .Type<MessageType>()
                 .ResolveWith<MessageResolvers>(x =>
-                    x.GetParentMessageAsync(default!, default!, default!))
-                .Name("parentMessage");
+                    x.GetParentMessageAsync(default!, default!, default!));
 
             descriptor
                 .Field(m => m.MessageFiles)
                 .Type<NonNullType<ListType<NonNullType<FileType>>>>()
-                .UseDbContext<ApplicationDbContext>()
                 .ResolveWith<MessageResolvers>(x =>
                     x.GetAttachmentsAsync(default!, default!, default!, default!))
+                .UseDbContext<ApplicationDbContext>()
                 .Name("attachments");
 
             descriptor
                 .Field(m => m.MessageLinks)
                 .Type<NonNullType<ListType<NonNullType<MessageType>>>>()
-                .UseDbContext<ApplicationDbContext>()
                 .ResolveWith<MessageResolvers>(x =>
                     x.GetTriggeredEventsAsync(default!, default!, default!, default!))
+                .UseDbContext<ApplicationDbContext>()
                 .Name("triggeredEvents");
         }
 

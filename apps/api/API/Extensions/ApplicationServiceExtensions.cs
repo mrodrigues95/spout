@@ -49,7 +49,7 @@ namespace API.Extensions {
             services.AddTransient<ISessionManager, SessionManager>();
             services.AddTransient<ISMSService, SMSService>();
             services.AddTransient<IClassroomTimelineManager, ClassroomTimelineManager>();
-            services.AddSingleton<IAuthorizationHandler, ClassroomAuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, ClassroomAuthorizationHandler>();
 
             return services;
         }

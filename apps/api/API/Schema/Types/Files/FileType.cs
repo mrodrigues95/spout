@@ -47,8 +47,7 @@ namespace API.Schema.Types.Files {
                 .Field(f => f.UploadedBy)
                 .Type<NonNullType<UserType>>()
                 .ResolveWith<FileResolvers>(x =>
-                    x.GetUploadedByAsync(default!, default!, default!))
-                .Name("uploadedBy");
+                    x.GetUploadedByAsync(default!, default!, default!));
 
             descriptor
                 .Field(f => f.ContentLength)

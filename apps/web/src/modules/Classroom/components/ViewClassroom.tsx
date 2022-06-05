@@ -9,12 +9,8 @@ import {
   faBullhorn,
   faTimeline,
 } from '@fortawesome/free-solid-svg-icons';
-import { Tabs, Text } from '@spout/toolkit';
-import {
-  ClassroomParticipants,
-  Main,
-  PanelRight,
-} from '../../../shared/components';
+import { Tabs } from '@spout/toolkit';
+import { Main } from '../../../shared/components';
 import { DiscussionsMenu } from './DiscussionsMenu';
 import { ClassroomHeader } from './ClassroomHeader';
 import { Activity } from './Activity';
@@ -136,12 +132,12 @@ const ViewClassroom = ({ fetchKey }: Props) => {
           </Tabs>
         </Main>
       </div>
-      <PanelRight className="space-y-2">
+      {/* <PanelRight className="space-y-2">
         <Text color="dark" weight="semibold">
           Participants
         </Text>
         <ClassroomParticipants />
-      </PanelRight>
+      </PanelRight> */}
     </>
   );
 };

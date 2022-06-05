@@ -66,26 +66,23 @@ namespace API.Schema.Types.Discussions {
                 .Field(d => d.CreatedBy)
                 .Type<NonNullType<UserType>>()
                 .ResolveWith<DiscussionResolvers>(x =>
-                    x.GetCreatedByAsync(default!, default!, default!))
-                .Name("createdBy");
+                    x.GetCreatedByAsync(default!, default!, default!));
 
             descriptor
                 .Field(d => d.Classroom)
                 .Type<NonNullType<ClassroomType>>()
                 .ResolveWith<DiscussionResolvers>(x =>
-                    x.GetClassroomAsync(default!, default!, default!))
-                .Name("classroom");
+                    x.GetClassroomAsync(default!, default!, default!));
 
             descriptor
                 .Field(d => d.Messages)
                 .Type<NonNullType<ListType<NonNullType<MessageType>>>>()
+                .ResolveWith<DiscussionResolvers>(x =>
+                    x.GetMessagesAsync(default!, default!, default!, default!))
                 .UseDbContext<ApplicationDbContext>()
                 .UsePaging<NonNullType<MessageType>>()
                 .UseFiltering()
-                .UseSorting()
-                .ResolveWith<DiscussionResolvers>(x =>
-                    x.GetMessagesAsync(default!, default!, default!, default!))
-                .Name("messages");
+                .UseSorting();
         }
 
         private class DiscussionResolvers {

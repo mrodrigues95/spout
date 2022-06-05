@@ -29,7 +29,7 @@ const ClassroomHeader = ({ ...props }: Props) => {
 
   return (
     <div className="flex items-center justify-between">
-      <Header>
+      <Header className="space-x-2">
         <Title as="h1">{classroom.name}</Title>
       </Header>
       {me.isClassroomTeacher && (

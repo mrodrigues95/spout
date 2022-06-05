@@ -2,16 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
+using API.Data;
 using API.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace API.Security.Policy {
     public class ClassroomAuthorizationHandler
-        : AuthorizationHandler<ClassroomOperationRequirement, Classroom> {
+        : AuthorizationHandler<ClassroomOperationRequirement, Classroom>, IAsyncDisposable {
         private readonly ILogger<ClassroomAuthorizationHandler> _logger;
+        private readonly ApplicationDbContext _ctx;
 
         private enum ClassroomPermission { Teacher, Student }
         private readonly Dictionary<ClassroomOperationRequirement,
@@ -22,7 +26,8 @@ namespace API.Security.Policy {
                     ClassroomOperations.Create, x => x.Contains(ClassroomPermission.Teacher)
                 },
                 {
-                    ClassroomOperations.Read, x => x.Contains(ClassroomPermission.Teacher) ||
+                    ClassroomOperations.Read, x =>
+                                        x.Contains(ClassroomPermission.Teacher) ||
                                         x.Contains(ClassroomPermission.Student)
                 },
                 {
@@ -33,42 +38,48 @@ namespace API.Security.Policy {
                 }
             };
 
-        public ClassroomAuthorizationHandler(ILogger<ClassroomAuthorizationHandler> logger) {
+        public ClassroomAuthorizationHandler(
+            ILogger<ClassroomAuthorizationHandler> logger,
+            IDbContextFactory<ApplicationDbContext> dbContextFactory) {
             _logger = logger;
+            _ctx = dbContextFactory.CreateDbContext();
         }
 
-        protected override Task HandleRequirementAsync(
+        public ValueTask DisposeAsync() => _ctx.DisposeAsync();
+
+        protected override async Task HandleRequirementAsync(
             AuthorizationHandlerContext context,
             ClassroomOperationRequirement requirement,
             Classroom resource) {
             var permissions = new List<ClassroomPermission>();
             var userId = context.User.GetUserIdValue();
+            var classroomUsers = await _ctx.ClassroomUsers
+                .Where(x => x.ClassroomId == resource.Id)
+                .Select(x => new { x.IsCreator, x.UserId })
+                .ToListAsync(CancellationToken.None);
 
-            if (resource.Users.Count() == 0) {
-                _logger.LogError("No users found for this classroom - " +
-                    "a classroom cannot exist without at least one user. " +
-                    "Try eager loading the users. {classroom}", resource);
-                return Task.FromResult(0);
+            if (classroomUsers.Count() == 0) {
+                _logger.LogError("Fatal: no users found for this classroom - " +
+                    "a classroom cannot exist without at least one user. {classroom}", resource);
+                return;
             }
-
-            var classroomTeacher = resource.Users.SingleOrDefault(x => x.IsCreator);
 
             if (context.User.HasClaim(ClaimTypes.Role, UserRoles.Admin)) {
                 context.Succeed(requirement);
-                return Task.FromResult(0);
+                return;
             }
 
+            var classroomTeacher = classroomUsers.SingleOrDefault(x => x.IsCreator);
             if (classroomTeacher?.UserId == userId) {
                 permissions.Add(ClassroomPermission.Teacher);
-            } else if (resource.Users.Any(x => x.UserId == userId)) {
+            } else if (classroomUsers.Any(x => x.UserId == userId)) {
                 permissions.Add(ClassroomPermission.Student);
             }
 
             if (ValidateClassroomPermissions[requirement](permissions)) {
                 context.Succeed(requirement);
+                return;
             }
-
-            return Task.FromResult(0);
         }
     }
 
