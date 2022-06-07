@@ -8,7 +8,7 @@ import TimelineReminderCreatedContent from './TimelineReminderCreatedContent';
 
 const TimelineContent = () => {
   return (
-    <Timeline.Content className="py-1.5">
+    <Timeline.Content className="pr-0 sm:py-1.5">
       <TimelineUserJoinedClassroomContent />
       <TimelineClassroomCreatedContent />
       <TimelineDiscussionCreatedContent />

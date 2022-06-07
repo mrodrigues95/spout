@@ -179,7 +179,7 @@ const CreateReminder = ({ ...props }: Props) => {
       </Button>
       <Modal isOpen={isOpen} onClose={closeModal}>
         <Modal.Overlay />
-        <Modal.Content className="w-[35rem]">
+        <Modal.Content className="sm:w-[35rem]">
           <Modal.Header title="New Reminder" />
           <Form form={form} onSubmit={onSubmit}>
             <Modal.Body>

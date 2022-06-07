@@ -3,6 +3,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useRouter } from 'next/router';
 import { Spinner, Title, Text } from '@spout/toolkit';
 import { ErrorBoundary, ErrorFallback } from '../../../../shared/components';
+import { MEDIA_QUERIES, useMediaQuery } from '../../../../shared/hooks';
 import ParticipantsTable from './ParticipantsTable';
 import { ParticipantsQuery } from './__generated__/ParticipantsQuery.graphql';
 
@@ -20,6 +21,7 @@ interface Props {
 
 const Participants = ({ fetchKey }: Props) => {
   const router = useRouter();
+  const isTablet = useMediaQuery(MEDIA_QUERIES.SMALL);
   const data = useLazyLoadQuery<ParticipantsQuery>(
     query,
     {
@@ -31,7 +33,7 @@ const Participants = ({ fetchKey }: Props) => {
   return (
     <article className="flex h-full flex-col space-y-6">
       <div className="!-mt-1.5 flex flex-col">
-        <Title as="h2" variant="h4">
+        <Title as="h2" variant={isTablet ? 'h4' : 'h5'}>
           Participants
         </Title>
         <Text size="sm">View all active participants</Text>

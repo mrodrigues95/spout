@@ -51,7 +51,7 @@ const Reminder = ({ ...props }: ReminderProps) => {
           <>
             <Disclosure.Button
               className={clsx(
-                'relative flex w-full items-center space-x-6 px-3 py-1',
+                'relative flex w-full items-center space-x-4 px-3 py-1',
                 'transition-colors duration-150 ease-in-out',
                 'focus:outline-none focus-visible:rounded-lg focus-visible:text-gray-900 focus-visible:ring group-hover:bg-gray-100 group-hover:text-gray-900',
                 open
@@ -59,7 +59,7 @@ const Reminder = ({ ...props }: ReminderProps) => {
                   : 'rounded-lg bg-white text-gray-500',
               )}
             >
-              <div className="flex-1 text-left">
+              <div className="flex-1 truncate text-left">
                 <p
                   className={clsx(
                     'truncate text-sm font-medium text-gray-900 focus-visible:text-gray-900 group-hover:text-gray-900',
@@ -89,7 +89,9 @@ const Reminder = ({ ...props }: ReminderProps) => {
               >
                 {IMPORTANCE_MAPPINGS[reminder.importance.toLowerCase()].text}
               </Badge>
-              <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} />
+              <span>
+                <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} />
+              </span>
             </Disclosure.Button>
             <Disclosure.Panel
               as="p"

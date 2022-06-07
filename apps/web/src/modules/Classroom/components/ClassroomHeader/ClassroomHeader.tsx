@@ -31,8 +31,8 @@ const ClassroomHeader = ({ ...props }: Props) => {
 
   return (
     <div className="flex items-center justify-between">
-      <Header className="mb-0 space-x-2 sm:mb-4">
-        <Title as="h1" variant={isLaptop ? 'h1' : 'h4'}>
+      <Header className="mb-0 min-w-0 space-x-2 sm:mb-4">
+        <Title as="h1" variant={isLaptop ? 'h1' : 'h4'} className="truncate">
           {classroom.name}
         </Title>
       </Header>

@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Button, Spinner, Title, Text } from '@spout/toolkit';
 import { ErrorBoundary, ErrorFallback } from '../../../../shared/components';
+import { MEDIA_QUERIES, useMediaQuery } from '../../../../shared/hooks';
 import AnnouncementsList from './AnnouncementsList';
 import CreateAnnouncement from './CreateAnnouncement';
 import ForbiddenOrNotFoundClassroom from '../ForbiddenOrNotFoundClassroom';
@@ -32,6 +33,7 @@ interface Props {
 const Announcements = ({ fetchKey }: Props) => {
   const router = useRouter();
   const [isComposingAnnouncement, setIsComposingAnnouncement] = useState(false);
+  const isTablet = useMediaQuery(MEDIA_QUERIES.SMALL);
   const data = useLazyLoadQuery<AnnouncementsQuery>(
     query,
     {
@@ -49,7 +51,7 @@ const Announcements = ({ fetchKey }: Props) => {
     <article className="flex h-full flex-col space-y-6">
       <div className="!-mt-1.5 flex items-center justify-between">
         <div>
-          <Title as="h2" variant="h4">
+          <Title as="h2" variant={isTablet ? 'h4' : 'h5'}>
             Announcements
           </Title>
           <Text size="sm">

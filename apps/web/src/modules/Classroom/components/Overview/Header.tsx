@@ -4,6 +4,7 @@ import { faComments, faUser } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 import { Text } from '@spout/toolkit';
 import { Avatar } from '../../../../shared/components';
+import { MEDIA_QUERIES, useMediaQuery } from '../../../../shared/hooks';
 import { getRandomColor } from '../../../../shared/utils';
 import { Header_classroom$key } from './__generated__/Header_classroom.graphql';
 
@@ -31,6 +32,7 @@ interface Props {
 const Header = ({ ...props }: Props) => {
   const classroom = useFragment(fragment, props.classroom);
   const color = getRandomColor();
+  const isTablet = useMediaQuery(MEDIA_QUERIES.SMALL);
 
   return (
     <article className="flex flex-col items-center justify-center space-y-1.5 text-center">
@@ -43,19 +45,19 @@ const Header = ({ ...props }: Props) => {
           )}
           aria-hidden="true"
         />
-        <Text weight="semibold" size="lg">
+        <Text weight="semibold" size={isTablet ? 'lg' : 'md'}>
           {classroom.name}
         </Text>
       </div>
       <div className="space-x-3">
-        <Text as="span">
+        <Text as="span" size={isTablet ? 'md' : 'sm'}>
           <FontAwesomeIcon icon={faUser} className="mr-1" />
           {classroom.users!.totalCount} participants
         </Text>
         {classroom.discussions!.totalCount > 0 && (
           <>
             <span>&bull;</span>
-            <Text as="span">
+            <Text as="span" size={isTablet ? 'md' : 'sm'}>
               <FontAwesomeIcon icon={faComments} className="mr-1" />
               {classroom.discussions!.totalCount} discussions
             </Text>
@@ -63,7 +65,7 @@ const Header = ({ ...props }: Props) => {
         )}
       </div>
       <div className="flex items-center">
-        <Text as="span" className="mr-2">
+        <Text as="span" size={isTablet ? 'md' : 'sm'} className="mr-2">
           Instructed by
         </Text>
         <Avatar
@@ -73,7 +75,7 @@ const Header = ({ ...props }: Props) => {
           containerProps={{ className: 'shadow-sm mr-1.5' }}
           size="sm"
         />
-        <Text as="span" weight="medium">
+        <Text as="span" weight="medium" size={isTablet ? 'md' : 'sm'}>
           {classroom.teacher.name}
         </Text>
       </div>

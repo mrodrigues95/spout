@@ -3,6 +3,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useRouter } from 'next/router';
 import { Spinner, Text, Title } from '@spout/toolkit';
 import { ErrorBoundary, ErrorFallback } from '../../../../shared/components';
+import { MEDIA_QUERIES, useMediaQuery } from '../../../../shared/hooks';
 import { RemindersProvider } from './RemindersProvider';
 import RemindersList from './RemindersList';
 import RemindersSortSelect, { SORT_OPTIONS } from './RemindersSortSelect';
@@ -50,6 +51,7 @@ const Reminders = ({ fetchKey }: Props) => {
   const [sortBy, setSortBy] = useState(SORT_OPTIONS[0]);
   const [filters, setFilters] = useState<typeof FILTER_OPTIONS>([]);
   const [shouldRefetch, setShouldRefetch] = useState(false);
+  const isTablet = useMediaQuery(MEDIA_QUERIES.SMALL);
   const data = useLazyLoadQuery<RemindersQuery>(
     query,
     {
@@ -76,7 +78,7 @@ const Reminders = ({ fetchKey }: Props) => {
       <article className="flex h-full flex-col space-y-2.5">
         <div className="!-mt-1.5 flex items-center justify-between">
           <div>
-            <Title as="h2" variant="h4">
+            <Title as="h2" variant={isTablet ? 'h4' : 'h5'}>
               Reminders
             </Title>
             <Text size="sm">

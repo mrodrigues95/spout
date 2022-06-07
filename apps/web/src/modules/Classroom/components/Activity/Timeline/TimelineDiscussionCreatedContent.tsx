@@ -1,3 +1,5 @@
+import { Link } from '@spout/toolkit';
+import { MEDIA_QUERIES, useMediaQuery } from '../../../../../shared/hooks';
 import { useActivityListItem } from '../ActivityListItemProvider';
 import { logNullEntityError } from './utils';
 import {
@@ -5,10 +7,10 @@ import {
   TimelineHeaderDate,
   TimelineHeaderText,
 } from './TimelineHeader';
-import { Link } from '@spout/toolkit';
 
 const TimelineDiscussionCreatedContent = () => {
   const { item } = useActivityListItem()!;
+  const isTablet = useMediaQuery(MEDIA_QUERIES.SMALL);
 
   if (item.event !== 'DISCUSSION_CREATED') {
     return null;
@@ -28,6 +30,7 @@ const TimelineDiscussionCreatedContent = () => {
       <Link
         href={`/classrooms/${item.classroom.id}/discussions/${item.discussion.id}`}
         variant="link"
+        size={isTablet ? 'md' : 'sm'}
         className="underline underline-offset-2 hover:decoration-2 focus:decoration-2"
       >
         {item.discussion.name}

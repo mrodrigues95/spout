@@ -29,7 +29,7 @@ export const EmptyState = ({
         <p className="text-center text-lg font-medium text-gray-900">
           {heading}
         </p>
-        {body && <p className="text-sm text-gray-500">{body}</p>}
+        {body && <p className="text-center text-sm text-gray-500">{body}</p>}
       </div>
       {children}
     </div>
