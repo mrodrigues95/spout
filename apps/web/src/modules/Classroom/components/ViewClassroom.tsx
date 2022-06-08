@@ -140,12 +140,6 @@ const ViewClassroom = ({ fetchKey }: Props) => {
           </Tabs>
         </Main>
       </div>
-      {/* <PanelRight className="space-y-2">
-        <Text color="dark" weight="semibold">
-          Participants
-        </Text>
-        <ClassroomParticipants />
-      </PanelRight> */}
     </>
   );
 };

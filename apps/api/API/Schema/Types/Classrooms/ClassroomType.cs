@@ -46,6 +46,14 @@ namespace API.Schema.Types.Classrooms {
                 .Ignore();
 
             descriptor
+                 .Field(c => c.IsDeleted)
+                 .Type<NonNullType<BooleanType>>();
+
+            descriptor
+                 .Field(c => c.DeletedAt)
+                 .Type<DateTimeType>();
+
+            descriptor
                  .Field(c => c.CreatedAt)
                  .Type<NonNullType<DateTimeType>>();
 

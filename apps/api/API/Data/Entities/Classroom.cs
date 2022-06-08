@@ -8,6 +8,7 @@ namespace API.Data.Entities {
         public string? Name { get; set; }
         public int? SyllabusId { get; set; }
         public ClassroomSyllabus? Syllabus { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

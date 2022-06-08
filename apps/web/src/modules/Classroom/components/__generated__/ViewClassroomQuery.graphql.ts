@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bba91834c1405854c4b047dd49bcc6d3>>
+ * @generated SignedSource<<97ebaab502241529164c130e88ef1053>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -259,12 +259,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "4ffacfad5950b00a6dbdc3cd521212c2",
+    "cacheID": "b51f08307b90a050870fde633b04fdd0",
     "id": null,
     "metadata": {},
     "name": "ViewClassroomQuery",
     "operationKind": "query",
-    "text": "query ViewClassroomQuery(\n  $id: ID!\n) {\n  classroomById(id: $id) {\n    name\n    ...ClassroomHeader_classroom\n    ...DiscussionsMenu_discussions\n    id\n  }\n  me {\n    ...ClassroomHeader_user_v62IT\n    ...DiscussionsMenu_user_v62IT\n    id\n  }\n}\n\nfragment ClassroomHeader_classroom on Classroom {\n  name\n}\n\nfragment ClassroomHeader_user_v62IT on User {\n  isClassroomTeacher(classroomId: $id)\n}\n\nfragment CreateDiscussion_classroom on Classroom {\n  id\n}\n\nfragment DiscussionsMenu_discussions on Classroom {\n  id\n  ...CreateDiscussion_classroom\n  discussions(first: 50, order: {name: ASC}) {\n    edges {\n      node {\n        id\n        name\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment DiscussionsMenu_user_v62IT on User {\n  isClassroomTeacher(classroomId: $id)\n}\n"
+    "text": "query ViewClassroomQuery(\n  $id: ID!\n) {\n  classroomById(id: $id) {\n    name\n    ...ClassroomHeader_classroom\n    ...DiscussionsMenu_discussions\n    id\n  }\n  me {\n    ...ClassroomHeader_user_v62IT\n    ...DiscussionsMenu_user_v62IT\n    id\n  }\n}\n\nfragment ClassroomHeader_classroom on Classroom {\n  name\n  ...MenuActions_classroom\n}\n\nfragment ClassroomHeader_user_v62IT on User {\n  isClassroomTeacher(classroomId: $id)\n  ...MenuActions_user\n}\n\nfragment CreateDiscussion_classroom on Classroom {\n  id\n}\n\nfragment DeleteClassroom_classroom on Classroom {\n  id\n  name\n}\n\nfragment DeleteClassroom_user on User {\n  id\n}\n\nfragment DiscussionsMenu_discussions on Classroom {\n  id\n  ...CreateDiscussion_classroom\n  discussions(first: 50, order: {name: ASC}) {\n    edges {\n      node {\n        id\n        name\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment DiscussionsMenu_user_v62IT on User {\n  isClassroomTeacher(classroomId: $id)\n}\n\nfragment MenuActions_classroom on Classroom {\n  ...DeleteClassroom_classroom\n}\n\nfragment MenuActions_user on User {\n  ...DeleteClassroom_user\n}\n"
   }
 };
 })();

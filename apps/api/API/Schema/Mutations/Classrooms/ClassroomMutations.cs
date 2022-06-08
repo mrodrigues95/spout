@@ -1,20 +1,25 @@
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using API.Attributes;
+using API.Common.Exceptions;
 using API.Data;
 using API.Data.Entities;
 using API.Infrastructure;
 using API.Schema.Mutations.Classrooms.Exceptions;
 using API.Schema.Mutations.Classrooms.Inputs;
 using API.Schema.Types.ClassroomTimelineEvents;
+using API.Security.Policy;
 using CSharpVitamins;
 using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using static Microsoft.AspNetCore.Authorization.AuthorizationServiceExtensions;
+using AspNetCoreAuth = Microsoft.AspNetCore.Authorization;
 
 namespace API.Schema.Mutations.Classrooms {
     [ExtendObjectType(OperationTypeNames.Mutation)]
@@ -60,6 +65,33 @@ namespace API.Schema.Mutations.Classrooms {
 
         [Authorize]
         [Error(typeof(ClassroomNotFoundException))]
+        [Error(typeof(UnauthorizedException))]
+        public async Task<Classroom> DeleteClassroomAsync(
+            DeleteClassroomInput input,
+            ClaimsPrincipal userClaim,
+            ApplicationDbContext ctx,
+            AspNetCoreAuth.IAuthorizationService authorizationService,
+            CancellationToken cancellationToken) {
+            var classroom = await ctx.Classrooms.FindAsync(
+                new object[] { input.ClassroomId },
+                cancellationToken);
+            if (classroom is null) throw new ClassroomNotFoundException();
+
+            var authResult = await authorizationService.AuthorizeAsync(
+                userClaim,
+                classroom,
+                ClassroomOperations.Update);
+            if (!authResult.Succeeded) throw new UnauthorizedException();
+
+            classroom.IsDeleted = true;
+            classroom.UpdatedAt = DateTime.UtcNow;
+            await ctx.SaveChangesAsync();
+
+            return classroom;
+        }
+
+        [Authorize]
+        [Error(typeof(ClassroomNotFoundException))]
         [Error(typeof(ClassroomInviteExpiredException))]
         public async Task<Classroom?> JoinClassroomAsync(
             [GlobalUserId] int userId,
@@ -76,7 +108,8 @@ namespace API.Schema.Mutations.Classrooms {
 
             var classroom = await ctx.Classrooms
                 .Include(c => c.Users)
-                .SingleOrDefaultAsync(c => c.Id == invite.ClassroomId, cancellationToken);
+                .SingleOrDefaultAsync(c => c.Id == invite.ClassroomId &&
+                    c.IsDeleted == false, cancellationToken);
             if (classroom is null) throw new ClassroomNotFoundException();
 
             var isAlreadyInClassroom = classroom.Users.Any(x => x.UserId == userId);

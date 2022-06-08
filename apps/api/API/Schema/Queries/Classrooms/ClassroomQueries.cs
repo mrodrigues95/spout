@@ -26,12 +26,13 @@ namespace API.Schema.Queries.Classrooms {
             AspNetCoreAuth.IAuthorizationService authorizationService,
             CancellationToken cancellationToken) {
             var classroom = await classroomById.LoadAsync(id, cancellationToken);
-            if (classroom is null) return null;
+            if (classroom is null || classroom.IsDeleted) return null;
 
             var result = await authorizationService.AuthorizeAsync(
                 userClaim,
                 classroom,
                 ClassroomOperations.Read);
+
             return result.Succeeded ? classroom : null;
         }
 

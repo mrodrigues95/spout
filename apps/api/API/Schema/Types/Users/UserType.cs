@@ -128,10 +128,11 @@ namespace API.Schema.Types.Users {
                 ApplicationDbContext dbContext,
                 ClassroomByIdDataLoader classroomById,
                 CancellationToken cancellationToken) {
-                int[] classroomIds = await dbContext.Users
-                    .Where(u => u.Id == user.Id)
-                    .Include(u => u.Classrooms)
-                    .SelectMany(u => u.Classrooms.Select(uc => uc.ClassroomId))
+                int[] classroomIds = await dbContext.ClassroomUsers
+                    .Include(cu => cu.Classroom)
+                    .Where(cu => cu.UserId == user.Id &&
+                        cu.Classroom!.IsDeleted == false)
+                    .Select(cu => cu.ClassroomId)
                     .ToArrayAsync();
 
                 return await classroomById.LoadAsync(classroomIds, cancellationToken);

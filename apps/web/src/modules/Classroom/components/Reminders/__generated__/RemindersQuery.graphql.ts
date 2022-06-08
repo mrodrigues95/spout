@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e1b10180ab03a9e3e7ae16c20e7073d9>>
+ * @generated SignedSource<<e4481fc249ab49b596c394c9b1024977>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -306,6 +306,7 @@ export type ClassroomFilterInput = {
   name?: StringOperationFilterInput | null;
   syllabusId?: ComparableNullableOfInt32OperationFilterInput | null;
   syllabus?: ClassroomSyllabusFilterInput | null;
+  isDeleted?: BooleanOperationFilterInput | null;
   deletedAt?: ComparableNullableOfDateTimeOperationFilterInput | null;
   createdAt?: ComparableDateTimeOperationFilterInput | null;
   updatedAt?: ComparableDateTimeOperationFilterInput | null;
@@ -683,6 +684,7 @@ export type ClassroomSortInput = {
   name?: SortEnumType | null;
   syllabusId?: SortEnumType | null;
   syllabus?: ClassroomSyllabusSortInput | null;
+  isDeleted?: SortEnumType | null;
   deletedAt?: SortEnumType | null;
   createdAt?: SortEnumType | null;
   updatedAt?: SortEnumType | null;

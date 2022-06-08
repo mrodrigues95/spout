@@ -9,6 +9,7 @@ import { ClassroomHeader_user$key } from './__generated__/ClassroomHeader_user.g
 const classroomFragment = graphql`
   fragment ClassroomHeader_classroom on Classroom {
     name
+    ...MenuActions_classroom
   }
 `;
 
@@ -16,6 +17,7 @@ const meFragment = graphql`
   fragment ClassroomHeader_user on User
   @argumentDefinitions(classroomId: { type: "ID!" }) {
     isClassroomTeacher(classroomId: $classroomId)
+    ...MenuActions_user
   }
 `;
 
@@ -38,7 +40,7 @@ const ClassroomHeader = ({ ...props }: Props) => {
       </Header>
       {me.isClassroomTeacher && (
         <div>
-          <MenuActions />
+          <MenuActions classroom={classroom} me={me} />
         </div>
       )}
     </div>

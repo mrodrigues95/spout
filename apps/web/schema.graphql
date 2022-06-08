@@ -162,6 +162,8 @@ type Classroom implements Node {
   id: ID!
   guid: UUID!
   name: String!
+  isDeleted: Boolean!
+  deletedAt: DateTime
   createdAt: DateTime!
   updatedAt: DateTime!
   teacher: User!
@@ -252,7 +254,6 @@ type Classroom implements Node {
     where: DiscussionFilterInput
     order: [DiscussionSortInput!]
   ): DiscussionsConnection
-  deletedAt: DateTime
 }
 
 type ClassroomAnnouncement implements Node {
@@ -311,6 +312,7 @@ input ClassroomFilterInput {
   name: StringOperationFilterInput
   syllabusId: ComparableNullableOfInt32OperationFilterInput
   syllabus: ClassroomSyllabusFilterInput
+  isDeleted: BooleanOperationFilterInput
   deletedAt: ComparableNullableOfDateTimeOperationFilterInput
   createdAt: ComparableDateTimeOperationFilterInput
   updatedAt: ComparableDateTimeOperationFilterInput
@@ -461,6 +463,7 @@ input ClassroomSortInput {
   name: SortEnumType
   syllabusId: SortEnumType
   syllabus: ClassroomSyllabusSortInput
+  isDeleted: SortEnumType
   deletedAt: SortEnumType
   createdAt: SortEnumType
   updatedAt: SortEnumType
@@ -831,6 +834,18 @@ input DeleteClassroomAnnouncementInput {
 type DeleteClassroomAnnouncementPayload {
   classroomAnnouncement: ClassroomAnnouncement
   errors: [DeleteClassroomAnnouncementError!]
+  query: Query!
+}
+
+union DeleteClassroomError = ClassroomNotFoundError | UnauthorizedError
+
+input DeleteClassroomInput {
+  classroomId: ID!
+}
+
+type DeleteClassroomPayload {
+  classroom: Classroom
+  errors: [DeleteClassroomError!]
   query: Query!
 }
 
@@ -1490,6 +1505,7 @@ type Mutation {
   updateProfile(input: UpdateProfileInput!): UpdateProfilePayload!
   updateAvatar(input: UpdateAvatarInput!): UpdateAvatarPayload!
   createClassroom(input: CreateClassroomInput!): CreateClassroomPayload!
+  deleteClassroom(input: DeleteClassroomInput!): DeleteClassroomPayload!
   joinClassroom(input: JoinClassroomInput!): JoinClassroomPayload!
   createClassroomInvite(input: CreateClassroomInviteInput!): CreateClassroomInvitePayload!
   createClassroomAnnouncement(input: CreateClassroomAnnouncementInput!): CreateClassroomAnnouncementPayload!
@@ -1800,6 +1816,10 @@ type TimelineEdge {
 
   """The item at the end of the edge."""
   node: ClassroomTimelineEvent!
+}
+
+type UnauthorizedError implements Error {
+  message: String!
 }
 
 union UnpinDiscussionMessageError = DiscussionMessageNotFoundError | DiscussionMessageAlreadyNotPinnedError

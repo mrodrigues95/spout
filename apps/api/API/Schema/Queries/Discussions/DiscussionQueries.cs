@@ -27,8 +27,8 @@ namespace API.Schema.Queries.Discussions {
             AspNetCoreAuth.IAuthorizationService authorizationService,
             CancellationToken cancellationToken) {
             var discussion = await ctx.Discussions
-                .Where(x => x.Id == id)
                 .Include(x => x.Classroom)
+                .Where(x => x.Id == id && x.Classroom!.IsDeleted == false)
                 .SingleOrDefaultAsync(cancellationToken);
             if (discussion is null) return null;
 

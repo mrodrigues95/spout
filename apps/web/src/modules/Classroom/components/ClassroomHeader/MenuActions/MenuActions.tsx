@@ -8,6 +8,10 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconButton, Menu, usePopper } from '@spout/toolkit';
 import { Invite } from './Invite';
+import { DeleteClassroom } from './DeleteClassroom';
+import { graphql, useFragment } from 'react-relay';
+import { MenuActions_classroom$key } from './__generated__/MenuActions_classroom.graphql';
+import { MenuActions_user$key } from './__generated__/MenuActions_user.graphql';
 
 export enum ActionType {
   Invite,
@@ -48,13 +52,35 @@ const reducer = (state: State, action: Action) => {
   }
 };
 
-const MenuActions = () => {
+const classroomFragment = graphql`
+  fragment MenuActions_classroom on Classroom {
+    ...DeleteClassroom_classroom
+  }
+`;
+
+const meFragment = graphql`
+  fragment MenuActions_user on User {
+    ...DeleteClassroom_user
+  }
+`;
+
+interface Props {
+  me: MenuActions_user$key;
+  classroom: MenuActions_classroom$key;
+}
+
+const MenuActions = ({ ...props }: Props) => {
+  const classroom = useFragment(classroomFragment, props.classroom);
+  const me = useFragment(meFragment, props.me);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [trigger, container] = usePopper();
 
   return (
     <>
       {state[ActionType.Invite].isOpen && <Invite dispatch={dispatch} />}
+      {state[ActionType.DeleteClassroom].isOpen && (
+        <DeleteClassroom dispatch={dispatch} classroom={classroom} me={me} />
+      )}
       <Menu>
         <Menu.Button
           ref={trigger}

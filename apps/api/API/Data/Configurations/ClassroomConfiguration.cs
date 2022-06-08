@@ -14,6 +14,13 @@ namespace API.Data.Configurations {
                 .HasMaxLength(64)
                 .IsRequired();
 
+            builder.Property(c => c.IsDeleted)
+                .HasDefaultValue(false)
+                .IsRequired();
+
+            builder.Property(c => c.DeletedAt)
+                .IsRequired(false);
+
             builder.Property(c => c.CreatedAt)
                 .HasDefaultValueSql("now()")
                 .IsRequired();

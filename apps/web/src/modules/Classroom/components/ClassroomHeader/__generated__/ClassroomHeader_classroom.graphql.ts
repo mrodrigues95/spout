@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8bf5670a0184f870634d9ab7b7669fa7>>
+ * @generated SignedSource<<5537f29149b6d7d5a9fc1d3c9a742e99>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,6 +12,7 @@ import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type ClassroomHeader_classroom$data = {
   readonly name: string;
+  readonly " $fragmentSpreads": FragmentRefs<"MenuActions_classroom">;
   readonly " $fragmentType": "ClassroomHeader_classroom";
 };
 export type ClassroomHeader_classroom = ClassroomHeader_classroom$data;
@@ -32,12 +33,17 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "name",
       "storageKey": null
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "MenuActions_classroom"
     }
   ],
   "type": "Classroom",
   "abstractKey": null
 };
 
-(node as any).hash = "267e375a9f77bef04548b2644bf546fb";
+(node as any).hash = "093adad425223f8058bf89e5fb4a2621";
 
 export default node;
